@@ -61,11 +61,7 @@ export default defineNuxtConfig({
 		display: "swap",
 		preload: true,
 		families: {
-			Sora: {
-				wght: [200, 300, 400, 500, 600, 700],
-			},
-
-			Poppins: {
+			Montserrat: {
 				wght: [200, 300, 400, 500, 600, 700],
 			},
 		},

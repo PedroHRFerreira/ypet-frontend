@@ -45,9 +45,9 @@ const props = defineProps({
 	},
 	fontFamily: {
 		type: String,
-		default: "Poppins",
+		default: "Montserrat",
 		validator(value: string) {
-			return ["Poppins", "Sora"].includes(value);
+			return ["Montserrat"].includes(value);
 		},
 	},
 });
