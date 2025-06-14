@@ -1,0 +1,50 @@
+@use "colors";
+* {
+	margin: 0;
+	padding: 0;
+	font-family: "Poppins", sans-serif;
+	box-sizing: border-box;
+	-webkit-font-smoothing: antialiased;
+}
+main {
+	height: 100vh;
+}
+
+.container {
+	max-width: 1280px;
+	margin: 0 auto;
+}
+.section {
+	padding: 6rem 1rem;
+}
+
+.loading {
+	.anim-loading {
+		position: relative;
+		pointer-events: none;
+		overflow: hidden;
+		border-color: transparent;
+
+		&::after {
+			content: "";
+			position: absolute;
+			inset: 0;
+			background: linear-gradient(
+				45deg,
+				var(--neutral-color-light-0) 25%,
+				var(--neutral-color-light-400) 50%,
+				var(--neutral-color-light-0) 75%
+			);
+			background-size: 300%;
+			pointer-events: none;
+			border-radius: 4px;
+			z-index: 99;
+			animation: loadingEffect 3s infinite;
+		}
+	}
+}
+
+img {
+	image-rendering: optimizequality;
+	image-rendering: -webkit-optimize-contrast;
+}

@@ -1,0 +1,7 @@
+.checkbox[type="checkbox"],
+.checkbox[type="radio"] {
+	cursor: pointer;
+	width: 16px;
+	aspect-ratio: 1/1;
+	accent-color: var(--brand-color-primary-600);
+}

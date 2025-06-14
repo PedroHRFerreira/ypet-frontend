@@ -1,0 +1,76 @@
+// Elevation
+
+// Top
+
+$elevation-top-level-1: 0px -5px 20px -5px rgba(18, 23, 23, 0.05);
+$elevation-top-level-2: 0px -10px 40px -10px rgba(18, 23, 23, 0.1);
+$elevation-top-level-3: 0px -15px 60px -15px rgba(18, 23, 23, 0.15);
+$elevation-top-level-4: 0px -20px 80px -20px rgba(18, 23, 23, 0.2);
+
+.elevation-top {
+	&--level-1 {
+		box-shadow: $elevation-top-level-1;
+	}
+
+	&--level-2 {
+		box-shadow: $elevation-top-level-2;
+	}
+
+	&--level-3 {
+		box-shadow: $elevation-top-level-3;
+	}
+
+	&--level-4 {
+		box-shadow: $elevation-top-level-4;
+	}
+}
+
+// Center
+
+$elevation-center-level-1: 0px 0px 20px 0px rgba(18, 23, 23, 0.05);
+$elevation-center-level-2: 0px 0px 40px 0px rgba(18, 23, 23, 0.1);
+$elevation-center-level-3: 0px 0px 60px 0px rgba(18, 23, 23, 0.15);
+$elevation-center-level-4: 0px 0px 80px 0px rgba(18, 23, 23, 0.2);
+
+.elevation-center {
+	&--level-1 {
+		box-shadow: $elevation-center-level-1;
+	}
+
+	&--level-2 {
+		box-shadow: $elevation-center-level-2;
+	}
+
+	&--level-3 {
+		box-shadow: $elevation-center-level-3;
+	}
+
+	&--level-4 {
+		box-shadow: $elevation-center-level-4;
+	}
+}
+
+// Bottom
+
+$elevation-bottom-level-1: 0px 5px 20px -5px rgba(18, 23, 23, 0.05);
+$elevation-bottom-level-2: 0px 10px 40px -10px rgba(18, 23, 23, 0.1);
+$elevation-bottom-level-3: 0px 15px 60px -15px rgba(18, 23, 23, 0.15);
+$elevation-bottom-level-4: 0px 20px 80px -20px rgba(18, 23, 23, 0.2);
+
+.elevation-bottom {
+	&--level-1 {
+		box-shadow: $elevation-bottom-level-1;
+	}
+
+	&--level-2 {
+		box-shadow: $elevation-bottom-level-2;
+	}
+
+	&--level-3 {
+		box-shadow: $elevation-bottom-level-3;
+	}
+
+	&--level-4 {
+		box-shadow: $elevation-bottom-level-4;
+	}
+}

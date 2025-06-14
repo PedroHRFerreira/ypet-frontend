@@ -1,0 +1,87 @@
+@mixin size($width, $height) {
+	width: $width;
+	height: $height;
+}
+
+@mixin classSize() {
+	&.extra-large {
+		@include size(72px, 72px);
+
+		svg {
+			@include size(28px, 28px);
+		}
+	}
+
+	&.large {
+		@include size(56px, 56px);
+
+		svg {
+			@include size(24px, 24px);
+		}
+	}
+
+	&.medium {
+		@include size(48px, 48px);
+
+		svg {
+			@include size(20px, 20px);
+		}
+	}
+
+	&.small {
+		@include size(40px, 40px);
+
+		svg {
+			@include size(18px, 18px);
+		}
+	}
+
+	&.extra-small {
+		@include size(32px, 32px);
+
+		svg {
+			@include size(16px, 16px);
+		}
+	}
+}
+
+.wrapper-loading {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-shrink: 0;
+	border-radius: 4px;
+	position: relative;
+
+	svg {
+		margin: 5px 0 0 5px;
+
+		@keyframes rotate {
+			from {
+				transform: rotate(105deg);
+			}
+			to {
+				transform: rotate(465deg);
+			}
+		}
+
+		.rotating {
+			animation-name: rotate;
+			animation-duration: 1200ms;
+			animation-iteration-count: infinite;
+			animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+			transform-origin: 300px 300px;
+		}
+	}
+
+	&.flip {
+		@include classSize();
+	}
+
+	&.success {
+		border-radius: 4px;
+		background: transparent;
+
+		@include classSize();
+	}
+}
