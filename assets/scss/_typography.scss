@@ -9,7 +9,7 @@ $title-font-weights: (
 $title-styles: (
 	h1: (
 		font-size: 64px,
-		line-height: 100px,
+		line-height: 100%,
 	),
 	h2: (
 		font-size: 56px,
@@ -45,7 +45,10 @@ $title-styles: (
 			font-style: normal;
 			color: currentColor;
 
-			&-medium {
+			&-regular {
+				font-weight: map-get($title-font-weights, regular);
+			}
+      &-medium {
 				font-weight: map-get($title-font-weights, medium);
 			}
 			&-semi-bold {
