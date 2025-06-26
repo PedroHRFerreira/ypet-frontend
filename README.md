@@ -1,4 +1,4 @@
-# [Boilerplate] - Vue3
+# [YPet]
 
 ## Sobre o Projeto
 
