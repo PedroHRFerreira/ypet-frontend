@@ -17,10 +17,12 @@ export default defineEventHandler(async (event): Promise <IResponse> => {
       message: "Logout realizado com sucesso",
     } as IResponse;
   } catch (err) {
+    const error = err as IError;
+
     return {
       status: "error",
-      statusCode: err?.statusCode || 500,
-      message: "Erro ao realizar logout",
+      statusCode: error?.statusCode || 500,
+      message: error?.message || "Erro ao realizar logout",
       data: err,
     } as IResponse;
   }

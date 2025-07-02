@@ -19,20 +19,22 @@ export default defineEventHandler(async (event): Promise <IResponse> => {
         data: response
       } as IResponse;
     } catch (err) {
-      if (err?.statusCode === 422) {
+      const error = err as IError;
+
+      if (error?.statusCode === 422) {
         return {
           status: "error",
-          statusCode: err.statusCode,
+          statusCode: error.statusCode,
           message: "Dados inválidos",
-          data: err.data,
+          data: error.data,
         } as IResponse;
       }
 
       return {
         status: "error",
-        statusCode: err?.statusCode || 500,
+        statusCode: error?.statusCode || 500,
         message: "Erro ao realizar login",
-        data: err,
+        data: error,
       } as IResponse;
     }
 });
