@@ -68,6 +68,50 @@ export const useAuthLoginStore = defineStore("authLogin", {
         data: response.data,
       });
     },
+    async logout(): Promise<boolean> {
+      if (!this.isLoggedIn()) {
+        return false;
+      }
+
+      this.setIsLoading(true);
+      const { data } = await useFetch("/api/auth/logout", {
+        method: "POST",
+      });
+
+      const response: IResponse = data.value as IResponse;
+
+      if (response.status === "error") {
+        return false;
+      }
+
+      useAuthToken().removeTokenCookie();
+      this.resetForm();
+      this.setIsLoading(false);
+
+      return true;
+    },
+    async logoutAll(): Promise<boolean> {
+      if (!this.isLoggedIn()) {
+        return false;
+      }
+
+      this.setIsLoading(true);
+      const { data } = await useFetch("/api/auth/logoutAll", {
+        method: "POST",
+      });
+
+      const response: IResponse = data.value as IResponse;
+
+      if (response.status === "error") {
+        return false;
+      }
+
+      useAuthToken().removeTokenCookie();
+      this.resetForm();
+      this.setIsLoading(false);
+
+      return true;
+    },
     isLoggedIn() {
       const token = useAuthToken().getTokenCookie();
 
