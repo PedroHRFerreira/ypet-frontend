@@ -19,5 +19,10 @@ declare global {
     message: string;
     data: any;
   }
+
+  interface IError extends Error {
+    statusCode?: number;
+    data?: any;
+  }
 }
-export { IOption, IResponse, IAccessToken };
+export { IOption, IResponse, IAccessToken, IError };
