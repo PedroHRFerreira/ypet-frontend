@@ -5,11 +5,11 @@ export const useAuthLoginStore = defineStore("authLogin", {
   state: () => {
     const form = ref({
       email: {
-        value: "marcus@ypet.com23",
+        value: "",
         errorMessage: [] as string | string[],
       },
       password: {
-        value: "password",
+        value: "",
         errorMessage: [] as string | string[],
       },
     });
@@ -28,7 +28,6 @@ export const useAuthLoginStore = defineStore("authLogin", {
       }
 
       if (!this.validateForm()) {
-        console.log("Form validation failed.");
         return false;
       }
 
