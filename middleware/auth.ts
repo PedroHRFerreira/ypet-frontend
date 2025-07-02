@@ -3,7 +3,7 @@ import { useAuthLoginStore } from "~/stores/auth/useAuthLoginStore";
 export default defineNuxtRouteMiddleware(() => {
 	const auth = useAuthLoginStore();
 
-	if (auth.isLoggedIn === false) {
+	if (!auth.isLoggedIn()) {
 		return navigateTo("/login", { replace: true });
 	}
 });
