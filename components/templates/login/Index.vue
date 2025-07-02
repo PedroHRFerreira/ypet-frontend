@@ -9,7 +9,7 @@ export default defineComponent({
 		const isResetPassword = route.query?.hash === "reset-password";
 
     const useAuthLogin = useAuthLoginStore();
-    useAuthLogin.setEmail('marcus1@ypet.com');
+    useAuthLogin.setEmail('marcus@ypet.com');
     useAuthLogin.setPassword('password');
 
 		return {

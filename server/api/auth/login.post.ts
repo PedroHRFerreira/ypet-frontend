@@ -25,7 +25,7 @@ export default defineEventHandler(async (event): Promise <IResponse> => {
         return {
           status: "error",
           statusCode: error.statusCode,
-          message: "Dados inválidos",
+          message: error.message || "Dados inválidos",
           data: error.data,
         } as IResponse;
       }
@@ -33,7 +33,7 @@ export default defineEventHandler(async (event): Promise <IResponse> => {
       return {
         status: "error",
         statusCode: error?.statusCode || 500,
-        message: "Erro ao realizar login",
+        message: error.message || "Erro ao realizar login",
         data: error,
       } as IResponse;
     }
