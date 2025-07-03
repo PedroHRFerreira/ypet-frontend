@@ -25,6 +25,13 @@ export default defineComponent({
   <h2 v-if="useAuthLogin.isLoading">loading...</h2>
 <br>
 <div style="padding: 16px">
-  <MoleculesInputCommon label="Endereço de e-mail" message-error="E-mail ou senha inválidos" :success="false" />
+  <MoleculesInputCommon label="Endereço de e-mail" message="E-mail ou senha inválidos" :success="false" />
 </div>
+  <div style="padding: 16px">
+    <MoleculesInputPassword label="Senha" message="E-mail ou senha inválidos" link-cta="Esqueceu a senha?" link-cta-label="Esqueceu a senha?" />
+  </div>
+
+
+  <MoleculesButtonsCommon />
+
 </template>
