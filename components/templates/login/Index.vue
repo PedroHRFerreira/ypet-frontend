@@ -23,15 +23,8 @@ export default defineComponent({
 <template>
 	<h1>LOGIN</h1>
   <h2 v-if="useAuthLogin.isLoading">loading...</h2>
-  <button @click="useAuthLogin.login()">
-    Login
-  </button>
-
-  <button @click="useAuthLogin.logout()">
-    Logout
-  </button>
-
-  <button @click="useAuthLogin.logoutAll()">
-    Logout All
-  </button>
+<br>
+<div style="padding: 16px">
+  <MoleculesInputCommon label="Endereço de e-mail" message-error="E-mail ou senha inválidos" :success="false" />
+</div>
 </template>
