@@ -137,7 +137,7 @@
 	&__message {
 		@include flex(row, flex-end, unset, 10px);
 		align-self: stretch;
-		color: var(--greys-colors-400);
+		color: var(--greys-colors-600);
 		&--error {
 			color: var(--danger-colors-700);
 		}
