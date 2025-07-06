@@ -104,7 +104,7 @@
 		@include flex(row, center, unset);
 		display: flex;
 		padding: 0;
-		color: var(--brand-color-blue-700);
+		color: var(--brand-color-dark-blue-600);
 	}
   &__label--error {
     color: var(--danger-colors-700);
@@ -137,7 +137,7 @@
 	&__message {
 		@include flex(row, flex-end, unset, 10px);
 		align-self: stretch;
-		color: var(--greys-colors-600);
+		color: var(--greys- colors-600);
 		&--error {
 			color: var(--danger-colors-700);
 		}

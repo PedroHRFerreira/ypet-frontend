@@ -33,7 +33,7 @@ export default defineComponent({
       default: "Clique aqui",
     },
   },
-  emits: ["oninput", "onkeyupEnter"],
+  emits: ["oninput", "onkeyupEnter", "clickLinkCta"],
   data() {
     return {
       passwordVisibility: false,
@@ -72,6 +72,10 @@ export default defineComponent({
 
       this.passwordVisibility = !this.passwordVisibility;
     },
+    clickLinkCta(event) {
+      event.preventDefault();
+      this.$emit("clickLinkCta");
+    },
   },
 });
 </script>
@@ -87,9 +91,7 @@ export default defineComponent({
     >
       <span>{{ label }}</span>
       <span v-if="linkCta" class="form-common__label--cta">
-        <a :href="linkCta" target="_blank" rel="noopener noreferrer">
-          {{ linkCtaLabel }}
-        </a>
+        <AtomsLink :text="linkCtaLabel" @onclick="clickLinkCta" />
       </span>
     </div>
     <div
