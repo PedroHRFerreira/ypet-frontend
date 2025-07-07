@@ -20,7 +20,7 @@ const onChange = (event: Event) => {
   <label class="checkbox-container">
     <input type="checkbox" :checked="modelValue" @change="onChange" />
     <span class="checkmark"></span>
-    <span class="label-text">{{ label }}</span>
+    <span class="label-text">{{ props.label }}</span>
   </label>
 </template>
 

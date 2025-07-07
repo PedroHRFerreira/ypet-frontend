@@ -1,5 +1,6 @@
 import { useAuthToken } from "~/composables/useAuthToken";
 import type { Ref } from "vue";
+import { useRouter } from "#app";
 
 export const useAuthLoginStore = defineStore("authLogin", {
   state: () => {
@@ -12,6 +13,10 @@ export const useAuthLoginStore = defineStore("authLogin", {
         value: "",
         errorMessage: [] as string | string[],
       },
+      rememberMe: {
+        value: false,
+        errorMessage: [] as string | string[],
+      }
     });
 
     const isLoading = ref(false);
@@ -34,9 +39,10 @@ export const useAuthLoginStore = defineStore("authLogin", {
       this.setIsLoading(true);
       const email = this.$state.form.email.value;
       const password =  this.$state.form.password.value;
+      const remember = this.$state.form.rememberMe.value;
       const {data} = await useFetch("/api/auth/login", {
         method: "POST",
-        body: { email, password },
+        body: { email, password, remember },
       });
 
       const response: IResponse = data.value as IResponse;
@@ -86,6 +92,7 @@ export const useAuthLoginStore = defineStore("authLogin", {
       useAuthToken().removeTokenCookie();
       this.resetForm();
       this.setIsLoading(false);
+      useRouter().go(0);
 
       return true;
     },
@@ -108,6 +115,7 @@ export const useAuthLoginStore = defineStore("authLogin", {
       useAuthToken().removeTokenCookie();
       this.resetForm();
       this.setIsLoading(false);
+      useRouter().go(0);
 
       return true;
     },
@@ -130,6 +138,13 @@ export const useAuthLoginStore = defineStore("authLogin", {
       this.$state.form.password.value = value;
       this.setErrorPassword([]);
     },
+    setErrorRememberMe(message: string[]) {
+      this.$state.form.rememberMe.errorMessage = message;
+    },
+    setRememberMe(value: boolean) {
+      this.$state.form.rememberMe.value = value;
+      this.setErrorRememberMe([]);
+    },
     setIsLoading(value: boolean) {
       this.$state.isLoading = value;
     },
@@ -138,6 +153,8 @@ export const useAuthLoginStore = defineStore("authLogin", {
       this.setPassword("");
       this.setErrorPassword([]);
       this.setIsLoading(false);
+      this.setRememberMe(false);
+      this.setErrorRememberMe([]);
     },
     validateForm(): boolean {
       return this.checkEmail() && this.checkPassword();
