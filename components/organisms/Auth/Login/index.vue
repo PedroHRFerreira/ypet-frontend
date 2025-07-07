@@ -1,8 +1,37 @@
 <script lang="ts">
 import { defineComponent} from "vue";
+import { useAuthLoginStore } from "~/stores/auth/useAuthLoginStore";
 
 export default defineComponent({
   name: "OrganismsAuthLogin",
+  setup() {
+    const useAuthLogin = useAuthLoginStore();
+
+    return {
+      useAuthLogin,
+    };
+  },
+  computed: {
+    linkCtaForgotPassword() {
+      return {
+        text: "Esqueceu a senha?",
+        to: {
+          name: "forgot-password",
+        },
+    };
+    },
+  },
+  methods: {
+    handleLogin() {
+      this.useAuthLogin.login().then(((res: boolean) => {
+        if (res) {
+          useRouter().push({
+            name: "home",
+          });
+        }
+      }));
+    }
+  }
 });
 </script>
 
@@ -19,18 +48,27 @@ export default defineComponent({
     </div>
       <MoleculesInputCommon
         label="Endereço de e-mail"
+        :value="useAuthLogin.form.email.value"
+        @on-input="useAuthLogin.setEmail"
+        :message-error="useAuthLogin.form.email.errorMessage.toString()"
       />
       <MoleculesInputPassword
         label="Senha"
-        link-cta="Esqueceu a senha?"
-        link-cta-label="Esqueceu a senha?"
+        :link-cta="linkCtaForgotPassword.to.name"
+        :link-cta-label="linkCtaForgotPassword.text"
+        :value="useAuthLogin.form.password.value"
+        @oninput="useAuthLogin.setPassword"
+        @onkeyupEnter="useAuthLogin.setPassword"
+        :message-error="useAuthLogin.form.password.errorMessage.toString()"
       />
     <div class="wrapper-login__checkbox">
       <MoleculesInputCheckbox
         label="Me mantenha conectado"
+        :model-value="useAuthLogin.form.rememberMe.value"
+        @update:modelValue="useAuthLogin.setRememberMe"
       />
     </div>
-    <MoleculesButtonsCommon text="Entrar" />
+    <MoleculesButtonsCommon text="Entrar" @onclick="handleLogin()" />
     <div class="wrapper-login__footer">
       <AtomsTypography
         type="text-p5"
