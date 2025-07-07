@@ -1,7 +1,7 @@
 import { useAuthToken } from "~/composables/useAuthToken";
 import type { Ref } from "vue";
 
-export const useAuthLoginStore = defineStore("authRegister", {
+export const useAuthProfileStore = defineStore("authRegister", {
   state: () => {
     const profile = ref({} as IUser);
     const isLoading = ref(false);

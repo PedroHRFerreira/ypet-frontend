@@ -13,5 +13,5 @@ definePageMeta({
 });
 </script>
 <template>
-	<TemplatesLogin />
+	<TemplatesAuthLogin />
 </template>

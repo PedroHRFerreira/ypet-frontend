@@ -1,6 +1,4 @@
 <script lang="ts">
-import { useAuthLoginStore } from "~/stores/auth/useAuthLoginStore";
-
 export default defineComponent({
 	name: "TemplatesLogin",
 	setup() {
