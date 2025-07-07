@@ -1,7 +1,6 @@
 import { useAuthToken } from "~/composables/useAuthToken";
-import type { Ref } from "vue";
 
-export const useAuthLoginStore = defineStore("authRegister", {
+export const useAuthRegisterStore = defineStore("authRegister", {
   state: () => {
     const form = ref({
       name: {
@@ -30,6 +29,46 @@ export const useAuthLoginStore = defineStore("authRegister", {
     };
   },
   actions: {
+    async register(): Promise<boolean> {
+      if (!this.validateForm()) {
+        return false;
+      }
+
+      this.setIsLoading(true);
+      const name = this.$state.form.name.value;
+      const email = this.$state.form.email.value;
+      const password = this.$state.form.password.value;
+      const passwordConfirmation = this.$state.form.password_confirmation.value;
+
+      const { data } = await useFetch("/api/auth/register", {
+        method: "POST",
+        body: { name, email, password, password_confirmation: passwordConfirmation },
+      });
+
+      const response: IResponse = data.value as IResponse;
+
+      if (response.status === "success") {
+        const token: IAccessToken = response.data as IAccessToken;
+        useAuthToken().setTokenCookie(token);
+        this.resetForm();
+        this.setIsLoading(false);
+
+        return true;
+      }
+
+      if (response.statusCode === 422) {
+        const errors = response.data.errors || {};
+        this.setErrorName(errors.name || []);
+        this.setErrorEmail(errors.email || []);
+        this.setErrorPassword(errors.password || []);
+
+        return false;
+      }
+
+      this.setIsLoading(false);
+
+      return false;
+    },
     setErrorName(message: string[]) {
       this.$state.form.name.errorMessage = message;
     },
@@ -68,7 +107,7 @@ export const useAuthLoginStore = defineStore("authRegister", {
       this.setIsLoading(false);
     },
     validateForm(): boolean {
-      return this.checkEmail() && this.checkPassword() && this.checkName();
+      return this.checkName() && this.checkEmail() && this.checkPassword();
     },
     checkName(): boolean {
       const name = this.$state.form.name.value || "";

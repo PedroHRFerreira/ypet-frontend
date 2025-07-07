@@ -22,7 +22,7 @@ export default defineComponent({
     },
   },
   methods: {
-    handleLogin() {
+    handleLogin(): void {
       this.useAuthLogin.login().then(((res: boolean) => {
         if (res) {
           useRouter().push({
@@ -30,7 +30,12 @@ export default defineComponent({
           });
         }
       }));
-    }
+    },
+    goToCreateAccount(): void {
+      useRouter().push({
+        name: "register",
+      });
+    },
   }
 });
 </script>
@@ -76,7 +81,7 @@ export default defineComponent({
         weight="medium"
         color="var(--brand-color-dark-blue-200)"
       />
-      <AtomsLink text="Criar uma conta"  />
+      <AtomsLink text="Criar uma conta" @onclick="goToCreateAccount()" />
     </div>
   </div>
 </template>
