@@ -16,6 +16,10 @@ export const useAuthProfileStore = defineStore("authRegister", {
       this.$state.profile = profile;
     },
     async fetchProfile(): Promise<void> {
+      if (this.isLoading) {
+        return;
+      }
+
       const {data} = await useFetch("/api/auth/profile", {
         method: "GET",
       });

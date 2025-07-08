@@ -1,9 +1,7 @@
-import { useAuthToken } from "~/composables/useAuthToken";
-
-export const useAuthRegisterStore = defineStore("authRegister", {
+export const useAuthResetPasswordStore = defineStore("authResetPassword", {
   state: () => {
     const form = ref({
-      name: {
+      token: {
         value: "",
         errorMessage: [] as string | string[],
       },
@@ -18,7 +16,7 @@ export const useAuthRegisterStore = defineStore("authRegister", {
       password_confirmation: {
         value: "",
         errorMessage: [] as string | string[],
-      }
+      },
     });
 
     const isLoading = ref(false);
@@ -29,7 +27,7 @@ export const useAuthRegisterStore = defineStore("authRegister", {
     };
   },
   actions: {
-    async register(): Promise<boolean> {
+    async resetPassword(): Promise<boolean> {
       if (this.isLoading) {
         return false;
       }
@@ -39,104 +37,101 @@ export const useAuthRegisterStore = defineStore("authRegister", {
       }
 
       this.setIsLoading(true);
-      const name = this.$state.form.name.value;
       const email = this.$state.form.email.value;
+      const token = this.$state.form.token.value;
       const password = this.$state.form.password.value;
-      const passwordConfirmation = this.$state.form.password_confirmation.value;
+      const password_confirmation = this.$state.form.password_confirmation.value;
 
-      const { data } = await useFetch("/api/auth/register", {
+      const { data } = await useFetch("/api/auth/reset-password", {
         method: "POST",
-        body: { name, email, password, password_confirmation: passwordConfirmation },
+        body: {
+          token,
+          email,
+          password,
+          password_confirmation,
+        },
       });
 
       const response: IResponse = data.value as IResponse;
 
       if (response.status === "success") {
-        const token: IAccessToken = response.data as IAccessToken;
-        useAuthToken().setTokenCookie(token);
         this.resetForm();
         this.setIsLoading(false);
-
         return true;
       }
 
       if (response.statusCode === 422) {
         const errors = response.data.errors || {};
-        this.setErrorName(errors.name || []);
         this.setErrorEmail(errors.email || []);
-        this.setErrorPassword(errors.password || []);
+
 
         return false;
       }
 
       this.setIsLoading(false);
-
       return false;
     },
-    setErrorName(message: string[]) {
-      this.$state.form.name.errorMessage = message;
+
+    validateForm(): boolean {
+      return this.checkEmail() && this.checkPassword();
     },
-    setName(value: string) {
-      this.$state.form.name.value = value;
-      this.setErrorName([]);
+
+    setToken(token: string): void {
+      this.$state.form.token.value = token;
+      this.setErrorToken([]);
     },
-    setErrorEmail(message: string[]) {
-      this.$state.form.email.errorMessage = message;
+
+    setErrorToken(errorMessage: string[]): void {
+      this.$state.form.token.errorMessage = errorMessage;
     },
-    setEmail(value: string) {
-      this.$state.form.email.value = value;
+
+    setEmail(email: string): void {
+      this.form.email.value = email;
       this.setErrorEmail([]);
     },
-    setErrorPassword(message: string[]) {
-      this.$state.form.password.errorMessage = message;
+
+    setErrorEmail(errorMessage: string[]): void {
+      this.form.email.errorMessage = errorMessage;
     },
+
     setPassword(value: string) {
       this.$state.form.password.value = value;
       this.setErrorPassword([]);
     },
+
+    setErrorPassword(message: string[]) {
+      this.$state.form.password.errorMessage = message;
+    },
+
+    setErrorPasswordConfirmation(message: string[]) {
+      this.$state.form.password_confirmation.errorMessage = message;
+    },
+
     setPasswordConfirmation(value: string) {
       this.$state.form.password_confirmation.value = value;
+      this.setErrorPasswordConfirmation([]);
     },
-    setIsLoading(value: boolean) {
-      this.$state.isLoading = value;
-    },
-    resetForm() {
-      this.setName("");
-      this.setErrorName([]);
+
+    resetForm(): void {
+      this.setToken("");
+      this.setErrorToken([]);
       this.setEmail("");
       this.setErrorEmail([]);
       this.setPassword("");
-      this.setPasswordConfirmation("");
       this.setErrorPassword([]);
+      this.setPasswordConfirmation("");
+      this.setErrorPasswordConfirmation([]);
       this.setIsLoading(false);
     },
-    validateForm(): boolean {
-      return this.checkName() && this.checkEmail() && this.checkPassword();
+
+    setIsLoading(loading: boolean): void {
+      this.isLoading = loading;
     },
-    checkName(): boolean {
-      const name = this.$state.form.name.value || "";
-      this.setErrorName([]);
 
-      if (!name.trim()) {
-        this.setErrorName(["Nome obrigatório"]);
-
-        return false;
-      }
-
-      if (name.trim().length < 3) {
-        this.setErrorName(["O nome deve conter pelo menos 3 caracteres"]);
-
-        return false;
-      }
-
-      return true;
-    },
     checkEmail(): boolean {
-      const email = this.$state.form.email.value || "";
-      this.setErrorEmail([]);
-
+      const email = this.form.email.value;
       if (!email) {
-        this.setErrorEmail(["Email obrigatório"]);
+        this.setErrorEmail(["Email é obrigatório"]);
 
         return false;
       }
@@ -150,6 +145,8 @@ export const useAuthRegisterStore = defineStore("authRegister", {
 
         return false;
       }
+
+      this.setErrorEmail([]);
 
       return true;
     },
@@ -176,7 +173,7 @@ export const useAuthRegisterStore = defineStore("authRegister", {
       }
 
       if (password.trim() !== passwordConfirmation.trim()) {
-        this.setErrorPassword(["As senhas não conferem"]);
+        this.setErrorPasswordConfirmation(["As senhas não conferem"]);
 
         return false;
       }

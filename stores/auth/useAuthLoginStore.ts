@@ -28,6 +28,10 @@ export const useAuthLoginStore = defineStore("authLogin", {
   },
   actions: {
     async login(): Promise<boolean> {
+      if (this.isLoading) {
+        return false;
+      }
+
       if (this.isLoggedIn()) {
         return true;
       }
