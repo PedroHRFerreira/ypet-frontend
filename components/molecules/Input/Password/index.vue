@@ -72,8 +72,7 @@ export default defineComponent({
 
       this.passwordVisibility = !this.passwordVisibility;
     },
-    clickLinkCta(event) {
-      event.preventDefault();
+    clickLinkCta() {
       this.$emit("clickLinkCta");
     },
   },

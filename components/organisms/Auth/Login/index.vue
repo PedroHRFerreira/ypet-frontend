@@ -36,6 +36,11 @@ export default defineComponent({
         name: "register",
       });
     },
+    goToForgotPassword(): void {
+      useRouter().push({
+        name: "forgot-password",
+      });
+    },
   }
 });
 </script>
@@ -62,9 +67,10 @@ export default defineComponent({
         :link-cta="linkCtaForgotPassword.to.name"
         :link-cta-label="linkCtaForgotPassword.text"
         :value="useAuthLogin.form.password.value"
+        :message-error="useAuthLogin.form.password.errorMessage.toString()"
         @oninput="useAuthLogin.setPassword"
         @onkeyupEnter="useAuthLogin.setPassword"
-        :message-error="useAuthLogin.form.password.errorMessage.toString()"
+        @clickLinkCta="goToForgotPassword"
       />
     <div class="wrapper-login__checkbox">
       <MoleculesInputCheckbox
