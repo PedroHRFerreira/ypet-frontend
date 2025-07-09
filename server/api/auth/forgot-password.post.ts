@@ -1,6 +1,7 @@
 export default defineEventHandler(async (event): Promise <IResponse> => {
   try {
-    const url = "http://localhost:8000/api/auth/forgot-password";
+    const apiBaseUrl = useRuntimeConfig().public.apiBaseUrl;
+    const url = `${apiBaseUrl}/auth/forgot-password`;
     const body = await readBody(event);
 
     const response = await $fetch(url, {
@@ -8,7 +9,7 @@ export default defineEventHandler(async (event): Promise <IResponse> => {
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
-        "X-Client-Type": "spa", // TODO: Conveter em variável de ambiente
+        "X-Client-Type": "web"
       },
       body,
     });

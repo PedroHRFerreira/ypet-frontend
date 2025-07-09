@@ -1,5 +1,6 @@
 export default defineEventHandler(async (event): Promise <IResponse> => {
-    const url = "http://localhost:8000/api/auth/me";
+    const apiBaseUrl = useRuntimeConfig().public.apiBaseUrl;
+    const url = `${apiBaseUrl}/auth/me`;
     const body = await readBody(event);
 
     const response = await $fetch(url, {
@@ -8,7 +9,7 @@ export default defineEventHandler(async (event): Promise <IResponse> => {
         "Content-Type": "application/json",
         Accept: "application/json",
         Authorization: `${getCookie(event, 'auth._token.laravelSanctum')}`,
-        "X-Client-Type": "spa", // TODO: Conveter em variável de ambiente
+        "X-Client-Type": "web",
       },
       body,
     });
