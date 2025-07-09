@@ -1,8 +1,8 @@
 <script lang="ts">
 export default defineComponent({
-  name: "TemplatesAuthResetPassword",
+	name: "TemplatesAuthResetPassword",
 });
 </script>
 <template>
-  <OrganismsAuthResetPassword />
+	<OrganismsAuthResetPassword />
 </template>

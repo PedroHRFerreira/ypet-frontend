@@ -97,16 +97,16 @@ export default defineComponent({
 </script>
 <template>
 	<div class="input-common anim-loading">
-    <div
-      :class="[
-					'input-common__label',
-					{'input-common__label--disabled': isDisabled},
-          { 'input-common__label--error': isMessageError },
-          { 'input-common__label--success': success },
-				]"
-    >
-      {{ label }}
-    </div>
+		<div
+			:class="[
+				'input-common__label',
+				{ 'input-common__label--disabled': isDisabled },
+				{ 'input-common__label--error': isMessageError },
+				{ 'input-common__label--success': success },
+			]"
+		>
+			{{ label }}
+		</div>
 		<div
 			:class="[
 				'input-common__input',

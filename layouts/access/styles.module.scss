@@ -1,21 +1,21 @@
 @use "/assets/scss/mixins" as *;
-.access{
-  height: 100vh;
-  width: 100vw;
-  background-color: var(--brand-color-blue-500);
-  &__container {
-    @include flex(row, unset, unset, 0);
-  }
-  &__copy{
-    background-color: var(--brand-color-blue-500);
-    width: 50%;
-    padding: 7rem;
-  }
-  &__slot {
-    width: 50%;
-    background-color: var(--white);
-    height: 100vh;
-    border-radius: 29px 0 0 29px;
-    @include flex(column, center, center, 0);
-  }
+.access {
+	height: 100vh;
+	width: 100vw;
+	background-color: var(--brand-color-blue-500);
+	&__container {
+		@include flex(row, unset, unset, 0);
+	}
+	&__copy {
+		background-color: var(--brand-color-blue-500);
+		width: 50%;
+		padding: 7rem;
+	}
+	&__slot {
+		width: 50%;
+		background-color: var(--white);
+		height: 100vh;
+		border-radius: 29px 0 0 29px;
+		@include flex(column, center, center, 0);
+	}
 }

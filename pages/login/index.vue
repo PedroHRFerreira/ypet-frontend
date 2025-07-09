@@ -1,6 +1,5 @@
 <script lang="ts">
 import { definePageMeta } from "#imports";
-import { defineComponent } from "vue";
 import { useAuthLoginStore } from "~/stores/auth/useAuthLoginStore";
 
 useHead({
@@ -16,18 +15,17 @@ definePageMeta({
 });
 
 export default defineComponent({
-  setup() {
-    const email = useRoute().query.email as string | undefined;
-    const useAuthLogin = useAuthLoginStore();
+	setup() {
+		const email = useRoute().query.email as string | undefined;
+		const useAuthLogin = useAuthLoginStore();
 
-    if (email) {
-      useAuthLogin.setEmail(email);
-    }
+		if (email) {
+			useAuthLogin.setEmail(email);
+		}
 
-    return {};
-  },
+		return {};
+	},
 });
-
 </script>
 <template>
 	<TemplatesAuthLogin />
