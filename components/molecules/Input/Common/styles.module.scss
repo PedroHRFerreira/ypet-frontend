@@ -38,11 +38,11 @@
 			.input-common__info {
 				.input-common__info--error {
 					background-color: var(--danger-colors-700);
-          @include flex(row, center, center);
-          width: 18px;
-          height: 18px;
-          padding: 2px;
-          border-radius: 100px;
+					@include flex(row, center, center);
+					width: 18px;
+					height: 18px;
+					padding: 2px;
+					border-radius: 100px;
 				}
 			}
 		}
@@ -106,15 +106,15 @@
 		padding: 0;
 		color: var(--brand-color-dark-blue-600);
 	}
-  &__label--error {
-    color: var(--danger-colors-700);
-  }
-  &__label--success {
-    color: var(--succes-colors-600);
-  }
-  &__label--disabled {
-    color: var(--greys-colors-300);
-  }
+	&__label--error {
+		color: var(--danger-colors-700);
+	}
+	&__label--success {
+		color: var(--succes-colors-600);
+	}
+	&__label--disabled {
+		color: var(--greys-colors-300);
+	}
 	&__content {
 		@include flex(row, center, unset, 10px);
 		height: 36px;

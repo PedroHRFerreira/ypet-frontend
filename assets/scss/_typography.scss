@@ -48,7 +48,7 @@ $title-styles: (
 			&-regular {
 				font-weight: map-get($title-font-weights, regular);
 			}
-      &-medium {
+			&-medium {
 				font-weight: map-get($title-font-weights, medium);
 			}
 			&-semi-bold {
