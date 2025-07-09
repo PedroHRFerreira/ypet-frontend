@@ -97,6 +97,16 @@ export default defineComponent({
 </script>
 <template>
 	<div class="input-common anim-loading">
+    <div
+      :class="[
+					'input-common__label',
+					{'input-common__label--disabled': isDisabled},
+          { 'input-common__label--error': isMessageError },
+          { 'input-common__label--success': success },
+				]"
+    >
+      {{ label }}
+    </div>
 		<div
 			:class="[
 				'input-common__input',
@@ -105,15 +115,6 @@ export default defineComponent({
 				{ 'input-common__input--disabled': isDisabled },
 			]"
 		>
-			<div
-				:class="[
-					'input-common__label',
-					{ 'input-common__label--active': isActive },
-					'input-common__label--light',
-				]"
-			>
-				{{ label }}
-			</div>
 			<div class="input-common__content">
 				<input
 					v-model="inputValue"
@@ -135,10 +136,10 @@ export default defineComponent({
 				<AtomsIcon
 					filled
 					class="input-common__info--error"
-					name="close"
+					name="check"
 					width="24px"
 					height="24px"
-					current-color="var(--neutral-color-light-0)"
+					current-color="var(--greys-colors-100)"
 				/>
 			</div>
 			<div v-if="success" class="input-common__info">
@@ -146,9 +147,9 @@ export default defineComponent({
 					filled
 					class="input-common__info--success"
 					name="check"
-					width="10px"
-					height="10px"
-					current-color="var(--neutral-color-light-0)"
+					width="24px"
+					height="24px"
+					current-color="var(--greys-colors-100)"
 				/>
 			</div>
 		</div>
