@@ -1,32 +1,32 @@
 @use "assets/scss/_typography";
 
 .link {
-  height: 20px;
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  box-sizing: border-box;
-  border-bottom: 1px solid var(--brand-color-blue-700);
-  @extend .text-p5, .text-p5-medium;
+	height: 20px;
+	display: inline-flex;
+	justify-content: center;
+	align-items: center;
+	cursor: pointer;
+	box-sizing: border-box;
+	border-bottom: 1px solid var(--brand-color-blue-700);
+	@extend .text-p5, .text-p5-medium;
 
-  .green {
-    color: var(--succes-colors-600);
-  }
-  .grey {
-    color: var(--greys-colors-600);
-  }
-  .primary {
-    color: var(--brand-color-blue-700);
-  }
+	.green {
+		color: var(--succes-colors-600);
+	}
+	.grey {
+		color: var(--greys-colors-600);
+	}
+	.primary {
+		color: var(--brand-color-blue-700);
+	}
 
-  &:hover {
-    cursor: pointer;
-    color: var(--brand-color-blue-800);
-    box-sizing: border-box;
-    border-color: var(--brand-color-blue-800);
-    transition:
-      color 0.3s ease-in-out,
-      border-bottom 0.3s ease-in-out;
-  }
+	&:hover {
+		cursor: pointer;
+		color: var(--brand-color-blue-800);
+		box-sizing: border-box;
+		border-color: var(--brand-color-blue-800);
+		transition:
+			color 0.3s ease-in-out,
+			border-bottom 0.3s ease-in-out;
+	}
 }

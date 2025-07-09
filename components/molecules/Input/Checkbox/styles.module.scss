@@ -1,50 +1,52 @@
 @use "assets/scss/_typography";
 
 .checkbox-container {
-  display: flex;
-  align-items: center;
-  color: var(--brand-color-dark-blue-200);
-  cursor: pointer;
-  user-select: none;
+	display: flex;
+	align-items: center;
+	color: var(--brand-color-dark-blue-200);
+	cursor: pointer;
+	user-select: none;
 
-  input {
-    display: none;
-  }
+	input {
+		display: none;
+	}
 
-  .checkmark {
-    width: 20px;
-    height: 20px;
-    border: 1px solid var(--brand-color-dark-blue-200);
-    border-radius: 4px;
-    margin-right: 10px;
-    position: relative;
-    transition: background-color 0.2s, border-color 0.2s;
+	.checkmark {
+		width: 20px;
+		height: 20px;
+		border: 1px solid var(--brand-color-dark-blue-200);
+		border-radius: 4px;
+		margin-right: 10px;
+		position: relative;
+		transition:
+			background-color 0.2s,
+			border-color 0.2s;
 
-    &::after {
-      content: '';
-      position: absolute;
-      display: none;
-      left: 6px;
-      top: 2px;
-      width: 5px;
-      height: 10px;
-      border: solid white;
-      border-width: 0 2px 2px 0;
-      transform: rotate(45deg);
-    }
-  }
+		&::after {
+			content: "";
+			position: absolute;
+			display: none;
+			left: 6px;
+			top: 2px;
+			width: 5px;
+			height: 10px;
+			border: solid white;
+			border-width: 0 2px 2px 0;
+			transform: rotate(45deg);
+		}
+	}
 
-  input:checked + .checkmark {
-    background-color: var(--brand-color-blue-500);
-    border-color: var(--brand-color-blue-500);
+	input:checked + .checkmark {
+		background-color: var(--brand-color-blue-500);
+		border-color: var(--brand-color-blue-500);
 
-    &::after {
-      display: block;
-    }
-  }
+		&::after {
+			display: block;
+		}
+	}
 
-  .label-text {
-    @extend .text-p5, .text-p5-regular;
-    color: var(--brand-color-dark-blue-200);
-  }
+	.label-text {
+		@extend .text-p5, .text-p5-regular;
+		color: var(--brand-color-dark-blue-200);
+	}
 }
