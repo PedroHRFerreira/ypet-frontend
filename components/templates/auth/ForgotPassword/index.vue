@@ -1,9 +1,8 @@
 <script lang="ts">
-
 export default defineComponent({
-  name: "TemplatesAuthForgotPassword",
+	name: "TemplatesAuthForgotPassword",
 });
 </script>
 <template>
-  <OrganismsAuthForgotPassword />
+	<OrganismsAuthForgotPassword />
 </template>

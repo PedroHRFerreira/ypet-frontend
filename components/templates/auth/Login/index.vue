@@ -4,5 +4,5 @@ export default defineComponent({
 });
 </script>
 <template>
-  <OrganismsAuthLogin />
+	<OrganismsAuthLogin />
 </template>

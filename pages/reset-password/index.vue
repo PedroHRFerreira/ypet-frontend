@@ -1,24 +1,23 @@
 <script lang="ts">
 import { definePageMeta } from "#imports";
-import { defineComponent } from "vue";
 import { useAuthResetPasswordStore } from "~/stores/auth/useAuthResetPasswordStore";
 
 export default defineComponent({
-  setup() {
-    const token = useRoute().query.token as string | undefined;
-    const email = useRoute().query.email as string | undefined;
-    const useAuthResetPassword = useAuthResetPasswordStore();
+	setup() {
+		const token = useRoute().query.token as string | undefined;
+		const email = useRoute().query.email as string | undefined;
+		const useAuthResetPassword = useAuthResetPasswordStore();
 
-    if (token) {
-      useAuthResetPassword.setToken(token);
-    }
+		if (token) {
+			useAuthResetPassword.setToken(token);
+		}
 
-    if (email) {
-      useAuthResetPassword.setEmail(email);
-    }
+		if (email) {
+			useAuthResetPassword.setEmail(email);
+		}
 
-    return {};
-  },
+		return {};
+	},
 });
 
 useHead({

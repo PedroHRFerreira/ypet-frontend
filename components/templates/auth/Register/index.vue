@@ -1,9 +1,9 @@
 <script lang="ts">
 export default defineComponent({
-  name: "TemplatesAuthRegister",
+	name: "TemplatesAuthRegister",
 });
 </script>
 
 <template>
-<OrganismsAuthRegister />
+	<OrganismsAuthRegister />
 </template>
