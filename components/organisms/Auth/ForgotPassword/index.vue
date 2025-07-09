@@ -16,8 +16,14 @@ export default defineComponent({
       this.useAuthForgotPassword.forgotPassword()
         .then(((res: boolean) => {
           if (res) {
+            const email = this.useAuthForgotPassword.form.email.value;
+            this.useAuthForgotPassword.resetForm();
+
             useRouter().push({
               name: "login",
+              query: {
+                email,
+              },
             });
           }
         }));

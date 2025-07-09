@@ -35,8 +35,8 @@ export const useAuthForgotPasswordStore = defineStore("authForgotPassword", {
       const response: IResponse = data.value as IResponse;
 
       if (response.status === "success") {
-        this.resetForm();
         this.setIsLoading(false);
+
         return true;
       }
 

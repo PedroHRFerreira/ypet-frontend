@@ -1,6 +1,6 @@
 export default defineEventHandler(async (event): Promise <IResponse> => {
     try {
-      const url = "http://localhost:8000/api/login";
+      const url = "http://localhost:8000/api/auth/login";
       const body = await readBody(event);
 
       const response = await $fetch(url, {
@@ -8,6 +8,7 @@ export default defineEventHandler(async (event): Promise <IResponse> => {
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
+          "X-Client-Type": "spa", // TODO: Conveter em variável de ambiente
         },
         body,
       });
