@@ -55,15 +55,14 @@ export const useAuthResetPasswordStore = defineStore("authResetPassword", {
       const response: IResponse = data.value as IResponse;
 
       if (response.status === "success") {
-        this.resetForm();
         this.setIsLoading(false);
+
         return true;
       }
 
       if (response.statusCode === 422) {
         const errors = response.data.errors || {};
         this.setErrorEmail(errors.email || []);
-
 
         return false;
       }

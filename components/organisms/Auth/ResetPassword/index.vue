@@ -6,9 +6,11 @@ export default defineComponent({
   name: "OrganismsAuthResetPassword",
   setup() {
     const useAuthResetPassword = useAuthResetPasswordStore();
+    const useAuthLogin = useAuthResetPasswordStore();
 
     return {
-      useAuthResetPassword
+      useAuthResetPassword,
+      useAuthLogin
     }
   },
   methods: {
@@ -16,8 +18,14 @@ export default defineComponent({
       this.useAuthResetPassword.resetPassword()
         .then(((res: boolean) => {
         if (res) {
+          const email = this.useAuthResetPassword.form.email.value;
+          this.useAuthResetPassword.resetForm();
+
           useRouter().push({
             name: "login",
+            query: {
+              email,
+            },
           });
         }
       }));

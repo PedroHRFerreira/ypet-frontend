@@ -1,6 +1,6 @@
 export default defineEventHandler(async (event): Promise <IResponse> => {
   try {
-    const url = "http://localhost:8000/api/reset-password";
+    const url = "http://localhost:8000/api/auth/forgot-password";
     const body = await readBody(event);
 
     const response = await $fetch(url, {
@@ -8,6 +8,7 @@ export default defineEventHandler(async (event): Promise <IResponse> => {
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
+        "X-Client-Type": "spa", // TODO: Conveter em variável de ambiente
       },
       body,
     });
@@ -15,7 +16,7 @@ export default defineEventHandler(async (event): Promise <IResponse> => {
     return  {
       status: "success",
       statusCode: 200,
-      message: "Senha redefinida com sucesso",
+      message: "E-mail de recuperação enviado com sucesso",
       data: response
     } as IResponse;
   } catch (err) {
@@ -33,7 +34,7 @@ export default defineEventHandler(async (event): Promise <IResponse> => {
     return {
       status: "error",
       statusCode: error?.statusCode || 500,
-      message: error.message || "Erro ao redefinir senha",
+      message: error.message || "Erro ao enviar e-mail de recuperação",
       data: error,
     } as IResponse;
   }
