@@ -1,6 +1,7 @@
 export default defineEventHandler(async (event): Promise <IResponse> => {
   try {
-    const url = "http://localhost:8000/api/auth/logout-all";
+    const apiBaseUrl = useRuntimeConfig().public.apiBaseUrl;
+    const url = `${apiBaseUrl}auth/logout-all`;
 
     const response = await $fetch(url, {
       method: "POST",
@@ -8,7 +9,7 @@ export default defineEventHandler(async (event): Promise <IResponse> => {
         "Content-Type": "application/json",
         Accept: "application/json",
         Authorization: `${getCookie(event, 'auth._token.laravelSanctum')}`,
-        "X-Client-Type": "spa", // TODO: Conveter em variável de ambiente
+        "X-Client-Type": "web",
       },
     });
 
