@@ -1,0 +1,24 @@
+@use "/assets/scss/mixins" as *;
+.sidebar-item {
+	position: relative;
+	padding: 12px 32px;
+	@include flex(row, unset, center, 1rem);
+	cursor: pointer;
+	border-left: 4px solid transparent;
+	transition: all 0.4s ease-in-out;
+	.text {
+		color: var(--brand-color-dark-blue-300);
+	}
+	&:hover,
+	&.active {
+		background-color: var(--background-secundary-bg);
+		border-color: var(--brand-color-blue-700);
+		.text {
+			font-weight: 500;
+			color: var(--brand-color-blue-700);
+		}
+		.icon {
+			color: var(--brand-primary-600);
+		}
+	}
+}
