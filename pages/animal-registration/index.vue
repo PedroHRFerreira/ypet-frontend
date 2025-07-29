@@ -4,5 +4,5 @@ export default defineComponent({
 });
 </script>
 <template>
-	<h1>Página de Registro de Animais</h1>
+	<TemplatesAnimals />
 </template>
