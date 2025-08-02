@@ -1,0 +1,31 @@
+.animal {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+
+    &__about-pet {
+      padding: 24px;
+      background-color: var(--white);
+      border-radius: 4px;
+      width: 100%;
+      min-height: 268px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+
+      &__content {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 16px;
+      }
+    }
+    &__input-data {
+      padding: 24px;
+      background-color: var(--white);
+      border-radius: 4px;
+      width: 100%;
+      min-height: 413px;
+    }
+}
