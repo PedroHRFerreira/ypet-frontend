@@ -34,13 +34,13 @@ export const useAuthForgotPasswordStore = defineStore("authForgotPassword", {
 
 			const response: IResponse = data.value as IResponse;
 
-			if (response.status === "success") {
+			if (response.type === "success") {
 				this.setIsLoading(false);
 
 				return true;
 			}
 
-			if (response.statusCode === 422) {
+			if (response.status === 422) {
 				const errors = response.data.errors || {};
 				this.setErrorEmail(errors.email || []);
 

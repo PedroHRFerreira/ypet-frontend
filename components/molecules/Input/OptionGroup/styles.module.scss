@@ -1,0 +1,21 @@
+.input-option-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  min-width: 242px;
+}
+
+.group-label {
+  color: #2b3a67;
+  font-weight: 500;
+}
+
+.options-container {
+  display: flex;
+  justify-content: space-between;
+  background-color: #fff;
+  border-radius: 4px;
+  padding: 16px 13px;
+  border: 1px solid #ccc;
+}

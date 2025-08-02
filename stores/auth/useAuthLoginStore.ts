@@ -49,7 +49,9 @@ export const useAuthLoginStore = defineStore("authLogin", {
 
 			const response: IResponse = data.value as IResponse;
 
-			if (response.status === "success") {
+      console.log("Login response:", response);
+
+			if (response.type === "success") {
 				const token: IAccessToken = response.data as IAccessToken;
 				useAuthToken().setTokenCookie(token);
 				this.resetForm();
@@ -58,7 +60,7 @@ export const useAuthLoginStore = defineStore("authLogin", {
 				return true;
 			}
 
-			if (response.statusCode === 422) {
+			if (response.status === 422) {
 				this.setErrorEmail(
 					response.data.errors.email || ["Invalid email address."],
 				);
@@ -69,7 +71,7 @@ export const useAuthLoginStore = defineStore("authLogin", {
 			}
 
 			throw createError({
-				statusCode: response.statusCode,
+				statusCode: response.status,
 				statusMessage: response.message,
 				data: response.data,
 			});
@@ -86,7 +88,7 @@ export const useAuthLoginStore = defineStore("authLogin", {
 
 			const response: IResponse = data.value as IResponse;
 
-			if (response.status === "error") {
+			if (response.type === "error") {
 				return false;
 			}
 
@@ -109,7 +111,7 @@ export const useAuthLoginStore = defineStore("authLogin", {
 
 			const response: IResponse = data.value as IResponse;
 
-			if (response.status === "error") {
+			if (response.type === "error") {
 				return false;
 			}
 

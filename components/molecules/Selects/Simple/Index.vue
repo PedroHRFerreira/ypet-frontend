@@ -157,33 +157,24 @@ export default defineComponent({
 			:class="[
 				'selects-simple',
 				state,
-				{ 'selects-simple--error': isMessageError },
 			]"
 		>
-			<div class="selects-simple__box-text" @click="handleStateActivated">
+      <div class="selects-simple__box-label">
+        <AtomsTypography
+          type="text-p5"
+          weight="medium"
+          :text="label"
+          color="var(--brand-color-dark-blue-600)"
+        />
+      </div>
+			<div
+        :class="[
+          'selects-simple__box-text',
+          { 'selects-simple--error': isMessageError }
+        ]"
+        @click="handleStateActivated"
+      >
 				<div class="selects-simple__box-text--content">
-					<div
-						v-show="isFilled"
-						class="selects-simple__box-text--content-label"
-					>
-						<AtomsTypography
-							type="text-p6"
-							weight="regular"
-							:text="label"
-							:color="
-								isStateActivated
-									? 'var(--brand-color-primary-600)'
-									: 'var(--neutral-color-light-500)'
-							"
-						/>
-					</div>
-					<AtomsTypography
-						v-show="!isFilled"
-						type="text-p5"
-						weight="regular"
-						:text="label"
-						color="var(--neutral-color-dark-900)"
-					/>
 					<AtomsDropdownItem
 						v-if="isOptionSelected"
 						:text="option.text"

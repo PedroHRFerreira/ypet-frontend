@@ -1,4 +1,4 @@
-.animal-reg {
+.animal-create {
   display: flex;
   width: 100%;
   padding: 48px;
@@ -52,14 +52,6 @@
       justify-content: center;
       align-items: center;
       gap: 16px;
-
-      &-empty {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        gap: 16px;
-      }
     }
   }
 }

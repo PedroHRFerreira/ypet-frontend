@@ -9,7 +9,6 @@ export const useAuthToken = () => {
 		const cookie: CookieRef<any> = useCookie("auth._token.laravelSanctum", {
 			path: "/",
 			default: (): Token | false => false,
-			expire: token.expires_in,
 			maxAge: token.expires_in,
 			watch: "shallow",
 		});
@@ -17,7 +16,6 @@ export const useAuthToken = () => {
 		const cookieUser: CookieRef<any> = useCookie("auth.user", {
 			path: "/",
 			default: (): Token | false => false,
-			expire: token.expires_in,
 			maxAge: token.expires_in,
 			watch: "shallow",
 		});
@@ -45,7 +43,6 @@ export const useAuthToken = () => {
 		const cookie: CookieRef<any> = useCookie("auth._token.laravelSanctum", {
 			path: "/",
 			default: (): Token | false => false,
-			expire: 0,
 			maxAge: 0,
 			watch: "shallow",
 		});
@@ -53,7 +50,6 @@ export const useAuthToken = () => {
 		const cookieUser: CookieRef<any> = useCookie("auth.user", {
 			path: "/",
 			default: (): Token | false => false,
-			expire: 0,
 			maxAge: 0,
 			watch: "shallow",
 		});

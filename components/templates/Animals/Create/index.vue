@@ -1,33 +1,29 @@
 <script lang="ts">
 import { defineComponent } from "vue";
+import { useAnimalsList } from "~/stores/animals/useAnimalsList";
 
 export default defineComponent({
-  name: "TemplatesAnimals",
-  setup() {
-    // Setup logic can go here if needed
-  },
-  computed: {
-    emptyState() {
-      return {
-        isEmpty: false,
-        isIcon: false,
-        title: "Nenhum animal cadastrado",
-        description:
-          "Você ainda não possui nenhum animal cadastrado.Clique no botão 'Novo cadastro' para adicionar um.",
-      };
-    },
+  name: "TemplatesAnimalsCreate",
+  async setup() {
+    const animalsList = useAnimalsList();
+
+    await animalsList.fetchAnimals();
+
+    return {
+      animalsList,
+    };
   },
   methods: {
-    handleNewRegistration() {
-      console.log("New registration clicked");
-      // Logic for handling new registration can be added here
-    },
+    back() {
+      const router = useRouter();
+      router.push({ name: "animals" });
+    }
   }
 });
 </script>
 
 <template>
-  <div class="animal-reg">
+  <div class="animal-create">
     <div class="content">
       <header class="header">
         <div class="header-content">
@@ -49,22 +45,13 @@ export default defineComponent({
         <div class="header-actions">
           <MoleculesButtonsCommon
             type="primary"
-            text="Novo cadastro"
-            @onclick="handleNewRegistration"
+            text="Voltar"
+            @onclick="back"
           />
         </div>
       </header>
       <main class="main">
-        <div v-if="emptyState.isEmpty" class="main-empty">
-          <MoleculesEmptyState
-            :is-icon="emptyState.isIcon"
-            :title="emptyState.title"
-            :description="emptyState.description"
-          />
-        </div>
-        <div v-else class="main-content">
-          <OrganismsAnimals />
-        </div>
+        <OrganismsAnimalsCreate />
       </main>
     </div>
   </div>
