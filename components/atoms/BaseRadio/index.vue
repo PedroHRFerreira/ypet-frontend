@@ -50,5 +50,5 @@ export default defineComponent({
 </template>
 
 <style scoped lang="scss">
-@use './styles.module';
+@use "styles.module";
 </style>

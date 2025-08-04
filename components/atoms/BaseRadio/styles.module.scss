@@ -1,3 +1,5 @@
+@use "assets/scss/_typography";
+
 .radio-wrapper {
   display: flex;
   align-items: center;
@@ -30,6 +32,7 @@
 }
 
 .radio-label {
-  color: #2b3a67;
-  font-weight: 500;
+  @extend .text-p5, .text-p5-regular;
+  color: var(--brand-color-dark-blue-400);
+  line-height: 20px; /* 142.857% */
 }
