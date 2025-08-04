@@ -24,6 +24,10 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
+    maxWidth: {
+      type: String,
+      default: "100%",
+    }
 	},
 	emits: ["item-selected"],
 	setup(props, { emit }) {
@@ -180,6 +184,14 @@ export default defineComponent({
 						:text="option.text"
 						:state="option.state"
 					/>
+          <div v-else class="placeholder">
+            <AtomsTypography
+              type="text-p5"
+              weight="regular"
+              text="Selecione"
+              color="var(--brand-color-dark-blue-200)"
+            />
+          </div>
 				</div>
 				<div class="selects-simple__box-text--icon">
 					<AtomsIcon
@@ -221,5 +233,8 @@ export default defineComponent({
 	</div>
 </template>
 <style scoped lang="scss">
-@use "styles.module.scss";
+@use "styles.module";
+.wrapper-selects-simple {
+  max-width: v-bind(maxWidth);
+}
 </style>
