@@ -46,7 +46,7 @@ export default defineComponent({
 <template>
   <div class="animal">
     <section class="animal__about-pet">
-      <div class="animal__about-pet-header">
+      <div class="animal__about-pet__header">
         <AtomsTypography
           type="text-p2"
           text="Sobre o pet"
@@ -57,15 +57,17 @@ export default defineComponent({
       <div class="animal__about-pet__content">
         <MoleculesInputCommon
           label="Nome do animal"
+          max-width="482px"
           :value="form.name.value as string"
           :message-error="form.name.errorMessages.join(', ')"
           @on-input=""
         />
-        <MoleculesSelectsSimple label="Tipo de Pet" :options="optionsType" />
-        <MoleculesSelectsSimple label="Sexo" :options="optionsSex" />
+        <MoleculesSelectsSimple max-width="215px" label="Tipo de Pet" :options="optionsType" />
+        <MoleculesSelectsSimple max-width="243px" label="Sexo" :options="optionsSex" />
         <MoleculesInputCommon
           label="Peso"
           type-input="number"
+          max-width="216px"
           :maxlength="2"
           :value="form.weight.value as string"
           :message-error="form.weight.errorMessages.join(', ')"
@@ -80,7 +82,72 @@ export default defineComponent({
       </div>
     </section>
     <section class="animal__input-data">
-      test
+      <div class="animal__input-data-header">
+        <AtomsTypography
+          type="text-p2"
+          text="Dados de entrada"
+          weight="medium"
+          color="var(--brand-color-dark-blue-900)"
+        />
+      </div>
+      <div class="animal__input-data__content">
+        <div class="animal__input-data__content--group">
+          <MoleculesDateInputGroup
+            label="Data de nascimento"
+            v-model="birthDate"
+            :message-error="form.birthDate.errorMessages.join(', ')"
+          />
+          <MoleculesSelectsSimple
+            max-width="215px"
+            label="Status"
+            :options="optionsSex"
+          />
+          <MoleculesInputCommon
+            label="Local da castração"
+            type-input="number"
+            :maxlength="2"
+            :value="form.weight.value as string"
+            :message-error="form.weight.errorMessages.join(', ')"
+            @on-input=""
+          />
+        </div>
+
+        <div class="animal__input-data__content--group">
+          <MoleculesSelectsSimple
+            max-width="450px"
+            label="Motivo"
+            :options="optionsSex"
+          />
+          <MoleculesInputCommon
+            label="Local do recolhimento"
+            type-input="number"
+            :maxlength="2"
+            :value="form.weight.value as string"
+            :message-error="form.weight.errorMessages.join(', ')"
+            @on-input=""
+          />
+        </div>
+        <div class="animal__input-data__content--group">
+          <MoleculesInputCommon
+            label="Número da inscrição"
+            type-input="number"
+            max-width="216px"
+            :maxlength="2"
+            :value="form.weight.value as string"
+            :message-error="form.weight.errorMessages.join(', ')"
+            @on-input=""
+          />
+          <MoleculesInputCommon
+            label="Número do microchip"
+            type-input="number"
+            max-width="216px"
+            :maxlength="2"
+            :value="form.weight.value as string"
+            :message-error="form.weight.errorMessages.join(', ')"
+            @on-input=""
+          />
+        </div>
+      </div>
     </section>
   </div>
 </template>

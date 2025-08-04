@@ -1,14 +1,17 @@
+@use "assets/scss/form-reset-helpers";
+@use "assets/scss/_typography";
+
 .input-option-group {
   display: flex;
   flex-direction: column;
   gap: 8px;
   width: 100%;
-  min-width: 242px;
+  max-width: 210px;
 }
 
 .group-label {
-  color: #2b3a67;
-  font-weight: 500;
+  color: var(--brand-color-dark-blue-600);
+  @extend .text-p5, .text-p5-medium;
 }
 
 .options-container {
@@ -16,6 +19,6 @@
   justify-content: space-between;
   background-color: #fff;
   border-radius: 4px;
-  padding: 16px 13px;
+  padding: 15px 15px;
   border: 1px solid #ccc;
 }
