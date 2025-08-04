@@ -48,7 +48,7 @@ export default defineComponent({
     <label class="label">{{ label }}</label>
     <div class="fields">
       <select
-        class="field"
+        class="field select-day"
         :value="modelValue.day"
         @change="handleChange('day', $event.target.value)"
       >
@@ -57,7 +57,7 @@ export default defineComponent({
       </select>
 
       <select
-        class="field"
+        class="field select-month"
         :value="modelValue.month"
         @change="handleChange('month', $event.target.value)"
       >
@@ -66,7 +66,7 @@ export default defineComponent({
       </select>
 
       <select
-        class="field"
+        class="field select-year"
         :value="modelValue.year"
         @change="handleChange('year', $event.target.value)"
       >

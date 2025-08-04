@@ -1,4 +1,5 @@
 @use "assets/scss/_elevation.scss";
+@use "assets/scss/_typography.scss";
 
 .wrapper-selects-simple {
 	display: flex;
@@ -8,6 +9,11 @@
 	gap: 16px;
 	position: relative;
 	box-sizing: border-box;
+
+  .placeholder {
+    padding: 16px;
+    color: var(--brand-color-dark-blue-200);
+  }
 
 	.selects-simple {
 		display: flex;
