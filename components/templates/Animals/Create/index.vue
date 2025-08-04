@@ -25,7 +25,7 @@ export default defineComponent({
 <template>
   <div class="animal-create">
     <div class="content">
-      <header class="header">
+      <div class="header">
         <div class="header-content">
           <AtomsTypography
             type="title-h7"
@@ -49,10 +49,10 @@ export default defineComponent({
             @onclick="back"
           />
         </div>
-      </header>
-      <main class="main">
+      </div>
+      <div class="main">
         <OrganismsAnimalsCreate />
-      </main>
+      </div>
     </div>
   </div>
 </template>

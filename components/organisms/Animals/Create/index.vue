@@ -148,6 +148,14 @@ export default defineComponent({
           />
         </div>
       </div>
+      <div class="animal__input-data__footer">
+        <MoleculesButtonsCommon
+          type="primary"
+          text="Cadastrar"
+          width="128px"
+          @onclick="useAnimalsCreateStore.createAnimal()"
+        />
+      </div>
     </section>
   </div>
 </template>
