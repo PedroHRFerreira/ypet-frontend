@@ -1,0 +1,37 @@
+@use "/assets/scss/mixins" as *;
+.header {
+	background-color: var(--white);
+  @include flex(row, space-between, center, 1.5rem);
+  padding: 0 2rem;
+  height: 80px;
+	&__container {
+    width: 100%;
+		@include flex(row, space-between, center, 1.5rem);
+		.input-search {
+			max-width: 623px;
+		}
+		&--actions {
+			@include flex(row, center, center, 1.5rem);
+		}
+		&--item {
+			cursor: pointer;
+			position: relative;
+		}
+		&--notifications {
+			position: absolute;
+			width: 8px;
+			height: 8px;
+			background: var(--danger-colors-500);
+			border-radius: 50%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			right: 0;
+		}
+		&--profile {
+			display: flex;
+			align-items: center;
+			@include flex(row, unset, center, 1.5rem);
+		}
+	}
+}
