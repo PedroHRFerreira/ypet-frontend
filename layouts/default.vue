@@ -10,9 +10,7 @@ export default defineComponent({
 			<OrganismsSidebarNav />
 		</aside>
 		<div class="content">
-			<div class="header">
-				<h1>Header aqui</h1>
-			</div>
+			<OrganismsHeader />
 			<slot />
 		</div>
 	</main>
@@ -30,12 +28,6 @@ export default defineComponent({
 	display: flex;
 	flex-direction: column;
 	background-color: var(--greys-colors-100);
-}
-.header {
-	width: 100%;
-	padding: min(30px, 4vw);
-	padding-bottom: 0;
-	background: blue;
 }
 
 @media (max-width: 991.98px) {
