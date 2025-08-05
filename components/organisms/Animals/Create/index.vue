@@ -1,18 +1,15 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { useAnimalsCreate } from "~/stores/animals/useAnimalsCreate";
+import { useAnimalSpeciesEnum } from "~/stores/Enums/useAnimalSpeciesEnum";
 
 export default defineComponent({
   name: "OrganismsAnimalsCreate",
-  setup() {
+  async setup() {
     const useAnimalsCreateStore = useAnimalsCreate();
+    const useAnimalSpeciesEnumStore = useAnimalSpeciesEnum();
     const { form } = useAnimalsCreateStore;
-    const optionsType: IOption[] = [
-      { id: "dog", text: "Cachorro" },
-      { id: "cat", text: "Gato" },
-      { id: "bird", text: "Pássaro" },
-      { id: "fish", text: "Peixe" },
-    ];
+    const optionsSpecies: IOption[] = await useAnimalSpeciesEnumStore.getOptions()
 
     const optionsSex: IOption[] = [
       { id: 'female', text: 'Fêmea' },
@@ -33,7 +30,7 @@ export default defineComponent({
 
     return {
       optionsSex,
-      optionsType,
+      optionsSpecies,
       optionsBoolean,
       birthDate,
       form,
@@ -62,7 +59,7 @@ export default defineComponent({
           :message-error="form.name.errorMessages.join(', ')"
           @on-input=""
         />
-        <MoleculesSelectsSimple max-width="215px" label="Tipo de Pet" :options="optionsType" />
+        <MoleculesSelectsSimple max-width="215px" label="Tipo de Pet" :options="optionsSpecies" />
         <MoleculesSelectsSimple max-width="243px" label="Sexo" :options="optionsSex" />
         <MoleculesInputCommon
           label="Peso"
@@ -73,7 +70,7 @@ export default defineComponent({
           :message-error="form.weight.errorMessages.join(', ')"
           @on-input=""
         />
-        <MoleculesInputOptionGroup modelValue="1" name="Castrado" label="Castrado" :options="optionsBoolean" />
+<!--        <MoleculesInputOptionGroup modelValue="1" name="Castrado" label="Castrado" :options="optionsBoolean" />-->
         <MoleculesDateInputGroup
           label="Data de nascimento"
           v-model="birthDate"
