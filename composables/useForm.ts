@@ -1,16 +1,18 @@
-export const useForm = (params: string[] = []): Record<string, FormFieldType> => {
-  if (params.length == 0) {
-    return {} as Record<string, FormFieldType>;
-  }
+import { reactive } from 'vue';
 
-  const form: Record<string, FormFieldType> = {};
+export const useForm = (params: string[] = [])  => {
+  const form = reactive<Record<string, FormFieldType>>({});
+
+  if (params.length == 0) {
+    return form;
+  }
 
   params.forEach((param) => {
     form[param] = {
       value: null,
-      errorMessages: []
+      errorMessages: [],
     };
   });
 
-  return form;
+  return form
 }

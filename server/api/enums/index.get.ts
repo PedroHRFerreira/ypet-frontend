@@ -2,7 +2,6 @@ export default defineEventHandler(async (event): Promise<IResponse> => {
   const apiBaseUrl = useRuntimeConfig().public.apiBaseUrl;
   const params = getQuery(event);
   const group = params.group || "";
-  console.log('group', group);
   if (!group) {
     throw createError({
       statusCode: 400,

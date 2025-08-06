@@ -1,17 +1,17 @@
-export const useAnimalSpeciesEnum = defineStore("animal-species-enum", {
+export const useAnimalStatusEnumStore = defineStore("animal-status-enum", {
   state: () => {
-    const animalSpeciesEnum = ref([] as IEnum[]);
+    const animalStatusEnum = ref([] as IEnum[]);
     const isLoading = ref(false);
     const errorMessage = ref("");
 
     return {
-      animalSpeciesEnum,
+      animalStatusEnum,
       isLoading,
       errorMessage,
     };
   },
   actions: {
-    async fetchAnimalSpeciesEnum(): Promise<void> {
+    async fetchAnimalStatusEnum(): Promise<void> {
       if (this.isLoading) {
         return;
       }
@@ -19,12 +19,14 @@ export const useAnimalSpeciesEnum = defineStore("animal-species-enum", {
       this.isLoading = true;
       this.errorMessage = "";
       await useFetch("/api/enums", {
-        params: { group: "animal-species" },
         method: "GET",
+        params: {
+          group: "animal_status"
+        },
         onResponse: ({ request, response, options }) => {
           const result: IResponse = response._data as IResponse;
 
-          this.animalSpeciesEnum = result.data || [];
+          this.animalStatusEnum = result.data || [];
           this.isLoading = false;
         },
         onResponseError: ({ response }) => {
@@ -34,16 +36,20 @@ export const useAnimalSpeciesEnum = defineStore("animal-species-enum", {
       });
     },
     async getOptions(): Promise<IOption[]> {
-      if (this.animalSpeciesEnum.length === 0) {
-        await this.fetchAnimalSpeciesEnum();
+      if (this.animalStatusEnum.length === 0) {
+        await this.fetchAnimalStatusEnum();
       }
 
-      const options = this.animalSpeciesEnum.map((item) => ({
-        id: item.value,
-        text: item.label,
-      }));
+      if (this.animalStatusEnum && this.animalStatusEnum.length > 0) {
+        const options = this.animalStatusEnum.map((item) => ({
+          id: item.value,
+          text: item.label,
+        }));
 
-      return options || [] as IOption[];
-    },
+        return options || [] as IOption[];
+      }
+
+      return [] as IOption[];
+    }
   },
 });

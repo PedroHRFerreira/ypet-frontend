@@ -1,4 +1,4 @@
-export const useRolesEnum = defineStore("roles-enum", {
+export const useRolesEnumStore = defineStore("roles-enum", {
   state: () => {
     const rolesEnum = ref([] as IEnum[]);
     const isLoading = ref(false);
@@ -18,8 +18,11 @@ export const useRolesEnum = defineStore("roles-enum", {
 
       this.isLoading = true;
       this.errorMessage = "";
-      await useFetch("/api/enums/roles", {
+      await useFetch("/api/enums", {
         method: "GET",
+        params: {
+          group: "roles"
+        },
         onResponse: ({ response }) => {
           const result: IResponse = response._data as IResponse;
           this.rolesEnum = result.data || [];

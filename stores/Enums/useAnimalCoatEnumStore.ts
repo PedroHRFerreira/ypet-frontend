@@ -1,4 +1,4 @@
-export const useAnimalCoatEnum = defineStore("animal-coat-enum", {
+export const useAnimalCoatEnumStore = defineStore("animal-coat-enum", {
   state: () => {
     const animalCoatEnum = ref([] as IEnum[]);
     const isLoading = ref(false);
@@ -18,8 +18,11 @@ export const useAnimalCoatEnum = defineStore("animal-coat-enum", {
 
       this.isLoading = true;
       this.errorMessage = "";
-      await useFetch("/api/enums/animal-coat", {
+      await useFetch("/api/enums", {
         method: "GET",
+        params: {
+          group: "animal_coat"
+        },
         onResponse: ({ request, response, options }) => {
           const result: IResponse = response._data as IResponse;
 
@@ -35,6 +38,10 @@ export const useAnimalCoatEnum = defineStore("animal-coat-enum", {
     async getOptions(): Promise<IOption[]> {
       if (this.animalCoatEnum.length === 0) {
         await this.fetchAnimalCoatEnum();
+      }
+
+      if (this.animalCoatEnum && this.animalCoatEnum.length === 0) {
+        return [] as IOption[];
       }
 
       const options = this.animalCoatEnum.map((item) => ({

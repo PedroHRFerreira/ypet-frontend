@@ -9,12 +9,8 @@ export default defineComponent({
       required: true,
     },
     value: {
-      type: [String, Number, Boolean],
+      type: [String, Array<String>, Number, Boolean, null, undefined],
       required: true,
-    },
-    modelValue: {
-      type: [String, Number, Boolean],
-      default: '',
     },
     name: {
       type: String,
@@ -24,7 +20,7 @@ export default defineComponent({
   emits: ['update:modelValue'],
   setup(props, { emit }) {
     const internalValue = computed({
-      get: () => props.modelValue,
+      get: () => props.value,
       set: (val) => emit('update:modelValue', val),
     })
 

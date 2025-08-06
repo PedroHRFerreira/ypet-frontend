@@ -17,15 +17,15 @@ export default defineComponent({
       required: true,
     },
     modelValue: {
-      type: [String, Number, Boolean],
+      type: [String, Array<String>, Number, Boolean, null],
       default: "",
     },
   },
-  emits: ["update:modelValue"],
+  emits: ["changeOption"],
   setup(props, { emit }) {
     const internalValue = computed({
       get: () => props.modelValue,
-      set: (val) => emit('update:modelValue', val),
+      set: (val) => emit("changeOption", val)
     })
 
     return {
@@ -42,8 +42,8 @@ export default defineComponent({
       <AtomsBaseRadio
         v-for="option in options"
         :key="option.value"
+        :value="option.id"
         :label="option.text"
-        :value="option.value"
         :name="name"
         v-model="internalValue"
       />

@@ -1,12 +1,26 @@
 import { useForm } from "~/composables/useForm";
 
-export const useAnimalsCreate = defineStore("animals-create", {
+export const useAnimalsCreateStore = defineStore("animals-create", {
   state: () => {
     const animal = ref({} as IAnimal);
     const isLoading = ref(false);
     const errorMessage = ref("");
     const successMessage = ref("");
-    const form = useForm(['name', 'species', 'weight', 'birthDate']);
+    const form = useForm([
+      'name',
+      'species',
+      'gender',
+      'weight',
+      'castrated',
+      'birth_date',
+      'entry_date',
+      'status',
+      'castration_site',
+      'collection_reason',
+      'collection_site',
+      'registration_number',
+      'microchip_number',
+    ]);
 
     return {
       animal,
@@ -17,7 +31,16 @@ export const useAnimalsCreate = defineStore("animals-create", {
     };
   },
   actions: {
+    setFormField(field: string, value: any): void {
+      this.form[field].value = value;
+      this.setFormError(field, []);
+    },
+    setFormError(field: string, errorMessages: string[]): void {
+      this.form[field].errorMessages = errorMessages;
+    },
     async createAnimal(): Promise<void> {
+      console.log("Creating animal with data:", this.form);
+      return ;
       if (this.isLoading) {
         return;
       }
