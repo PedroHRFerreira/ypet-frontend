@@ -1,4 +1,4 @@
-export const useUserStatusEnum = defineStore("user-status-enum", {
+export const useUserStatusEnumStore = defineStore("user-status-enum", {
   state: () => {
     const userStatusEnum = ref([] as IEnum[]);
     const isLoading = ref(false);
@@ -18,8 +18,11 @@ export const useUserStatusEnum = defineStore("user-status-enum", {
 
       this.isLoading = true;
       this.errorMessage = "";
-      await useFetch("/api/enums/user-status", {
+      await useFetch("/api/enums", {
         method: "GET",
+        params: {
+          group: "user_status"
+        },
         onResponse: ({ response }) => {
           const result: IResponse = response._data as IResponse;
           this.userStatusEnum = result.data || [];

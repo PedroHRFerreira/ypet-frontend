@@ -1,4 +1,4 @@
-export const useGenderEnum = defineStore("gender-enum", {
+export const useGenderEnumStore = defineStore("gender-enum", {
   state: () => {
     const genderEnum = ref([] as IEnum[]);
     const isLoading = ref(false);
@@ -18,8 +18,9 @@ export const useGenderEnum = defineStore("gender-enum", {
 
       this.isLoading = true;
       this.errorMessage = "";
-      await useFetch("/api/enums/gender", {
+      await useFetch("/api/enums", {
         method: "GET",
+        params: { group: "gender" },
         onResponse: ({ response }) => {
           const result: IResponse = response._data as IResponse;
           this.genderEnum = result.data || [];
@@ -34,14 +35,20 @@ export const useGenderEnum = defineStore("gender-enum", {
     async getOptions(): Promise<IOption[]> {
       if (this.genderEnum.length === 0) {
         await this.fetchGenderEnum();
+
+        return [] as IOption[];
       }
 
-      const options = this.genderEnum.map((item) => ({
-        id: item.value,
-        text: item.label,
-      }));
+      if (this.genderEnum && this.genderEnum.length > 0) {
+        const options = this.genderEnum?.map((item) => ({
+          id: item.value,
+          text: item.label,
+        }));
 
-      return options || [] as IOption[];
+        return options || [] as IOption[];
+      }
+
+      return [] as IOption[];
     },
   },
 });

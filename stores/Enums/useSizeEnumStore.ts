@@ -1,4 +1,4 @@
-export const useSizeEnum = defineStore("size-enum", {
+export const useSizeEnumStore = defineStore("size-enum", {
   state: () => {
     const sizeEnum = ref([] as IEnum[]);
     const isLoading = ref(false);
@@ -18,8 +18,11 @@ export const useSizeEnum = defineStore("size-enum", {
 
       this.isLoading = true;
       this.errorMessage = "";
-      await useFetch("/api/enums/size", {
+      await useFetch("/api/enums/", {
         method: "GET",
+        params: {
+          group: "size"
+        },
         onResponse: ({ response }) => {
           const result: IResponse = response._data as IResponse;
           this.sizeEnum = result.data || [];

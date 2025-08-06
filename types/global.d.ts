@@ -32,6 +32,7 @@ declare global {
     label: string;
     color?: string;
     description?: string;
+
   }
 
   type FormFieldType = {
