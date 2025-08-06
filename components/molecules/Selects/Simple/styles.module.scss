@@ -10,10 +10,10 @@
 	position: relative;
 	box-sizing: border-box;
 
-  .placeholder {
-    padding: 16px;
-    color: var(--brand-color-dark-blue-200);
-  }
+	.placeholder {
+		padding: 16px;
+		color: var(--brand-color-dark-blue-200);
+	}
 
 	.selects-simple {
 		display: flex;
@@ -21,7 +21,7 @@
 		align-items: flex-start;
 		align-self: stretch;
 		min-width: 80px;
-    gap: 8px;
+		gap: 8px;
 
 		&__box-text {
 			display: flex;
@@ -31,12 +31,12 @@
 			align-self: stretch;
 			cursor: pointer;
 			height: 56px;
-      box-sizing: border-box;
-      border: 1px solid var(--brand-color-dark-blue-200);
-      border-radius: 4px;
-      &--error {
-        border-color: var(--danger-colors-700);
-      }
+			box-sizing: border-box;
+			border: 1px solid var(--brand-color-dark-blue-200);
+			border-radius: 4px;
+			&--error {
+				border-color: var(--danger-colors-700);
+			}
 			&--content {
 				display: flex;
 				flex-direction: column;

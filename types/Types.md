@@ -8,6 +8,7 @@ Este diretório contém definições de tipos TypeScript utilizadas em todo o pr
 - Tipos auxiliares para componentes, serviços e modelos de dados.
 
 ## Convenções
+
 - **Nomenclatura**: Use nomes descritivos e claros para interfaces e tipos. Por exemplo, `IUser`, `IProduct`, `IApiResponse`.
 - **Organização**: Agrupe tipos relacionados em arquivos separados. Por exemplo, `user.d.ts` para tipos relacionados a usuários, `product.d.ts` para produtos.
 - **Consistência**: Mantenha a consistência no uso de tipos primitivos e complexos. Por exemplo, use `string` para textos, `number` para números, e crie tipos específicos para objetos complexos.

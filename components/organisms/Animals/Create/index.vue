@@ -6,203 +6,216 @@ import { useGenderEnumStore } from "~/stores/Enums/useGenderEnumStore";
 import { useAnimalStatusEnumStore } from "~/stores/Enums/useAnimalStatusEnumStore";
 
 export default defineComponent({
-  name: "OrganismsAnimalsCreate",
-  async setup() {
-    const useAnimalsCreate = useAnimalsCreateStore();
-    const useAnimalSpeciesEnum = useAnimalSpeciesEnumStore();
-    const useGenderEnum = useGenderEnumStore();
-    const useAnimalStatusEnum = useAnimalStatusEnumStore();
-    const { form } = useAnimalsCreate;
+	name: "OrganismsAnimalsCreate",
+	async setup() {
+		const useAnimalsCreate = useAnimalsCreateStore();
+		const useAnimalSpeciesEnum = useAnimalSpeciesEnumStore();
+		const useGenderEnum = useGenderEnumStore();
+		const useAnimalStatusEnum = useAnimalStatusEnumStore();
+		const { form } = useAnimalsCreate;
 
-    const [optionsSpecies, optionsGender, optionsAnimalStatus] = await Promise.all([
-      useAnimalSpeciesEnum.getOptions(),
-      useGenderEnum.getOptions(),
-      useAnimalStatusEnum.getOptions()
-    ]);
+		const [optionsSpecies, optionsGender, optionsAnimalStatus] =
+			await Promise.all([
+				useAnimalSpeciesEnum.getOptions(),
+				useGenderEnum.getOptions(),
+				useAnimalStatusEnum.getOptions(),
+			]);
 
-    const optionsBoolean: IOption[] = [
-      { id: 1, text: 'Sim' },
-      { id: 0, text: 'Não' },
-    ];
+		const optionsBoolean: IOption[] = [
+			{ id: 1, text: "Sim" },
+			{ id: 0, text: "Não" },
+		];
 
-    const birthDate = ref({
-      day: '',
-      month: '',
-      year: '',
-    });
+		const birthDate = ref({
+			day: "",
+			month: "",
+			year: "",
+		});
 
-    const entryDate = ref({
-      day: '',
-      month: '',
-      year: '',
-    });
+		const entryDate = ref({
+			day: "",
+			month: "",
+			year: "",
+		});
 
-    const isCastrated = computed(() => {
-      return form.castrated.value == 1;
-    });
+		const isCastrated = computed(() => {
+			return form.castrated.value == 1;
+		});
 
-    return {
-      optionsGender,
-      optionsSpecies,
-      optionsAnimalStatus,
-      optionsBoolean,
-      birthDate,
-      entryDate,
-      form,
-      useAnimalsCreate,
-      isCastrated
-    };
-  },
-  watch: {
-    birthDate: {
-      handler(newValue) {
-        const { day, month, year } = newValue;
-        this.useAnimalsCreate.setFormField('birth_date', `${year}-${month}-${day}`);
-      },
-      deep: true,
-    },
-    entryDate: {
-      handler(newValue) {
-        const { day, month, year } = newValue;
-        this.useAnimalsCreate.setFormField('entry_date', `${year}-${month}-${day}`);
-      },
-      deep: true,
-    },
-  },
+		return {
+			optionsGender,
+			optionsSpecies,
+			optionsAnimalStatus,
+			optionsBoolean,
+			birthDate,
+			entryDate,
+			form,
+			useAnimalsCreate,
+			isCastrated,
+		};
+	},
+	watch: {
+		birthDate: {
+			handler(newValue) {
+				const { day, month, year } = newValue;
+				this.useAnimalsCreate.setFormField(
+					"birth_date",
+					`${year}-${month}-${day}`,
+				);
+			},
+			deep: true,
+		},
+		entryDate: {
+			handler(newValue) {
+				const { day, month, year } = newValue;
+				this.useAnimalsCreate.setFormField(
+					"entry_date",
+					`${year}-${month}-${day}`,
+				);
+			},
+			deep: true,
+		},
+	},
 });
 </script>
 
 <template>
-  <div class="animal">
-    <section class="animal__about-pet">
-      <div class="animal__about-pet__header">
-        <AtomsTypography
-          type="text-p2"
-          text="Sobre o pet"
-          weight="medium"
-          color="var(--brand-color-dark-blue-900)"
-        />
-      </div>
-      <div class="animal__about-pet__content">
-        <MoleculesInputCommon
-          label="Nome do animal"
-          max-width="482px"
-          :value="form.name.value as string"
-          :message-error="form.name.errorMessages.join(', ')"
-          @on-input="useAnimalsCreate.setFormField('name', $event)"
-        />
-        <MoleculesSelectsSimple
-          max-width="215px"
-          label="Tipo de Pet"
-          :options="optionsSpecies"
-          @item-selected="useAnimalsCreate.setFormField('species', $event)"
-        />
-        <MoleculesSelectsSimple
-          max-width="243px"
-          label="Sexo"
-          :options="optionsGender"
-          @item-selected="useAnimalsCreate.setFormField('gender', $event)"
-        />
-        <MoleculesInputCommon
-          label="Peso"
-          type-input="number"
-          max-width="216px"
-          :maxlength="2"
-          :value="form.weight.value as string"
-          :message-error="form.weight.errorMessages.join(', ')"
-          @on-input="useAnimalsCreate.setFormField('weight', $event)"
-        />
-        <MoleculesInputOptionGroup
-          name="Castrado"
-          label="Castrado"
-          :options="optionsBoolean"
-          :model-value="form.castrated.value"
-          :message-error="form.castrated.errorMessages.join(', ')"
-          @changeOption="useAnimalsCreate.setFormField('castrated', $event)"
-        />
-        <MoleculesDateInputGroup
-          label="Data de nascimento"
-          v-model="birthDate"
-          :message-error="form.birth_date.errorMessages.join(', ')"
-        />
-      </div>
-    </section>
-    <section class="animal__input-data">
-      <div class="animal__input-data-header">
-        <AtomsTypography
-          type="text-p2"
-          text="Dados de entrada"
-          weight="medium"
-          color="var(--brand-color-dark-blue-900)"
-        />
-      </div>
-      <div class="animal__input-data__content">
-        <div class="animal__input-data__content--group">
-          <MoleculesDateInputGroup
-            label="Data de entrada"
-            v-model="entryDate"
-            :message-error="form.entry_date.errorMessages.join(', ')"
-          />
-          <MoleculesSelectsSimple
-            max-width="215px"
-            label="Status"
-            :options="optionsAnimalStatus"
-            @item-selected="useAnimalsCreate.setFormField('status', $event)"
-          />
-          <MoleculesInputCommon
-            v-if="form.castrated.value"
-            label="Local da castração"
-            type-input="text"
-            :value="form.castration_site.value as string"
-            :message-error="form.castration_site.errorMessages.join(', ')"
-            @on-input="useAnimalsCreate.setFormField('castration_site', $event)"
-          />
-        </div>
+	<div class="animal">
+		<section class="animal__about-pet">
+			<div class="animal__about-pet__header">
+				<AtomsTypography
+					type="text-p2"
+					text="Sobre o pet"
+					weight="medium"
+					color="var(--brand-color-dark-blue-900)"
+				/>
+			</div>
+			<div class="animal__about-pet__content">
+				<MoleculesInputCommon
+					label="Nome do animal"
+					max-width="482px"
+					:value="form.name.value as string"
+					:message-error="form.name.errorMessages.join(', ')"
+					@on-input="useAnimalsCreate.setFormField('name', $event)"
+				/>
+				<MoleculesSelectsSimple
+					max-width="215px"
+					label="Tipo de Pet"
+					:options="optionsSpecies"
+					@item-selected="useAnimalsCreate.setFormField('species', $event)"
+				/>
+				<MoleculesSelectsSimple
+					max-width="243px"
+					label="Sexo"
+					:options="optionsGender"
+					@item-selected="useAnimalsCreate.setFormField('gender', $event)"
+				/>
+				<MoleculesInputCommon
+					label="Peso"
+					type-input="number"
+					max-width="216px"
+					:maxlength="2"
+					:value="form.weight.value as string"
+					:message-error="form.weight.errorMessages.join(', ')"
+					@on-input="useAnimalsCreate.setFormField('weight', $event)"
+				/>
+				<MoleculesInputOptionGroup
+					name="Castrado"
+					label="Castrado"
+					:options="optionsBoolean"
+					:model-value="form.castrated.value"
+					:message-error="form.castrated.errorMessages.join(', ')"
+					@changeOption="useAnimalsCreate.setFormField('castrated', $event)"
+				/>
+				<MoleculesDateInputGroup
+					label="Data de nascimento"
+					v-model="birthDate"
+					:message-error="form.birth_date.errorMessages.join(', ')"
+				/>
+			</div>
+		</section>
+		<section class="animal__input-data">
+			<div class="animal__input-data-header">
+				<AtomsTypography
+					type="text-p2"
+					text="Dados de entrada"
+					weight="medium"
+					color="var(--brand-color-dark-blue-900)"
+				/>
+			</div>
+			<div class="animal__input-data__content">
+				<div class="animal__input-data__content--group">
+					<MoleculesDateInputGroup
+						label="Data de entrada"
+						v-model="entryDate"
+						:message-error="form.entry_date.errorMessages.join(', ')"
+					/>
+					<MoleculesSelectsSimple
+						max-width="215px"
+						label="Status"
+						:options="optionsAnimalStatus"
+						@item-selected="useAnimalsCreate.setFormField('status', $event)"
+					/>
+					<MoleculesInputCommon
+						v-if="form.castrated.value"
+						label="Local da castração"
+						type-input="text"
+						:value="form.castration_site.value as string"
+						:message-error="form.castration_site.errorMessages.join(', ')"
+						@on-input="useAnimalsCreate.setFormField('castration_site', $event)"
+					/>
+				</div>
 
-        <div class="animal__input-data__content--group">
-          <MoleculesSelectsSimple
-            max-width="450px"
-            label="Motivo"
-            :options="optionsGender"
-            @item-selected="useAnimalsCreate.setFormField('collection_reason', $event)"
-          />
-          <MoleculesInputCommon
-            label="Local do recolhimento"
-            type-input="text"
-            :value="form.collection_site.value as string"
-            :message-error="form.collection_site.errorMessages.join(', ')"
-            @on-input="useAnimalsCreate.setFormField('collection_site', $event)"
-          />
-        </div>
-        <div class="animal__input-data__content--group">
-          <MoleculesInputCommon
-            label="Número da inscrição"
-            type-input="number"
-            max-width="216px"
-            :value="form.registration_number.value as string"
-            :message-error="form.registration_number.errorMessages.join(', ')"
-            @on-input="useAnimalsCreate.setFormField('registration_number', $event)"
-          />
-          <MoleculesInputCommon
-            label="Número do microchip"
-            type-input="number"
-            max-width="216px"
-            :value="form.microchip_number.value as string"
-            :message-error="form.microchip_number.errorMessages.join(', ')"
-            @on-input="useAnimalsCreate.setFormField('microchip_number', $event)"
-          />
-        </div>
-      </div>
-      <div class="animal__input-data__footer">
-        <MoleculesButtonsCommon
-          type="primary"
-          text="Cadastrar"
-          width="128px"
-          @onclick="useAnimalsCreate.createAnimal()"
-        />
-      </div>
-    </section>
-  </div>
+				<div class="animal__input-data__content--group">
+					<MoleculesSelectsSimple
+						max-width="450px"
+						label="Motivo"
+						:options="optionsGender"
+						@item-selected="
+							useAnimalsCreate.setFormField('collection_reason', $event)
+						"
+					/>
+					<MoleculesInputCommon
+						label="Local do recolhimento"
+						type-input="text"
+						:value="form.collection_site.value as string"
+						:message-error="form.collection_site.errorMessages.join(', ')"
+						@on-input="useAnimalsCreate.setFormField('collection_site', $event)"
+					/>
+				</div>
+				<div class="animal__input-data__content--group">
+					<MoleculesInputCommon
+						label="Número da inscrição"
+						type-input="number"
+						max-width="216px"
+						:value="form.registration_number.value as string"
+						:message-error="form.registration_number.errorMessages.join(', ')"
+						@on-input="
+							useAnimalsCreate.setFormField('registration_number', $event)
+						"
+					/>
+					<MoleculesInputCommon
+						label="Número do microchip"
+						type-input="number"
+						max-width="216px"
+						:value="form.microchip_number.value as string"
+						:message-error="form.microchip_number.errorMessages.join(', ')"
+						@on-input="
+							useAnimalsCreate.setFormField('microchip_number', $event)
+						"
+					/>
+				</div>
+			</div>
+			<div class="animal__input-data__footer">
+				<MoleculesButtonsCommon
+					type="primary"
+					text="Cadastrar"
+					width="128px"
+					@onclick="useAnimalsCreate.createAnimal()"
+				/>
+			</div>
+		</section>
+	</div>
 </template>
 
 <style scoped lang="scss">

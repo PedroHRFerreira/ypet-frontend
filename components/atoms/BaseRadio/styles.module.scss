@@ -1,38 +1,38 @@
 @use "assets/scss/_typography";
 
 .radio-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  cursor: pointer;
-  position: relative;
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	cursor: pointer;
+	position: relative;
 }
 
 .radio-input {
-  display: none;
+	display: none;
 }
 
 .custom-radio {
-  width: 24px;
-  height: 24px;
-  border: 1px solid #ccc;
-  border-radius: 50%;
-  position: relative;
+	width: 24px;
+	height: 24px;
+	border: 1px solid #ccc;
+	border-radius: 50%;
+	position: relative;
 }
 
 .radio-input:checked + .custom-radio::after {
-  content: '';
-  position: absolute;
-  top: 5px;
-  left: 5px;
-  width: 12px;
-  height: 12px;
-  background-color: #2b3a67;
-  border-radius: 50%;
+	content: "";
+	position: absolute;
+	top: 5px;
+	left: 5px;
+	width: 12px;
+	height: 12px;
+	background-color: #2b3a67;
+	border-radius: 50%;
 }
 
 .radio-label {
-  @extend .text-p5, .text-p5-regular;
-  color: var(--brand-color-dark-blue-400);
-  line-height: 20px; /* 142.857% */
+	@extend .text-p5, .text-p5-regular;
+	color: var(--brand-color-dark-blue-400);
+	line-height: 20px; /* 142.857% */
 }

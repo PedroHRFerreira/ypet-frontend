@@ -2,14 +2,10 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  name: "OrganismsAnimalsEdit",
+	name: "OrganismsAnimalsEdit",
 });
 </script>
 
-<template>
+<template></template>
 
-</template>
-
-<style scoped lang="scss">
-
-</style>
+<style scoped lang="scss"></style>

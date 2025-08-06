@@ -2,22 +2,22 @@
 import { definePageMeta } from "#imports";
 
 useHead({
-  title: "Cadastre um animal",
-  titleTemplate: (titleChunk) => {
-    return titleChunk ? `${titleChunk} | YPet` : "YPet";
-  },
+	title: "Cadastre um animal",
+	titleTemplate: (titleChunk) => {
+		return titleChunk ? `${titleChunk} | YPet` : "YPet";
+	},
 });
 
 definePageMeta({
-  layout: "default",
-  middleware: ["auth"],
+	layout: "default",
+	middleware: ["auth"],
 });
 
 defineComponent({
-  name: "PagesAnimalsCreate",
+	name: "PagesAnimalsCreate",
 });
 </script>
 
 <template>
-  <TemplatesAnimalsCreate />
+	<TemplatesAnimalsCreate />
 </template>

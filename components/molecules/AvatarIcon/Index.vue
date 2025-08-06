@@ -90,8 +90,8 @@ export default defineComponent({
 			hidden
 			:accept="accept"
 			@input="
-				renderImage($event.target.files[0]),
-					$emit('input', $event.target.files[0])
+				(renderImage($event.target.files[0]),
+				$emit('input', $event.target.files[0]))
 			"
 		/>
 		<div

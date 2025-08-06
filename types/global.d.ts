@@ -14,11 +14,11 @@ declare global {
 	}
 
 	interface IResponse {
-    type: "success" | "error";
+		type: "success" | "error";
 		status: number;
 		data: any;
-    message?: string;
-    show: boolean
+		message?: string;
+		show: boolean;
 	}
 
 	interface IError extends Error {
@@ -26,18 +26,17 @@ declare global {
 		data?: any;
 	}
 
-  interface IEnum {
-    value: string | number;
-    name: string;
-    label: string;
-    color?: string;
-    description?: string;
+	interface IEnum {
+		value: string | number;
+		name: string;
+		label: string;
+		color?: string;
+		description?: string;
+	}
 
-  }
-
-  type FormFieldType = {
-    value: string | string[] | number | boolean | null;
-    errorMessages: string[];
-  };
+	type FormFieldType = {
+		value: string | string[] | number | boolean | null;
+		errorMessages: string[];
+	};
 }
 export { IOption, IResponse, IAccessToken, IError, IEnum, FormFieldType };
