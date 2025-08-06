@@ -21,7 +21,7 @@ export const useAnimalSpeciesEnumStore = defineStore("animal-species-enum", {
 			await useFetch("/api/enums", {
 				params: { group: "animal-species" },
 				method: "GET",
-				onResponse: ({ request, response, options }) => {
+				onResponse: ({ response }) => {
 					const result: IResponse = response._data as IResponse;
 
 					this.animalSpeciesEnum = result.data || [];
@@ -36,7 +36,7 @@ export const useAnimalSpeciesEnumStore = defineStore("animal-species-enum", {
 			});
 		},
 		async getOptions(): Promise<IOption[]> {
-			if (this.animalSpeciesEnum.length == 0) {
+			if (this.animalSpeciesEnum.length === 0) {
 				await this.fetchAnimalSpeciesEnum();
 
 				return [] as IOption[];

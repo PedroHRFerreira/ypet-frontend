@@ -17,7 +17,7 @@ export default defineComponent({
 			required: true,
 		},
 		modelValue: {
-			type: [String, Array<String>, Number, Boolean, null],
+			type: [String, Array<string>, Number, Boolean, null],
 			default: "",
 		},
 	},
@@ -42,10 +42,9 @@ export default defineComponent({
 			<AtomsBaseRadio
 				v-for="option in options"
 				:key="option.value"
+				v-model="internalValue"
 				:value="option.id"
 				:label="option.text"
-				:name="name"
-				v-model="internalValue"
 			/>
 		</div>
 	</div>

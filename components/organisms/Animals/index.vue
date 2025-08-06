@@ -14,6 +14,8 @@ export default defineComponent({
 });
 </script>
 
-<template></template>
+<template>
+	<h2>List animais</h2>
+</template>
 
 <style scoped lang="scss"></style>
