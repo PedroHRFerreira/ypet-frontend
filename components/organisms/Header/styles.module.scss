@@ -1,11 +1,11 @@
 @use "/assets/scss/mixins" as *;
 .header {
 	background-color: var(--white);
-  @include flex(row, space-between, center, 1.5rem);
-  padding: 0 2rem;
-  height: 80px;
+	@include flex(row, space-between, center, 1.5rem);
+	padding: 0 2rem;
+	height: 80px;
 	&__container {
-    width: 100%;
+		width: 100%;
 		@include flex(row, space-between, center, 1.5rem);
 		.input-search {
 			max-width: 623px;

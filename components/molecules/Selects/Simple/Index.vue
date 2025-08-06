@@ -24,10 +24,10 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
-    maxWidth: {
-      type: String,
-      default: "100%",
-    }
+		maxWidth: {
+			type: String,
+			default: "100%",
+		},
 	},
 	emits: ["item-selected"],
 	setup(props, { emit }) {
@@ -157,41 +157,36 @@ export default defineComponent({
 </script>
 <template>
 	<div ref="wrapper" class="wrapper-selects-simple anim-loading">
-		<div
-			:class="[
-				'selects-simple',
-				state,
-			]"
-		>
-      <div class="selects-simple__box-label">
-        <AtomsTypography
-          type="text-p5"
-          weight="medium"
-          :text="label"
-          color="var(--brand-color-dark-blue-600)"
-        />
-      </div>
+		<div :class="['selects-simple', state]">
+			<div class="selects-simple__box-label">
+				<AtomsTypography
+					type="text-p5"
+					weight="medium"
+					:text="label"
+					color="var(--brand-color-dark-blue-600)"
+				/>
+			</div>
 			<div
-        :class="[
-          'selects-simple__box-text',
-          { 'selects-simple--error': isMessageError }
-        ]"
-        @click="handleStateActivated"
-      >
+				:class="[
+					'selects-simple__box-text',
+					{ 'selects-simple--error': isMessageError },
+				]"
+				@click="handleStateActivated"
+			>
 				<div class="selects-simple__box-text--content">
 					<AtomsDropdownItem
 						v-if="isOptionSelected"
 						:text="option.text"
 						:state="option.state"
 					/>
-          <div v-else class="placeholder">
-            <AtomsTypography
-              type="text-p5"
-              weight="regular"
-              text="Selecione"
-              color="var(--brand-color-dark-blue-200)"
-            />
-          </div>
+					<div v-else class="placeholder">
+						<AtomsTypography
+							type="text-p5"
+							weight="regular"
+							text="Selecione"
+							color="var(--brand-color-dark-blue-200)"
+						/>
+					</div>
 				</div>
 				<div class="selects-simple__box-text--icon">
 					<AtomsIcon
@@ -235,6 +230,6 @@ export default defineComponent({
 <style scoped lang="scss">
 @use "styles.module";
 .wrapper-selects-simple {
-  max-width: v-bind(maxWidth);
+	max-width: v-bind(maxWidth);
 }
 </style>
