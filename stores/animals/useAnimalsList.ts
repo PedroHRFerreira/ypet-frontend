@@ -24,7 +24,7 @@ export const useAnimalsList = defineStore("animals-list", {
 					...params,
 					"with[]": "status",
 				},
-				onResponse: ({ request, response, options }) => {
+				onResponse: ({ response }) => {
 					const result: IResponse = response._data as IResponse;
 
 					this.animals = result.data || [];

@@ -6,6 +6,8 @@ export default defineComponent({
 });
 </script>
 
-<template></template>
+<template>
+	<h2>Edit animal</h2>
+</template>
 
 <style scoped lang="scss"></style>

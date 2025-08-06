@@ -39,8 +39,6 @@ export const useAnimalsCreateStore = defineStore("animals-create", {
 			this.form[field].errorMessages = errorMessages;
 		},
 		async createAnimal(): Promise<void> {
-			console.log("Creating animal with data:", this.form);
-			return;
 			if (this.isLoading) {
 				return;
 			}

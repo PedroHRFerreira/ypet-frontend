@@ -23,7 +23,7 @@ export const useAnimalStatusEnumStore = defineStore("animal-status-enum", {
 				params: {
 					group: "animal_status",
 				},
-				onResponse: ({ request, response, options }) => {
+				onResponse: ({ response }) => {
 					const result: IResponse = response._data as IResponse;
 
 					this.animalStatusEnum = result.data || [];

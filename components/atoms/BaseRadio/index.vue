@@ -39,7 +39,7 @@ export default defineComponent({
 			:value="value"
 			:name="name"
 			:checked="internalValue === value"
-      @change="internalValue = value"
+			@change="internalValue = value"
 		/>
 		<span class="custom-radio"></span>
 		<span class="radio-label">{{ label }}</span>

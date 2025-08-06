@@ -1,6 +1,10 @@
 <script lang="ts" setup>
 import { computed, defineEmits, defineProps } from "vue";
 
+defineComponent({
+	name: "AtomsCheckbox",
+});
+
 const props = defineProps<{
 	label: string;
 	value: string | number | boolean;
@@ -21,11 +25,11 @@ const internalValue = computed({
 <template>
 	<label class="radio-wrapper">
 		<input
+			v-model="internalValue"
 			type="radio"
 			class="radio-input"
 			:value="value"
 			:name="name"
-			v-model="internalValue"
 			@change="$emit('update:modelValue', value)"
 		/>
 		<span class="custom-radio"></span>

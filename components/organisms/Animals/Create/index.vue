@@ -39,7 +39,7 @@ export default defineComponent({
 		});
 
 		const isCastrated = computed(() => {
-			return form.castrated.value == 1;
+			return form.castrated.value === 1;
 		});
 
 		return {
@@ -125,11 +125,11 @@ export default defineComponent({
 					:options="optionsBoolean"
 					:model-value="form.castrated.value"
 					:message-error="form.castrated.errorMessages.join(', ')"
-					@changeOption="useAnimalsCreate.setFormField('castrated', $event)"
+					@change-option="useAnimalsCreate.setFormField('castrated', $event)"
 				/>
 				<MoleculesDateInputGroup
-					label="Data de nascimento"
 					v-model="birthDate"
+					label="Data de nascimento"
 					:message-error="form.birth_date.errorMessages.join(', ')"
 				/>
 			</div>
@@ -146,8 +146,8 @@ export default defineComponent({
 			<div class="animal__input-data__content">
 				<div class="animal__input-data__content--group">
 					<MoleculesDateInputGroup
-						label="Data de entrada"
 						v-model="entryDate"
+						label="Data de entrada"
 						:message-error="form.entry_date.errorMessages.join(', ')"
 					/>
 					<MoleculesSelectsSimple

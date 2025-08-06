@@ -23,7 +23,7 @@ export const useAnimalCoatEnumStore = defineStore("animal-coat-enum", {
 				params: {
 					group: "animal_coat",
 				},
-				onResponse: ({ request, response, options }) => {
+				onResponse: ({ response }) => {
 					const result: IResponse = response._data as IResponse;
 
 					this.animalCoatEnum = result.data || [];
