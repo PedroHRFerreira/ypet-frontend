@@ -123,7 +123,7 @@ export default defineComponent({
 					name="Castrado"
 					label="Castrado"
 					:options="optionsBoolean"
-					:model-value="form.castrated.value"
+					:value="form.castrated.value ? form.castrated.value : 0"
 					:message-error="form.castrated.errorMessages.join(', ')"
 					@change-option="useAnimalsCreate.setFormField('castrated', $event)"
 				/>
