@@ -2,15 +2,15 @@
 import { definePageMeta } from "#imports";
 
 useHead({
-  title: "Cadastro de animais",
-  titleTemplate: (titleChunk) => {
-    return titleChunk ? `${titleChunk} | YPet` : "YPet";
-  },
+	title: "Cadastro de animais",
+	titleTemplate: (titleChunk) => {
+		return titleChunk ? `${titleChunk} | YPet` : "YPet";
+	},
 });
 
 definePageMeta({
-  layout: "default",
-  middleware: ["auth"],
+	layout: "default",
+	middleware: ["auth"],
 });
 
 defineComponent({

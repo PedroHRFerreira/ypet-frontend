@@ -7,11 +7,11 @@
 		@include flex(row, unset, center, 0);
 		padding: 32px;
 	}
-  &__config{
-    position: fixed;
-    bottom: 0;
-    width: 290px;
-    border-top: 1px solid var(--brand-color-dark-blue-100);
-    padding: 1rem 0;
-  }
+	&__config {
+		position: fixed;
+		bottom: 0;
+		width: 290px;
+		border-top: 1px solid var(--brand-color-dark-blue-100);
+		padding: 1rem 0;
+	}
 }

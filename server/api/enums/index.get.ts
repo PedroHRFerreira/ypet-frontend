@@ -1,8 +1,14 @@
 export default defineEventHandler(async (event): Promise<IResponse> => {
 	const apiBaseUrl = useRuntimeConfig().public.apiBaseUrl;
-	const body = await readBody(event);
-	const animalsId = event.context.params?.id;
-	const url = `${apiBaseUrl}/animals/${animalsId}`;
+	const params = getQuery(event);
+	const group = params.group || "";
+	if (!group) {
+		throw createError({
+			statusCode: 400,
+			statusMessage: "Parâmetro 'group' é obrigatório.",
+		});
+	}
+	const url = `${apiBaseUrl}/enums/${group}`;
 
 	const response = await $fetch(url, {
 		method: "GET",
@@ -12,7 +18,6 @@ export default defineEventHandler(async (event): Promise<IResponse> => {
 			Authorization: `${getCookie(event, "auth._token.laravelSanctum")}`,
 			"X-Client-Type": "web",
 		},
-		body,
 	});
 
 	return response as IResponse;
