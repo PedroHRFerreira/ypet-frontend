@@ -1,5 +1,5 @@
 <script lang="ts">
-import { computed, defineComponent } from "vue";
+import { defineComponent } from "vue";
 
 export default defineComponent({
 	name: "MoleculesInputOptionGroup",
@@ -23,26 +23,27 @@ export default defineComponent({
 	},
 	emits: ["changeOption"],
 	setup(props, { emit }) {
-    const items = ref([] as IOption[]);
+		const items = ref([] as IOption[]);
 
-    items.value = props.options.map(option => ({
-      ...option,
-      state: option.id === props.value ? 'activated' : option.state || 'default'
-    }));
+		items.value = props.options.map((option) => ({
+			...option,
+			state:
+				option.id === props.value ? "activated" : option.state || "default",
+		}));
 
-    const handleOptionChange = (val: string | number | boolean) => {
-      emit('changeOption', val);
-      items.value = items.value.map(option => {
-        return {
-          ...option,
-          state: option.id === val ? 'activated' : 'default'
-        };
-      });
-    };
+		const handleOptionChange = (val: string | number | boolean) => {
+			emit("changeOption", val);
+			items.value = items.value.map((option) => {
+				return {
+					...option,
+					state: option.id === val ? "activated" : "default",
+				};
+			});
+		};
 
 		return {
-      items,
-      handleOptionChange
+			items,
+			handleOptionChange,
 		};
 	},
 });
@@ -55,9 +56,9 @@ export default defineComponent({
 			<AtomsBaseRadio
 				v-for="(option, index) in items"
 				:key="index"
-        :name="name"
-        :option="option"
-        @on-change="handleOptionChange"
+				:name="name"
+				:option="option"
+				@on-change="handleOptionChange"
 			/>
 		</div>
 	</div>
