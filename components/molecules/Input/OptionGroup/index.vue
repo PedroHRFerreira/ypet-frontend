@@ -16,20 +16,33 @@ export default defineComponent({
 			type: String,
 			required: true,
 		},
-		modelValue: {
+		value: {
 			type: [String, Array<string>, Number, Boolean, null],
 			default: "",
 		},
 	},
 	emits: ["changeOption"],
 	setup(props, { emit }) {
-		const internalValue = computed({
-			get: () => props.modelValue,
-			set: (val) => emit("changeOption", val),
-		});
+    const items = ref([] as IOption[]);
+
+    items.value = props.options.map(option => ({
+      ...option,
+      state: option.id === props.value ? 'activated' : option.state || 'default'
+    }));
+
+    const handleOptionChange = (val: string | number | boolean) => {
+      emit('changeOption', val);
+      items.value = items.value.map(option => {
+        return {
+          ...option,
+          state: option.id === val ? 'activated' : 'default'
+        };
+      });
+    };
 
 		return {
-			internalValue,
+      items,
+      handleOptionChange
 		};
 	},
 });
@@ -40,11 +53,11 @@ export default defineComponent({
 		<label class="group-label">{{ label }}</label>
 		<div class="options-container">
 			<AtomsBaseRadio
-				v-for="option in options"
-				:key="option.value"
-				v-model="internalValue"
-				:value="option.id"
-				:label="option.text"
+				v-for="(option, index) in items"
+				:key="index"
+        :name="name"
+        :option="option"
+        @on-change="handleOptionChange"
 			/>
 		</div>
 	</div>
