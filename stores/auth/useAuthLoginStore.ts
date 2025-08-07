@@ -49,8 +49,6 @@ export const useAuthLoginStore = defineStore("authLogin", {
 
 			const response: IResponse = data.value as IResponse;
 
-      console.log("Login response:", response);
-
 			if (response.type === "success") {
 				const token: IAccessToken = response.data as IAccessToken;
 				useAuthToken().setTokenCookie(token);
