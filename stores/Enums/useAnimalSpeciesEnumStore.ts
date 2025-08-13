@@ -38,8 +38,6 @@ export const useAnimalSpeciesEnumStore = defineStore("animal-species-enum", {
 		async getOptions(): Promise<IOption[]> {
 			if (this.animalSpeciesEnum.length === 0) {
 				await this.fetchAnimalSpeciesEnum();
-
-				return [] as IOption[];
 			}
 
 			if (this.animalSpeciesEnum && this.animalSpeciesEnum.length > 0) {
