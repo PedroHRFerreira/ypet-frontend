@@ -31,14 +31,8 @@ export default defineComponent({
 				option.id === props.value ? "activated" : option.state || "default",
 		}));
 
-		const handleOptionChange = (val: string | number | boolean) => {
-			emit("changeOption", val);
-			items.value = items.value.map((option) => {
-				return {
-					...option,
-					state: option.id === val ? "activated" : "default",
-				};
-			});
+		const handleOptionChange = (selectedOption: IOption) => {
+			emit("changeOption", selectedOption);
 		};
 
 		return {

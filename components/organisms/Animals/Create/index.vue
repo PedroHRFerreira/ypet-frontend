@@ -22,8 +22,8 @@ export default defineComponent({
 			]);
 
 		const optionsBoolean: IOption[] = [
-			{ id: 1, text: "Sim" },
-			{ id: 0, text: "Não" },
+			{ id: 1, text: "Sim", state: "default" },
+			{ id: 0, text: "Não", state: "activated" },
 		];
 
 		const birthDate = ref({
@@ -125,7 +125,7 @@ export default defineComponent({
 					:options="optionsBoolean"
 					:value="form.castrated.value ? form.castrated.value : 0"
 					:message-error="form.castrated.errorMessages.join(', ')"
-					@change-option="useAnimalsCreate.setFormField('castrated', $event)"
+					@change-option="useAnimalsCreate.setFormField('castrated', $event.id)"
 				/>
 				<MoleculesDateInputGroup
 					v-model="birthDate"
@@ -157,25 +157,6 @@ export default defineComponent({
 						@item-selected="useAnimalsCreate.setFormField('status', $event)"
 					/>
 					<MoleculesInputCommon
-						v-if="form.castrated.value"
-						label="Local da castração"
-						type-input="text"
-						:value="form.castration_site.value as string"
-						:message-error="form.castration_site.errorMessages.join(', ')"
-						@on-input="useAnimalsCreate.setFormField('castration_site', $event)"
-					/>
-				</div>
-
-				<div class="animal__input-data__content--group">
-					<MoleculesSelectsSimple
-						max-width="450px"
-						label="Motivo"
-						:options="optionsGender"
-						@item-selected="
-							useAnimalsCreate.setFormField('collection_reason', $event)
-						"
-					/>
-					<MoleculesInputCommon
 						label="Local do recolhimento"
 						type-input="text"
 						:value="form.collection_site.value as string"
@@ -187,7 +168,6 @@ export default defineComponent({
 					<MoleculesInputCommon
 						label="Número da inscrição"
 						type-input="number"
-						max-width="216px"
 						:value="form.registration_number.value as string"
 						:message-error="form.registration_number.errorMessages.join(', ')"
 						@on-input="
@@ -197,12 +177,21 @@ export default defineComponent({
 					<MoleculesInputCommon
 						label="Número do microchip"
 						type-input="number"
-						max-width="216px"
 						:value="form.microchip_number.value as string"
 						:message-error="form.microchip_number.errorMessages.join(', ')"
 						@on-input="
 							useAnimalsCreate.setFormField('microchip_number', $event)
 						"
+					/>
+				</div>
+				<div class="animal__input-data__content--group">
+					<MoleculesInputCommon
+						v-if="form.castrated.value"
+						label="Local da castração"
+						type-input="text"
+						:value="form.castration_site.value as string"
+						:message-error="form.castration_site.errorMessages.join(', ')"
+						@on-input="useAnimalsCreate.setFormField('castration_site', $event)"
 					/>
 				</div>
 			</div>

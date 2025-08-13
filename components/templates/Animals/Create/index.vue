@@ -4,10 +4,12 @@ import { useAnimalsList } from "~/stores/animals/useAnimalsList";
 
 export default defineComponent({
 	name: "TemplatesAnimalsCreate",
-	async setup() {
+	setup() {
 		const animalsList = useAnimalsList();
 
-		await animalsList.fetchAnimals();
+		onMounted(async () => {
+			await animalsList.fetchAnimals();
+		});
 
 		return {
 			animalsList,

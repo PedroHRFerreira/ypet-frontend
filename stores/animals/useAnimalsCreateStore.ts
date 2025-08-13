@@ -38,6 +38,30 @@ export const useAnimalsCreateStore = defineStore("animals-create", {
 		setFormError(field: string, errorMessages: string[]): void {
 			this.form[field].errorMessages = errorMessages;
 		},
+		getFormData(): FormData {
+			const formData: FormData = new FormData();
+			for (const key in this.form) {
+				if (this.form.hasOwnProperty(key)) {
+					const value = this.form[key].value as string | IOption;
+
+					if (value === null || value === undefined) {
+						continue;
+					}
+
+					if (typeof value === "object") {
+						if (value.hasOwnProperty("id")) {
+							formData.set(key, String(value.id));
+
+							continue;
+						}
+					}
+
+					formData.set(key, String(value));
+				}
+			}
+
+			return formData;
+		},
 		async createAnimal(): Promise<void> {
 			if (this.isLoading) {
 				return;
@@ -49,7 +73,7 @@ export const useAnimalsCreateStore = defineStore("animals-create", {
 
 			await useFetch("/api/animals/store", {
 				method: "POST",
-				body: this.animal,
+				body: this.getFormData(),
 				onResponse: ({ response }) => {
 					this.successMessage = "Animal criado com sucesso!";
 					const result = response._data as IResponse;

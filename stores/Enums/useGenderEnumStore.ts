@@ -36,8 +36,6 @@ export const useGenderEnumStore = defineStore("gender-enum", {
 		async getOptions(): Promise<IOption[]> {
 			if (this.genderEnum.length === 0) {
 				await this.fetchGenderEnum();
-
-				return [] as IOption[];
 			}
 
 			if (this.genderEnum && this.genderEnum.length > 0) {

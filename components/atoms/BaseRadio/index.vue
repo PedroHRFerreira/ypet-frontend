@@ -18,7 +18,11 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const handleChange = (event: Event) => {
 			const target = event.target as HTMLInputElement;
-			emit("onChange", target.value);
+			const option = {
+				...props.option,
+				state: target.checked ? "activated" : "default",
+			};
+			emit("onChange", option);
 		};
 
 		const state = computed(() => {
@@ -52,8 +56,8 @@ export default defineComponent({
 			:value="value"
 			:checked="isChecked"
 			:name="name"
-			@input="handleChange"
-			@change="handleChange"
+			@input="handleChange($event)"
+			@change="handleChange($event)"
 		/>
 		<span class="custom-radio"></span>
 		<span class="radio-label">{{ label }}</span>
