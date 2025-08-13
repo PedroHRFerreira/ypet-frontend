@@ -18,6 +18,12 @@ export default defineEventHandler(async (event): Promise<IResponse> => {
 			Authorization: `${getCookie(event, "auth._token.laravelSanctum")}`,
 			"X-Client-Type": "web",
 		},
+		onResponseError: ({ response }) => {
+			if (response.status === 401) {
+				setCookie(event, "auth._token.laravelSanctum", "", {});
+				setCookie(event, "auth.user", "", {});
+			}
+		},
 	});
 
 	return response as IResponse;
