@@ -102,12 +102,14 @@ export default defineComponent({
 					max-width="215px"
 					label="Tipo de Pet"
 					:options="optionsSpecies"
+					:message-error="form.species.errorMessages.join(', ')"
 					@item-selected="useAnimalsCreate.setFormField('species', $event)"
 				/>
 				<MoleculesSelectsSimple
 					max-width="243px"
 					label="Sexo"
 					:options="optionsGender"
+					:message-error="form.gender.errorMessages.join(', ')"
 					@item-selected="useAnimalsCreate.setFormField('gender', $event)"
 				/>
 				<MoleculesInputCommon
@@ -154,6 +156,7 @@ export default defineComponent({
 						max-width="215px"
 						label="Status"
 						:options="optionsAnimalStatus"
+						:message-error="form.status.errorMessages.join(', ')"
 						@item-selected="useAnimalsCreate.setFormField('status', $event)"
 					/>
 					<MoleculesInputCommon
