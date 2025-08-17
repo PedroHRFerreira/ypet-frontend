@@ -10,6 +10,7 @@ export default defineEventHandler(async (event): Promise<IResponse> => {
 			headers: {
 				"Content-Type": "application/json",
 				Accept: "application/json",
+        Authorization: `${getCookie(event, "auth._token.laravelSanctum")}`,
 				"X-Client-Type": "web",
 			},
 			body,
