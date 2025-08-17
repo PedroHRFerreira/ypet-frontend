@@ -93,8 +93,8 @@
 		@extend .elevation-bottom--level-2;
 	}
 
-  .error {
-    color: var(--danger-colors-700);
-    border-color: var(--danger-colors-700);
-  }
+	.error {
+		color: var(--danger-colors-700);
+		border-color: var(--danger-colors-700);
+	}
 }

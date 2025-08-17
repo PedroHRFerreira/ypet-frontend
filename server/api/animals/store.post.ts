@@ -2,22 +2,24 @@ export default defineEventHandler(async (event): Promise<IResponse> => {
 	try {
 		const apiBaseUrl = useRuntimeConfig().public.apiBaseUrl;
 		const url = `${apiBaseUrl}/animals`;
-    const formData = await readFormData(event);
+		const formData = await readFormData(event);
 
+		const payload: Record<string, any> = {};
 
-    const payload: Record<string, any> = {};
-
-    formData.forEach((value, key) => {
-      payload[key] = value;
-    });
+		formData.forEach((value, key) => {
+			payload[key] = value;
+		});
 
 		const response = await $fetch(url, {
 			method: "POST",
-      onRequest: ({options}) => {
-        options.headers.set("Authorization", `${getCookie(event, "auth._token.laravelSanctum")}`);
-        options.headers.set("X-Client-Type", "web");
-      },
-      body: JSON.stringify(payload)
+			onRequest: ({ options }) => {
+				options.headers.set(
+					"Authorization",
+					`${getCookie(event, "auth._token.laravelSanctum")}`,
+				);
+				options.headers.set("X-Client-Type", "web");
+			},
+			body: JSON.stringify(payload),
 		});
 
 		return response as IResponse;

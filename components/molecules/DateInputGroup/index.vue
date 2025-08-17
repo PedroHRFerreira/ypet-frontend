@@ -16,10 +16,10 @@ export default defineComponent({
 			},
 			required: true,
 		},
-    messageError: {
-      type: String,
-      default: "",
-    },
+		messageError: {
+			type: String,
+			default: "",
+		},
 	},
 	emits: ["update:modelValue"],
 	setup(props, { emit }) {
@@ -51,16 +51,16 @@ export default defineComponent({
 			String(new Date().getFullYear() - i),
 		);
 
-    const isMessageError = computed(() => {
-      return !!props.messageError;
-    });
+		const isMessageError = computed(() => {
+			return !!props.messageError;
+		});
 
 		return {
 			handleChange,
 			days,
 			months,
 			years,
-      isMessageError,
+			isMessageError,
 		};
 	},
 });
@@ -68,10 +68,8 @@ export default defineComponent({
 
 <template>
 	<div class="date-input-group">
-		<label
-      :class="['label', {'errors': isMessageError}]"
-    >{{ label }}</label>
-		<div :class="['fields', {'errors': isMessageError}]">
+		<label :class="['label', { errors: isMessageError }]">{{ label }}</label>
+		<div :class="['fields', { errors: isMessageError }]">
 			<select
 				class="field select-day"
 				:value="modelValue.day"
@@ -103,14 +101,14 @@ export default defineComponent({
 				</option>
 			</select>
 		</div>
-    <div v-if="isMessageError" class="errors">
-      <AtomsTypography
-        type="text-p6"
-        weight="regular"
-        :text="messageError"
-        color="var(--danger-colors-700)"
-      />
-    </div>
+		<div v-if="isMessageError" class="errors">
+			<AtomsTypography
+				type="text-p6"
+				weight="regular"
+				:text="messageError"
+				color="var(--danger-colors-700)"
+			/>
+		</div>
 	</div>
 </template>
 
