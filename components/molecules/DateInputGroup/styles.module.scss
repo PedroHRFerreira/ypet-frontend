@@ -64,3 +64,9 @@
 		}
 	}
 }
+
+.errors {
+  color: var(--danger-colors-700);
+  @extend .text-p5, .text-p5-medium;
+  border-color: var(--danger-colors-700);
+}
