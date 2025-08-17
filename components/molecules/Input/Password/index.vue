@@ -1,131 +1,103 @@
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
+import { ref, computed } from "vue";
+import styles from "./styles.module.scss";
 
-export default defineComponent({
-	name: "MoleculesInputPassword",
-	props: {
-		label: {
-			type: String,
-			default: "Senha",
-		},
-		value: {
-			type: String,
-			default: "",
-		},
-		message: {
-			type: String,
-			default: null,
-		},
-		messageError: {
-			type: String,
-			default: null,
-		},
-		isDisabled: {
-			type: Boolean,
-			default: false,
-		},
-		linkCta: {
-			type: String,
-			default: null,
-		},
-		linkCtaLabel: {
-			type: String,
-			default: "Clique aqui",
-		},
-	},
-	emits: ["oninput", "onkeyupEnter", "clickLinkCta"],
-	data() {
-		return {
-			passwordVisibility: false,
-			inputValue: this.value,
-		};
-	},
-	computed: {
-		isMessage() {
-			return !!this.message;
-		},
-		isMessageError() {
-			return !!this.messageError;
-		},
-		messageDefault() {
-			if (this.isMessageError) {
-				return this.messageError;
-			}
+const modelValue = defineModel<string>();
 
-			return this.message;
-		},
-		isActive() {
-			return !!this.inputValue;
-		},
-		iconName() {
-			return this.passwordVisibility ? "eye" : "eye-alt";
-		},
-		inputType() {
-			return this.passwordVisibility ? "text" : "password";
-		},
-	},
-	methods: {
-		togglePasswordVisibility() {
-			if (this.isDisabled) return;
+const props = withDefaults(defineProps<{
+  id?: string
+  label?: string
+  placeholder?: string
+  disabled?: boolean
+  error?: string
+  helper?: string
+  iconLeft?: string
+  showStrength?: boolean
+}>(), {
+  disabled: false,
+  error: "",
+  helper: "",
+  iconLeft: "",
+  showStrength: false
+});
 
-			this.passwordVisibility = !this.passwordVisibility;
-		},
-		clickLinkCta() {
-			this.$emit("clickLinkCta");
-		},
-	},
+const isFocused = ref(false);
+const isVisible = ref(false);
+
+const inputType = computed(() => (isVisible.value ? "text" : "password"));
+
+/** força simples (opcional — segue DS se existir barra de força) */
+const strength = computed(() => {
+  if (!props.showStrength) return 0;
+  const v = modelValue?.value || "";
+  let s = 0;
+  if (v.length >= 8) s++;
+  if (/[A-Z]/.test(v)) s++;
+  if (/[a-z]/.test(v)) s++;
+  if (/\d/.test(v)) s++;
+  if (/[^A-Za-z0-9]/.test(v)) s++;
+  return Math.min(s, 4); // 0..4
 });
 </script>
 
 <template>
-	<div class="form-common anim-loading">
-		<div
-			:class="[
-				'form-common__label',
-				{ 'form-common__label--disabled': isDisabled },
-				{ 'form-common__label--error': isMessageError },
-			]"
-		>
-			<span>{{ label }}</span>
-			<span v-if="linkCta" class="form-common__label--cta">
-				<AtomsLink :text="linkCtaLabel" @onclick="clickLinkCta" />
-			</span>
-		</div>
-		<div
-			class="form-common__input"
-			:class="{
-				'form-common__input--error': isMessageError,
-				'form-common__input--disabled': isDisabled,
-			}"
-		>
-			<div class="form-common__content">
-				<input
-					v-model="inputValue"
-					:type="inputType"
-					:placeholder="label"
-					:disabled="isDisabled"
-					@input="$emit('oninput', $event.target.value)"
-					@keyup.enter="$emit('onkeyupEnter', $event.target.value)"
-				/>
-			</div>
-			<div class="form-common__info" @click="togglePasswordVisibility()">
-				<AtomsIcon :name="iconName" height="25px" width="25px" />
-			</div>
-		</div>
-		<AtomsTypography
-			v-if="isMessage || isMessageError"
-			class="form-common__message"
-			:class="{
-				'form-common__message--error': isMessageError,
-				'form-common__message--disabled': isDisabled,
-			}"
-			type="text-p6"
-			weight="regular"
-			:text="messageDefault"
-		/>
-	</div>
+  <div :class="[styles.wrapper, { [styles.disabled]: props.disabled }]">
+    <!-- Label -->
+    <label v-if="props.label" :for="props.id" :class="styles.label">
+      {{ props.label }}
+    </label>
+
+    <!-- Campo -->
+    <div
+      :class="[
+        styles.inputContainer,
+        isFocused && styles.focus,
+        props.error && styles.error
+      ]"
+    >
+      <!-- Ícone à esquerda (opcional) -->
+      <span v-if="props.iconLeft" :class="styles.iconLeft">
+        <AtomsIcon :name="props.iconLeft" width="18" height="18" />
+      </span>
+
+      <input
+        :id="props.id"
+        :type="inputType"
+        v-model="modelValue"
+        :placeholder="props.placeholder"
+        :disabled="props.disabled"
+        :class="styles.input"
+        @focus="isFocused = true"
+        @blur="isFocused = false"
+        autocomplete="new-password"
+      />
+
+      <!-- Toggle show/hide -->
+      <button
+        type="button"
+        :class="styles.toggle"
+        @click="isVisible = !isVisible"
+        :aria-label="isVisible ? 'Ocultar senha' : 'Mostrar senha'"
+        :disabled="props.disabled"
+      >
+        <AtomsIcon :name="isVisible ? 'eye-alt' : 'eye'" width="18" height="18" />
+      </button>
+    </div>
+
+    <!-- Strength bar (opcional, se showStrength) -->
+    <div v-if="props.showStrength" :class="styles.strength">
+      <span :class="[styles.bar, strength >= 1 && styles.fill1]"></span>
+      <span :class="[styles.bar, strength >= 2 && styles.fill2]"></span>
+      <span :class="[styles.bar, strength >= 3 && styles.fill3]"></span>
+      <span :class="[styles.bar, strength >= 4 && styles.fill4]"></span>
+    </div>
+
+    <!-- Mensagens -->
+    <p v-if="props.error" :class="styles.errorText">{{ props.error }}</p>
+    <p v-else-if="props.helper" :class="styles.helper">{{ props.helper }}</p>
+  </div>
 </template>
 
 <style scoped lang="scss">
-@use "styles.module";
+@use "styles.module.scss";
 </style>

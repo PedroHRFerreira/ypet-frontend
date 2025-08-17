@@ -1,32 +1,51 @@
-@use "assets/scss/_typography";
+@use "@/assets/scss/_tokens.scss" as *;
+@use "@/assets/scss/_typography.scss";
 
 .link {
-	height: 20px;
-	display: inline-flex;
-	justify-content: center;
-	align-items: center;
-	cursor: pointer;
-	box-sizing: border-box;
-	border-bottom: 1px solid var(--brand-color-blue-700);
-	@extend .text-p5, .text-p5-medium;
+  @extend .text-p5, .text-p5-medium;
+  font-family: "Montserrat", sans-serif;
 
-	.green {
-		color: var(--succes-colors-600);
-	}
-	.grey {
-		color: var(--greys-colors-600);
-	}
-	.primary {
-		color: var(--brand-color-blue-700);
-	}
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  border-bottom: 1px solid transparent;
+  transition: color 0.3s ease, border-color 0.3s ease;
 
-	&:hover {
-		cursor: pointer;
-		color: var(--brand-color-blue-800);
-		box-sizing: border-box;
-		border-color: var(--brand-color-blue-800);
-		transition:
-			color 0.3s ease-in-out,
-			border-bottom 0.3s ease-in-out;
-	}
+  &.primary {
+    color: $brand-color-blue-700;
+    border-color: $brand-color-blue-700;
+
+    &:hover {
+      color: $brand-color-blue-800;
+      border-color: $brand-color-blue-800;
+    }
+  }
+
+  &.grey {
+    color: $greys-colors-600;
+    border-color: $greys-colors-600;
+
+    &:hover {
+      color: $greys-colors-800;
+      border-color: $greys-colors-800;
+    }
+  }
+
+  &.green {
+    color: $succes-colors-600;
+    border-color: $succes-colors-600;
+
+    &:hover {
+      color: $succes-colors-700;
+      border-color: $succes-colors-700;
+    }
+  }
+
+  &.disabled {
+    color: $greys-colors-400;
+    border-color: $greys-colors-400;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
 }

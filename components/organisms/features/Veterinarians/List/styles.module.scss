@@ -1,0 +1,38 @@
+@use "@/assets/scss/_tokens.scss" as *;
+
+.veterinarian-list {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  background: $color-white;
+  border: 1px solid $color-gray-200;
+  border-radius: $radius-md;
+  padding: $spacing-lg;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: $spacing-md;
+  }
+
+  &__table {
+    width: 100%;
+    border-collapse: collapse;
+
+    th, td {
+      text-align: left;
+      padding: $spacing-sm;
+      border-bottom: 1px solid $color-gray-100;
+    }
+
+    th {
+      font-weight: 600;
+      color: $color-gray-700;
+    }
+
+    tr:hover {
+      background: $color-gray-50;
+    }
+  }
+}

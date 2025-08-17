@@ -1,184 +1,58 @@
-<script lang="ts">
-import { defineComponent } from "vue";
-export default defineComponent({
-	name: "MoleculesModal",
-	props: {
-		showModal: {
-			type: Boolean,
-			default: false,
-		},
-		type: {
-			type: String,
-			default: "default",
-			validator: (value: string) => {
-				return ["default", "actions"].includes(value);
-			},
-		},
-		iconLeft: {
-			type: Boolean,
-			default: false,
-		},
-		iconRight: {
-			type: Boolean,
-			default: false,
-		},
-		iconName: {
-			type: String,
-			default: "system/arrows/arrow-left",
-		},
-		title: {
-			type: String,
-			default: "",
-		},
-		typeTitle: {
-			type: String,
-			default: "text-p2",
-		},
-		confirmButtonText: {
-			type: String,
-			default: "Salvar",
-		},
-		cancelButtonText: {
-			type: String,
-			default: "Cancelar",
-		},
-		canScrollOutside: {
-			type: Boolean,
-			default: true,
-		},
-		isFilter: {
-			type: Boolean,
-			default: false,
-		},
-		stayOpenOnClick: {
-			type: Boolean,
-			default: false,
-		},
-		typeModal: {
-			type: String,
-			default: "aside",
-			validator: (value: string) => {
-				return ["aside", "center"].includes(value);
-			},
-		},
-		modalAuto: {
-			type: Boolean,
-			default: false,
-		},
-		stateButton: {
-			type: String,
-			default: "default",
-		},
-	},
-	emits: ["close", "back", "apply", "clear"],
-	data() {
-		return {
-			isShowEffect: this.showModal,
-			isDisplay: this.showModal,
-		};
-	},
-	watch: {
-		showModal(newIsVisible) {
-			if (newIsVisible) {
-				this.isDisplay = newIsVisible;
-				setTimeout(() => (this.isShowEffect = newIsVisible), 0);
-				return;
-			}
-			this.isShowEffect = false;
-			setTimeout(() => (this.isDisplay = false), 1000);
-		},
-	},
-	methods: {
-		clickCloseModal() {
-			this.isShowEffect = false;
-			setTimeout(() => (this.isDisplay = false), 1000);
-			this.$emit("close");
-		},
-		clickConfirmed() {
-			if (this.stateButton === "loading") {
-				return;
-			}
-			this.$emit("apply");
-		},
-		clickOutsideModal(event: any) {
-			if (this.stayOpenOnClick) {
-				return;
-			}
+<script setup lang="ts">
+import Icon from "@/components/atoms/Icon";
+import styles from "./styles.module.scss";
 
-			const isClickedOutsideModal = event.target === this.$el;
-			if (isClickedOutsideModal) {
-				this.isShowEffect = false;
-				setTimeout(() => (this.isDisplay = false), 1000);
-				this.$emit("close");
-			}
-		},
-		checkIsFilterModal() {
-			if (this.isFilter) {
-				this.$emit("clear");
-				return;
-			}
-			this.clickCloseModal();
-		},
-	},
+const props = withDefaults(defineProps<{
+  modelValue: boolean
+  title?: string
+  width?: string | number
+  persistent?: boolean
+}>(), {
+  modelValue: false,
+  width: "480px",
+  persistent: false
 });
+
+const emit = defineEmits<{
+  (e: "update:modelValue", value: boolean): void
+  (e: "close"): void
+}>();
+
+function close() {
+  if (!props.persistent) {
+    emit("update:modelValue", false);
+    emit("close");
+  }
+}
 </script>
+
 <template>
-	<div
-		v-if="isDisplay"
-		class="modal"
-		:class="{ 'show-effect': isShowEffect }"
-		@click="clickOutsideModal"
-	>
-		<div
-			class="content-modal"
-			:class="[typeModal, { 'modal-auto': modalAuto }]"
-		>
-			<div class="container-modal">
-				<div :class="['header-modal', { justify: iconRight }]">
-					<div v-if="iconLeft" class="back-modal" @click="$emit('back')">
-						<AtomsIconCommon
-							filled
-							class="icon-left"
-							name="system/arrows/arrow-left"
-							current-color="var(--neutral-color-dark-600)"
-						/>
-					</div>
-					<AtomsTypography
-						:type="typeTitle"
-						color="var(--neutral-color-dark-0)"
-						:text="title"
-					/>
-					<div v-if="iconRight" class="close-modal" @click="clickCloseModal">
-						<AtomsIconCommon
-							filled
-							class="icon-right"
-							name="system/other/close"
-							current-color="var(--neutral-color-dark-600)"
-						/>
-					</div>
-				</div>
-				<div class="body-modal">
-					<slot />
-				</div>
-				<div v-if="type === 'actions'" class="footer-modal">
-					<MoleculesButtonsCommon
-						class="cancel-button"
-						:text="cancelButtonText"
-						type="secondary"
-						@click="checkIsFilterModal"
-					/>
-					<MoleculesButtonsCommon
-						:state="stateButton"
-						class="confirm-button"
-						:text="confirmButtonText"
-						type="primary"
-						@click="clickConfirmed"
-					/>
-				</div>
-			</div>
-		</div>
-	</div>
+  <teleport to="body">
+    <div v-if="props.modelValue" :class="styles.overlay" @click="close">
+      <div
+        :class="styles.modal"
+        :style="{ width: typeof props.width === 'number' ? props.width + 'px' : props.width }"
+        @click.stop
+      >
+        <header v-if="props.title" :class="styles.header">
+          <h2 :class="styles.title">{{ props.title }}</h2>
+          <button type="button" :class="styles.closeBtn" @click="close">
+            <Icon name="close" size="medium" />
+          </button>
+        </header>
+
+        <div :class="styles.body">
+          <slot />
+        </div>
+
+        <footer v-if="$slots.footer" :class="styles.footer">
+          <slot name="footer" />
+        </footer>
+      </div>
+    </div>
+  </teleport>
 </template>
+
 <style scoped lang="scss">
 @use "styles.module.scss";
 </style>

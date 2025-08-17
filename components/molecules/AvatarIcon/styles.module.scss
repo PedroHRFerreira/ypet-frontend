@@ -1,60 +1,61 @@
 .avatar-wrapper {
-	position: relative;
-	width: 40px;
-	.avatar {
-		display: flex;
-		text-align: center;
-		align-items: center;
-		justify-content: center;
-		border-radius: 50%;
-		cursor: pointer;
-		background: var(--brand-color-blue-600);
-		border: 1px solid var(--background-secundary-bg);
-		transition: all 0.2s ease-in-out;
-		position: relative;
+  position: relative;
+  width: 40px;
 
-		&.small {
-			width: 40px;
-			height: 40px;
-		}
+  .avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    cursor: pointer;
+    background: var(--brand-color-blue-600);
+    border: 1px solid var(--background-secundary-bg);
+    transition: all 0.2s ease-in-out;
 
-		&.extra-small {
-			width: 24px;
-			height: 24px;
-		}
+    &.small {
+      width: 40px;
+      height: 40px;
+    }
 
-		.avatar-image {
-			img {
-				width: 100%;
-				height: 100%;
-				border-radius: 50%;
-			}
-		}
+    &.extra-small {
+      width: 24px;
+      height: 24px;
+    }
 
-		&:hover,
-		&.pressed {
-			border-color: var(--brand-color-blue-600);
-		}
-		&.disabled {
-			opacity: 0.5;
-			cursor: default;
-			border-color: var(--greys-colors-500);
-		}
-	}
-	.avatar-notification {
-		position: absolute;
-		right: 0;
-		bottom: 0;
-		border-radius: 50%;
-		border: 1px solid var(--white);
-		z-index: 1;
-		&.small {
-			width: 12px;
-			height: 12px;
-		}
-		&.extra-small {
-			width: 10px;
-			height: 10px;
-		}
-	}
+    .avatar-image img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+    }
+
+    &:hover,
+    &.pressed {
+      border-color: var(--brand-color-blue-600);
+    }
+
+    &.disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      border-color: var(--greys-colors-500);
+    }
+  }
+
+  .avatar-notification {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    border-radius: 50%;
+    border: 1px solid var(--white);
+    z-index: 1;
+
+    &.small {
+      width: 12px;
+      height: 12px;
+    }
+
+    &.extra-small {
+      width: 10px;
+      height: 10px;
+    }
+  }
 }

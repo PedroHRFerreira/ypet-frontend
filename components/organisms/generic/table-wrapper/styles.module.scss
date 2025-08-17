@@ -1,0 +1,40 @@
+@use "@/assets/scss/_tokens.scss" as *;
+
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  background: $color-white;
+  border-radius: $radius-md;
+  border: 1px solid $color-gray-200;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+
+  &__head {
+    background: $color-gray-100;
+
+    th {
+      padding: $spacing-sm $spacing-md;
+      text-align: left;
+      font-weight: 600;
+      font-size: $font-size-sm;
+    }
+  }
+
+  &__body {
+    td {
+      padding: $spacing-sm $spacing-md;
+      border-top: 1px solid $color-gray-200;
+      font-size: $font-size-sm;
+    }
+  }
+
+  &__footer {
+    padding: $spacing-sm $spacing-md;
+    border-top: 1px solid $color-gray-200;
+    display: flex;
+    justify-content: flex-end;
+  }
+}

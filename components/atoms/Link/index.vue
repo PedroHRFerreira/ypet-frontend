@@ -1,35 +1,39 @@
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
+import { defineProps } from "vue";
 
-export default defineComponent({
-	name: "AtomsLink",
-	props: {
-		text: {
-			type: String,
-			default: "Link",
-		},
-		color: {
-			type: String,
-			default: "primary",
-		},
-		withIcon: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	emits: ["onclick"],
-});
+defineProps<{
+  text: string;
+  to?: string;              // rota interna
+  href?: string;            // link externo
+  color?: "primary" | "grey" | "green";
+  disabled?: boolean;
+  withIcon?: boolean;
+}>();
+
+defineEmits<{
+  (e: "click", event: MouseEvent): void;
+}>();
 </script>
 
 <template>
-	<div class="link" @click="$emit('onclick')">
-		<span :class="[color]">
-			{{ text }}
-		</span>
-		<AtomsIcon v-if="withIcon" name="arrow-right" :current-color="color" />
-	</div>
+  <component
+    :is="to ? 'NuxtLink' : href ? 'a' : 'span'"
+    :to="to"
+    :href="href"
+    :class="['link', color, { disabled }]"
+    @click="$emit('click', $event)"
+  >
+    <span>{{ text }}</span>
+    <AtomsIcon
+      v-if="withIcon"
+      name="arrow-right"
+      width="16"
+      height="16"
+      :current-color="disabled ? 'var(--greys-colors-400)' : 'currentColor'"
+    />
+  </component>
 </template>
 
 <style scoped lang="scss">
-@use "styles.module";
+@use "styles.module.scss";
 </style>

@@ -1,70 +1,56 @@
-@use "assets/scss/form-reset-helpers";
-@use "assets/scss/_typography";
+@use "@/assets/scss/_tokens.scss" as *;
 
-.form-common-search {
-	width: 100%;
-	display: flex;
-	flex-direction: column;
-	align-items: flex-start;
+.wrapper {
+  display: flex;
+  align-items: center;
+  background: $neutral-light-0;
+  border: 1px solid $greys-colors-300;
+  border-radius: $radius-md;
+  padding: 0 $spacing-xs;
+  height: 40px;
+  transition: border-color .2s ease;
 
-	.form-common-search__input {
-		display: flex;
-		max-height: 56px;
-		padding: 4px 0 4px 16px;
-		align-items: center;
-		gap: 16px;
-		align-self: stretch;
-		border-radius: 4px;
-		border: 1px solid var(--brand-color-blue-100);
-		box-sizing: border-box;
-		position: relative;
-		background-color: var(--background-tertiary);
-		.form-common-search__content {
-			display: flex;
-			height: 36px;
-			padding-right: 0;
-			align-items: center;
-			gap: 10px;
-			flex: 1 0 0;
-			font-size: 14px;
+  &:focus-within {
+    border-color: $brand-color-blue-600;
+  }
+}
 
-			input {
-				@extend %form-reset-input;
-				width: 100%;
-				height: 36px;
-				padding-right: 0;
-			}
-		}
-		&:focus-within {
-			transition: border 0.1s ease-in-out;
-			caret-color: var(--brand-color-blue-600);
-		}
-		.form-common-search__close {
-			display: flex;
-			padding: 14px;
-			justify-content: center;
-			align-items: center;
-			gap: 10px;
-			color: var(--greys-colors-500);
+.iconLeft {
+  color: $greys-colors-500;
+  margin-right: $spacing-xs;
+  flex-shrink: 0;
+}
 
-			.close-background {
-				display: flex;
-				justify-content: center;
-				align-items: center;
-				background-color: var(--brand-color-blue-100);
-				border-radius: 50%;
-				width: 20px;
-				height: 20px;
-			}
-			&.error {
-				.close-background {
-					background-color: var(--danger-colors-100);
-				}
-			}
-		}
-	}
-	&.disabled {
-		opacity: 0.4;
-		cursor: default;
-	}
+.input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-family: $font-family;
+  font-size: $font-size-md;
+  color: $greys-colors-800;
+  background: transparent;
+
+  &::placeholder {
+    color: $greys-colors-400;
+  }
+}
+
+.clearBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: $spacing-xxs;
+  color: $greys-colors-400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    color: $greys-colors-600;
+  }
+}
+
+.disabled {
+  opacity: .6;
+  pointer-events: none;
 }

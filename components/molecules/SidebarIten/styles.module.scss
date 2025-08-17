@@ -1,24 +1,29 @@
-@use "/assets/scss/mixins" as *;
+@use "@/assets/scss/_tokens.scss" as *;
+@use "@/assets/scss/mixins" as *;
+
 .sidebar-item {
-	position: relative;
-	padding: 12px 32px;
-	@include flex(row, unset, center, 1rem);
-	cursor: pointer;
-	border-left: 4px solid transparent;
-	transition: all 0.4s ease-in-out;
-	.text {
-		color: var(--brand-color-dark-blue-300);
-	}
-	&:hover,
-	&.active {
-		background-color: var(--background-secundary-bg);
-		border-color: var(--brand-color-blue-700);
-		.text {
-			font-weight: 500;
-			color: var(--brand-color-blue-700);
-		}
-		.icon {
-			color: var(--brand-primary-600);
-		}
-	}
+  @include flex(row, flex-start, center, $spacing-sm);
+  width: 100%;
+  padding: $spacing-sm $spacing-md;
+  border: none;
+  background: transparent;
+  color: $color-gray-700;
+  font-size: $font-size-md;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+
+  &:hover {
+    background: $color-gray-100;
+  }
+
+  &.active {
+    background: $color-brand-50;
+    color: $color-brand-600;
+    font-weight: 500;
+  }
+
+  .text {
+    flex: 1;
+    text-align: left;
+  }
 }

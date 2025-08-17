@@ -1,67 +1,58 @@
 <script lang="ts">
-import { defineComponent, computed } from "vue";
+import { defineComponent } from "vue";
 
 export default defineComponent({
-	name: "AtomsBaseRadio",
-	props: {
-		name: {
-			type: String,
-			required: true,
-		},
-		option: {
-			type: Object as PropType<IOption>,
-			required: false,
-			default: () => ({ id: "", text: "Lorem Ipsum", state: "default" }),
-		},
-	},
-	emits: ["onChange"],
-	setup(props, { emit }) {
-		const handleChange = (event: Event) => {
-			const target = event.target as HTMLInputElement;
-			const option = {
-				...props.option,
-				state: target.checked ? "activated" : "default",
-			};
-			emit("onChange", option);
-		};
+  name: "AtomsBaseRadio",
+  props: {
+    modelValue: {
+      type: [String, Number, Boolean],
+      required: true,
+    },
+    value: {
+      type: [String, Number, Boolean],
+      required: true,
+    },
+    label: {
+      type: String,
+      default: "",
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  emits: ["update:modelValue"],
+  setup(props, { emit }) {
+    const onChange = () => {
+      if (!props.disabled) {
+        emit("update:modelValue", props.value);
+      }
+    };
 
-		const state = computed(() => {
-			return props.option?.state || "default";
-		});
-		const value = computed(() => {
-			return props.option?.id || "";
-		});
-		const label = computed(() => {
-			return props.option?.text || "Lorem Ipsum";
-		});
-		const isChecked = computed(() => {
-			return state.value === "activated";
-		});
-
-		return {
-			value,
-			label,
-			isChecked,
-			handleChange,
-		};
-	},
+    return { onChange };
+  },
 });
 </script>
 
 <template>
-	<label class="radio-wrapper">
-		<input
-			type="radio"
-			class="radio-input"
-			:value="value"
-			:checked="isChecked"
-			:name="name"
-			@input="handleChange($event)"
-			@change="handleChange($event)"
-		/>
-		<span class="custom-radio"></span>
-		<span class="radio-label">{{ label }}</span>
-	</label>
+  <label
+    class="radio"
+    :class="{
+      'radio--checked': modelValue === value,
+      'radio--disabled': disabled,
+    }"
+  >
+    <input
+      type="radio"
+      class="radio__input"
+      :value="value"
+      :checked="modelValue === value"
+      :disabled="disabled"
+      @change="onChange"
+    />
+    <span class="radio__control"></span>
+    <span v-if="label" class="radio__label">{{ label }}</span>
+  </label>
 </template>
 
 <style scoped lang="scss">

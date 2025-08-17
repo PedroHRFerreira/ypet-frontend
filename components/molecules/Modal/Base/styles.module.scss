@@ -1,0 +1,22 @@
+@use "@/assets/scss/_tokens.scss" as *;
+
+.overlay {
+  position: fixed; inset: 0; z-index: 1000;
+  background: rgba($greys-colors-900, .6);
+  display: flex; align-items: center; justify-content: center;
+}
+.modal {
+  background: $neutral-light-0;
+  border-radius: $radius-lg; box-shadow: $shadow-lg;
+  max-height: 90vh; overflow: hidden; display: flex; flex-direction: column;
+
+  &.small  { width: 360px; }
+  &.medium { width: 480px; }
+  &.large  { width: 600px; }
+}
+.header { display:flex; justify-content:space-between; align-items:center;
+  padding:$spacing-md; border-bottom:1px solid $greys-colors-200; }
+.title { font-family:$font-family; font-weight:600; font-size:$font-size-lg; color:$greys-colors-900; }
+.close { background:none; border:0; cursor:pointer; color:$greys-colors-500; &:hover{ color:$greys-colors-700; } }
+.body { padding:$spacing-md; overflow:auto; }
+.footer { padding:$spacing-md; border-top:1px solid $greys-colors-200; display:flex; justify-content:flex-end; gap:$spacing-sm; }

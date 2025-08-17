@@ -1,0 +1,58 @@
+@use "@/assets/scss/_tokens.scss" as *;
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: $spacing-md;
+  color: $color-text-secondary;
+
+  .icon {
+    margin-bottom: $spacing-sm;
+    color: $color-neutral-400;
+  }
+
+  .title {
+    font-family: $font-family-base;
+    font-weight: 600;
+    font-size: $font-size-md;
+    color: $color-text-primary;
+    margin-bottom: $spacing-xs;
+  }
+
+  .description {
+    font-family: $font-family-base;
+    font-size: $font-size-sm;
+    color: $color-text-secondary;
+    max-width: 300px;
+  }
+
+  &.small {
+    .title {
+      font-size: $font-size-sm;
+    }
+    .description {
+      font-size: $font-size-xs;
+    }
+  }
+
+  &.medium {
+    .title {
+      font-size: $font-size-md;
+    }
+    .description {
+      font-size: $font-size-sm;
+    }
+  }
+
+  &.large {
+    .title {
+      font-size: $font-size-lg;
+    }
+    .description {
+      font-size: $font-size-md;
+    }
+  }
+}

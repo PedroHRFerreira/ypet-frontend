@@ -1,0 +1,35 @@
+// assets/scss/_tokens.scss
+// Design Tokens globais do YPet
+// Usados em todos os components (Atoms, Molecules, Organisms)
+
+// Cores da marca
+$brand-colors-primary: #2b3a67;
+$brand-colors-secondary: #5c7cfa;
+$brand-colors-hover: #1e2b4d;
+$brand-colors-disabled: #a0aec0;
+
+// Escala de cinzas
+$greys-100: #f8f9fa;
+$greys-200: #e9ecef;
+$greys-400: #adb5bd;
+$greys-800: #212529;
+
+// Feedback
+$feedback-success: #38a169;
+$feedback-error: #e53e3e;
+$feedback-warning: #dd6b20;
+$feedback-info: #3182ce;
+
+// Tipografia
+$font-family-base: "Montserrat", sans-serif;
+$font-weight-light: 300;
+$font-weight-regular: 400;
+$font-weight-medium: 500;
+$font-weight-bold: 700;
+
+// Espaçamentos
+$spacing-xs: 0.25rem; // 4px
+$spacing-sm: 0.5rem;  // 8px
+$spacing-md: 1rem;    // 16px
+$spacing-lg: 1.5rem;  // 24px
+$spacing-xl: 2rem;    // 32px

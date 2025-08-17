@@ -1,0 +1,41 @@
+@use "@/assets/scss/_tokens.scss" as *;
+
+.veterinarian-create {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
+  background: $color-white;
+  border: 1px solid $color-gray-200;
+  border-radius: $radius-md;
+  padding: $spacing-lg;
+  max-width: 600px;
+
+  &__form-group {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+  }
+
+  &__label {
+    font-size: $font-size-sm;
+    color: $color-gray-700;
+  }
+
+  &__input {
+    border: 1px solid $color-gray-300;
+    border-radius: $radius-sm;
+    padding: $spacing-sm;
+
+    &:focus {
+      outline: none;
+      border-color: $color-brand-500;
+      box-shadow: 0 0 0 2px rgba($color-brand-500, 0.2);
+    }
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: $spacing-md;
+  }
+}

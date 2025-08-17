@@ -1,120 +1,64 @@
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
+import { computed, defineProps, defineEmits } from "vue";
 
-export default defineComponent({
-	name: "MoleculesButtonsCommon",
-	props: {
-		type: {
-			type: String,
-			default: "primary",
-			validator: (value: string) => {
-				return ["primary", "secondary", "outline", "only"].includes(value);
-			},
-		},
-		mode: {
-			type: String,
-			default: "normal",
-			validator: (value: string) => {
-				return ["normal", "destructive"].includes(value);
-			},
-		},
-		size: {
-			type: String,
-			default: "large",
-			validator: (value: string) => {
-				return [
-					"extra-large",
-					"large",
-					"medium",
-					"small",
-					"extra-small",
-				].includes(value);
-			},
-		},
-		state: {
-			type: String,
-			default: "default",
-			validator: (value: string) => {
-				return [
-					"default",
-					"hover",
-					"pressed",
-					"disabled",
-					"loading",
-					"success",
-				].includes(value);
-			},
-		},
-		iconLeft: {
-			type: Boolean,
-			default: false,
-		},
-		iconRight: {
-			type: Boolean,
-			default: false,
-		},
-		nameIconLeft: {
-			type: String,
-			default: "arrow-left",
-		},
-		nameIconRight: {
-			type: String,
-			default: "arrow-right",
-		},
-		text: {
-			type: String,
-			default: "Lorem Ipsum",
-		},
-		currentColor: {
-			type: String,
-			default: "",
-		},
-		width: {
-			type: String,
-			default: "100%",
-		},
-	},
-	emits: ["onclick"],
-	computed: {
-		isStateSuccess() {
-			return this.state === "success";
-		},
-		isStateLoading() {
-			return this.state === "loading";
-		},
-	},
-});
+const props = defineProps<{
+  type?: "primary" | "secondary" | "outline" | "only";
+  mode?: "normal" | "destructive";
+  size?: "extra-large" | "large" | "medium" | "small" | "extra-small";
+  state?: "default" | "hover" | "pressed" | "disabled" | "loading" | "success";
+  text?: string;
+  width?: string;
+  iconLeft?: boolean;
+  iconRight?: boolean;
+  nameIconLeft?: string;
+  nameIconRight?: string;
+}>();
+
+const emit = defineEmits<{
+  (e: "click", event: MouseEvent): void;
+}>();
+
+const isStateLoading = computed(() => props.state === "loading");
+const isStateSuccess = computed(() => props.state === "success");
 </script>
 
 <template>
-	<div
-		class="layout anim-loading"
-		:class="[type, mode, size, state, iconLeft, iconRight]"
-		@click="$emit('onclick')"
-	>
-		<AtomsIcon v-if="iconLeft" class="icon-left" :name="nameIconLeft" filled />
-		<AtomsLoading
-			v-if="isStateLoading || isStateSuccess"
-			:state="isStateSuccess ? 'success' : 'flip'"
-			color="white"
-			size="large"
-		/>
-		<span v-else class="text">
-			{{ text }}
-		</span>
-		<AtomsIcon
-			v-if="iconRight"
-			class="icon-right"
-			filled
-			:name="nameIconRight"
-		/>
-	</div>
+  <button
+    class="button-common"
+    :class="[props.type, props.mode, props.size, props.state]"
+    :style="{ width: props.width || '100%' }"
+    @click="$emit('click', $event)"
+    :disabled="props.state === 'disabled' || props.state === 'loading'"
+  >
+    <!-- ícone à esquerda -->
+    <AtomsIcon
+      v-if="props.iconLeft"
+      class="icon-left"
+      :name="props.nameIconLeft || 'arrow-left'"
+      filled
+    />
+
+    <!-- loading / success -->
+    <AtomsLoading
+      v-if="isStateLoading || isStateSuccess"
+      :state="isStateSuccess ? 'success' : 'loading'"
+      color="white"
+      size="small"
+    />
+
+    <!-- texto -->
+    <span v-else class="text">{{ props.text || 'Button' }}</span>
+
+    <!-- ícone à direita -->
+    <AtomsIcon
+      v-if="props.iconRight"
+      class="icon-right"
+      :name="props.nameIconRight || 'arrow-right'"
+      filled
+    />
+  </button>
 </template>
 
 <style scoped lang="scss">
-@use "styles.module";
-
-.layout {
-	width: v-bind(width);
-}
+@use "styles.module.scss";
 </style>

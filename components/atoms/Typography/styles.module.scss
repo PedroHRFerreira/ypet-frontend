@@ -1,8 +1,42 @@
-@use "assets/scss/_typography.scss";
+@use "@/assets/scss/_tokens.scss" as *;
 
-.single-line {
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-	width: 336px;
+.typography {
+	font-family: $font-family-base;
+	line-height: 1.4;
+}
+
+.typography--text-p1 {
+	font-size: 1rem; // 16px
+}
+.typography--text-p2 {
+	font-size: 0.875rem; // 14px
+}
+.typography--text-p3 {
+	font-size: 0.75rem; // 12px
+}
+
+.typography--h1 {
+	font-size: 2rem; // 32px
+	line-height: 1.25;
+}
+.typography--h2 {
+	font-size: 1.5rem; // 24px
+	line-height: 1.3;
+}
+.typography--h3 {
+	font-size: 1.25rem; // 20px
+	line-height: 1.35;
+}
+
+.typography--light {
+	font-weight: $font-weight-light;
+}
+.typography--regular {
+	font-weight: $font-weight-regular;
+}
+.typography--medium {
+	font-weight: $font-weight-medium;
+}
+.typography--bold {
+	font-weight: $font-weight-bold;
 }

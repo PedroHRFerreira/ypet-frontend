@@ -1,151 +1,69 @@
-@use "assets/scss/form-reset-helpers";
-@use "assets/scss/_typography";
+@use "@/assets/scss/_tokens.scss" as *;
 
-@mixin flex($direction, $align, $justify, $gap: unset) {
-	display: flex;
-	flex-direction: $direction;
-	justify-content: $justify;
-	align-items: $align;
-	gap: $gap;
+.inputWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
 }
 
-.input-common {
-	width: 100%;
-	@include flex(column, flex-start, unset, 8px);
-	&__input {
-		@include flex(row, center, unset, 1rem);
-		width: 100%;
-		border: 1px solid var(--brand-color-dark-blue-200);
-		height: 56px;
-		padding: 4px 4px 4px 16px;
-		box-sizing: border-box;
-		position: relative;
-		border-radius: 4px;
+.label {
+  font-size: $font-size-sm;
+  font-weight: 500;
+  color: $color-text-primary;
+}
 
-		&.input-common__input--error {
-			border: 1px solid var(--danger-colors-700);
+.inputContainer {
+  display: flex;
+  align-items: center;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  background: $color-background-light;
+  padding: 0 $spacing-sm;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 
-			.input-common__label {
-				color: var(--danger-colors-700);
-			}
+  &.focus {
+    border-color: $color-primary;
+    box-shadow: 0 0 0 2px rgba($color-primary, 0.2);
+  }
 
-			&:focus-within {
-				border: 1px solid var(--danger-colors-700);
-				transition: border 0.1s ease-in-out;
-				caret-color: var(--danger-colors-700);
-			}
+  &.error {
+    border-color: $color-danger;
+  }
+}
 
-			.input-common__info {
-				.input-common__info--error {
-					background-color: var(--danger-colors-700);
-					@include flex(row, center, center);
-					width: 18px;
-					height: 18px;
-					padding: 2px;
-					border-radius: 100px;
-				}
-			}
-		}
+.input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: $font-size-md;
+  padding: $spacing-sm 0;
+  color: $color-text-primary;
 
-		&.input-common__input--success {
-			border: 1px solid var(--succes-colors-600);
+  &:disabled {
+    color: $color-text-disabled;
+  }
+}
 
-			.input-common__label {
-				color: var(--succes-colors-600);
-			}
+.iconLeft,
+.iconRight {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $color-neutral-500;
+}
 
-			&:focus-within {
-				border: 1px solid var(--succes-colors-600);
-				transition: border 0.1s ease-in-out;
-				caret-color: var(--succes-colors-600);
-			}
+.errorMessage {
+  font-size: $font-size-xs;
+  color: $color-danger;
+}
 
-			.input-common__info {
-				.input-common__info--success {
-					background-color: var(--succes-colors-600);
-					@include flex(row, center, center);
-					width: 18px;
-					height: 18px;
-					padding: 2px;
-					border-radius: 100px;
-				}
-			}
-		}
+.helper {
+  font-size: $font-size-xs;
+  color: $color-text-secondary;
+}
 
-		&.input-common__input--disabled {
-			border: 1px solid var(--greys-colors-300);
-			color: var(--greys-colors-300);
-			cursor: not-allowed;
-
-			.input-common__content {
-				cursor: not-allowed;
-
-				input {
-					color: var(--greys-colors-300);
-					cursor: not-allowed;
-				}
-
-				input::placeholder {
-					color: var(--greys-colors-300);
-				}
-			}
-
-			.input-common__info {
-				color: var(--greys-colors-800);
-
-				.input-common__info--error {
-					background-color: var(--greys-colors-800);
-				}
-			}
-		}
-	}
-	&__label {
-		@extend .text-p5, .text-p5-medium;
-		@include flex(row, center, unset);
-		display: flex;
-		padding: 0;
-		color: var(--brand-color-dark-blue-600);
-	}
-	&__label--error {
-		color: var(--danger-colors-700);
-	}
-	&__label--success {
-		color: var(--succes-colors-600);
-	}
-	&__label--disabled {
-		color: var(--greys-colors-300);
-	}
-	&__content {
-		@include flex(row, center, unset, 10px);
-		height: 36px;
-		align-items: center;
-		padding-right: 0;
-		flex: 1 0 0;
-		input {
-			@extend %form-reset-input;
-			width: 100%;
-			height: 36px;
-			padding-right: 0;
-			@extend .text-p5, .text-p5-regular;
-		}
-	}
-	&__info {
-		@include flex(row, center, center, 10px);
-		padding: 14px;
-		color: var(--brand-color-blue-500);
-	}
-	&__message {
-		@include flex(row, flex-end, unset, 10px);
-		align-self: stretch;
-		color: var(--greys- colors-600);
-		&--error {
-			color: var(--danger-colors-700);
-		}
-		&--success {
-			color: var(--succes-colors-600);
-		}
-		&--disabled {
-			color: var(--greys-colors-300);
-		}
-	}
+.disabled {
+  opacity: 0.6;
+  pointer-events: none;
 }

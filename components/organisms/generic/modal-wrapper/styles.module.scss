@@ -1,0 +1,20 @@
+@use "@/assets/scss/_tokens.scss" as *;
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-wrapper {
+  background: $color-white;
+  border-radius: $radius-md;
+  padding: $spacing-lg;
+  max-width: 600px;
+  width: 100%;
+  box-shadow: $shadow-lg;
+}

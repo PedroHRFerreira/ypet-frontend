@@ -1,0 +1,29 @@
+@use "@/assets/scss/_tokens.scss" as *;
+@use "@/assets/scss/mixins" as *;
+
+.sidebar {
+  @include flex(column, unset, unset, 0);
+  min-width: 290px;
+  background: $color-white;
+  border-right: 1px solid $color-gray-200;
+
+  .logo {
+    height: 82px;
+    @include flex(row, unset, center, 0);
+    padding: $spacing-lg;
+  }
+
+  .options {
+    flex: 1;
+    padding-bottom: $spacing-lg;
+  }
+
+  .config {
+    position: fixed;
+    bottom: 0;
+    width: 290px;
+    border-top: 1px solid $color-gray-200;
+    padding: $spacing-md 0;
+    background: $color-white;
+  }
+}

@@ -1,116 +1,66 @@
-<script lang="ts">
-import { defineComponent } from "vue";
-import { SizeIconType, StateType } from "ButtonsIconType";
+<script setup lang="ts">
+import { computed, defineProps, defineEmits } from "vue";
 
-export default defineComponent({
-	name: "MoleculesButtonsIcon",
-	props: {
-		type: {
-			type: String,
-			default: "primary",
-			validator: (value: string) => {
-				return ["primary", "secondary", "outline", "only"].includes(value);
-			},
-		},
-		mode: {
-			type: String,
-			default: "normal",
-			validator: (value: string) => {
-				return ["normal", "destructive"].includes(value);
-			},
-		},
-		size: {
-			type: String,
-			default: "large",
-			validator: (value: string) => {
-				return [
-					"extra-large",
-					"large",
-					"medium",
-					"small",
-					"extra-small",
-				].includes(value);
-			},
-		},
-		state: {
-			default: "default",
-			type: String,
-			validator: (value: string) => {
-				return [
-					"default",
-					"hover",
-					"pressed",
-					"disabled",
-					"loading",
-					"success",
-				].includes(value as StateType);
-			},
-		},
-		nameIcon: {
-			type: String,
-			default: "arrow-left",
-		},
-		currentColor: {
-			type: String,
-			default: "",
-		},
-	},
-	emits: ["onclick"],
-	computed: {
-		isDisabled() {
-			return this.state === "disabled";
-		},
-		isStateSuccess() {
-			return this.state === "success";
-		},
-		isStateLoading() {
-			return this.state === "loading";
-		},
-		sizeIcon(): string {
-			const sizes: SizeIconType = {
-				"extra-large": "28px",
-				large: "24px",
-				medium: "20px",
-				small: "18px",
-				"extra-small": "16px",
-			};
+const props = defineProps<{
+  type?: "primary" | "secondary" | "outline" | "only";
+  mode?: "normal" | "destructive";
+  size?: "extra-large" | "large" | "medium" | "small" | "extra-small";
+  state?: "default" | "hover" | "pressed" | "disabled" | "loading" | "success";
+  nameIcon?: string;
+  currentColor?: string;
+}>();
 
-			return sizes[this.size];
-		},
-		iconColor(): string {
-			if (this.isDisabled) {
-				return "var(--neutral-color-light-800)";
-			}
+const emit = defineEmits<{
+  (e: "click", event: MouseEvent): void;
+}>();
 
-			return this.currentColor;
-		},
-	},
+const isDisabled = computed(() => props.state === "disabled");
+const isStateLoading = computed(() => props.state === "loading");
+const isStateSuccess = computed(() => props.state === "success");
+
+const sizeIcon = computed(() => {
+  const sizes: Record<string, string> = {
+    "extra-large": "28px",
+    large: "24px",
+    medium: "20px",
+    small: "18px",
+    "extra-small": "16px",
+  };
+  return sizes[props.size || "medium"];
+});
+
+const iconColor = computed(() => {
+  if (isDisabled.value) return "var(--greys-colors-400)";
+  return props.currentColor || "currentColor";
 });
 </script>
 
 <template>
-	<div
-		class="layout"
-		:class="[type, mode, size, state]"
-		@click="$emit('onclick')"
-	>
-		<AtomsLoading
-			v-if="isStateLoading || isStateSuccess"
-			:state="isStateSuccess ? 'success' : 'flip'"
-			color="white"
-			size="large"
-		/>
-		<AtomsIcon
-			v-else
-			:current-color="iconColor"
-			class="icon-left"
-			:name="nameIcon"
-			:width="sizeIcon"
-			:height="sizeIcon"
-		/>
-	</div>
+  <button
+    class="button-icon"
+    :class="[props.type, props.mode, props.size, props.state]"
+    @click="$emit('click', $event)"
+    :disabled="isDisabled || isStateLoading"
+  >
+    <!-- loading / success -->
+    <AtomsLoading
+      v-if="isStateLoading || isStateSuccess"
+      :state="isStateSuccess ? 'success' : 'loading'"
+      color="white"
+      size="small"
+    />
+
+    <!-- ícone -->
+    <AtomsIcon
+      v-else
+      :name="props.nameIcon || 'arrow-left'"
+      :width="sizeIcon"
+      :height="sizeIcon"
+      :current-color="iconColor"
+    />
+  </button>
 </template>
 
 <style scoped lang="scss">
-@use "styles.module";
+@use "styles.module.scss";
 </style>

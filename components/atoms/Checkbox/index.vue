@@ -1,76 +1,80 @@
-<script lang="ts" setup>
-import { computed, defineEmits, defineProps } from "vue";
+<script lang="ts">
+import { defineComponent } from "vue";
 
-defineComponent({
-	name: "AtomsCheckbox",
-});
+export default defineComponent({
+  name: "AtomsCheckbox",
+  props: {
+    modelValue: {
+      type: [String, Number, Boolean, Array],
+      required: true,
+    },
+    value: {
+      type: [String, Number, Boolean],
+      default: true,
+    },
+    label: {
+      type: String,
+      default: "",
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  emits: ["update:modelValue"],
+  setup(props, { emit }) {
+    const isChecked = () => {
+      if (Array.isArray(props.modelValue)) {
+        return props.modelValue.includes(props.value);
+      }
+      return props.modelValue === props.value || props.modelValue === true;
+    };
 
-const props = defineProps<{
-	label: string;
-	value: string | number | boolean;
-	modelValue: string | number | boolean;
-	name: string;
-}>();
+    const onChange = (event: Event) => {
+      if (props.disabled) return;
 
-const emit = defineEmits<{
-	(e: "update:modelValue", value: string | number | boolean): void;
-}>();
+      const target = event.target as HTMLInputElement;
 
-const internalValue = computed({
-	get: () => props.modelValue,
-	set: (val) => emit("update:modelValue", val),
+      if (Array.isArray(props.modelValue)) {
+        const newValue = [...props.modelValue];
+        if (target.checked) {
+          newValue.push(props.value);
+        } else {
+          const index = newValue.indexOf(props.value);
+          if (index > -1) newValue.splice(index, 1);
+        }
+        emit("update:modelValue", newValue);
+      } else {
+        emit("update:modelValue", target.checked ? props.value : false);
+      }
+    };
+
+    return { isChecked, onChange };
+  },
 });
 </script>
 
 <template>
-	<label class="radio-wrapper">
-		<input
-			v-model="internalValue"
-			type="radio"
-			class="radio-input"
-			:value="value"
-			:name="name"
-			@change="$emit('update:modelValue', value)"
-		/>
-		<span class="custom-radio"></span>
-		<span class="radio-label">{{ label }}</span>
-	</label>
+  <label
+    class="checkbox"
+    :class="{
+      'checkbox--checked': isChecked(),
+      'checkbox--disabled': disabled,
+    }"
+  >
+    <input
+      type="checkbox"
+      class="checkbox__input"
+      :value="value"
+      :checked="isChecked()"
+      :disabled="disabled"
+      @change="onChange"
+    />
+    <span class="checkbox__control"></span>
+    <span v-if="label" class="checkbox__label">{{ label }}</span>
+  </label>
 </template>
 
-<style scoped>
-.radio-wrapper {
-	display: flex;
-	align-items: center;
-	gap: 0.5rem;
-	cursor: pointer;
-	position: relative;
-}
-
-.radio-input {
-	display: none;
-}
-
-.custom-radio {
-	width: 24px;
-	height: 24px;
-	border: 2px solid #ccc;
-	border-radius: 50%;
-	position: relative;
-}
-
-.radio-input:checked + .custom-radio::after {
-	content: "";
-	position: absolute;
-	top: 5px;
-	left: 5px;
-	width: 12px;
-	height: 12px;
-	background-color: #2b3a67;
-	border-radius: 50%;
-}
-
-.radio-label {
-	color: #2b3a67;
-	font-weight: 500;
-}
+<style scoped lang="scss">
+@use "styles.module";
 </style>

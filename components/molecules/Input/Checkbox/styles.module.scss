@@ -1,52 +1,120 @@
-@use "assets/scss/_typography";
+@use "@/assets/scss/_tokens.scss" as *;
 
-.checkbox-container {
-	display: flex;
-	align-items: center;
-	color: var(--brand-color-dark-blue-200);
-	cursor: pointer;
-	user-select: none;
+.checkbox-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xxs;
 
-	input {
-		display: none;
-	}
+  .container {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: $spacing-xs;
+    align-items: start;
+    cursor: pointer;
+    user-select: none;
+  }
 
-	.checkmark {
-		width: 20px;
-		height: 20px;
-		border: 1px solid var(--brand-color-dark-blue-200);
-		border-radius: 4px;
-		margin-right: 10px;
-		position: relative;
-		transition:
-			background-color 0.2s,
-			border-color 0.2s;
+  .box {
+    position: relative;
+    width: 20px;
+    height: 20px;
+  }
 
-		&::after {
-			content: "";
-			position: absolute;
-			display: none;
-			left: 6px;
-			top: 2px;
-			width: 5px;
-			height: 10px;
-			border: solid white;
-			border-width: 0 2px 2px 0;
-			transform: rotate(45deg);
-		}
-	}
+  .native {
+    // esconde visualmente mas mantém acessível
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
 
-	input:checked + .checkmark {
-		background-color: var(--brand-color-blue-500);
-		border-color: var(--brand-color-blue-500);
+    &:focus-visible + .control {
+      box-shadow: 0 0 0 2px rgba($brand-color-blue-500, 0.25);
+      border-color: $brand-color-blue-600;
+    }
 
-		&::after {
-			display: block;
-		}
-	}
+    &:disabled + .control {
+      cursor: not-allowed;
+    }
+  }
 
-	.label-text {
-		@extend .text-p5, .text-p5-regular;
-		color: var(--brand-color-dark-blue-200);
-	}
+  .control {
+    box-sizing: border-box;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 20px; height: 20px;
+    border-radius: 4px;
+    border: 1px solid $greys-colors-400;
+    background: $neutral-light-0;
+    color: $neutral-light-0; // cor do ícone (via currentColor em estados)
+    transition: background-color .15s ease, border-color .15s ease, color .15s ease;
+
+    .icon { width: 14px; height: 14px; }
+
+    // hover no container (quando não desabilitado)
+    .native:not(:disabled):hover + & {
+      border-color: $greys-colors-600;
+    }
+
+    // checked
+    &.checked {
+      background: $brand-color-blue-600;
+      border-color: $brand-color-blue-600;
+      color: $neutral-light-0;
+    }
+
+    // indeterminate
+    &.indeterminate {
+      background: $brand-color-blue-600;
+      border-color: $brand-color-blue-600;
+      color: $neutral-light-0;
+    }
+  }
+
+  .texts {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+
+    .label {
+      font-family: $font-family;
+      font-size: $font-size-sm;
+      font-weight: 500;
+      color: $greys-colors-800;
+      line-height: 1.3;
+    }
+
+    .description {
+      font-family: $font-family;
+      font-size: $font-size-xs;
+      color: $greys-colors-500;
+      line-height: 1.3;
+    }
+  }
+
+  .error-text {
+    font-family: $font-family;
+    font-size: $font-size-xs;
+    color: $feedback-error-600;
+  }
+
+  &.error {
+    .control {
+      border-color: $feedback-error-600;
+    }
+    .texts .label {
+      color: $feedback-error-700;
+    }
+  }
+
+  &.disabled {
+    .container { cursor: not-allowed; }
+    .control {
+      background: $greys-colors-100;
+      border-color: $greys-colors-300;
+    }
+    .texts {
+      .label, .description { color: $greys-colors-400; }
+    }
+  }
 }

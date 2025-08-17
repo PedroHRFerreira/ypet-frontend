@@ -1,54 +1,51 @@
 <script lang="ts">
+import { defineComponent } from "vue";
+
 export default defineComponent({
-	name: "AtomsDropdownItem",
-	props: {
-		state: {
-			type: String,
-			default: "default",
-			validator: (value: string) => {
-				return ["default", "activated", "disabled"].includes(value);
-			},
-		},
-		text: {
-			type: String,
-			default: "",
-		},
-		textColor: {
-			type: String,
-			default: "var(--greys-colors-800)",
-		},
-	},
-	emits: ["on-click"],
-	setup(props) {
-		const isStateActivated = computed(() => {
-			return props.state === "activated";
-		});
-		return {
-			isStateActivated,
-		};
-	},
+  name: "AtomsDropdownItem",
+  props: {
+    label: {
+      type: String,
+      required: true,
+    },
+    icon: {
+      type: String,
+      default: "",
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  emits: ["click"],
+  setup(props, { emit }) {
+    const handleClick = () => {
+      if (!props.disabled) {
+        emit("click");
+      }
+    };
+
+    return { handleClick };
+  },
 });
 </script>
+
 <template>
-	<div :class="['wrapper-dropdown-item', state]" @click="$emit('on-click')">
-		<div class="wrapper-dropdown-item__text">
-			<AtomsTypography
-				type="text-p5"
-				weight="regular"
-				:text="text"
-				:color="textColor"
-			/>
-			<AtomsIcon
-				v-if="isStateActivated"
-				name="check"
-				width="14px"
-				height="14px"
-				filled
-				current-color="var(--brand-color-dark-blue-600)"
-			/>
-		</div>
-	</div>
+  <div
+    class="dropdown-item"
+    :class="{ 'dropdown-item--disabled': disabled }"
+    @click="handleClick"
+  >
+    <AtomsIcon v-if="icon" :name="icon" size="small" class="dropdown-item__icon" />
+    <AtomsTypography
+      type="text-p2"
+      weight="medium"
+      :text="label"
+      class="dropdown-item__label"
+    />
+  </div>
 </template>
+
 <style scoped lang="scss">
 @use "styles.module";
 </style>

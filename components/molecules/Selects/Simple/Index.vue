@@ -1,235 +1,165 @@
-<script lang="ts">
-export default defineComponent({
-	name: "MoleculesSelectsSimple",
-	props: {
-		state: {
-			type: String,
-			default: "default",
-			validator: (value: string) =>
-				["default", "activated", "filled", "error", "disabled"].includes(value),
-		},
-		label: {
-			type: String,
-			default: "",
-		},
-		options: {
-			type: Array as PropType<IOption[]>,
-			default: () => [] as IOption[],
-		},
-		message: {
-			type: String,
-			default: null,
-		},
-		messageError: {
-			type: String,
-			default: null,
-		},
-		maxWidth: {
-			type: String,
-			default: "100%",
-		},
-	},
-	emits: ["item-selected"],
-	setup(props, { emit }) {
-		const isStateActivated = ref(false);
-		const isFilled = ref(false);
-		const status = ref("default");
-		const optionsData = ref([] as IOption[]);
-		const option = ref({} as IOption);
-		const wrapper = ref<HTMLElement | null>(null);
-		const isMessageError = computed(() => {
-			return !!props.messageError;
-		});
-		const isMessage = computed(() => {
-			return !!props.message;
-		});
-		const isDisabled = computed(() => {
-			return props.state === "disabled";
-		});
-		const isOptionSelected = computed(() => {
-			const optionEmpty = Object.keys(option.value).length === 0;
-			const optionIdEmpty = option.value.id === "";
-			return !optionEmpty && !optionIdEmpty;
-		});
+<script setup lang="ts">
+import { ref, computed, onMounted, onBeforeUnmount, nextTick } from "vue";
+import styles from "./styles.module.scss";
 
-		const handleClickOutside = (event: MouseEvent) => {
-			if (wrapper.value && !wrapper.value.contains(event.target as Node)) {
-				isStateActivated.value = false;
-			}
-		};
-		const handleStateActivated = (): void => {
-			if (isDisabled.value) {
-				return;
-			}
+type Option = { label: string; value: string | number; disabled?: boolean };
 
-			const isCurrentlyActivated = status.value === "activated";
-			isStateActivated.value = !isCurrentlyActivated;
+const modelValue = defineModel<string | number | null>({ required: false });
 
-			if (isCurrentlyActivated) {
-				const hasOptionSelected = option.value?.id !== "";
-				status.value = hasOptionSelected ? "filled" : "default";
-				return;
-			}
-
-			status.value = "activated";
-		};
-
-		const handleOptionSelected = (opt: IOption) => {
-			const isOptionSelectedEqualOldOption = option?.value?.id === opt.id;
-			updateOptionsDataWithOptionSelected(opt);
-			emit("item-selected", opt);
-			if (isOptionSelectedEqualOldOption) {
-				return removeOptionSelected();
-			}
-			return addOptionSelected(opt);
-		};
-
-		const updateOptionsDataWithOptionSelected = (option: IOption) => {
-			const options = props.options.map((opt) => {
-				const item = opt as IOption;
-				return {
-					...item,
-					state: item.id === option.id ? "activated" : "default",
-				};
-			});
-			optionsData.value = options as IOption[];
-		};
-
-		const removeOptionSelected = (): void => {
-			status.value = "default";
-			isFilled.value = false;
-			option.value = {} as IOption;
-		};
-
-		const addOptionSelected = (opt: IOption): void => {
-			isFilled.value = true;
-			handleStateActivated();
-			option.value = opt;
-		};
-
-		watch(
-			() => props.options,
-			(newOptions) => {
-				optionsData.value = newOptions.map((opt) => {
-					const item = opt as IOption;
-					if (item.state === "activated") {
-						option.value = { ...item, state: "default" };
-						isFilled.value = true;
-					}
-					return { ...item };
-				});
-
-				const isAllOptionsDefault = optionsData.value.every(
-					(opt) => opt.state === "default",
-				);
-
-				if (isAllOptionsDefault) {
-					option.value = {} as IOption;
-					isFilled.value = false;
-				}
-			},
-			{ immediate: true },
-		);
-
-		onMounted(() => {
-			document.addEventListener("click", handleClickOutside);
-		});
-		onBeforeUnmount(() => {
-			document.removeEventListener("click", handleClickOutside);
-		});
-
-		return {
-			handleStateActivated,
-			handleOptionSelected,
-			isStateActivated,
-			isOptionSelected,
-			isMessageError,
-			optionsData,
-			isDisabled,
-			isMessage,
-			isFilled,
-			wrapper,
-			option,
-			status,
-		};
-	},
+const props = withDefaults(defineProps<{
+  id?: string
+  label?: string
+  placeholder?: string
+  options: Option[]
+  disabled?: boolean
+  error?: string
+  helper?: string
+  clearable?: boolean
+  width?: string
+}>(), {
+  placeholder: "Selecione...",
+  disabled: false,
+  error: "",
+  helper: "",
+  clearable: false,
+  width: "100%"
 });
-</script>
-<template>
-	<div ref="wrapper" class="wrapper-selects-simple anim-loading">
-		<div :class="['selects-simple', state]">
-			<div class="selects-simple__box-label">
-				<AtomsTypography
-					type="text-p5"
-					weight="medium"
-					:text="label"
-					color="var(--brand-color-dark-blue-600)"
-				/>
-			</div>
-			<div
-				:class="[
-					'selects-simple__box-text',
-					{ 'selects-simple--error': isMessageError },
-				]"
-				@click="handleStateActivated"
-			>
-				<div class="selects-simple__box-text--content">
-					<AtomsDropdownItem
-						v-if="isOptionSelected"
-						:text="option.text"
-						:state="option.state"
-					/>
-					<div v-else class="placeholder">
-						<AtomsTypography
-							type="text-p5"
-							weight="regular"
-							text="Selecione"
-							color="var(--brand-color-dark-blue-200)"
-						/>
-					</div>
-				</div>
-				<div class="selects-simple__box-text--icon">
-					<AtomsIcon
-						v-show="isStateActivated"
-						filled
-						name="chevron-up"
-						width="20px"
-						height="20px"
-						current-color="var(--neutral-color-dark-900)"
-					/>
-					<AtomsIcon
-						v-show="!isStateActivated"
-						filled
-						name="chevron-down"
-						width="20px"
-						height="20px"
-						current-color="var(--neutral-color-dark-900)"
-					/>
-				</div>
-			</div>
-			<div v-if="isMessageError" class="selects-simple__message-text">
-				<AtomsTypography
-					type="text-p6"
-					weight="regular"
-					:text="messageError"
-					color="var(--auxiliary-color-red-600)"
-				/>
-			</div>
-		</div>
-		<div v-if="isStateActivated" class="wrapper-selects-simple__dropdown">
-			<AtomsDropdownItem
-				v-for="(opt, index) in optionsData"
-				:key="index"
-				:text="opt?.text"
-				:state="opt?.state"
-				@on-click="handleOptionSelected(opt)"
-			/>
-		</div>
-	</div>
-</template>
-<style scoped lang="scss">
-@use "styles.module";
-.wrapper-selects-simple {
-	max-width: v-bind(maxWidth);
+
+const isOpen = ref(false);
+const rootEl = ref<HTMLElement | null>(null);
+const listEl = ref<HTMLElement | null>(null);
+const highlighted = ref<number>(-1);
+
+const selected = computed(() =>
+  props.options.find(o => o.value === modelValue.value) || null
+);
+
+function toggle(open?: boolean) {
+  if (props.disabled) return;
+  isOpen.value = open ?? !isOpen.value;
+  if (isOpen.value) {
+    // posiciona highlight no item selecionado ou primeiro habilitado
+    highlighted.value = Math.max(
+      props.options.findIndex(o => o.value === modelValue.value),
+      props.options.findIndex(o => !o.disabled)
+    );
+    nextTick(() => listEl.value?.focus());
+  }
 }
+
+function selectAt(index: number) {
+  const opt = props.options[index];
+  if (!opt || opt.disabled) return;
+  modelValue.value = opt.value;
+  isOpen.value = false;
+}
+
+function clear() {
+  if (!props.clearable || props.disabled) return;
+  modelValue.value = null;
+}
+
+function onKeydown(e: KeyboardEvent) {
+  if (!isOpen.value) return;
+  const max = props.options.length - 1;
+
+  if (e.key === "ArrowDown") {
+    e.preventDefault();
+    do { highlighted.value = Math.min(max, highlighted.value + 1); }
+    while (props.options[highlighted.value]?.disabled && highlighted.value < max);
+  } else if (e.key === "ArrowUp") {
+    e.preventDefault();
+    do { highlighted.value = Math.max(0, highlighted.value - 1); }
+    while (props.options[highlighted.value]?.disabled && highlighted.value > 0);
+  } else if (e.key === "Enter" || e.key === " ") {
+    e.preventDefault();
+    selectAt(highlighted.value);
+  } else if (e.key === "Escape") {
+    isOpen.value = false;
+  }
+}
+
+function onClickOutside(ev: MouseEvent) {
+  if (!rootEl.value) return;
+  if (!rootEl.value.contains(ev.target as Node)) isOpen.value = false;
+}
+
+onMounted(() => document.addEventListener("click", onClickOutside));
+onBeforeUnmount(() => document.removeEventListener("click", onClickOutside));
+</script>
+
+<template>
+  <div
+    ref="rootEl"
+    :class="[styles.wrapper, props.disabled && styles.disabled, props.error && styles.error]"
+    :style="{ width: props.width }"
+  >
+    <!-- Label -->
+    <label v-if="props.label" :for="props.id" :class="styles.label">
+      {{ props.label }}
+    </label>
+
+    <!-- Botão do select -->
+    <button
+      :id="props.id"
+      type="button"
+      :class="styles.trigger"
+      :aria-haspopup="'listbox'"
+      :aria-expanded="isOpen"
+      :disabled="props.disabled"
+      @click="toggle()"
+    >
+      <span :class="[styles.value, !selected && styles.placeholder]">
+        {{ selected?.label ?? props.placeholder }}
+      </span>
+
+      <button
+        v-if="props.clearable && selected"
+        type="button"
+        :class="styles.clear"
+        aria-label="Limpar seleção"
+        @click.stop="clear"
+      >
+        <AtomsIcon name="close" width="16" height="16" />
+      </button>
+
+      <AtomsIcon :name="isOpen ? 'chevron-up' : 'chevron-down'" width="16" height="16" :class="styles.chevron" />
+    </button>
+
+    <!-- Lista -->
+    <ul
+      v-show="isOpen"
+      ref="listEl"
+      tabindex="0"
+      role="listbox"
+      :class="styles.listbox"
+      @keydown="onKeydown"
+    >
+      <li
+        v-for="(opt, i) in props.options"
+        :key="opt.value"
+        role="option"
+        :aria-selected="opt.value === modelValue"
+        :class="[
+          styles.option,
+          opt.disabled && styles.optDisabled,
+          i === highlighted && styles.highlighted,
+          opt.value === modelValue && styles.selected
+        ]"
+        @mouseenter="highlighted = i"
+        @click="selectAt(i)"
+      >
+        <span class="text">{{ opt.label }}</span>
+        <AtomsIcon v-if="opt.value === modelValue" name="check" width="16" height="16" />
+      </li>
+    </ul>
+
+    <!-- Mensagens -->
+    <p v-if="props.error" :class="styles.errorText">{{ props.error }}</p>
+    <p v-else-if="props.helper" :class="styles.helper">{{ props.helper }}</p>
+  </div>
+</template>
+
+<style scoped lang="scss">
+@use "styles.module.scss";
 </style>

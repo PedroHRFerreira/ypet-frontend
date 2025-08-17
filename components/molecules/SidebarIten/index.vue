@@ -1,41 +1,33 @@
-<script lang="ts">
-import { defineComponent } from "vue";
-export default defineComponent({
-	name: "SidebarItemIndex",
-	props: {
-		icon: {
-			type: String,
-			default: "home",
-		},
-		text: {
-			type: String,
-			default: "Home",
-		},
-		state: {
-			type: String,
-			default: "default",
-			validator: (value: string) => {
-				return ["default", "hover", "actived", "disabled"].includes(value);
-			},
-		},
-		active: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	emits: ["onclick"],
-});
+<script setup lang="ts">
+import { defineProps, defineEmits } from "vue";
+import AtomsIcon from "@/components/atoms/icon";
+
+const props = defineProps<{
+  icon: string;
+  text: string;
+  active?: boolean;
+}>();
+
+const emit = defineEmits<{
+  (e: "onclick"): void;
+}>();
+
+const handleClick = () => {
+  emit("onclick");
+};
 </script>
+
 <template>
-	<div
-		class="sidebar-item"
-		:class="[state, { active: active }]"
-		@click="$emit('onclick')"
-	>
-		<AtomsIcon :name="icon" class="icon" width="24px" height="24px" filled />
-		<AtomsTypography class="text" type="text-p5" :text="text" />
-	</div>
+  <button
+    class="sidebar-item"
+    :class="{ active: props.active }"
+    @click="handleClick"
+  >
+    <AtomsIcon :name="props.icon" width="20px" height="20px" />
+    <span class="text">{{ props.text }}</span>
+  </button>
 </template>
+
 <style scoped lang="scss">
-@use "styles.module.scss";
+@use "./styles.module.scss";
 </style>

@@ -1,14 +1,49 @@
-.icon-common {
-	display: flex;
-	background: none;
-	svg {
-		width: v-bind(width);
-		height: v-bind(height);
-		margin-bottom: 0;
-		vertical-align: middle;
-	}
+@use "@/assets/scss/_tokens.scss" as *;
 
-	&.icon-common--stroke {
-		stroke: currentColor !important;
-	}
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  &__img {
+    display: block;
+  }
+
+  &--small {
+    width: 16px;
+    height: 16px;
+    .icon__img {
+      width: 16px;
+      height: 16px;
+    }
+  }
+
+  &--medium {
+    width: 24px;
+    height: 24px;
+    .icon__img {
+      width: 24px;
+      height: 24px;
+    }
+  }
+
+  &--large {
+    width: 32px;
+    height: 32px;
+    .icon__img {
+      width: 32px;
+      height: 32px;
+    }
+  }
+}
+
+.wrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  .icon {
+    display: block;
+    object-fit: contain;
+  }
 }

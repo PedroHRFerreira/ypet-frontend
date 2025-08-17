@@ -1,66 +1,65 @@
-@use "assets/scss/form-reset-helpers";
-@use "assets/scss/_typography";
+@use "@/assets/scss/_tokens.scss" as *;
 
 .date-input-group {
-	display: flex;
-	flex-direction: column;
-	gap: 8px;
-	width: 100%;
-	max-width: 216px;
-}
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
 
-.label {
-	color: var(--brand-color-dark-blue-600);
-	@extend .text-p5, .text-p5-medium;
-}
+  .label {
+    font-family: $font-family;
+    font-size: $font-size-sm;
+    font-weight: 500;
+    color: $greys-colors-700;
+  }
 
-.fields {
-	display: flex;
-	justify-content: space-between;
-	border-radius: 4px;
-	padding: 18px 0;
-	gap: 0;
-	border: 1px solid var(--brand-color-dark-blue-100);
-	background: var(
-		--white,
-		linear-gradient(
-			0deg,
-			rgba(255, 255, 255, 0.2) 0%,
-			rgba(255, 255, 255, 0.2) 100%
-		),
-		#fff
-	);
+  .fields {
+    display: flex;
+    gap: $spacing-sm;
 
-	select.field {
-		flex: 1;
-		border: none;
-		outline: none;
-		background: transparent;
-		color: var(--brand-color-dark-blue-500);
-		appearance: none;
-		font-size: 14px;
-		font-style: normal;
-		font-weight: 400;
-		line-height: 18px;
+    .select {
+      flex: 1;
+      padding: $spacing-xs $spacing-sm;
+      border: 1px solid $greys-colors-300;
+      border-radius: 4px;
+      font-family: $font-family;
+      font-size: $font-size-sm;
+      color: $greys-colors-700;
+      background-color: $neutral-light-0;
+      cursor: pointer;
 
-		option[disabled] {
-			color: #a0a0a0;
-		}
+      &:hover {
+        border-color: $brand-color-blue-500;
+      }
 
-		&.select-day {
-			padding: 0 0 0 16px;
-			border-right: 1px solid var(--brand-color-dark-blue-100);
-			box-sizing: border-box;
-		}
+      &:focus {
+        outline: none;
+        border-color: $brand-color-blue-600;
+        box-shadow: 0 0 0 2px rgba($brand-color-blue-500, 0.2);
+      }
 
-		&.select-month {
-			padding: 0 16px 0 16px;
-			border-right: 1px solid var(--brand-color-dark-blue-100);
-			box-sizing: border-box;
-		}
+      &:disabled {
+        background-color: $greys-colors-100;
+        color: $greys-colors-400;
+        cursor: not-allowed;
+      }
+    }
+  }
 
-		&.select-year {
-			padding: 0 16px 0 16px;
-		}
-	}
+  &.error {
+    .select {
+      border-color: $feedback-error-600;
+    }
+
+    .error-text {
+      font-size: $font-size-xs;
+      color: $feedback-error-600;
+      margin-top: $spacing-xxs;
+    }
+  }
+
+  &.disabled {
+    .label {
+      color: $greys-colors-400;
+    }
+  }
 }

@@ -7,14 +7,10 @@ export default defineNuxtConfig({
 			viewport: "width=device-width, initial-scale=1",
 
 			meta: [
-				{ charset: "utf-8" },
-				{ name: "viewport", content: "width=device-width, initial-scale=1" },
-				{
-					hid: "description",
-					name: "description",
-					content: "Ypet",
-				},
-				{ name: "format-detection", content: "telephone=no" },
+			{ charset: "utf-8" },
+			{ name: "viewport", content: "width=device-width, initial-scale=1" },
+			{ name: "description", content: "Ypet" },
+			{ name: "format-detection", content: "telephone=no" },
 			],
 			link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
 		},
@@ -36,7 +32,8 @@ export default defineNuxtConfig({
 				scss: {
 					additionalData:
 						'@use "@/assets/scss/_colors.scss" as *; ' +
-						'@use "@/assets/scss/_reset.scss" as *;',
+						'@use "@/assets/scss/_reset.scss" as *; ' +
+          				'@use "@/assets/scss/_tokens.scss" as *;',
 					api: "modern",
 					silenceDeprecations: ["mixed-decls", "global-builtin"],
 				},

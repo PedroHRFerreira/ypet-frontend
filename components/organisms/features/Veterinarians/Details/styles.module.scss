@@ -1,0 +1,31 @@
+@use "@/assets/scss/_tokens.scss" as *;
+
+.veterinarian-details {
+  background: $color-white;
+  border-radius: $radius-md;
+  padding: $spacing-lg;
+  box-shadow: $shadow-sm;
+
+  &__title {
+    font-size: $font-lg;
+    font-weight: 600;
+    margin-bottom: $spacing-md;
+    color: $color-gray-900;
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+
+    p {
+      font-size: $font-md;
+      color: $color-gray-700;
+
+      strong {
+        font-weight: 600;
+        color: $color-gray-900;
+      }
+    }
+  }
+}

@@ -1,0 +1,15 @@
+@use "@/assets/scss/_tokens.scss" as *;
+
+.footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: $spacing-md;
+  background: $color-gray-50;
+  border-top: 1px solid $color-gray-200;
+
+  &__text {
+    font-size: $font-size-sm;
+    color: $color-gray-600;
+  }
+}

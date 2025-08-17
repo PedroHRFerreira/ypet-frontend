@@ -1,63 +1,93 @@
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
+import styles from "./styles.module.scss";
 
-export default defineComponent({
-	name: "MoleculesInputOptionGroup",
-	props: {
-		label: {
-			type: String,
-			required: true,
-		},
-		options: {
-			type: Array as () => IOption[],
-			required: true,
-		},
-		name: {
-			type: String,
-			required: true,
-		},
-		value: {
-			type: [String, Array<string>, Number, Boolean, null],
-			default: "",
-		},
-	},
-	emits: ["changeOption"],
-	setup(props, { emit }) {
-		const items = ref([] as IOption[]);
+export type Option = {
+  label: string
+  value: string | number
+  disabled?: boolean
+};
 
-		items.value = props.options.map((option) => ({
-			...option,
-			state:
-				option.id === props.value ? "activated" : option.state || "default",
-		}));
+const modelValue = defineModel<string | number | (string | number)[]>();
 
-		const handleOptionChange = (selectedOption: IOption) => {
-			emit("changeOption", selectedOption);
-		};
-
-		return {
-			items,
-			handleOptionChange,
-		};
-	},
+const props = withDefaults(defineProps<{
+  id?: string
+  label?: string
+  type?: "radio" | "checkbox"
+  options: Option[]
+  error?: string
+  helper?: string
+  disabled?: boolean
+}>(), {
+  type: "radio",
+  error: "",
+  helper: "",
+  disabled: false
 });
+
+function isChecked(opt: Option) {
+  if (props.type === "checkbox") {
+    return Array.isArray(modelValue.value) && modelValue.value.includes(opt.value);
+  }
+  return modelValue.value === opt.value;
+}
+
+function toggle(opt: Option) {
+  if (props.disabled || opt.disabled) return;
+
+  if (props.type === "checkbox") {
+    const arr = Array.isArray(modelValue.value) ? [...modelValue.value] : [];
+    if (arr.includes(opt.value)) {
+      modelValue.value = arr.filter(v => v !== opt.value);
+    } else {
+      arr.push(opt.value);
+      modelValue.value = arr;
+    }
+  } else {
+    modelValue.value = opt.value;
+  }
+}
 </script>
 
 <template>
-	<div class="input-option-group">
-		<label class="group-label">{{ label }}</label>
-		<div class="options-container">
-			<AtomsBaseRadio
-				v-for="(option, index) in items"
-				:key="index"
-				:name="name"
-				:option="option"
-				@on-change="handleOptionChange"
-			/>
-		</div>
-	</div>
+  <div :class="[styles.wrapper, { [styles.disabled]: props.disabled }]">
+    <label v-if="props.label" :class="styles.label">{{ props.label }}</label>
+
+    <div :class="styles.group">
+      <label
+        v-for="opt in props.options"
+        :key="opt.value"
+        :class="[
+          styles.option,
+          isChecked(opt) && styles.checked,
+          opt.disabled && styles.optDisabled
+        ]"
+      >
+        <input
+          v-if="props.type === 'radio'"
+          type="radio"
+          :value="opt.value"
+          :checked="isChecked(opt)"
+          :disabled="props.disabled || opt.disabled"
+          @change="toggle(opt)"
+        />
+        <input
+          v-else
+          type="checkbox"
+          :value="opt.value"
+          :checked="isChecked(opt)"
+          :disabled="props.disabled || opt.disabled"
+          @change="toggle(opt)"
+        />
+        <span :class="styles.box"></span>
+        <span :class="styles.text">{{ opt.label }}</span>
+      </label>
+    </div>
+
+    <p v-if="props.error" :class="styles.error">{{ props.error }}</p>
+    <p v-else-if="props.helper" :class="styles.helper">{{ props.helper }}</p>
+  </div>
 </template>
 
 <style scoped lang="scss">
-@use "styles.module";
+@use "styles.module.scss";
 </style>

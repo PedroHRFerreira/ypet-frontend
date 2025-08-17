@@ -1,87 +1,59 @@
-@mixin size($width, $height) {
-	width: $width;
-	height: $height;
+@mixin size($w, $h) {
+  width: $w;
+  height: $h;
 }
 
-@mixin classSize() {
-	&.extra-large {
-		@include size(72px, 72px);
+.loading-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
 
-		svg {
-			@include size(28px, 28px);
-		}
-	}
+  // Sizes
+  &.extra-small { @include size(16px, 16px); }
+  &.small { @include size(24px, 24px); }
+  &.medium { @include size(32px, 32px); }
+  &.large { @include size(48px, 48px); }
+  &.extra-large { @include size(64px, 64px); }
 
-	&.large {
-		@include size(56px, 56px);
+  // Spinner animation
+  .spinner {
+    animation: rotate 1s linear infinite;
+    width: 100%;
+    height: 100%;
 
-		svg {
-			@include size(24px, 24px);
-		}
-	}
+    .path {
+      stroke-linecap: round;
+      animation: dash 1.5s ease-in-out infinite;
+    }
+  }
 
-	&.medium {
-		@include size(48px, 48px);
-
-		svg {
-			@include size(20px, 20px);
-		}
-	}
-
-	&.small {
-		@include size(40px, 40px);
-
-		svg {
-			@include size(18px, 18px);
-		}
-	}
-
-	&.extra-small {
-		@include size(32px, 32px);
-
-		svg {
-			@include size(16px, 16px);
-		}
-	}
+  // Success check
+  .check {
+    width: 100%;
+    height: 100%;
+    background: var(--succes-colors-600);
+    border-radius: 50%;
+    padding: 4px;
+  }
 }
 
-.wrapper-loading {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	flex-shrink: 0;
-	border-radius: 4px;
-	position: relative;
+// Animations
+@keyframes rotate {
+  100% { transform: rotate(360deg); }
+}
 
-	svg {
-		margin: 5px 0 0 5px;
-
-		@keyframes rotate {
-			from {
-				transform: rotate(105deg);
-			}
-			to {
-				transform: rotate(465deg);
-			}
-		}
-
-		.rotating {
-			animation-name: rotate;
-			animation-duration: 1200ms;
-			animation-iteration-count: infinite;
-			animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-			transform-origin: 300px 300px;
-		}
-	}
-
-	&.flip {
-		@include classSize();
-	}
-
-	&.success {
-		border-radius: 4px;
-		background: transparent;
-
-		@include classSize();
-	}
+@keyframes dash {
+  0% {
+    stroke-dasharray: 1, 150;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -35;
+  }
+  100% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -124;
+  }
 }

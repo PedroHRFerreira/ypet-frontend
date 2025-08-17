@@ -1,0 +1,32 @@
+@use "@/assets/scss/_tokens.scss" as *;
+
+.form-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  background: $color-white;
+  padding: $spacing-lg;
+  border-radius: $radius-md;
+  border: 1px solid $color-gray-200;
+
+  &__header {
+    margin-bottom: $spacing-sm;
+  }
+
+  &__title {
+    font-size: $font-size-lg;
+    font-weight: 600;
+    margin-bottom: $spacing-xs;
+  }
+
+  &__description {
+    font-size: $font-size-sm;
+    color: $color-gray-600;
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: $spacing-sm;
+  }
+}

@@ -1,100 +1,67 @@
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
+import { defineProps } from "vue";
 
-export default defineComponent({
-	name: "MoleculesDateInputGroup",
-	props: {
-		label: {
-			type: String,
-			default: "Data de nascimento",
-		},
-		modelValue: {
-			type: Object as () => {
-				day: string;
-				month: string;
-				year: string;
-			},
-			required: true,
-		},
-	},
-	emits: ["update:modelValue"],
-	setup(props, { emit }) {
-		const handleChange = (field: "day" | "month" | "year", value: string) => {
-			emit("update:modelValue", {
-				...props.modelValue,
-				[field]: value,
-			});
-		};
+const props = defineProps<{
+  label?: string;
+  error?: string;
+  disabled?: boolean;
+  day?: string | number;
+  month?: string | number;
+  year?: string | number;
+}>();
 
-		const days = Array.from({ length: 31 }, (_, i) =>
-			String(i + 1).padStart(2, "0"),
-		);
-		const months = [
-			"01",
-			"02",
-			"03",
-			"04",
-			"05",
-			"06",
-			"07",
-			"08",
-			"09",
-			"10",
-			"11",
-			"12",
-		];
-		const years = Array.from({ length: 100 }, (_, i) =>
-			String(new Date().getFullYear() - i),
-		);
-
-		return {
-			handleChange,
-			days,
-			months,
-			years,
-		};
-	},
-});
+const emit = defineEmits<{
+  (e: "update:day", value: string): void;
+  (e: "update:month", value: string): void;
+  (e: "update:year", value: string): void;
+}>();
 </script>
 
 <template>
-	<div class="date-input-group">
-		<label class="label">{{ label }}</label>
-		<div class="fields">
-			<select
-				class="field select-day"
-				:value="modelValue.day"
-				@change="handleChange('day', $event.target.value)"
-			>
-				<option disabled value="">Dia</option>
-				<option v-for="day in days" :key="day" :value="day">{{ day }}</option>
-			</select>
+  <div class="date-input-group" :class="{ disabled: props.disabled, error: !!props.error }">
+    <label v-if="props.label" class="label">
+      {{ props.label }}
+    </label>
 
-			<select
-				class="field select-month"
-				:value="modelValue.month"
-				@change="handleChange('month', $event.target.value)"
-			>
-				<option disabled value="">Mês</option>
-				<option v-for="month in months" :key="month" :value="month">
-					{{ month }}
-				</option>
-			</select>
+    <div class="fields">
+      <!-- Dia -->
+      <select
+        class="select"
+        :disabled="props.disabled"
+        :value="props.day"
+        @change="emit('update:day', $event.target.value)"
+      >
+        <option value="" disabled>Dia</option>
+        <option v-for="d in 31" :key="d" :value="d">{{ d }}</option>
+      </select>
 
-			<select
-				class="field select-year"
-				:value="modelValue.year"
-				@change="handleChange('year', $event.target.value)"
-			>
-				<option disabled value="">Ano</option>
-				<option v-for="year in years" :key="year" :value="year">
-					{{ year }}
-				</option>
-			</select>
-		</div>
-	</div>
+      <!-- Mês -->
+      <select
+        class="select"
+        :disabled="props.disabled"
+        :value="props.month"
+        @change="emit('update:month', $event.target.value)"
+      >
+        <option value="" disabled>Mês</option>
+        <option v-for="m in 12" :key="m" :value="m">{{ m }}</option>
+      </select>
+
+      <!-- Ano -->
+      <select
+        class="select"
+        :disabled="props.disabled"
+        :value="props.year"
+        @change="emit('update:year', $event.target.value)"
+      >
+        <option value="" disabled>Ano</option>
+        <option v-for="y in 100" :key="y" :value="1925 + y">{{ 1925 + y }}</option>
+      </select>
+    </div>
+
+    <p v-if="props.error" class="error-text">{{ props.error }}</p>
+  </div>
 </template>
 
 <style scoped lang="scss">
-@use "styles.module";
+@use "styles.module.scss";
 </style>

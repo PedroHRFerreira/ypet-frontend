@@ -1,7 +1,50 @@
-.checkbox[type="checkbox"],
-.checkbox[type="radio"] {
-	cursor: pointer;
-	width: 16px;
-	aspect-ratio: 1/1;
-	accent-color: var(--brand-color-primary-600);
+@use "@/assets/scss/_tokens.scss" as *;
+
+.checkbox {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  gap: $spacing-sm;
+  font-family: $font-family-base;
+
+  &__input {
+    display: none;
+  }
+
+  &__control {
+    width: 16px;
+    height: 16px;
+    border: 2px solid $greys-400;
+    border-radius: 4px;
+    display: inline-block;
+    position: relative;
+    transition: all 0.2s ease-in-out;
+
+    &::after {
+      content: "";
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+      background: $brand-colors-primary;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      transition: transform 0.2s ease-in-out;
+    }
+  }
+
+  &--checked &__control::after {
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  &__label {
+    font-size: 0.875rem;
+    color: $greys-800;
+  }
+
+  &--disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
 }
