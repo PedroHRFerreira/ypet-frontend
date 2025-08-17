@@ -22,3 +22,8 @@
 	padding: 15px 15px;
 	border: 1px solid #ccc;
 }
+
+.has-error {
+  color: var(--danger-colors-700);
+  border-color: var(--danger-colors-700);
+}

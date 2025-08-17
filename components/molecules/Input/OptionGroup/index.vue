@@ -20,9 +20,9 @@ export default defineComponent({
 			type: [String, Array<string>, Number, Boolean, null],
 			default: "",
 		},
-    errorMessages: {
+    messageError: {
       type: String,
-      default: "",
+      default: null,
     },
 	},
 	emits: ["changeOption"],
@@ -39,8 +39,13 @@ export default defineComponent({
 			emit("changeOption", selectedOption);
 		};
 
+    const isMessageError = computed(() => {
+      return !!props.messageError;
+    });
+
 		return {
 			items,
+      isMessageError,
 			handleOptionChange,
 		};
 	},
@@ -49,8 +54,14 @@ export default defineComponent({
 
 <template>
 	<div class="input-option-group">
-		<label class="group-label">{{ label }}</label>
-		<div class="options-container">
+		<label
+      :class="['group-label', { 'has-error': isMessageError }]"
+    >
+      {{ label }}
+    </label>
+		<div
+      :class="['options-container', { 'has-error': isMessageError }]"
+    >
 			<AtomsBaseRadio
 				v-for="(option, index) in items"
 				:key="index"
@@ -59,8 +70,13 @@ export default defineComponent({
 				@on-change="handleOptionChange"
 			/>
 		</div>
-    <div class="options-errors">
-      {{ errorMessages }}
+    <div v-if="isMessageError" class="has-error">
+      <AtomsTypography
+        type="text-p6"
+        weight="regular"
+        :text="messageError"
+        color="var(--danger-colors-700)"
+      />
     </div>
 	</div>
 </template>
