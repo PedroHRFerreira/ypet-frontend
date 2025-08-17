@@ -19,6 +19,9 @@ declare global {
 		data: any;
 		message?: string;
 		show: boolean;
+    errors?: {
+      [key: string]: string[];
+    };
 	}
 
 	interface IError extends Error {

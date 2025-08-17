@@ -20,6 +20,10 @@ export default defineComponent({
 			type: [String, Array<string>, Number, Boolean, null],
 			default: "",
 		},
+    errorMessages: {
+      type: String,
+      default: "",
+    },
 	},
 	emits: ["changeOption"],
 	setup(props, { emit }) {
@@ -55,6 +59,9 @@ export default defineComponent({
 				@on-change="handleOptionChange"
 			/>
 		</div>
+    <div class="options-errors">
+      {{ errorMessages }}
+    </div>
 	</div>
 </template>
 

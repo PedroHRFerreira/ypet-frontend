@@ -62,6 +62,29 @@ export const useAnimalsCreateStore = defineStore("animals-create", {
 
 			return formData;
 		},
+    handleResponseError(response: IResponse): void {
+      if (response.type !== "error") {
+        return;
+      }
+
+      this.errorMessage = response.message || "Erro ao processar a solicitação.";
+
+      if (response.status === 401) {
+        this.errorMessage = response.message || "Não autorizado. Por favor, faça login novamente.";
+      }
+
+
+      if (response.status === 422) {
+        console.log("Validation errors:", response.errors);
+        for (const field in response.errors) {
+          if (response.errors.hasOwnProperty(field)) {
+            this.setFormError(field, response.errors[field]);
+          }
+        }
+      }
+
+      this.isLoading = false;
+    },
 		async createAnimal(): Promise<void> {
 			if (this.isLoading) {
 				return;
@@ -71,25 +94,22 @@ export const useAnimalsCreateStore = defineStore("animals-create", {
 			this.errorMessage = "";
 			this.successMessage = "";
 
+      const formData = this.getFormData();
+
+
 			await useFetch("/api/animals/store", {
 				method: "POST",
-				body: this.getFormData(),
+				body: formData,
 				onResponse: ({ response }) => {
-					this.successMessage = "Animal criado com sucesso!";
-					const result = response._data as IResponse;
-					this.animal = result.data || ({} as IAnimal);
-					this.isLoading = false;
-				},
-				onResponseError: ({ response }) => {
-					if (response.status === 422) {
-						this.errorMessage = response._data.message || "Erro de validação.";
-						this.isLoading = false;
+          const responseData = response._data || {} as IResponse;
 
-						return;
-					}
+          if (responseData.type === "error") {
+            return this.handleResponseError(responseData);
+          }
 
-					this.errorMessage = response._data.message || "Erro ao criar animal.";
-					this.isLoading = false;
+          this.successMessage = responseData.message || "Animal criado com sucesso!";
+          this.animal = responseData.data || ({} as IAnimal);
+          this.isLoading = false;
 				},
 			});
 		},

@@ -16,6 +16,10 @@ export default defineComponent({
 			},
 			required: true,
 		},
+    messageError: {
+      type: String,
+      default: "",
+    },
 	},
 	emits: ["update:modelValue"],
 	setup(props, { emit }) {
@@ -92,6 +96,9 @@ export default defineComponent({
 				</option>
 			</select>
 		</div>
+    <div class="errors">
+      {{ messageError }}
+    </div>
 	</div>
 </template>
 
