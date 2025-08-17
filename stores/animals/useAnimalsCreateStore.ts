@@ -41,7 +41,7 @@ export const useAnimalsCreateStore = defineStore("animals-create", {
 		getFormData(): FormData {
 			const formData: FormData = new FormData();
 			for (const key in this.form) {
-				if (this.form.hasOwnProperty(key)) {
+				if (Object.prototype.hasOwnProperty.call(this.form, key)) {
 					const value = this.form[key].value as string | IOption;
 
 					if (value === null || value === undefined) {
@@ -49,7 +49,7 @@ export const useAnimalsCreateStore = defineStore("animals-create", {
 					}
 
 					if (typeof value === "object") {
-						if (value.hasOwnProperty("id")) {
+						if (Object.prototype.hasOwnProperty.call(value, "id")) {
 							formData.set(key, String(value.id));
 
 							continue;
@@ -62,29 +62,30 @@ export const useAnimalsCreateStore = defineStore("animals-create", {
 
 			return formData;
 		},
-    handleResponseError(response: IResponse): void {
-      if (response.type !== "error") {
-        return;
-      }
+		handleResponseError(response: IResponse): void {
+			if (response.type !== "error") {
+				return;
+			}
 
-      this.errorMessage = response.message || "Erro ao processar a solicitação.";
+			this.errorMessage =
+				response.message || "Erro ao processar a solicitação.";
 
-      if (response.status === 401) {
-        this.errorMessage = response.message || "Não autorizado. Por favor, faça login novamente.";
-      }
+			if (response.status === 401) {
+				this.errorMessage =
+					response.message ||
+					"Não autorizado. Por favor, faça login novamente.";
+			}
 
+			if (response.status === 422) {
+				for (const field in response.errors) {
+					if (Object.prototype.hasOwnProperty.call(response.errors, field)) {
+						this.setFormError(field, response.errors[field]);
+					}
+				}
+			}
 
-      if (response.status === 422) {
-        console.log("Validation errors:", response.errors);
-        for (const field in response.errors) {
-          if (response.errors.hasOwnProperty(field)) {
-            this.setFormError(field, response.errors[field]);
-          }
-        }
-      }
-
-      this.isLoading = false;
-    },
+			this.isLoading = false;
+		},
 		async createAnimal(): Promise<void> {
 			if (this.isLoading) {
 				return;
@@ -94,22 +95,22 @@ export const useAnimalsCreateStore = defineStore("animals-create", {
 			this.errorMessage = "";
 			this.successMessage = "";
 
-      const formData = this.getFormData();
-
+			const formData = this.getFormData();
 
 			await useFetch("/api/animals/store", {
 				method: "POST",
 				body: formData,
 				onResponse: ({ response }) => {
-          const responseData = response._data || {} as IResponse;
+					const responseData = response._data || ({} as IResponse);
 
-          if (responseData.type === "error") {
-            return this.handleResponseError(responseData);
-          }
+					if (responseData.type === "error") {
+						return this.handleResponseError(responseData);
+					}
 
-          this.successMessage = responseData.message || "Animal criado com sucesso!";
-          this.animal = responseData.data || ({} as IAnimal);
-          this.isLoading = false;
+					this.successMessage =
+						responseData.message || "Animal criado com sucesso!";
+					this.animal = responseData.data || ({} as IAnimal);
+					this.isLoading = false;
 				},
 			});
 		},

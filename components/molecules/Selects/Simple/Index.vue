@@ -157,11 +157,7 @@ export default defineComponent({
 </script>
 <template>
 	<div ref="wrapper" class="wrapper-selects-simple anim-loading">
-		<div :class="[
-      'selects-simple',
-      state,
-      { 'error': isMessageError },
-    ]">
+		<div :class="['selects-simple', state, { error: isMessageError }]">
 			<div class="selects-simple__box-label">
 				<AtomsTypography
 					type="text-p5"
@@ -171,16 +167,15 @@ export default defineComponent({
 				/>
 			</div>
 			<div
-				:class="[
-					'selects-simple__box-text',
-					{ 'error': isMessageError },
-				]"
+				:class="['selects-simple__box-text', { error: isMessageError }]"
 				@click="handleStateActivated"
 			>
-				<div :class="[
-          'selects-simple__box-text--content',
-          { 'error': isMessageError },
-        ]">
+				<div
+					:class="[
+						'selects-simple__box-text--content',
+						{ error: isMessageError },
+					]"
+				>
 					<AtomsDropdownItem
 						v-if="isOptionSelected"
 						:text="option.text"
