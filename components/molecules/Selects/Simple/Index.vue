@@ -157,7 +157,11 @@ export default defineComponent({
 </script>
 <template>
 	<div ref="wrapper" class="wrapper-selects-simple anim-loading">
-		<div :class="['selects-simple', state]">
+		<div :class="[
+      'selects-simple',
+      state,
+      { 'error': isMessageError },
+    ]">
 			<div class="selects-simple__box-label">
 				<AtomsTypography
 					type="text-p5"
@@ -169,11 +173,14 @@ export default defineComponent({
 			<div
 				:class="[
 					'selects-simple__box-text',
-					{ 'selects-simple--error': isMessageError },
+					{ 'error': isMessageError },
 				]"
 				@click="handleStateActivated"
 			>
-				<div class="selects-simple__box-text--content">
+				<div :class="[
+          'selects-simple__box-text--content',
+          { 'error': isMessageError },
+        ]">
 					<AtomsDropdownItem
 						v-if="isOptionSelected"
 						:text="option.text"
@@ -195,7 +202,7 @@ export default defineComponent({
 						name="chevron-up"
 						width="20px"
 						height="20px"
-						current-color="var(--neutral-color-dark-900)"
+						current-color="var(--greys-colors-800)"
 					/>
 					<AtomsIcon
 						v-show="!isStateActivated"
@@ -203,16 +210,16 @@ export default defineComponent({
 						name="chevron-down"
 						width="20px"
 						height="20px"
-						current-color="var(--neutral-color-dark-900)"
+						current-color="var(--greys-colors-800)"
 					/>
 				</div>
 			</div>
-			<div v-if="isMessageError" class="selects-simple__message-text">
+			<div v-if="isMessageError" class="error">
 				<AtomsTypography
 					type="text-p6"
 					weight="regular"
 					:text="messageError"
-					color="var(--auxiliary-color-red-600)"
+					color="var(--danger-colors-700)"
 				/>
 			</div>
 		</div>
