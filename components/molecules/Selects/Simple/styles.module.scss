@@ -34,9 +34,6 @@
 			box-sizing: border-box;
 			border: 1px solid var(--brand-color-dark-blue-200);
 			border-radius: 4px;
-			&--error {
-				border-color: var(--danger-colors-700);
-			}
 			&--content {
 				display: flex;
 				flex-direction: column;
@@ -94,5 +91,10 @@
 		overflow: scroll;
 		max-height: 250px;
 		@extend .elevation-bottom--level-2;
+	}
+
+	.error {
+		color: var(--danger-colors-700);
+		border-color: var(--danger-colors-700);
 	}
 }
