@@ -4,7 +4,7 @@ import AtomsIcon from "@/components/atoms/Icon/index.vue";
 
 export default defineComponent({
 	name: "SidebarItemIndex",
-  components: { AtomsIcon },
+	components: { AtomsIcon },
 	props: {
 		icon: {
 			type: String,
@@ -35,7 +35,7 @@ export default defineComponent({
 		:class="[state, { active: active }]"
 		@click="$emit('onclick')"
 	>
-    <AtomsIcon :name="icon" width="24" height="24" />
+		<AtomsIcon :name="icon" width="24" height="24" />
 		<AtomsTypography class="text" type="text-p5" :text="text" />
 	</div>
 </template>
