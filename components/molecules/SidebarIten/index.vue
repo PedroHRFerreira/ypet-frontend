@@ -1,7 +1,10 @@
 <script lang="ts">
 import { defineComponent } from "vue";
+import AtomsIcon from "@/components/atoms/Icon/index.vue";
+
 export default defineComponent({
 	name: "SidebarItemIndex",
+  components: { AtomsIcon },
 	props: {
 		icon: {
 			type: String,
@@ -32,7 +35,7 @@ export default defineComponent({
 		:class="[state, { active: active }]"
 		@click="$emit('onclick')"
 	>
-		<AtomsIcon :name="icon" class="icon" width="24px" height="24px" filled />
+    <AtomsIcon :name="icon" width="24" height="24" />
 		<AtomsTypography class="text" type="text-p5" :text="text" />
 	</div>
 </template>
