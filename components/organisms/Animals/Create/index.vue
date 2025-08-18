@@ -203,6 +203,8 @@ export default defineComponent({
 					type="primary"
 					text="Cadastrar"
 					width="128px"
+          :icon-right="true"
+          name-icon-right="plus"
 					@onclick="useAnimalsCreate.createAnimal()"
 				/>
 			</div>
