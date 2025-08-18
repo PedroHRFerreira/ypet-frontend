@@ -36,12 +36,23 @@ export default defineComponent({
 		},
 		iconName: {
 			type: String,
-			default: "illustra/content/search",
+			default: "empty-state",
 		},
 		iconColor: {
 			type: String,
-			default: "green",
+			default: "current",
 		},
+	},
+	setup(_props) {
+		const iconSizes = {
+			large: "250px",
+			medium: "100px",
+			small: "50px",
+		};
+
+		return {
+			iconSizes,
+		};
 	},
 });
 </script>
@@ -51,7 +62,8 @@ export default defineComponent({
 		<div v-if="isIcon" class="wrapper-empty-state__icon">
 			<AtomsIcon
 				:name="iconName"
-				:size="size"
+				:width="iconSizes[size]"
+				:height="iconSizes[size]"
 				:color="iconColor"
 				class="wrapper-empty-state__icon-svg"
 			/>

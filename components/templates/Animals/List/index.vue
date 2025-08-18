@@ -16,8 +16,8 @@ export default defineComponent({
 	computed: {
 		emptyState() {
 			return {
-				isEmpty: this.animalsList.animals.length === 0,
-				isIcon: false,
+				isEmpty: true || this.animalsList.animals.length === 0,
+				isIcon: true,
 				title: "Nenhum animal cadastrado",
 				description:
 					"Você ainda não possui nenhum animal cadastrado.Clique no botão 'Novo cadastro' para adicionar um.",
