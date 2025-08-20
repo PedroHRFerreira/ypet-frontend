@@ -41,5 +41,13 @@ declare global {
 		value: string | string[] | number | boolean | null;
 		errorMessages: string[];
 	};
+
+  type ITab = {
+    id: string;
+    name: string;
+    icon?: string;
+    active?: boolean;
+    disabled?: boolean;
+  }
 }
-export { IOption, IResponse, IAccessToken, IError, IEnum, FormFieldType };
+export { IOption, IResponse, IAccessToken, IError, IEnum, FormFieldType, ITab };
