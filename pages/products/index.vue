@@ -1,8 +1,22 @@
-<script lang="ts">
-export default defineComponent({
-	name: "PagesProducts",
+<script setup lang="ts">
+import { definePageMeta } from "#imports";
+
+useHead({
+  title: "Produtos e Insumos",
+  titleTemplate: (titleChunk) => {
+    return titleChunk ? `${titleChunk} | YPet` : "YPet";
+  },
+});
+
+definePageMeta({
+  layout: "default",
+  middleware: ["auth"],
+});
+
+defineComponent({
+  name: "PagesProducts",
 });
 </script>
 <template>
-	<h1>Página de Produtos</h1>
+	<TemplatesProducts />
 </template>

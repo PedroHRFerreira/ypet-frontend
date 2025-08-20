@@ -56,7 +56,7 @@ export const useAuthRegisterStore = defineStore("authRegister", {
 
 			const response: IResponse = data.value as IResponse;
 
-			if (response.status === "success") {
+			if (response.type === "success") {
 				const token: IAccessToken = response.data as IAccessToken;
 				useAuthToken().setTokenCookie(token);
 				this.resetForm();
@@ -65,7 +65,7 @@ export const useAuthRegisterStore = defineStore("authRegister", {
 				return true;
 			}
 
-			if (response.statusCode === 422) {
+			if (response.status === 422) {
 				const errors = response.data.errors || {};
 				this.setErrorName(errors.name || []);
 				this.setErrorEmail(errors.email || []);

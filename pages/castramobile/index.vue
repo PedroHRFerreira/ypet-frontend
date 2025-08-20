@@ -1,8 +1,23 @@
-<script lang="ts">
-export default defineComponent({
-	name: "PagesCastramobile",
+<script setup lang="ts">
+import { definePageMeta } from "#imports";
+
+useHead({
+  title: "Castramóvel",
+  titleTemplate: (titleChunk) => {
+    return titleChunk ? `${titleChunk} | YPet` : "YPet";
+  },
+});
+
+definePageMeta({
+  layout: "default",
+  middleware: ["auth"],
+});
+
+defineComponent({
+  name: "PagesCastraMobile",
 });
 </script>
+
 <template>
-	<h1>Página de Castração Móvel</h1>
+	<TemplatesCastraMobile />
 </template>

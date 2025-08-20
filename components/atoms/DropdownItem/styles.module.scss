@@ -1,10 +1,11 @@
 .wrapper-dropdown-item {
 	display: flex;
 	width: 100%;
-	padding: 8px;
+	padding: 16px;
 	box-sizing: border-box;
 	align-items: center;
 	gap: 16px;
+	background-color: var(--write);
 
 	&__text {
 		display: flex;
@@ -14,23 +15,23 @@
 	}
 
 	&.default {
-		color: var(--neutral-color-light-400);
+		color: var(--greys-colors-400);
 	}
 
 	&:hover {
-		background: var(--brand-color-primary-100);
-		color: var(--brand-color-primary-600);
+		background: var(--brand-color-dark-blue-100);
+		color: var(--brand-color-dark-blue-600);
 		cursor: pointer;
 	}
 
 	&.activated {
-		background: var(--brand-color-primary-100);
-		color: var(--brand-color-primary-600);
+		background: var(--brand-color-dark-blue-100);
+		color: var(--brand-color-dark-blue-600);
 		border-radius: 4px;
 	}
 
 	&.disabled {
-		color: var(--neutral-color-light-800);
+		color: var(--greys-colors-800);
 		cursor: not-allowed;
 	}
 }

@@ -15,8 +15,8 @@ export default defineComponent({
 			{
 				text: "Cadastro de animais",
 				icon: "paste",
-				active: "animal-registration",
-				route: "animal-registration",
+				active: "animals",
+				route: "animals",
 			},
 			{
 				text: "Castramóvel",
