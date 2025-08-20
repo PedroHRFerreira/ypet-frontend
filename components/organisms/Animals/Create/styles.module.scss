@@ -1,0 +1,54 @@
+.animal {
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+	width: 100%;
+
+	&__about-pet {
+		padding: 24px;
+		background-color: var(--white);
+		border-radius: 4px;
+		width: 100%;
+		min-height: 268px;
+		display: flex;
+		flex-direction: column;
+		gap: 24px;
+
+		&__content {
+			display: flex;
+			flex-direction: row;
+			flex-wrap: wrap;
+			gap: 16px;
+		}
+	}
+	&__input-data {
+		padding: 24px;
+		background-color: var(--white);
+		border-radius: 4px;
+		width: 100%;
+		min-height: 413px;
+		display: flex;
+		flex-direction: column;
+		gap: 24px;
+
+		&__content {
+			display: flex;
+			flex-direction: row;
+			flex-wrap: wrap;
+			gap: 16px;
+
+			&--group {
+				width: 100%;
+				display: flex;
+				gap: 16px;
+			}
+		}
+
+		&__footer {
+			display: flex;
+			flex-direction: row;
+			justify-content: flex-end;
+			gap: 16px;
+		}
+	}
+}

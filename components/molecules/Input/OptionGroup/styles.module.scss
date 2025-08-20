@@ -1,0 +1,29 @@
+@use "assets/scss/form-reset-helpers";
+@use "assets/scss/_typography";
+
+.input-option-group {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	width: 100%;
+	max-width: 210px;
+}
+
+.group-label {
+	color: var(--brand-color-dark-blue-600);
+	@extend .text-p5, .text-p5-medium;
+}
+
+.options-container {
+	display: flex;
+	justify-content: space-between;
+	background-color: #fff;
+	border-radius: 4px;
+	padding: 15px 15px;
+	border: 1px solid #ccc;
+}
+
+.has-error {
+	color: var(--danger-colors-700);
+	border-color: var(--danger-colors-700);
+}

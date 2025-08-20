@@ -42,6 +42,10 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		maxWidth: {
+			type: String,
+			default: "100%",
+		},
 	},
 	emits: ["on-input", "on-blur", "on-keyup-enter", "on-focusout", "on-focus"],
 
@@ -167,5 +171,9 @@ export default defineComponent({
 	</div>
 </template>
 <style scoped lang="scss">
-@use "styles.module.scss";
+@use "styles.module";
+
+.input-common {
+	max-width: v-bind(maxWidth);
+}
 </style>

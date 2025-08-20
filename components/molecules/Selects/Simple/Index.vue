@@ -24,6 +24,10 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
+		maxWidth: {
+			type: String,
+			default: "100%",
+		},
 	},
 	emits: ["item-selected"],
 	setup(props, { emit }) {
@@ -153,42 +157,38 @@ export default defineComponent({
 </script>
 <template>
 	<div ref="wrapper" class="wrapper-selects-simple anim-loading">
-		<div
-			:class="[
-				'selects-simple',
-				state,
-				{ 'selects-simple--error': isMessageError },
-			]"
-		>
-			<div class="selects-simple__box-text" @click="handleStateActivated">
-				<div class="selects-simple__box-text--content">
-					<div
-						v-show="isFilled"
-						class="selects-simple__box-text--content-label"
-					>
-						<AtomsTypography
-							type="text-p6"
-							weight="regular"
-							:text="label"
-							:color="
-								isStateActivated
-									? 'var(--brand-color-primary-600)'
-									: 'var(--neutral-color-light-500)'
-							"
-						/>
-					</div>
-					<AtomsTypography
-						v-show="!isFilled"
-						type="text-p5"
-						weight="regular"
-						:text="label"
-						color="var(--neutral-color-dark-900)"
-					/>
+		<div :class="['selects-simple', state, { error: isMessageError }]">
+			<div class="selects-simple__box-label">
+				<AtomsTypography
+					type="text-p5"
+					weight="medium"
+					:text="label"
+					color="var(--brand-color-dark-blue-600)"
+				/>
+			</div>
+			<div
+				:class="['selects-simple__box-text', { error: isMessageError }]"
+				@click="handleStateActivated"
+			>
+				<div
+					:class="[
+						'selects-simple__box-text--content',
+						{ error: isMessageError },
+					]"
+				>
 					<AtomsDropdownItem
 						v-if="isOptionSelected"
 						:text="option.text"
 						:state="option.state"
 					/>
+					<div v-else class="placeholder">
+						<AtomsTypography
+							type="text-p5"
+							weight="regular"
+							text="Selecione"
+							color="var(--brand-color-dark-blue-200)"
+						/>
+					</div>
 				</div>
 				<div class="selects-simple__box-text--icon">
 					<AtomsIcon
@@ -197,7 +197,7 @@ export default defineComponent({
 						name="chevron-up"
 						width="20px"
 						height="20px"
-						current-color="var(--neutral-color-dark-900)"
+						current-color="var(--greys-colors-800)"
 					/>
 					<AtomsIcon
 						v-show="!isStateActivated"
@@ -205,16 +205,16 @@ export default defineComponent({
 						name="chevron-down"
 						width="20px"
 						height="20px"
-						current-color="var(--neutral-color-dark-900)"
+						current-color="var(--greys-colors-800)"
 					/>
 				</div>
 			</div>
-			<div v-if="isMessageError" class="selects-simple__message-text">
+			<div v-if="isMessageError" class="error">
 				<AtomsTypography
 					type="text-p6"
 					weight="regular"
 					:text="messageError"
-					color="var(--auxiliary-color-red-600)"
+					color="var(--danger-colors-700)"
 				/>
 			</div>
 		</div>
@@ -230,5 +230,8 @@ export default defineComponent({
 	</div>
 </template>
 <style scoped lang="scss">
-@use "styles.module.scss";
+@use "styles.module";
+.wrapper-selects-simple {
+	max-width: v-bind(maxWidth);
+}
 </style>

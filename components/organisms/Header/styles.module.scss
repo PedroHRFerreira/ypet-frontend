@@ -1,11 +1,11 @@
 @use "/assets/scss/mixins" as *;
 .header {
 	background-color: var(--white);
-  @include flex(row, space-between, center, 1.5rem);
-  padding: 0 2rem;
-  height: 80px;
+	@include flex(row, space-between, center, 1.5rem);
+	padding: 0 2rem;
+	height: 80px;
 	&__container {
-    width: 100%;
+		width: 100%;
 		@include flex(row, space-between, center, 1.5rem);
 		.input-search {
 			max-width: 623px;
@@ -16,6 +16,18 @@
 		&--item {
 			cursor: pointer;
 			position: relative;
+
+			&__dropdown {
+				position: absolute;
+				top: 100%;
+				right: 0;
+				background-color: var(--white);
+				box-shadow: 0 2px 4px var(--opaticy-dark-05);
+				border-radius: 4px;
+				padding: 0.5rem;
+				z-index: 1000;
+				width: 200px;
+			}
 		}
 		&--notifications {
 			position: absolute;

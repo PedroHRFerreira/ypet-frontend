@@ -15,7 +15,7 @@ export default defineComponent({
 		},
 		textColor: {
 			type: String,
-			default: "var(--neutral-color-dark-300)",
+			default: "var(--greys-colors-800)",
 		},
 	},
 	emits: ["on-click"],
@@ -44,11 +44,11 @@ export default defineComponent({
 				width="14px"
 				height="14px"
 				filled
-				current-color="var(--brand-color-primary-600)"
+				current-color="var(--brand-color-dark-blue-600)"
 			/>
 		</div>
 	</div>
 </template>
 <style scoped lang="scss">
-@use "styles.module.scss";
+@use "styles.module";
 </style>

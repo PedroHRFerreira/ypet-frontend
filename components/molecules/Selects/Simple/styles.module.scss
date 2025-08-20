@@ -1,4 +1,5 @@
 @use "assets/scss/_elevation.scss";
+@use "assets/scss/_typography.scss";
 
 .wrapper-selects-simple {
 	display: flex;
@@ -9,29 +10,29 @@
 	position: relative;
 	box-sizing: border-box;
 
+	.placeholder {
+		padding: 16px;
+		color: var(--brand-color-dark-blue-200);
+	}
+
 	.selects-simple {
 		display: flex;
 		flex-direction: column;
 		align-items: flex-start;
 		align-self: stretch;
-		box-sizing: border-box;
-		border: 1px solid var(--neutral-color-light-50);
-		border-radius: 4px;
 		min-width: 80px;
-		position: relative;
-		background: var(--neutral-color-light-0);
-		&--error {
-			border-color: var(--auxiliary-color-red-600);
-		}
+		gap: 8px;
 
 		&__box-text {
 			display: flex;
-			padding: 16px;
+			padding: 4px 4px 4px 0;
 			align-items: center;
 			gap: 16px;
 			align-self: stretch;
 			cursor: pointer;
 			height: 56px;
+			box-sizing: border-box;
+			border: 1px solid var(--brand-color-dark-blue-200);
 			border-radius: 4px;
 			&--content {
 				display: flex;
@@ -39,15 +40,6 @@
 				justify-content: center;
 				align-items: flex-start;
 				flex: 1 0 0;
-
-				&-label {
-					display: flex;
-					padding: 0 4px;
-					align-items: center;
-					position: absolute;
-					background: var(--neutral-color-light-0);
-					top: -10px;
-				}
 			}
 
 			&--icon {
@@ -68,11 +60,11 @@
 		}
 
 		&.activated {
-			border-color: var(--brand-color-primary-600);
+			border-color: var(--brand-color-blue-600);
 		}
 
 		&.disabled {
-			border-color: var(--neutral-color-light-700);
+			border-color: var(--greys-colors-700);
 			opacity: 0.3;
 			cursor: not-allowed;
 
@@ -93,11 +85,16 @@
 		align-self: stretch;
 		position: absolute;
 		width: 100%;
-		background-color: var(--neutral-color-light-0);
+		background-color: var(--greys-colors-100);
 		z-index: 5;
 		top: 54px;
 		overflow: scroll;
 		max-height: 250px;
 		@extend .elevation-bottom--level-2;
+	}
+
+	.error {
+		color: var(--danger-colors-700);
+		border-color: var(--danger-colors-700);
 	}
 }
