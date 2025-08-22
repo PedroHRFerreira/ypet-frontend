@@ -1,8 +1,22 @@
-<script lang="ts">
-export default defineComponent({
-	name: "PagesEmployees",
+<script setup lang="ts">
+import { definePageMeta } from "#imports";
+
+useHead({
+  title: "Cadastro de funcionários",
+  titleTemplate: (titleChunk) => {
+    return titleChunk ? `${titleChunk} | YPet` : "YPet";
+  },
+});
+
+definePageMeta({
+  layout: "default",
+  middleware: ["auth"],
+});
+
+defineComponent({
+  name: "PagesEmployees",
 });
 </script>
 <template>
-	<h1>Página de Funcionários</h1>
+	<TemplatesEmployees />
 </template>
