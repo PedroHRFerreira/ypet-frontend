@@ -28,6 +28,14 @@ export default defineComponent({
 			type: String,
 			default: "100%",
 		},
+    maxHeight: {
+      type: String,
+      default: "400px",
+    },
+    currentColor: {
+      type: String,
+      default: "var(--greys-colors-900)",
+    },
 	},
 	emits: ["item-selected"],
 	setup(props, { emit }) {
@@ -233,5 +241,16 @@ export default defineComponent({
 @use "styles.module";
 .wrapper-selects-simple {
 	max-width: v-bind(maxWidth);
+  width: v-bind(maxWidth);
+  max-height: v-bind(maxHeight);
+
+  .placeholder {
+    color: v-bind(currentColor);
+  }
+
+  &__box-text {
+    border-color: v-bind(currentColor);
+  }
 }
+
 </style>
