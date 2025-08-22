@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent } from "vue";
+import { type ConcreteComponent, defineComponent } from "vue";
 import { useAnimalsList } from "~/stores/animals/useAnimalsList";
 
 export default defineComponent({
@@ -9,26 +9,43 @@ export default defineComponent({
 
 		await animalsList.fetchAnimals();
 
+    const header = computed(() => {
+      return {
+        title: "Cadastro de animais",
+        subtitle: "Visualize e gerencie os cadastros de animais",
+        buttons: [
+          {
+            text: "Novo cadastro",
+            type: "primary",
+            icon: "plus",
+            iconLeft: false,
+            nameIconLeft: "",
+            iconRight: true,
+            nameIconRight: "plus",
+            action: () => {
+              const router = useRouter();
+              router.push({ name: "animals-create" });
+            }
+          }
+        ]
+      };
+    });
+
+    const emptyState = computed(() => {
+      return {
+        isEmpty: animalsList.animals.length === 0,
+        isIcon: true,
+        title: "Nenhum animal cadastrado",
+        description:
+          "Você ainda não possui nenhum animal cadastrado.Clique no botão 'Novo cadastro' para adicionar um.",
+      };
+    });
+
 		return {
+      header,
+      emptyState,
 			animalsList,
 		};
-	},
-	computed: {
-		emptyState() {
-			return {
-				isEmpty: true || this.animalsList.animals.length === 0,
-				isIcon: true,
-				title: "Nenhum animal cadastrado",
-				description:
-					"Você ainda não possui nenhum animal cadastrado.Clique no botão 'Novo cadastro' para adicionar um.",
-			};
-		},
-	},
-	methods: {
-		handleNewRegistration() {
-			const router = useRouter();
-			router.push({ name: "animals-create" });
-		},
 	},
 });
 </script>
@@ -41,24 +58,30 @@ export default defineComponent({
 					<AtomsTypography
 						type="title-h7"
 						class="header-content__title"
-						text="Cadastro de animais"
+						:text="header.title"
 						weight="medium"
 						color="var(--brand-color-dark-blue-900)"
 					/>
 					<AtomsTypography
 						type="text-p4"
 						class="header-content__subtitle"
-						text="Visualize e gerencie os cadastros de animais"
+						:text="header.subtitle"
 						weight="medium"
 						color="var(--brand-color-dark-blue-300)"
 					/>
 				</div>
 				<div class="header-actions">
-					<MoleculesButtonsCommon
-						type="primary"
-						text="Novo cadastro"
-						@onclick="handleNewRegistration"
-					/>
+          <MoleculesButtonsCommon
+            v-for="button in header.buttons"
+            :key="button.text"
+            :type="button.type"
+            :text="button.text"
+            :icon-left="button.iconLeft"
+            :icon-right="button.iconRight"
+            :name-icon-left="button.nameIconLeft"
+            :name-icon-right="button.nameIconRight"
+            @onclick="button.action"
+          />
 				</div>
 			</header>
 			<main class="main">

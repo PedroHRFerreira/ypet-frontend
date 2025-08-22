@@ -1,8 +1,22 @@
-<script lang="ts">
-export default defineComponent({
-	name: "PagesSettings",
+<script setup lang="ts">
+import { definePageMeta } from "#imports";
+
+useHead({
+  title: "Configurações",
+  titleTemplate: (titleChunk) => {
+    return titleChunk ? `${titleChunk} | YPet` : "YPet";
+  },
+});
+
+definePageMeta({
+  layout: "default",
+  middleware: ["auth"],
+});
+
+defineComponent({
+  name: "PagesSettings",
 });
 </script>
 <template>
-	<h1>Página de Configurações</h1>
+	<TemplatesSettings />
 </template>

@@ -1,8 +1,22 @@
-<script lang="ts">
-export default defineComponent({
-	name: "PagesVaccine",
+<script setup lang="ts">
+import { definePageMeta } from "#imports";
+
+useHead({
+  title: "Cadastro de vermífugos",
+  titleTemplate: (titleChunk) => {
+    return titleChunk ? `${titleChunk} | YPet` : "YPet";
+  },
+});
+
+definePageMeta({
+  layout: "default",
+  middleware: ["auth"],
+});
+
+defineComponent({
+  name: "PagesVaccine",
 });
 </script>
 <template>
-	<h1>Página de Vacinação</h1>
+	<TemplatesVaccine />
 </template>
