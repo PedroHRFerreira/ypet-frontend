@@ -49,5 +49,24 @@ declare global {
     active?: boolean;
     disabled?: boolean;
   }
+
+  type DashboardType = {
+    id: string | number;
+    title: string;
+    value: number;
+    difference: string;
+    subtitle: string;
+    icon?: string;
+  }
 }
-export { IOption, IResponse, IAccessToken, IError, IEnum, FormFieldType, ITab };
+
+export {
+  IOption,
+  IResponse,
+  IAccessToken,
+  IError,
+  IEnum,
+  FormFieldType,
+  ITab,
+  DashboardType
+};
