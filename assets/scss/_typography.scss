@@ -4,6 +4,8 @@ $title-font-weights: (
 	regular: 400,
 	medium: 500,
 	semi-bold: 600,
+  bold: 700,
+  extra-bold: 800,
 );
 
 $title-styles: (
@@ -54,6 +56,12 @@ $title-styles: (
 			&-semi-bold {
 				font-weight: map-get($title-font-weights, semi-bold);
 			}
+      &-bold {
+        font-weight: map-get($title-font-weights, bold);
+      }
+      &-extra-bold {
+        font-weight: map-get($title-font-weights, heavy);
+      }
 
 			@each $property, $value in $properties {
 				@if $property != font-weight {
@@ -68,6 +76,9 @@ $text-font-weights: (
 	regular: 400,
 	medium: 500,
 	semi-bold: 600,
+  bold: 700,
+  extra-bold: 800,
+  black: 900,
 );
 
 $text-styles: (
@@ -121,6 +132,14 @@ $text-styles: (
 			&-semi-bold {
 				font-weight: map-get($text-font-weights, semi-bold);
 			}
+
+      &-bold {
+        font-weight: map-get($title-font-weights, bold);
+      }
+
+      &-extra-bold {
+        font-weight: map-get($title-font-weights, extra-bold);
+      }
 
 			@each $property, $value in $properties {
 				@if $property != font-weight {
