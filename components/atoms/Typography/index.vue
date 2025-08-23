@@ -26,7 +26,13 @@ const props = defineProps({
 		type: String,
 		default: "regular",
 		validator(value: string) {
-			return ["regular", "medium", "semi-bold", "extra-bold"].includes(value);
+			return [
+        "regular",
+        "medium",
+        "semi-bold",
+        "bold",
+        "extra-bold"
+      ].includes(value);
 		},
 	},
 	text: {
