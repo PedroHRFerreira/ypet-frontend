@@ -1,4 +1,4 @@
-<script lang="ts">
+<script setup lang="ts">
 import { definePageMeta } from "#imports";
 useHead({
 	title: "Forgot Password",
