@@ -47,7 +47,10 @@ export default defineComponent({
       </header>
       <main class="main">
         <OrganismsHomeDashboards />
-        <OrganismsHomeGraphic />
+        <div class="wrapper-graphics">
+          <OrganismsHomeGraphic />
+          <OrganismsHomeDoughnut />
+        </div>
       </main>
     </div>
   </div>
