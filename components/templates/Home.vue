@@ -25,33 +25,36 @@ export default defineComponent({
 </script>
 
 <template>
-	<div class="wrapper-template">
-		<div class="content">
-			<header class="header">
-				<div class="header-content">
-					<AtomsTypography
-						type="title-h7"
-						class="header-content__title"
-						:text="header.title"
-						weight="medium"
-						color="var(--brand-color-dark-blue-900)"
-					/>
-					<AtomsTypography
-						type="text-p4"
-						class="header-content__subtitle"
-						:text="header.subtitle"
-						weight="medium"
-						color="var(--brand-color-dark-blue-300)"
-					/>
-				</div>
-				<div class="header-actions"></div>
-			</header>
-			<main class="main">
-				<OrganismsHomeDashboards />
-				<OrganismsHomeGraphic />
-			</main>
-		</div>
-	</div>
+  <div class="wrapper-template">
+    <div class="content">
+      <header class="header">
+        <div class="header-content">
+          <AtomsTypography
+            type="title-h7"
+            class="header-content__title"
+            :text="header.title"
+            weight="medium"
+            color="var(--brand-color-dark-blue-900)"
+          />
+          <AtomsTypography
+            type="text-p4"
+            class="header-content__subtitle"
+            :text="header.subtitle"
+            weight="medium"
+            color="var(--brand-color-dark-blue-300)"
+          />
+        </div>
+        <div class="header-actions"></div>
+      </header>
+      <main class="main">
+        <OrganismsHomeDashboards />
+        <div class="wrapper-graphics">
+          <OrganismsHomeGraphic />
+          <OrganismsHomeDoughnut />
+        </div>
+      </main>
+    </div>
+  </div>
 </template>
 <style scoped lang="scss">
 .wrapper-graphics {
