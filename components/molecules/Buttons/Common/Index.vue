@@ -82,6 +82,13 @@ export default defineComponent({
 		isStateLoading() {
 			return this.state === "loading";
 		},
+		sizeIcon() {
+			if (this.size === "extra-large") return "40px";
+			if (this.size === "large") return "32px";
+			if (this.size === "medium") return "24px";
+			if (this.size === "small") return "16px";
+			return "12px";
+		},
 	},
 });
 </script>
@@ -92,7 +99,14 @@ export default defineComponent({
 		:class="[type, mode, size, state, iconLeft, iconRight]"
 		@click="$emit('onclick')"
 	>
-		<AtomsIcon v-if="iconLeft" class="icon-left" :name="nameIconLeft" filled />
+		<AtomsIcon
+			v-if="iconLeft"
+			class="icon-left"
+			:name="nameIconLeft"
+			filled
+			:width="sizeIcon"
+			:height="sizeIcon"
+		/>
 		<AtomsLoading
 			v-if="isStateLoading || isStateSuccess"
 			:state="isStateSuccess ? 'success' : 'flip'"

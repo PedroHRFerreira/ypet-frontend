@@ -1,0 +1,44 @@
+@use "assets/scss/_typography.scss";
+
+$text-font-weights: (
+	regular: 400,
+	medium: 500,
+	semi-bold: 600,
+);
+
+.wrapper-badges {
+	&__only {
+		width: 10px;
+		height: 10px;
+		flex-shrink: 0;
+		border-radius: 50%;
+	}
+
+	&__number {
+		display: flex;
+		max-width: 6px;
+		max-height: 6px;
+		padding: 8px;
+		justify-content: center;
+		align-items: center;
+		border-radius: 50%;
+		color: var(--neutral-1100);
+		@extend .text-p7;
+		font-weight: map-get($text-font-weights, semi-bold);
+	}
+
+	&__text {
+		display: inline-flex;
+		height: 20px;
+		padding: 1px 4px;
+		justify-content: center;
+		align-items: center;
+		flex-shrink: 0;
+		border-radius: 4px;
+
+		color: var(--neutral-1100);
+		text-align: center;
+		@extend .text-p7;
+		font-weight: map-get($text-font-weights, semi-bold);
+	}
+}

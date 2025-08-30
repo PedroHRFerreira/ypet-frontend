@@ -2,16 +2,14 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  name: "OrganismsCastraMobileSettings",
+	name: "OrganismsCastraMobileSettings",
 });
 </script>
 
 <template>
-  <div class="settings">
-    <h2>
-      Settings Page
-    </h2>
-  </div>
+	<div class="settings">
+		<h2>Settings Page</h2>
+	</div>
 </template>
 
 <style scoped lang="scss">

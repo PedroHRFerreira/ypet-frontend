@@ -3,104 +3,111 @@ import { type ConcreteComponent, defineComponent } from "vue";
 
 export default defineComponent({
 	name: "TemplatesOccurrences",
-  setup() {
-    const adoptionVisitsComponent = resolveComponent('OrganismsOccurrencesAdoptionVisits');
-    const lostPetComponent = resolveComponent('OrganismsOccurrencesLostPet');
-    const abuseReportsComponent = resolveComponent('OrganismsOccurrencesAbuseReports');
-    const castramovelRequestsComponent = resolveComponent('OrganismsOccurrencesCastramovelRequests');
-    const samupetComponent = resolveComponent('OrganismsOccurrencesSamupet');
+	setup() {
+		const adoptionVisitsComponent = resolveComponent(
+			"OrganismsOccurrencesAdoptionVisits",
+		);
+		const lostPetComponent = resolveComponent("OrganismsOccurrencesLostPet");
+		const abuseReportsComponent = resolveComponent(
+			"OrganismsOccurrencesAbuseReports",
+		);
+		const castramovelRequestsComponent = resolveComponent(
+			"OrganismsOccurrencesCastramovelRequests",
+		);
+		const samupetComponent = resolveComponent("OrganismsOccurrencesSamupet");
 
-    const componentsMap: Record<string, ConcreteComponent> = {
-      adoptionVisits: adoptionVisitsComponent,
-      lostPet: lostPetComponent,
-      abuseReports: abuseReportsComponent,
-      castramovelRequests: castramovelRequestsComponent,
-      samupet: samupetComponent,
-    };
-    const tabs = ref([
-      {
-        id: "adoptionVisits",
-        name: "Visitas de adoção",
-        active: true
-      },
-      {
-        id: "lostPet",
-        name: "Perdi meu pet",
-        active: false
-      },
-      {
-        id: "abuseReports",
-        name: "Denúncias de maus tratos",
-        active: false
-      },
-      {
-        id: "castramovelRequests",
-        name: "Solicitações do castramóvel",
-        active: false
-      },
-      {
-        id: "samuPet",
-        name: "Samupet",
-        active: false
-      },
-    ] as ITab[]);
+		const componentsMap: Record<string, ConcreteComponent> = {
+			adoptionVisits: adoptionVisitsComponent,
+			lostPet: lostPetComponent,
+			abuseReports: abuseReportsComponent,
+			castramovelRequests: castramovelRequestsComponent,
+			samupet: samupetComponent,
+		};
+		const tabs = ref([
+			{
+				id: "adoptionVisits",
+				name: "Visitas de adoção",
+				active: true,
+			},
+			{
+				id: "lostPet",
+				name: "Perdi meu pet",
+				active: false,
+			},
+			{
+				id: "abuseReports",
+				name: "Denúncias de maus tratos",
+				active: false,
+			},
+			{
+				id: "castramovelRequests",
+				name: "Solicitações do castramóvel",
+				active: false,
+			},
+			{
+				id: "samuPet",
+				name: "Samupet",
+				active: false,
+			},
+		] as ITab[]);
 
-    const activeTab = computed(() => {
-      return tabs.value.find(tab => tab.active);
-    });
+		const activeTab = computed(() => {
+			return tabs.value.find((tab) => tab.active);
+		});
 
-    const activeComponent = computed(() => {
-      if (!activeTab.value) {
-        return adoptionVisitsComponent;
-      }
+		const activeComponent = computed(() => {
+			if (!activeTab.value) {
+				return adoptionVisitsComponent;
+			}
 
-      const component = componentsMap[activeTab.value.id];
+			const component = componentsMap[activeTab.value.id];
 
-      if (component) {
-        return component;
-      }
+			if (component) {
+				return component;
+			}
 
-      return adoptionVisitsComponent;
-    });
+			return adoptionVisitsComponent;
+		});
 
-    const header = computed(() => {
-      return {
-        title: "Ocorrências",
-        subtitle: "Visualize e gerencie todas as ocorrências registradas no App Cidadão",
-        buttons: [
-          {
-            text: "Nova ocorrência",
-            type: "primary",
-            icon: "plus",
-            iconLeft: false,
-            nameIconLeft: "",
-            iconRight: true,
-            nameIconRight: "plus",
-            action: () => {
-              console.log("Nova ocorrência clicked");
-            }
-          }
-        ]
-      };
-    });
+		const header = computed(() => {
+			return {
+				title: "Ocorrências",
+				subtitle:
+					"Visualize e gerencie todas as ocorrências registradas no App Cidadão",
+				buttons: [
+					{
+						text: "Nova ocorrência",
+						type: "primary",
+						icon: "plus",
+						iconLeft: false,
+						nameIconLeft: "",
+						iconRight: true,
+						nameIconRight: "plus",
+						action: () => {
+							// TODO: Adicionar ação de redirecionamento para criação
+						},
+					},
+				],
+			};
+		});
 
 		return {
-      tabs,
-      header,
-      activeTab,
-      activeComponent,
+			tabs,
+			header,
+			activeTab,
+			activeComponent,
 		};
 	},
-  methods: {
-    setActiveTab(tab: ITab): void {
-      this.tabs = this.tabs.map((t) => {
-        return {
-          ...t,
-          active: t.id === tab.id,
-        };
-      });
-    },
-  }
+	methods: {
+		setActiveTab(tab: ITab): void {
+			this.tabs = this.tabs.map((t) => {
+				return {
+					...t,
+					active: t.id === tab.id,
+				};
+			});
+		},
+	},
 });
 </script>
 
@@ -124,23 +131,23 @@ export default defineComponent({
 						color="var(--brand-color-dark-blue-300)"
 					/>
 				</div>
-        <div class="header-actions">
-          <MoleculesButtonsCommon
-            v-for="button in header.buttons"
-            :key="button.text"
-            :type="button.type"
-            :text="button.text"
-            :icon-left="button.iconLeft"
-            :icon-right="button.iconRight"
-            :name-icon-left="button.nameIconLeft"
-            :name-icon-right="button.nameIconRight"
-            @onclick="button.action"
-          />
-        </div>
+				<div class="header-actions">
+					<MoleculesButtonsCommon
+						v-for="button in header.buttons"
+						:key="button.text"
+						:type="button.type"
+						:text="button.text"
+						:icon-left="button.iconLeft"
+						:icon-right="button.iconRight"
+						:name-icon-left="button.nameIconLeft"
+						:name-icon-right="button.nameIconRight"
+						@onclick="button.action"
+					/>
+				</div>
 			</header>
 			<main class="main">
-        <MoleculesTabs :tabs="tabs" @change-tab="setActiveTab($event)"/>
-        <component :is="activeComponent" />
+				<MoleculesTabs :tabs="tabs" @change-tab="setActiveTab($event)" />
+				<component :is="activeComponent" />
 			</main>
 		</div>
 	</div>
