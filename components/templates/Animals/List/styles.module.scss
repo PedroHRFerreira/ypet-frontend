@@ -58,8 +58,18 @@
 				flex-direction: column;
 				justify-content: flex-start;
 				align-items: center;
-        padding-top: 150px;
+				padding-top: 150px;
 				gap: 16px;
+			}
+
+			&-content {
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+				gap: 8px;
+				text-align: center;
+				width: 100%;
 			}
 		}
 	}

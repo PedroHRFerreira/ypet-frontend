@@ -1,0 +1,15 @@
+.list-card-item {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	align-self: stretch;
+	background: var(
+		--black-and-white-white,
+		linear-gradient(
+			0deg,
+			rgba(255, 255, 255, 0.2) 0%,
+			rgba(255, 255, 255, 0.2) 100%
+		),
+		#fff
+	);
+}

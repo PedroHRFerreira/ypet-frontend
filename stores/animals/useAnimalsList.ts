@@ -1,13 +1,17 @@
+import type { IPagination } from "~/types/global";
+
 export const useAnimalsList = defineStore("animals-list", {
 	state: () => {
 		const animals = ref([] as IAnimal[]);
 		const isLoading = ref(false);
 		const errorMessage = ref("");
+		const pagination = ref<IPagination>({} as IPagination);
 
 		return {
 			animals,
 			isLoading,
 			errorMessage,
+			pagination,
 		};
 	},
 	actions: {
@@ -27,7 +31,8 @@ export const useAnimalsList = defineStore("animals-list", {
 				onResponse: ({ response }) => {
 					const result: IResponse = response._data as IResponse;
 
-					this.animals = result.data || [];
+					this.pagination = (result.data as IPagination) || ({} as IPagination);
+					this.animals = (this.pagination?.data as IAnimal[]) || [];
 					this.isLoading = false;
 				},
 				onResponseError: ({ response }) => {

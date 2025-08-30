@@ -1,5 +1,5 @@
 <script lang="ts">
-import { type ConcreteComponent, defineComponent } from "vue";
+import { defineComponent } from "vue";
 import { useAnimalsList } from "~/stores/animals/useAnimalsList";
 
 export default defineComponent({
@@ -9,41 +9,41 @@ export default defineComponent({
 
 		await animalsList.fetchAnimals();
 
-    const header = computed(() => {
-      return {
-        title: "Cadastro de animais",
-        subtitle: "Visualize e gerencie os cadastros de animais",
-        buttons: [
-          {
-            text: "Novo cadastro",
-            type: "primary",
-            icon: "plus",
-            iconLeft: false,
-            nameIconLeft: "",
-            iconRight: true,
-            nameIconRight: "plus",
-            action: () => {
-              const router = useRouter();
-              router.push({ name: "animals-create" });
-            }
-          }
-        ]
-      };
-    });
+		const header = computed(() => {
+			return {
+				title: "Cadastro de animais",
+				subtitle: "Visualize e gerencie os cadastros de animais",
+				buttons: [
+					{
+						text: "Novo cadastro",
+						type: "primary",
+						icon: "plus",
+						iconLeft: false,
+						nameIconLeft: "",
+						iconRight: true,
+						nameIconRight: "plus",
+						action: () => {
+							const router = useRouter();
+							router.push({ name: "animals-create" });
+						},
+					},
+				],
+			};
+		});
 
-    const emptyState = computed(() => {
-      return {
-        isEmpty: animalsList.animals.length === 0,
-        isIcon: true,
-        title: "Nenhum animal cadastrado",
-        description:
-          "Você ainda não possui nenhum animal cadastrado.Clique no botão 'Novo cadastro' para adicionar um.",
-      };
-    });
+		const emptyState = computed(() => {
+			return {
+				isEmpty: animalsList.animals.length === 0,
+				isIcon: true,
+				title: "Nenhum animal cadastrado",
+				description:
+					"Você ainda não possui nenhum animal cadastrado.Clique no botão 'Novo cadastro' para adicionar um.",
+			};
+		});
 
 		return {
-      header,
-      emptyState,
+			header,
+			emptyState,
 			animalsList,
 		};
 	},
@@ -70,18 +70,18 @@ export default defineComponent({
 						color="var(--brand-color-dark-blue-300)"
 					/>
 				</div>
-				<div class="header-actions">
-          <MoleculesButtonsCommon
-            v-for="button in header.buttons"
-            :key="button.text"
-            :type="button.type"
-            :text="button.text"
-            :icon-left="button.iconLeft"
-            :icon-right="button.iconRight"
-            :name-icon-left="button.nameIconLeft"
-            :name-icon-right="button.nameIconRight"
-            @onclick="button.action"
-          />
+				<div v-if="emptyState.isEmpty" class="header-actions">
+					<MoleculesButtonsCommon
+						v-for="button in header.buttons"
+						:key="button.text"
+						:type="button.type"
+						:text="button.text"
+						:icon-left="button.iconLeft"
+						:icon-right="button.iconRight"
+						:name-icon-left="button.nameIconLeft"
+						:name-icon-right="button.nameIconRight"
+						@onclick="button.action"
+					/>
 				</div>
 			</header>
 			<main class="main">

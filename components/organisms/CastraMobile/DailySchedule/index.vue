@@ -2,16 +2,14 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  name: "OrganismsCastraMobileDailySchedule",
+	name: "OrganismsCastraMobileDailySchedule",
 });
 </script>
 
 <template>
-  <div class="daily schedule">
-    <h2>
-      Daily Schedule
-    </h2>
-  </div>
+	<div class="daily schedule">
+		<h2>Daily Schedule</h2>
+	</div>
 </template>
 
 <style scoped lang="scss">
