@@ -2,19 +2,19 @@
 import { definePageMeta } from "#imports";
 
 useHead({
-  title: "Cadastro de cuidadores",
-  titleTemplate: (titleChunk) => {
-    return titleChunk ? `${titleChunk} | YPet` : "YPet";
-  },
+	title: "Cadastro de cuidadores",
+	titleTemplate: (titleChunk) => {
+		return titleChunk ? `${titleChunk} | YPet` : "YPet";
+	},
 });
 
 definePageMeta({
-  layout: "default",
-  middleware: ["auth"],
+	layout: "default",
+	middleware: ["auth"],
 });
 
 defineComponent({
-  name: "PagesCaretakers",
+	name: "PagesCaretakers",
 });
 </script>
 <template>
