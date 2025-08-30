@@ -2,19 +2,19 @@
 import { definePageMeta } from "#imports";
 
 useHead({
-  title: "Produtos e Insumos",
-  titleTemplate: (titleChunk) => {
-    return titleChunk ? `${titleChunk} | YPet` : "YPet";
-  },
+	title: "Produtos e Insumos",
+	titleTemplate: (titleChunk) => {
+		return titleChunk ? `${titleChunk} | YPet` : "YPet";
+	},
 });
 
 definePageMeta({
-  layout: "default",
-  middleware: ["auth"],
+	layout: "default",
+	middleware: ["auth"],
 });
 
 defineComponent({
-  name: "PagesProducts",
+	name: "PagesProducts",
 });
 </script>
 <template>

@@ -2,14 +2,12 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  name: "OrganismsOccurrencesCastramovelRequests",
+	name: "OrganismsOccurrencesCastramovelRequests",
 });
 </script>
 
 <template>
-<h2>
-  OrganismsOccurrencesCastramovelRequests
-</h2>
+	<h2>OrganismsOccurrencesCastramovelRequests</h2>
 </template>
 
 <style scoped lang="scss">

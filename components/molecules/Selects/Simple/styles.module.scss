@@ -25,12 +25,10 @@
 
 		&__box-text {
 			display: flex;
-			padding: 4px 4px 4px 0;
 			align-items: center;
 			gap: 16px;
 			align-self: stretch;
 			cursor: pointer;
-			height: 56px;
 			box-sizing: border-box;
 			border: 1px solid var(--brand-color-dark-blue-200);
 			border-radius: 4px;

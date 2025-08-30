@@ -5,3 +5,7 @@
 	align-items: $align;
 	gap: $gap;
 }
+
+@mixin bg-hex-alpha($hex, $alpha) {
+	background-color: rgba(red($hex), green($hex), blue($hex), $alpha);
+}

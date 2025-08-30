@@ -23,7 +23,7 @@ export default defineComponent({
 		},
 		bgColorNotification: {
 			type: String,
-			default: "var(--succes-colors-500)",
+			default: "var(--success-colors-500)",
 		},
 		userImage: {
 			type: String,

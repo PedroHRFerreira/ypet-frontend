@@ -42,31 +42,52 @@ declare global {
 		errorMessages: string[];
 	};
 
-  type ITab = {
-    id: string;
-    name: string;
-    icon?: string;
-    active?: boolean;
-    disabled?: boolean;
-  }
+	type ITab = {
+		id: string;
+		name: string;
+		icon?: string;
+		active?: boolean;
+		disabled?: boolean;
+	};
 
-  type DashboardType = {
-    id: string | number;
-    title: string;
-    value: number;
-    difference: string;
-    subtitle: string;
-    icon?: string;
-  }
+	type DashboardType = {
+		id: string | number;
+		title: string;
+		value: number;
+		difference: string;
+		subtitle: string;
+		icon?: string;
+	};
+
+	interface IPagination {
+		current_page: number;
+		data: any[];
+		first_page_url: string;
+		from: number;
+		last_page: number;
+		last_page_url: string;
+		links: Array<{
+			url: string | null;
+			label: string;
+			active: boolean;
+		}>;
+		next_page_url: string | null;
+		path: string;
+		per_page: number;
+		prev_page_url: string | null;
+		to: number;
+		total: number;
+	}
 }
 
 export {
-  IOption,
-  IResponse,
-  IAccessToken,
-  IError,
-  IEnum,
-  FormFieldType,
-  ITab,
-  DashboardType
+	IOption,
+	IResponse,
+	IAccessToken,
+	IError,
+	IEnum,
+	FormFieldType,
+	ITab,
+	DashboardType,
+	IPagination,
 };

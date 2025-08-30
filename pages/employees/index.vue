@@ -2,19 +2,19 @@
 import { definePageMeta } from "#imports";
 
 useHead({
-  title: "Cadastro de funcionários",
-  titleTemplate: (titleChunk) => {
-    return titleChunk ? `${titleChunk} | YPet` : "YPet";
-  },
+	title: "Cadastro de funcionários",
+	titleTemplate: (titleChunk) => {
+		return titleChunk ? `${titleChunk} | YPet` : "YPet";
+	},
 });
 
 definePageMeta({
-  layout: "default",
-  middleware: ["auth"],
+	layout: "default",
+	middleware: ["auth"],
 });
 
 defineComponent({
-  name: "PagesEmployees",
+	name: "PagesEmployees",
 });
 </script>
 <template>

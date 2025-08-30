@@ -27,3 +27,4 @@ export { default as AtomsIconsEye } from "./Eye.vue";
 export { default as AtomsIconsEyeAlt } from "./EyeAlt.vue";
 export { default as AtomsIconsPlus } from "./Plus.vue";
 export { default as AtomsIconsCash } from "./Cash.vue";
+export { default as AtomsIconsExport } from "./Export.vue";

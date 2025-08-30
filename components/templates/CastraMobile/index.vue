@@ -3,69 +3,72 @@ import { type ConcreteComponent, defineComponent } from "vue";
 
 export default defineComponent({
 	name: "TemplatesCastraMobile",
-  setup() {
-    const settingsComponent = resolveComponent('OrganismsCastraMobileSettings');
-    const dailyScheduleComponent = resolveComponent('OrganismsCastraMobileDailySchedule');
-    const componentsMap: Record<string, ConcreteComponent> = {
-      settings: settingsComponent,
-      dailySchedule: dailyScheduleComponent,
-    };
+	setup() {
+		const settingsComponent = resolveComponent("OrganismsCastraMobileSettings");
+		const dailyScheduleComponent = resolveComponent(
+			"OrganismsCastraMobileDailySchedule",
+		);
+		const componentsMap: Record<string, ConcreteComponent> = {
+			settings: settingsComponent,
+			dailySchedule: dailyScheduleComponent,
+		};
 
-    const tabs = ref([
-      {
-        id: "settings",
-        name: "Configurações",
-        active: true
-      },
-      {
-        id: "dailySchedule",
-        name: "Agenda do dia",
-        active: false
-      },
-    ] as ITab[]);
+		const tabs = ref([
+			{
+				id: "settings",
+				name: "Configurações",
+				active: true,
+			},
+			{
+				id: "dailySchedule",
+				name: "Agenda do dia",
+				active: false,
+			},
+		] as ITab[]);
 
-    const activeTab = computed(() => {
-      return tabs.value.find(tab => tab.active);
-    });
+		const activeTab = computed(() => {
+			return tabs.value.find((tab) => tab.active);
+		});
 
-    const activeComponent = computed(() => {
-      if (!activeTab.value) {
-        return settingsComponent;
-      }
+		const activeComponent = computed(() => {
+			if (!activeTab.value) {
+				return settingsComponent;
+			}
 
-      const component = componentsMap[activeTab.value.id];
+			const component = componentsMap[activeTab.value.id];
 
-      if (component) {
-        return component;
-      }
+			if (component) {
+				return component;
+			}
 
-      return settingsComponent;
-    });
+			return settingsComponent;
+		});
 
-    const header = computed(() => {
-      return {
-        title: "Castramóvel",
-        subtitle: "Defina dia, locais e parâmetros de atendimento que serão exibidos no App Cidadão"
-      };
-    });
+		const header = computed(() => {
+			return {
+				title: "Castramóvel",
+				subtitle:
+					"Defina dia, locais e parâmetros de atendimento que serão exibidos no App Cidadão",
+			};
+		});
 
 		return {
-      tabs,
-      header,
-      activeTab,
-      activeComponent,
+			tabs,
+			header,
+			activeTab,
+			activeComponent,
 		};
 	},
-  methods: {
-    setActiveTab(tab: ITab): void {
-      this.tabs = this.tabs.map((t) => {
-        return {
-          ...t,
-          active: t.id === tab.id,
-        };
-      });
-    },
-  }
+	methods: {
+		setActiveTab(tab: ITab): void {
+			this.tabs = this.tabs.map((t) => {
+				return {
+					...t,
+					active: t.id === tab.id,
+				};
+			});
+		},
+	},
 });
 </script>
 
@@ -91,8 +94,8 @@ export default defineComponent({
 				</div>
 			</header>
 			<main class="main">
-        <MoleculesTabs :tabs="tabs" @change-tab="setActiveTab($event)"/>
-        <component :is="activeComponent" />
+				<MoleculesTabs :tabs="tabs" @change-tab="setActiveTab($event)" />
+				<component :is="activeComponent" />
 			</main>
 		</div>
 	</div>

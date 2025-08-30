@@ -2,19 +2,19 @@
 import { definePageMeta } from "#imports";
 
 useHead({
-  title: "Cadastro de locais",
-  titleTemplate: (titleChunk) => {
-    return titleChunk ? `${titleChunk} | YPet` : "YPet";
-  },
+	title: "Cadastro de locais",
+	titleTemplate: (titleChunk) => {
+		return titleChunk ? `${titleChunk} | YPet` : "YPet";
+	},
 });
 
 definePageMeta({
-  layout: "default",
-  middleware: ["auth"],
+	layout: "default",
+	middleware: ["auth"],
 });
 
 defineComponent({
-  name: "PagesLocations",
+	name: "PagesLocations",
 });
 </script>
 <template>

@@ -2,19 +2,19 @@
 import { definePageMeta } from "#imports";
 
 useHead({
-  title: "Ocorrências",
-  titleTemplate: (titleChunk) => {
-    return titleChunk ? `${titleChunk} | YPet` : "YPet";
-  },
+	title: "Ocorrências",
+	titleTemplate: (titleChunk) => {
+		return titleChunk ? `${titleChunk} | YPet` : "YPet";
+	},
 });
 
 definePageMeta({
-  layout: "default",
-  middleware: ["auth"],
+	layout: "default",
+	middleware: ["auth"],
 });
 
 defineComponent({
-  name: "PagesOccurrences",
+	name: "PagesOccurrences",
 });
 </script>
 <template>

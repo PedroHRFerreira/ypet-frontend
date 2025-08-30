@@ -1,4 +1,6 @@
 <script lang="ts">
+import { defineComponent, type PropType } from "vue";
+
 export default defineComponent({
 	name: "MoleculesSelectsSimple",
 	props: {
@@ -28,14 +30,22 @@ export default defineComponent({
 			type: String,
 			default: "100%",
 		},
-    maxHeight: {
-      type: String,
-      default: "400px",
-    },
-    currentColor: {
-      type: String,
-      default: "var(--greys-colors-900)",
-    },
+		maxHeight: {
+			type: String,
+			default: "400px",
+		},
+		currentColor: {
+			type: String,
+			default: "var(--greys-colors-900)",
+		},
+		placeholderPadding: {
+			type: String,
+			default: "16px",
+		},
+		placeholderText: {
+			type: String,
+			default: "Selecione",
+		},
 	},
 	emits: ["item-selected"],
 	setup(props, { emit }) {
@@ -193,7 +203,7 @@ export default defineComponent({
 						<AtomsTypography
 							type="text-p5"
 							weight="regular"
-							text="Selecione"
+							:text="placeholderText"
 							color="var(--brand-color-dark-blue-200)"
 						/>
 					</div>
@@ -241,16 +251,16 @@ export default defineComponent({
 @use "styles.module";
 .wrapper-selects-simple {
 	max-width: v-bind(maxWidth);
-  width: v-bind(maxWidth);
-  max-height: v-bind(maxHeight);
+	width: v-bind(maxWidth);
+	max-height: v-bind(maxHeight);
 
-  .placeholder {
-    color: v-bind(currentColor);
-  }
+	.placeholder {
+		color: v-bind(currentColor);
+		padding: v-bind(placeholderPadding);
+	}
 
-  &__box-text {
-    border-color: v-bind(currentColor);
-  }
+	&__box-text {
+		border-color: v-bind(currentColor);
+	}
 }
-
 </style>
