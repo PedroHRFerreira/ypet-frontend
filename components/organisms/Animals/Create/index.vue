@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import { useAnimalsCreateStore } from "~/stores/animals/useAnimalsCreateStore";
+import { useCreateStore } from "~/stores/animals/useCreateStore";
 import { useAnimalSpeciesEnumStore } from "~/stores/Enums/useAnimalSpeciesEnumStore";
 import { useGenderEnumStore } from "~/stores/Enums/useGenderEnumStore";
 import { useAnimalStatusEnumStore } from "~/stores/Enums/useAnimalStatusEnumStore";
@@ -8,7 +8,7 @@ import { useAnimalStatusEnumStore } from "~/stores/Enums/useAnimalStatusEnumStor
 export default defineComponent({
 	name: "OrganismsAnimalsCreate",
 	async setup() {
-		const useAnimalsCreate = useAnimalsCreateStore();
+		const useAnimalsCreate = useCreateStore();
 		const useAnimalSpeciesEnum = useAnimalSpeciesEnumStore();
 		const useGenderEnum = useGenderEnumStore();
 		const useAnimalStatusEnum = useAnimalStatusEnumStore();

@@ -1,4 +1,4 @@
-export const useAnimalsEdit = defineStore("animals-edit", {
+export const useEditStore = defineStore("animals-edit", {
 	state: () => {
 		const animal = ref({} as IAnimal);
 		const isLoading = ref(false);

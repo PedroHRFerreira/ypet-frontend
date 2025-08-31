@@ -1,28 +1,30 @@
 import type { IPagination } from "~/types/global";
 
-export const useAnimalsList = defineStore("animals-list", {
+export const useListStore = defineStore("list", {
 	state: () => {
-		const animals = ref([] as IAnimal[]);
+		const list = ref([] as IUser[]);
 		const isLoading = ref(false);
 		const errorMessage = ref("");
 		const pagination = ref<IPagination>({} as IPagination);
+		const pathUrl = "/api/users";
 
 		return {
-			animals,
+			list,
 			isLoading,
 			errorMessage,
 			pagination,
+			pathUrl,
 		};
 	},
 	actions: {
-		async fetchAnimals(params = {}): Promise<void> {
+		async fetchList(params = {}): Promise<void> {
 			if (this.isLoading) {
 				return;
 			}
 
 			this.isLoading = true;
 			this.errorMessage = "";
-			await useFetch("/api/animals", {
+			await useFetch(this.pathUrl, {
 				method: "GET",
 				params: {
 					...params,
@@ -32,13 +34,12 @@ export const useAnimalsList = defineStore("animals-list", {
 					const result: IResponse = response._data as IResponse;
 
 					this.pagination = (result.data as IPagination) || ({} as IPagination);
-					this.animals = (this.pagination?.data as IAnimal[]) || [];
+					this.list = (this.pagination?.data as IUser[]) || [];
 					this.isLoading = false;
 				},
 				onResponseError: ({ response }) => {
 					this.isLoading = false;
-					this.errorMessage =
-						response._data?.message || "Erro ao buscar animais.";
+					this.errorMessage = response._data?.message || "Erro ao buscar list.";
 				},
 			});
 		},

@@ -1,6 +1,6 @@
 import { useForm } from "~/composables/useForm";
 
-export const useAnimalsCreateStore = defineStore("animals-create", {
+export const useCreateStore = defineStore("animals-create", {
 	state: () => {
 		const animal = ref({} as IAnimal);
 		const isLoading = ref(false);
