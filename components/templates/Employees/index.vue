@@ -1,9 +1,12 @@
 <script lang="ts">
 import { defineComponent } from "vue";
+import { useListStore } from "~/stores/users/useListStore";
 
 export default defineComponent({
 	name: "TemplatesEmployees",
-	setup() {
+	async setup() {
+    const listSore = useListStore();
+    await listSore.fetchList();
 		const header = computed(() => {
 			return {
 				title: "Cadastro de Funcionários",
@@ -17,6 +20,8 @@ export default defineComponent({
 						nameIconLeft: "",
 						iconRight: true,
 						nameIconRight: "plus",
+            size: "small",
+            width: "auto",
 						action: () => {
 							// TODO: Adicionar ação de redirecionamento para criação
 						},
@@ -27,7 +32,7 @@ export default defineComponent({
 
 		const emptyState = computed(() => {
 			return {
-				isEmpty: true,
+				isEmpty: listSore.list.length === 0,
 				isIcon: true,
 				title: "",
 				description: "",
@@ -61,7 +66,7 @@ export default defineComponent({
 						color="var(--brand-color-dark-blue-300)"
 					/>
 				</div>
-				<div class="header-actions">
+				<div v-if="emptyState.isEmpty" class="header-actions">
 					<MoleculesButtonsCommon
 						v-for="button in header.buttons"
 						:key="button.text"
@@ -84,7 +89,7 @@ export default defineComponent({
 					/>
 				</div>
 				<div v-else class="main-content">
-					<h2>Organismos de lista</h2>
+          <OrganismsEmployees />
 				</div>
 			</main>
 		</div>

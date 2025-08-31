@@ -1,4 +1,4 @@
-export const useAnimalsDetail = defineStore("animals-detail", {
+export const useDetailStore = defineStore("animals-detail", {
 	state: () => {
 		const animal = ref({} as IAnimal);
 		const isLoading = ref(false);
@@ -11,7 +11,7 @@ export const useAnimalsDetail = defineStore("animals-detail", {
 		};
 	},
 	actions: {
-		async fetchAnimalById(id: number, params = {}): Promise<void> {
+		async fetchAnimalById(id: string, params = {}): Promise<void> {
 			if (!id) {
 				return;
 			}

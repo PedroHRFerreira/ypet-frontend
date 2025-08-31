@@ -1,17 +1,41 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import { useAnimalsList } from "~/stores/animals/useAnimalsList";
+import { useListStore } from "~/stores/animals/useListStore";
 
 export default defineComponent({
 	name: "TemplatesAnimalsCreate",
 	setup() {
-		const animalsList = useAnimalsList();
+		const animalsList = useListStore();
+		const header = computed(() => {
+			return {
+				title: "Cadastro de animais",
+				subtitle: "Adicione um novo animal ao sistema",
+				buttons: [
+					{
+						text: "Voltar",
+						type: "outline",
+						icon: "arrow-left",
+						iconLeft: true,
+						nameIconLeft: "arrow-left",
+						iconRight: false,
+						nameIconRight: "",
+						size: "small",
+						width: "auto",
+						action: () => {
+							const router = useRouter();
+							router.back();
+						},
+					},
+				],
+			};
+		});
 
 		onMounted(async () => {
 			await animalsList.fetchAnimals();
 		});
 
 		return {
+			header,
 			animalsList,
 		};
 	},
@@ -32,23 +56,31 @@ export default defineComponent({
 					<AtomsTypography
 						type="title-h7"
 						class="header-content__title"
-						text="Cadastro de animais"
+						:text="header.title"
 						weight="medium"
 						color="var(--brand-color-dark-blue-900)"
 					/>
 					<AtomsTypography
 						type="text-p4"
 						class="header-content__subtitle"
-						text="Visualize e gerencie os cadastros de animais"
+						:text="header.subtitle"
 						weight="medium"
 						color="var(--brand-color-dark-blue-300)"
 					/>
 				</div>
 				<div class="header-actions">
 					<MoleculesButtonsCommon
-						type="primary"
-						text="Voltar"
-						@onclick="back"
+						v-for="button in header.buttons"
+						:key="button.text"
+						:type="button.type"
+						:text="button.text"
+						:icon-left="button.iconLeft"
+						:icon-right="button.iconRight"
+						:name-icon-left="button.nameIconLeft"
+						:name-icon-right="button.nameIconRight"
+						:size="button.size"
+						:width="button.width"
+						@onclick="button.action"
 					/>
 				</div>
 			</div>
