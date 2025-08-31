@@ -9,7 +9,7 @@ export default defineNuxtPlugin((nuxtApp) => {
 				date: string | number | Date | undefined,
 				template = "DD/MM/YYYY",
 			): string {
-				if (!date) return "---";
+				if (!date) return "N/A";
 
 				const d = useDayjs(date);
 
@@ -22,14 +22,14 @@ export default defineNuxtPlugin((nuxtApp) => {
 				return this.$formatDate(date, template);
 			},
 			$formatDateTimeFromNow(date: string | number | Date | undefined): string {
-				if (!date) return "---";
+				if (!date) return "N/A";
 
 				const d = useDayjs(date);
 
 				return d.fromNow();
 			},
 			$booleanToSimNao(value: boolean | undefined): string {
-				if (value === undefined) return "---";
+				if (value === undefined) return "N/A";
 
 				return value ? "Sim" : "Não";
 			},

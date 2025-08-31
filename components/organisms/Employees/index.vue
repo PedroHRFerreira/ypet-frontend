@@ -1,24 +1,24 @@
 <script lang="ts">
 import { computed, defineComponent, ref } from "vue";
-import { useListStore } from "~/stores/animals/useListStore";
+import { useListStore } from "~/stores/users/useListStore";
 import MoleculesListCardItem from "~/components/molecules/ListCardItem/index.vue";
 import { useDayjs } from "~/composables/useDayjs";
 import AtomsTypography from "~/components/atoms/Typography/index.vue";
 import AtomsBadges from "~/components/atoms/Badges/Index.vue";
 
 export default defineComponent({
-	name: "OrganismsAnimals",
+	name: "OrganismsEmployees",
 	components: {
 		AtomsBadges,
 		AtomsTypography,
 		MoleculesListCardItem,
 	},
 	setup() {
-		const animalsList = useListStore();
+		const listStore = useListStore();
 
 		const header = computed(() => {
 			return {
-				title: "Todos os animais cadastrados",
+				title: "Todos os cadastrados",
 				subtitle: "",
 				buttons: [
 					{
@@ -40,43 +40,41 @@ export default defineComponent({
 			};
 		});
 
-		const list = computed((): IAnimal[] => {
-			return animalsList.animals;
+		const list = computed((): IUser[] => {
+			return listStore.list;
 		});
 
 		const columnsHeader = ref([
 			{
-				value: "checkbox",
-				text: "",
+				value: "name",
+				text: "NOME",
 				typeTypography: "text-p5",
 				weightTypography: "bold",
 				colorTypography: "var(--brand-color-dark-blue-300)",
 				style: {
-					width: "10%",
+					width: "20%",
 					gap: "16px",
 					wordBreak: "break-all",
 				},
 			},
 			{
-				value: "registration_number",
-				text: "INSCRIÇÃO",
+				value: "email",
+				text: "E-MAIL",
+				typeTypography: "text-p5",
+				weightTypography: "bold",
+				colorTypography: "var(--brand-color-dark-blue-300)",
+				style: {
+					width: "20%",
+				},
+			},
+			{
+				value: "role",
+				text: "CARGO",
 				typeTypography: "text-p5",
 				weightTypography: "bold",
 				colorTypography: "var(--brand-color-dark-blue-300)",
 				style: {
 					width: "10%",
-					gap: "16px",
-					wordBreak: "break-all",
-				},
-			},
-			{
-				value: "entryDate",
-				text: "ENTRADA",
-				typeTypography: "text-p5",
-				weightTypography: "bold",
-				colorTypography: "var(--brand-color-dark-blue-300)",
-				style: {
-					width: "15%",
 				},
 			},
 			{
@@ -86,39 +84,18 @@ export default defineComponent({
 				weightTypography: "bold",
 				colorTypography: "var(--brand-color-dark-blue-300)",
 				style: {
-					width: "15%",
-				},
-			},
-			{
-				value: "name",
-				text: "NOME",
-				typeTypography: "text-p5",
-				weightTypography: "bold",
-				colorTypography: "var(--brand-color-dark-blue-300)",
-				style: {
 					width: "20%",
 					justifyContent: "flex-end",
 				},
 			},
 			{
-				value: "typePet",
-				text: "TIPO DE PET",
+				value: "created_at",
+				text: "DATA DE CRIAÇÃO",
 				typeTypography: "text-p5",
 				weightTypography: "bold",
 				colorTypography: "var(--brand-color-dark-blue-300)",
 				style: {
-					width: "10%",
-					justifyContent: "flex-end",
-				},
-			},
-			{
-				value: "castrated",
-				text: "CASTRADO",
-				typeTypography: "text-p5",
-				weightTypography: "bold",
-				colorTypography: "var(--brand-color-dark-blue-300)",
-				style: {
-					width: "10%",
+					width: "20%",
 					justifyContent: "flex-end",
 				},
 			},
@@ -135,7 +112,7 @@ export default defineComponent({
 			},
 		]);
 
-		const onSelectOptionAction = (event: string, item: IAnimal) => {
+		const onSelectOptionAction = (event: string, item: IUser) => {
 			const router = useRouter();
 
 			if (event === "details") {
@@ -150,7 +127,7 @@ export default defineComponent({
 		};
 
 		return {
-			animalsList,
+			listStore,
 			columnsHeader,
 			header,
 			list,
@@ -208,27 +185,30 @@ export default defineComponent({
 				:data="columnsHeader"
 				padding="0"
 			>
-				<template #checkbox>
-					<input :key="item.id" type="checkbox" />
-				</template>
-				<template #registration_number>
+				<template #name>
 					<AtomsTypography
 						type="text-p5"
-						:text="
-							item.registration_number ? `#${item.registration_number}` : '---'
-						"
+						:text="item.name || 'N/A'"
 						weight="regular"
 						color="var(--brand-color-dark-blue-300)"
 					/>
 				</template>
-				<template #entryDate>
-					<AtomsTypography
-						type="text-p5"
-						:text="$formatDate(item.created_at)"
-						weight="regular"
-						color="var(--brand-color-dark-blue-300)"
-					/>
-				</template>
+        <template #email>
+          <AtomsTypography
+            type="text-p5"
+            :text="item.email || 'N/A'"
+            weight="regular"
+            color="var(--brand-color-dark-blue-300)"
+          />
+        </template>
+        <template #role>
+          <AtomsTypography
+            type="text-p5"
+            :text="item.roles?.length ? item.roles.map((role) => role.name ).join(', ') : 'N/A'"
+            weight="regular"
+            color="var(--brand-color-dark-blue-300)"
+          />
+        </template>
 				<template #status>
 					<AtomsBadges
 						v-if="item.status?.status"
@@ -238,29 +218,13 @@ export default defineComponent({
 						:text="item.status?.status.label || 'Sem status'"
 					/>
 				</template>
-				<template #name>
-					<AtomsTypography
-						type="text-p5"
-						:text="item.name"
-						weight="regular"
-						color="var(--brand-color-dark-blue-300)"
-					/>
-				</template>
-				<template #typePet>
-					<AtomsTypography
-						type="text-p5"
-						:text="item.species.label"
-						weight="regular"
-						color="var(--brand-color-dark-blue-300)"
-					/>
-				</template>
-				<template #castrated>
-					<AtomsTypography
-						type="text-p5"
-						:text="$booleanToSimNao(item.castrated)"
-						weight="regular"
-						color="var(--brand-color-dark-blue-300)"
-					/>
+				<template #created_at>
+          <AtomsTypography
+            type="text-p5"
+            :text="$formatDate(item.created_at)"
+            weight="regular"
+            color="var(--brand-color-dark-blue-300)"
+          />
 				</template>
 				<template #actions>
 					<MoleculesActionDropdown
@@ -272,10 +236,10 @@ export default defineComponent({
 		</div>
 		<div class="wrapper-list-card__footer">
 			<MoleculesPaginationControls
-				v-if="animalsList.pagination"
-				:total-items="animalsList.pagination.total"
-				:current-page="animalsList.pagination.current_page"
-				:per-page="animalsList.pagination.per_page"
+				v-if="listStore.pagination"
+				:total-items="listStore.pagination.total"
+				:current-page="listStore.pagination.current_page"
+				:per-page="listStore.pagination.per_page"
 			/>
 		</div>
 	</section>
