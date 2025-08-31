@@ -8,21 +8,21 @@ declare global {
 		state?: "default" | "activated" | "disabled";
 	}
 
-  interface IStatus {
-    id?: number;
-    status: IEnum;
-    description?: string;
-    animal_id: number;
-    created_by?: IUser;
-    created_at?: string;
-    updated_at?: string;
-  }
+	interface IStatus {
+		id?: number;
+		status: IEnum;
+		description?: string;
+		animal_id: number;
+		created_by?: IUser;
+		created_at?: string;
+		updated_at?: string;
+	}
 
-  interface IRole {
-    id: number;
-    name: string;
-    guard_name: string;
-  }
+	interface IRole {
+		id: number;
+		name: string;
+		guard_name: string;
+	}
 
 	interface IAccessToken {
 		access_token: string;
@@ -108,5 +108,5 @@ export {
 	ITab,
 	DashboardType,
 	IPagination,
-  IRole,
+	IRole,
 };

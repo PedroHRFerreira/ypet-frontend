@@ -5,8 +5,8 @@ import { useListStore } from "~/stores/users/useListStore";
 export default defineComponent({
 	name: "TemplatesEmployees",
 	async setup() {
-    const listSore = useListStore();
-    await listSore.fetchList();
+		const listSore = useListStore();
+		await listSore.fetchList();
 		const header = computed(() => {
 			return {
 				title: "Cadastro de Funcionários",
@@ -20,8 +20,8 @@ export default defineComponent({
 						nameIconLeft: "",
 						iconRight: true,
 						nameIconRight: "plus",
-            size: "small",
-            width: "auto",
+						size: "small",
+						width: "auto",
 						action: () => {
 							// TODO: Adicionar ação de redirecionamento para criação
 						},
@@ -89,7 +89,7 @@ export default defineComponent({
 					/>
 				</div>
 				<div v-else class="main-content">
-          <OrganismsEmployees />
+					<OrganismsEmployees />
 				</div>
 			</main>
 		</div>

@@ -193,22 +193,26 @@ export default defineComponent({
 						color="var(--brand-color-dark-blue-300)"
 					/>
 				</template>
-        <template #email>
-          <AtomsTypography
-            type="text-p5"
-            :text="item.email || 'N/A'"
-            weight="regular"
-            color="var(--brand-color-dark-blue-300)"
-          />
-        </template>
-        <template #role>
-          <AtomsTypography
-            type="text-p5"
-            :text="item.roles?.length ? item.roles.map((role) => role.name ).join(', ') : 'N/A'"
-            weight="regular"
-            color="var(--brand-color-dark-blue-300)"
-          />
-        </template>
+				<template #email>
+					<AtomsTypography
+						type="text-p5"
+						:text="item.email || 'N/A'"
+						weight="regular"
+						color="var(--brand-color-dark-blue-300)"
+					/>
+				</template>
+				<template #role>
+					<AtomsTypography
+						type="text-p5"
+						:text="
+							item.roles?.length
+								? item.roles.map((role) => role.name).join(', ')
+								: 'N/A'
+						"
+						weight="regular"
+						color="var(--brand-color-dark-blue-300)"
+					/>
+				</template>
 				<template #status>
 					<AtomsBadges
 						v-if="item.status?.status"
@@ -219,12 +223,12 @@ export default defineComponent({
 					/>
 				</template>
 				<template #created_at>
-          <AtomsTypography
-            type="text-p5"
-            :text="$formatDate(item.created_at)"
-            weight="regular"
-            color="var(--brand-color-dark-blue-300)"
-          />
+					<AtomsTypography
+						type="text-p5"
+						:text="$formatDate(item.created_at)"
+						weight="regular"
+						color="var(--brand-color-dark-blue-300)"
+					/>
 				</template>
 				<template #actions>
 					<MoleculesActionDropdown

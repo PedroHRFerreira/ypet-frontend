@@ -31,11 +31,6 @@ export default defineComponent({
 				}
 			});
 		},
-		goToCreateAccount(): void {
-			useRouter().push({
-				name: "register",
-			});
-		},
 		goToForgotPassword(): void {
 			useRouter().push({
 				name: "forgot-password",
@@ -80,15 +75,6 @@ export default defineComponent({
 			/>
 		</div>
 		<MoleculesButtonsCommon text="Entrar" @onclick="handleLogin()" />
-		<div class="wrapper-login__footer">
-			<AtomsTypography
-				type="text-p5"
-				text="Não tem uma conta?"
-				weight="medium"
-				color="var(--brand-color-dark-blue-200)"
-			/>
-			<AtomsLink text="Criar uma conta" @onclick="goToCreateAccount()" />
-		</div>
 	</div>
 </template>
 

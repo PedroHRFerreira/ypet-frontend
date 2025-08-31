@@ -4,7 +4,7 @@ export default defineEventHandler(async (event): Promise<IResponse> => {
 	try {
 		const id = event.context.params?.id;
 		const body = await readBody(event);
-    const path = `/animals/${id}`;
+		const path = `/animals/${id}`;
 
 		return await apiPut<IResponse>(path, event, body);
 	} catch (err) {

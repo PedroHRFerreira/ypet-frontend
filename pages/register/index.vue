@@ -16,6 +16,11 @@ definePageMeta({
 
 export default defineComponent({
 	setup() {
+		const redirectLogin = () => {
+			navigateTo("/login");
+		};
+
+		redirectLogin();
 		const email = useRoute().query.email as string | undefined;
 		const name = useRoute().query.name as string | undefined;
 		const useAuthLogin = useAuthRegisterStore();

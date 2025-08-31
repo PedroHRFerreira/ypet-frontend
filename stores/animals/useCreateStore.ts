@@ -111,6 +111,9 @@ export const useCreateStore = defineStore("animals-create", {
 						responseData.message || "Animal criado com sucesso!";
 					this.animal = responseData.data || ({} as IAnimal);
 					this.isLoading = false;
+
+					const router = useRouter();
+					router.push({ name: "animals-list" });
 				},
 			});
 		},

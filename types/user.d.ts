@@ -6,8 +6,8 @@ declare global {
 		email_verified_at?: string;
 		created_at: string;
 		updated_at: string;
-    status?: IStatus;
-    roles?: IRole[]
+		status?: IStatus;
+		roles?: IRole[];
 	}
 }
 export { IUser };
