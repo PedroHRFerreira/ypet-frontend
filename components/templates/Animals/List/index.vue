@@ -1,11 +1,11 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import { useAnimalsList } from "~/stores/animals/useAnimalsList";
+import { useListStore } from "~/stores/animals/useListStore";
 
 export default defineComponent({
 	name: "TemplatesAnimalsList",
 	async setup() {
-		const animalsList = useAnimalsList();
+		const animalsList = useListStore();
 
 		await animalsList.fetchAnimals();
 

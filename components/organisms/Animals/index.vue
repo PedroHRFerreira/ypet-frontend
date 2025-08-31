@@ -1,6 +1,6 @@
 <script lang="ts">
 import { computed, defineComponent, ref } from "vue";
-import { useAnimalsList } from "~/stores/animals/useAnimalsList";
+import { useListStore } from "~/stores/animals/useListStore";
 import MoleculesListCardItem from "~/components/molecules/ListCardItem/index.vue";
 import { useDayjs } from "~/composables/useDayjs";
 import AtomsTypography from "~/components/atoms/Typography/index.vue";
@@ -14,7 +14,7 @@ export default defineComponent({
 		MoleculesListCardItem,
 	},
 	setup() {
-		const animalsList = useAnimalsList();
+		const animalsList = useListStore();
 
 		const header = computed(() => {
 			return {

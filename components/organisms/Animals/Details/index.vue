@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import { useAnimalsDetail } from "~/stores/animals/useAnimalsDetail";
+import { useDetailStore } from "~/stores/animals/useDetailStore";
 
 type AboutType = {
 	title: string;
@@ -14,7 +14,7 @@ type AboutType = {
 export default defineComponent({
 	name: "OrganismsAnimalsDetails",
 	setup() {
-		const animalDetailsStore = useAnimalsDetail();
+		const animalDetailsStore = useDetailStore();
 		const { proxy } = getCurrentInstance()!;
 		const abouts = computed<AboutType[]>(() => {
 			const animal = animalDetailsStore.animal;
