@@ -98,15 +98,8 @@ export default defineComponent({
 				</div>
 			</header>
 			<main class="main">
-				<div v-if="emptyState.isEmpty" class="main-empty">
-					<MoleculesEmptyState
-						:is-icon="emptyState.isIcon"
-						:title="emptyState.title"
-						:description="emptyState.description"
-					/>
-				</div>
-				<div v-else class="main-content">
-					<h2>Organismos de lista</h2>
+				<div class="main-content">
+					<OrganismsAnimalsDetails />
 				</div>
 			</main>
 		</div>
