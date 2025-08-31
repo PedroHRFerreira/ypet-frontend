@@ -38,7 +38,7 @@ export default defineComponent({
 							label: "Castrado:",
 							value: proxy?.$booleanToSimNao(animal?.castrated),
 						},
-						{ label: "Porte:", value: animal?.size },
+						{ label: "Porte:", value: animal?.size, isEnum: true },
 						{ label: "Cor:", value: animal?.color },
 						{ label: "Pelagem:", value: animal?.coat, isEnum: true },
 						{
