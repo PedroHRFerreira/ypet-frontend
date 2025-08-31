@@ -11,6 +11,7 @@ useHead({
 definePageMeta({
 	layout: "default",
 	middleware: ["auth"],
+	name: "animals-list",
 });
 
 defineComponent({

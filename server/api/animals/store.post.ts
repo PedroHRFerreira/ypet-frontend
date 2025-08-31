@@ -2,7 +2,7 @@ import { apiPost } from "~/utils/api";
 
 export default defineEventHandler(async (event): Promise<IResponse> => {
 	try {
-    const path = "/animals";
+		const path = "/animals";
 		const formData = await readFormData(event);
 		const payload: Record<string, any> = {};
 		formData.forEach((value, key) => {
