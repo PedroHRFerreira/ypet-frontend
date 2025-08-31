@@ -11,7 +11,7 @@ export const useAnimalsDetail = defineStore("animals-detail", {
 		};
 	},
 	actions: {
-		async fetchAnimalById(id: number, params = {}): Promise<void> {
+		async fetchAnimalById(id: string, params = {}): Promise<void> {
 			if (!id) {
 				return;
 			}
