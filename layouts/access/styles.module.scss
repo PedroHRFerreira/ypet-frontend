@@ -3,13 +3,34 @@
 	height: 100vh;
 	width: 100vw;
 	background-color: var(--brand-color-blue-500);
+
+	&__logo-top {
+		display: none;
+	}
 	&__container {
 		@include flex(row, unset, unset, 0);
 	}
 	&__copy {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: flex-start;
 		background-color: var(--brand-color-blue-500);
 		width: 50%;
 		padding: 7rem;
+		gap: 30px;
+
+		&--list {
+			display: flex;
+			flex-direction: column;
+			gap: 16px;
+
+			&__item {
+				display: flex;
+				align-items: center;
+				gap: 12px;
+			}
+		}
 	}
 	&__slot {
 		width: 50%;
@@ -17,5 +38,29 @@
 		height: 100vh;
 		border-radius: 29px 0 0 29px;
 		@include flex(column, center, center, 0);
+	}
+}
+
+@media (max-width: 768px) {
+	.access {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		gap: 16px;
+
+		&__logo-top {
+			display: block;
+		}
+
+		&__copy {
+			display: none;
+		}
+		&__slot {
+			width: 100vw;
+			border-radius: 0;
+			height: auto;
+			padding: 2rem 0;
+		}
 	}
 }
