@@ -6,8 +6,8 @@ export default defineComponent({
 	setup() {
 		const header = computed(() => {
 			return {
-				title: "Cadastro de cuidadores",
-				subtitle: "Visualize e gerencie os cadastros de cuidadores",
+				title: "Protetores",
+				subtitle: "Visualize e gerencie os cadastros de protetores",
 				buttons: [
 					{
 						text: "Novo cadastro",

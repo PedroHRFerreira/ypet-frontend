@@ -9,8 +9,8 @@ export default defineComponent({
 		await listSore.fetchList();
 		const header = computed(() => {
 			return {
-				title: "Cadastro de Funcionários",
-				subtitle: "Visualize e gerencie os cadastros de funcionários",
+				title: "Colaboradores",
+				subtitle: "Visualize e gerencie os cadastros de colaboradores",
 				buttons: [
 					{
 						text: "Novo cadastro",
