@@ -43,7 +43,7 @@ export default defineComponent({
 				route: "vaccine",
 			},
 			{
-				text: "Funcionários",
+				text: "Colaboradores",
 				icon: "user-plus",
 				active: "employees",
 				route: "employees",
@@ -55,7 +55,7 @@ export default defineComponent({
 				route: "citizens",
 			},
 			{
-				text: "Cuidadores",
+				text: "Protetores",
 				icon: "heart",
 				active: "caretakers",
 				route: "caretakers",
