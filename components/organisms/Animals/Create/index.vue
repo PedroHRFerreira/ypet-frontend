@@ -26,17 +26,9 @@ export default defineComponent({
 			{ id: 0, text: "Não", state: "activated" },
 		];
 
-		const birthDate = ref({
-			day: "",
-			month: "",
-			year: "",
-		});
+		const birthDate = ref("");
 
-		const entryDate = ref({
-			day: "",
-			month: "",
-			year: "",
-		});
+		const entryDate = ref("");
 
 		const isCastrated = computed(() => {
 			return form.castrated.value === 1;
@@ -57,21 +49,13 @@ export default defineComponent({
 	watch: {
 		birthDate: {
 			handler(newValue) {
-				const { day, month, year } = newValue;
-				this.useAnimalsCreate.setFormField(
-					"birth_date",
-					`${year}-${month}-${day}`,
-				);
+				this.useAnimalsCreate.setFormField("birth_date", newValue);
 			},
 			deep: true,
 		},
 		entryDate: {
 			handler(newValue) {
-				const { day, month, year } = newValue;
-				this.useAnimalsCreate.setFormField(
-					"entry_date",
-					`${year}-${month}-${day}`,
-				);
+				this.useAnimalsCreate.setFormField("entry_date", newValue);
 			},
 			deep: true,
 		},
@@ -129,10 +113,16 @@ export default defineComponent({
 					:message-error="form.castrated.errorMessages.join(', ')"
 					@change-option="useAnimalsCreate.setFormField('castrated', $event.id)"
 				/>
-				<MoleculesDateInputGroup
+				<MoleculesInputDate
 					v-model="birthDate"
 					label="Data de nascimento"
-					:message-error="form.birth_date.errorMessages.join(', ')"
+					name="birth_date"
+					placeholder="YYYY-MM-DD"
+					min="1900-01-01"
+					max="2025-12-31"
+					width="216px"
+					:required="true"
+					:error-messages="form.birth_date.errorMessages"
 				/>
 			</div>
 		</section>
@@ -147,10 +137,16 @@ export default defineComponent({
 			</div>
 			<div class="animal__input-data__content">
 				<div class="animal__input-data__content--group">
-					<MoleculesDateInputGroup
+					<MoleculesInputDate
 						v-model="entryDate"
 						label="Data de entrada"
-						:message-error="form.entry_date.errorMessages.join(', ')"
+						name="entry_date"
+						placeholder="YYYY-MM-DD"
+						min="1900-01-01"
+						max="2025-12-31"
+						width="216px"
+						:required="true"
+						:error-messages="form.entry_date.errorMessages"
 					/>
 					<MoleculesSelectsSimple
 						max-width="215px"
