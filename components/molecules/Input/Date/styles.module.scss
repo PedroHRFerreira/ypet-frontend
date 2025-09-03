@@ -1,0 +1,59 @@
+@use "assets/scss/form-reset-helpers";
+@use "assets/scss/_typography";
+
+.date-input {
+	display: grid;
+	gap: 0.5rem;
+	width: 100%;
+
+	&__label {
+		color: var(--brand-color-dark-blue-600);
+		@extend .text-p5, .text-p5-medium;
+	}
+
+	&__required {
+		color: var(--danger-colors-500);
+		margin-left: 0.25rem;
+	}
+
+	&__control {
+		appearance: none;
+		width: 100%;
+		padding: 16px 16px;
+		border-radius: 4px;
+		border: 1px solid var(--greys-colors-300);
+		background: var(--white);
+		font-size: 0.95rem;
+		line-height: 1.25rem;
+		transition:
+			border-color 0.15s ease,
+			box-shadow 0.15s ease;
+
+		&:focus {
+			outline: none;
+			border-color: var(--greys-colors-500);
+			box-shadow: 0 0 0 3px rgba(var(--brand-color-dark-blue-400), 0.15);
+		}
+
+		&:disabled {
+			background: var(--background-secundary-bg);
+			cursor: not-allowed;
+			color: #9ca3af;
+		}
+	}
+
+	&__errors {
+		margin: 0;
+		padding-left: 1rem;
+		color: var(--danger-colors-500);
+		font-size: 0.85rem;
+	}
+
+	&--error &__control {
+		border-color: var(--danger-colors-500);
+	}
+
+	&--disabled {
+		opacity: 0.75;
+	}
+}
