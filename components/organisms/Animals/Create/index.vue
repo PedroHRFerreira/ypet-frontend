@@ -34,6 +34,36 @@ export default defineComponent({
 			return form.castrated.value === 1;
 		});
 
+		const showConfirm = ref(false);
+		const showSuccess = ref(false);
+
+		function openConfirm() {
+			showConfirm.value = true;
+		}
+		async function confirmCreate() {
+			if (useAnimalsCreate.isLoading) {
+				return;
+			}
+
+			await useAnimalsCreate.createAnimal();
+
+			if (useAnimalsCreate.successMessage) {
+				onSuccess();
+			}
+
+			showConfirm.value = false;
+		}
+		function onSuccess() {
+			showSuccess.value = true;
+		}
+		function continueFeedback() {
+			showSuccess.value = false;
+			useAnimalsCreate.resetForm();
+
+			const router = useRouter();
+			router.push({ name: "animals-list" });
+		}
+
 		return {
 			optionsGender,
 			optionsSpecies,
@@ -44,6 +74,11 @@ export default defineComponent({
 			form,
 			useAnimalsCreate,
 			isCastrated,
+			showConfirm,
+			showSuccess,
+			openConfirm,
+			confirmCreate,
+			continueFeedback,
 		};
 	},
 	watch: {
@@ -64,6 +99,23 @@ export default defineComponent({
 </script>
 
 <template>
+	<MoleculesConfirmFeedbackModal
+		v-model:open="showConfirm"
+		variant="confirm"
+		title="Deseja confirmar o cadastro no animal?"
+		description="Após confirmação, você irá visualizá-lo no painel"
+		confirm-text="Confirmar"
+		cancel-text="Cancelar"
+		@confirm="confirmCreate"
+	/>
+	<MoleculesConfirmFeedbackModal
+		v-model:open="showSuccess"
+		variant="success"
+		title="Cadastro realizado com sucesso"
+		description="Visualize os dados na área de cadastro."
+		continue-text="Continuar"
+		@continue="continueFeedback"
+	/>
 	<div class="animal">
 		<section class="animal__about-pet">
 			<div class="animal__about-pet__header">
@@ -201,7 +253,7 @@ export default defineComponent({
 					width="128px"
 					:icon-right="true"
 					name-icon-right="plus"
-					@onclick="useAnimalsCreate.createAnimal()"
+					@onclick="openConfirm"
 				/>
 			</div>
 		</section>
