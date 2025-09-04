@@ -117,5 +117,16 @@ export const useCreateStore = defineStore("animals-create", {
 				},
 			});
 		},
+		resetForm() {
+			for (const key in this.form) {
+				if (Object.prototype.hasOwnProperty.call(this.form, key)) {
+					this.form[key].value = null;
+					this.form[key].errorMessages = [];
+				}
+			}
+			this.errorMessage = "";
+			this.successMessage = "";
+			this.animal = {} as IAnimal;
+		},
 	},
 });
