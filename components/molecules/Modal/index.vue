@@ -136,7 +136,7 @@ export default defineComponent({
 			<div class="container-modal">
 				<div :class="['header-modal', { justify: iconRight }]">
 					<div v-if="iconLeft" class="back-modal" @click="$emit('back')">
-						<AtomsIconCommon
+						<AtomsIcon
 							filled
 							class="icon-left"
 							name="system/arrows/arrow-left"
@@ -149,7 +149,7 @@ export default defineComponent({
 						:text="title"
 					/>
 					<div v-if="iconRight" class="close-modal" @click="clickCloseModal">
-						<AtomsIconCommon
+						<AtomsIcon
 							filled
 							class="icon-right"
 							name="system/other/close"
