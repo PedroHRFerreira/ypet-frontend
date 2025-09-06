@@ -16,9 +16,18 @@
 
 		&__content {
 			display: flex;
-			flex-direction: row;
-			flex-wrap: wrap;
+			flex-direction: column;
 			gap: 16px;
+      width: 100%;
+
+      &--group {
+        display: flex;
+        flex-direction: row;
+        gap: 16px;
+        width: 100%;
+      }
+
+
 		}
 	}
 	&__input-data {
@@ -37,11 +46,12 @@
 			flex-wrap: wrap;
 			gap: 16px;
 
-			&--group {
-				width: 100%;
-				display: flex;
-				gap: 16px;
-			}
+      &--group {
+        display: flex;
+        flex-direction: row;
+        gap: 16px;
+        width: 100%;
+      }
 		}
 
 		&__footer {
