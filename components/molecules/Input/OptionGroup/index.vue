@@ -24,6 +24,10 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
+    maxWidth: {
+      type: String,
+      default: "100%",
+    }
 	},
 	emits: ["changeOption"],
 	setup(props, { emit }) {
@@ -79,4 +83,8 @@ export default defineComponent({
 
 <style scoped lang="scss">
 @use "styles.module";
+
+.input-option-group {
+  max-width: v-bind(maxWidth);
+}
 </style>
