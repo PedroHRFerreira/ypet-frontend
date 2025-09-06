@@ -53,15 +53,19 @@ export default defineComponent({
 							label: "Data de entrada:",
 							value: proxy?.$formatDateTime(animal?.entry_data?.entry_date),
 						},
-            { label: "Origem:", value: animal?.entry_data?.origin, isEnum: true },
-            {
-              label: "Castrado:",
-              value: proxy?.$booleanToSimNao(animal?.entry_data?.castrated),
-            },
-            {
-              label: "Vermifugado:",
-              value: proxy?.$booleanToSimNao(animal?.entry_data?.dewormed),
-            },
+						{
+							label: "Origem:",
+							value: animal?.entry_data?.origin,
+							isEnum: true,
+						},
+						{
+							label: "Castrado:",
+							value: proxy?.$booleanToSimNao(animal?.entry_data?.castrated),
+						},
+						{
+							label: "Vermifugado:",
+							value: proxy?.$booleanToSimNao(animal?.entry_data?.dewormed),
+						},
 						{
 							label: "Local da castração:",
 							value: animal?.entry_data?.castration_site || "N/A",
@@ -86,7 +90,7 @@ export default defineComponent({
 		onMounted(async () => {
 			const id = useRoute().params.id as string;
 			await animalDetailsStore.fetchAnimalById(id, {
-				"with[]": ["status", "entryData"]
+				"with[]": ["status", "entryData"],
 			});
 		});
 
