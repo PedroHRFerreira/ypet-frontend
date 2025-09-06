@@ -5,7 +5,7 @@ export const useAnimalSizeEnumStore = defineStore("animal-size-enum", {
 		const errorMessage = ref("");
 
 		return {
-      enums,
+			enums,
 			isLoading,
 			errorMessage,
 		};
