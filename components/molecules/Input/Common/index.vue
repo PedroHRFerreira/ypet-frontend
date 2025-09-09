@@ -7,7 +7,7 @@ export default defineComponent({
 			default: "",
 		},
 		value: {
-			type: String,
+			type: [String, Number],
 			default: "",
 		},
 		message: {
@@ -61,6 +61,10 @@ export default defineComponent({
 				newValue = formatCurrency(newValue);
 			}
 
+			if (props.typeInput === "number") {
+				newValue = newValue.replace(/\D/g, "");
+			}
+
 			emit("on-input", newValue);
 			inputValue.value = newValue;
 		};
@@ -84,6 +88,14 @@ export default defineComponent({
 		watch(
 			() => props.value,
 			(newValue) => {
+				if (props.typeInput === "money") {
+					newValue = formatCurrency(newValue);
+				}
+
+				if (props.typeInput === "number") {
+					newValue = newValue.replace(/\D/g, "");
+				}
+
 				inputValue.value = newValue;
 			},
 		);

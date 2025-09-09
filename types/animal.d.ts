@@ -10,6 +10,24 @@ declare global {
 		created_at?: string;
 		updated_at?: string;
 	}
+
+	interface IAnimalEntryData {
+		id?: number;
+		animal_id?: number;
+		registration_number: number;
+		microchip_number: number;
+		entry_date: string;
+		castrated: boolean;
+		castration_at?: string;
+		castration_site?: string;
+		dewormed: boolean;
+		infirmity: string;
+		origin: IEnum;
+		collection_site?: string;
+		collection_reason?: string;
+		created_at?: string;
+		updated_at?: string;
+	}
 	interface IAnimal {
 		id?: number;
 		hash?: string;
@@ -21,24 +39,18 @@ declare global {
 		gender: IEnum;
 		weight: number;
 		birth_date: string;
-		castrated: boolean;
-		castration_at?: string;
-		castration_site?: string;
-		size: string;
+		size: IEnum;
 		color: string;
 		coat?: IEnum;
 		characteristics?: string;
 		surname?: string;
-		entry_date?: string;
 		picture?: string;
-		collection_site?: string;
-		collection_reason?: string;
-		microchip_number?: string;
-		registration_number?: string;
 		created_at?: string;
 		updated_at?: string;
 		status?: IAnimalStatus;
 		history_statuses?: IAnimalStatus[];
+		entry_data?: IAnimalEntryData;
+		created_by?: IUser;
 	}
 }
 export { IAnimal, IAnimalStatus };
