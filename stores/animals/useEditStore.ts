@@ -1,19 +1,39 @@
+import { useForm } from "~/composables/useForm";
+
 export const useEditStore = defineStore("animals-edit", {
 	state: () => {
-		const animal = ref({} as IAnimal);
 		const isLoading = ref(false);
 		const errorMessage = ref("");
 		const successMessage = ref("");
+		const form = useForm([
+			"name",
+			"species",
+			"gender",
+			"weight",
+			"castrated",
+			"dewormed",
+			"size",
+			"birth_date",
+			"entry_date",
+			"status",
+			"characteristics",
+			"surname",
+			"infirmity",
+			"color",
+			"coat",
+			"microchip_number",
+			"registration_number",
+		]);
 
 		return {
-			animal,
+			form,
 			isLoading,
 			errorMessage,
 			successMessage,
 		};
 	},
 	actions: {
-		async updateAnimal(): Promise<void> {
+		async update(animalId: number | string): Promise<void> {
 			if (this.isLoading) {
 				return;
 			}
@@ -21,13 +41,15 @@ export const useEditStore = defineStore("animals-edit", {
 			this.isLoading = true;
 			this.errorMessage = "";
 			this.successMessage = "";
-			await useFetch(`/api/animals/${this.animal.id}`, {
+			const formData = this.getFormData();
+
+			await useFetch(`/api/animals/${animalId}`, {
 				method: "PUT",
-				body: this.animal,
+				body: formData,
 				onResponse: ({ response }) => {
 					const result = response._data as IResponse;
-					this.animal = result.data || ({} as IAnimal);
-					this.successMessage = "Animal atualizado com sucesso!";
+					this.successMessage =
+						result.data.message || "Animal atualizado com sucesso.";
 					this.isLoading = false;
 				},
 				onResponseError: ({ response }) => {
@@ -42,6 +64,47 @@ export const useEditStore = defineStore("animals-edit", {
 						response._data.message || "Erro ao atualizar animal.";
 				},
 			});
+		},
+		setFormField(field: string, value: any): void {
+			this.form[field].value = value;
+			this.setFormError(field, []);
+		},
+		setFormError(field: string, errorMessages: string[]): void {
+			this.form[field].errorMessages = errorMessages;
+		},
+		getFormData(): FormData {
+			const formData: FormData = new FormData();
+			for (const key in this.form) {
+				if (Object.prototype.hasOwnProperty.call(this.form, key)) {
+					const value = this.form[key].value as string | IOption;
+
+					if (value === null || value === undefined) {
+						continue;
+					}
+
+					if (typeof value === "object") {
+						if (Object.prototype.hasOwnProperty.call(value, "id")) {
+							formData.set(key, String(value.id));
+
+							continue;
+						}
+					}
+
+					formData.set(key, String(value));
+				}
+			}
+
+			return formData;
+		},
+		resetForm() {
+			for (const key in this.form) {
+				if (Object.prototype.hasOwnProperty.call(this.form, key)) {
+					this.form[key].value = null;
+					this.form[key].errorMessages = [];
+				}
+			}
+			this.errorMessage = "";
+			this.successMessage = "";
 		},
 	},
 });
