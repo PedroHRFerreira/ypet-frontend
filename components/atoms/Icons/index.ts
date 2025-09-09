@@ -29,3 +29,4 @@ export { default as AtomsIconsPlus } from "./Plus.vue";
 export { default as AtomsIconsCash } from "./Cash.vue";
 export { default as AtomsIconsExport } from "./Export.vue";
 export { default as AtomsIconsEdit } from "./Edit.vue";
+export { default as AtomsIconsSave } from "./Save.vue";

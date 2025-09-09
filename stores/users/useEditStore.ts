@@ -15,7 +15,7 @@ export const useEditStore = defineStore("edit", {
 		};
 	},
 	actions: {
-		async updateAnimal(): Promise<void> {
+		async update(): Promise<void> {
 			if (this.isLoading) {
 				return;
 			}

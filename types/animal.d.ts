@@ -39,7 +39,7 @@ declare global {
 		gender: IEnum;
 		weight: number;
 		birth_date: string;
-		size: string;
+		size: IEnum;
 		color: string;
 		coat?: IEnum;
 		characteristics?: string;
