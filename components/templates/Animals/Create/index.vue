@@ -1,11 +1,9 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import { useListStore } from "~/stores/animals/useListStore";
 
 export default defineComponent({
 	name: "TemplatesAnimalsCreate",
 	setup() {
-		const animalsList = useListStore();
 		const header = computed(() => {
 			return {
 				title: "Cadastro de animais",
@@ -30,13 +28,8 @@ export default defineComponent({
 			};
 		});
 
-		onMounted(async () => {
-			await animalsList.fetchAnimals();
-		});
-
 		return {
 			header,
-			animalsList,
 		};
 	},
 	methods: {

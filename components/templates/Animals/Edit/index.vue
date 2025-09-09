@@ -1,44 +1,50 @@
 <script lang="ts">
 import { defineComponent } from "vue";
+import { useDetailStore } from "~/stores/animals/useDetailStore";
+import { useEditStore } from "~/stores/animals/useEditStore";
 
 export default defineComponent({
 	name: "TemplatesAnimalsEdit",
 	setup() {
+		const animalDetailsStore = useDetailStore();
+		const animalEditStore = useEditStore();
+		const title = computed(() => {
+			if (animalDetailsStore.isLoading) {
+				return "Carregando...";
+			}
+
+			return animalDetailsStore.animal
+				? "# " + animalDetailsStore.animal.id + " "
+				: "";
+		});
+		const subtitle = computed(() => {
+			if (animalDetailsStore.isLoading) {
+				return "Carregando...";
+			}
+
+			const textStart = "Editar informações do animal: ";
+
+			return textStart + (animalDetailsStore.animal?.name || "");
+		});
 		const header = computed(() => {
 			return {
-				title: "Editar animal",
-				subtitle: "Edite as informações do animal",
-				buttons: [
-					{
-						text: "Voltar",
-						type: "outline",
-						icon: "arrow-left",
-						iconLeft: true,
-						nameIconLeft: "arrow-left",
-						iconRight: false,
-						nameIconRight: "",
-						size: "small",
-						width: "auto",
-						action: () => {
-							const router = useRouter();
-							router.back();
-						},
-					},
-				],
+				title: title.value,
+				subtitle: subtitle.value,
+				buttons: [],
 			};
 		});
 
-		const emptyState = computed(() => {
-			return {
-				isEmpty: true,
-				isIcon: true,
-				title: "",
-				description: "",
-			};
+		onMounted(async () => {
+			const id = useRoute().params.id as string;
+			await animalDetailsStore.fetchAnimalById(id, {
+				"with[]": ["status", "entryData"],
+			});
 		});
+
 		return {
 			header,
-			emptyState,
+			animalDetailsStore,
+			animalEditStore,
 		};
 	},
 });
@@ -81,16 +87,7 @@ export default defineComponent({
 				</div>
 			</header>
 			<main class="main">
-				<div v-if="emptyState.isEmpty" class="main-empty">
-					<MoleculesEmptyState
-						:is-icon="emptyState.isIcon"
-						:title="emptyState.title"
-						:description="emptyState.description"
-					/>
-				</div>
-				<div v-else class="main-content">
-					<h2>Organismos de lista</h2>
-				</div>
+				<OrganismsAnimalsEdit />
 			</main>
 		</div>
 	</div>

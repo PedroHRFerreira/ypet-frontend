@@ -12,14 +12,18 @@ export const useCreateStore = defineStore("animals-create", {
 			"gender",
 			"weight",
 			"castrated",
+			"dewormed",
+			"size",
 			"birth_date",
 			"entry_date",
 			"status",
-			"castration_site",
-			"collection_reason",
-			"collection_site",
-			"registration_number",
+			"characteristics",
+			"suname",
+			"infirmity",
+			"color",
+			"coat",
 			"microchip_number",
+			"registration_number",
 		]);
 
 		return {
