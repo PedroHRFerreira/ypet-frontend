@@ -3,6 +3,9 @@ declare global {
 		id: number;
 		name: string;
 		email: string;
+		telephone?: string;
+		cellphone?: string;
+		document?: string;
 		email_verified_at?: string;
 		created_at: string;
 		updated_at: string;

@@ -2,49 +2,27 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
-	name: "TemplatesVeterinarians",
+	name: "TemplatesVeterinariansCreate",
 	setup() {
 		const header = computed(() => {
 			return {
-				title: "Cadastro de veterinários",
-				subtitle: "Visualize e gerencie os cadastros de veterinários",
-				buttons: [
-					{
-						text: "Novo cadastro",
-						type: "primary",
-						icon: "plus",
-						iconLeft: false,
-						nameIconLeft: "",
-						iconRight: true,
-						nameIconRight: "plus",
-						action: () => {
-							// TODO: Adicionar ação de redirecionamento para criação
-						},
-					},
-				],
+				title: "Cadastro de Veterinário",
+				subtitle: "Adicione um novo veterinário ao sistema",
+				buttons: [],
 			};
 		});
 
-		const emptyState = computed(() => {
-			return {
-				isEmpty: true,
-				isIcon: true,
-				title: "",
-				description: "",
-			};
-		});
 		return {
 			header,
-			emptyState,
 		};
 	},
 });
 </script>
 
 <template>
-	<div class="wrapper-template">
+	<div class="animal-create">
 		<div class="content">
-			<header class="header">
+			<div class="header">
 				<div class="header-content">
 					<AtomsTypography
 						type="title-h7"
@@ -71,22 +49,15 @@ export default defineComponent({
 						:icon-right="button.iconRight"
 						:name-icon-left="button.nameIconLeft"
 						:name-icon-right="button.nameIconRight"
+						:size="button.size"
+						:width="button.width"
 						@onclick="button.action"
 					/>
 				</div>
-			</header>
-			<main class="main">
-				<div v-if="emptyState.isEmpty" class="main-empty">
-					<MoleculesEmptyState
-						:is-icon="emptyState.isIcon"
-						:title="emptyState.title"
-						:description="emptyState.description"
-					/>
-				</div>
-				<div v-else class="main-content">
-					<h2>Organismos de lista</h2>
-				</div>
-			</main>
+			</div>
+			<div class="main">
+				<OrganismsVeterinariansCreate />
+			</div>
 		</div>
 	</div>
 </template>
