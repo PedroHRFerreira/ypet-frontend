@@ -2,7 +2,7 @@
 import { definePageMeta } from "#imports";
 
 useHead({
-	title: "Gerenciamento de veterinários",
+	title: "Cadastre um veterinário",
 	titleTemplate: (titleChunk) => {
 		return titleChunk ? `${titleChunk} | YPet` : "YPet";
 	},
@@ -11,13 +11,13 @@ useHead({
 definePageMeta({
 	layout: "default",
 	middleware: ["auth"],
-	name: "veterinarians-list",
 });
 
 defineComponent({
-	name: "PagesVeterinarians",
+	name: "PagesVeterinariansCreate",
 });
 </script>
+
 <template>
-	<TemplatesVeterinariansList />
+	<TemplatesVeterinariansCreate />
 </template>
