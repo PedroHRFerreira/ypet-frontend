@@ -3,8 +3,8 @@ import { apiPut } from "~/utils/api";
 export default defineEventHandler(async (event): Promise<IResponse> => {
 	try {
 		const id = event.context.params?.id;
-		const path = `/users/${id}`;
 		const body = await readBody(event);
+		const path = `/veterinarians/${id}`;
 
 		return await apiPut<IResponse>(path, event, body);
 	} catch (err) {
