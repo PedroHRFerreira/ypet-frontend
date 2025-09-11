@@ -201,7 +201,7 @@ export default defineComponent({
 								<slot name="footer">
 									<template v-if="variant === 'confirm'">
 										<MoleculesButtonsCommon
-											ref="primaryBtnRef"
+											ref="primaryBtnRefConfirm"
 											:text="confirmText"
 											size="small"
 											@onclick="onConfirm"

@@ -46,25 +46,13 @@ export default defineComponent({
 
 		const columnsHeader = ref([
 			{
-				value: "checkbox",
-				text: "",
-				typeTypography: "text-p5",
-				weightTypography: "bold",
-				colorTypography: "var(--brand-color-dark-blue-300)",
-				style: {
-					width: "10%",
-					gap: "16px",
-					wordBreak: "break-all",
-				},
-			},
-			{
 				value: "registration_number",
 				text: "INSCRIÇÃO",
 				typeTypography: "text-p5",
 				weightTypography: "bold",
 				colorTypography: "var(--brand-color-dark-blue-300)",
 				style: {
-					width: "10%",
+					width: "20%",
 					gap: "16px",
 					wordBreak: "break-all",
 				},
@@ -208,9 +196,6 @@ export default defineComponent({
 				:data="columnsHeader"
 				padding="0"
 			>
-				<template #checkbox>
-					<input :key="item.id" type="checkbox" />
-				</template>
 				<template #registration_number>
 					<AtomsTypography
 						type="text-p5"
