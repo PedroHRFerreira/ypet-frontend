@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, onMounted, onBeforeUnmount, ref, watch } from "vue";
+import { defineComponent, onBeforeUnmount, ref, watch } from "vue";
 
 export default defineComponent({
 	name: "MoleculesConfirmFeedbackModal",
@@ -36,8 +36,10 @@ export default defineComponent({
 		function doOpenSideEffects() {
 			lastActiveEl.value = (document.activeElement as HTMLElement) || null;
 			lockScroll(true);
-			requestAnimationFrame(() => primaryBtnRef.value?.focus());
-			emit("open");
+			if (primaryBtnRef.value) {
+				requestAnimationFrame(() => primaryBtnRef.value?.focus());
+				emit("open");
+			}
 		}
 
 		function doCloseSideEffects() {
@@ -89,8 +91,6 @@ export default defineComponent({
 			emit("continue");
 			close();
 		}
-
-		onMounted(() => document.addEventListener("keydown", onEsc));
 		onBeforeUnmount(() => {
 			document.removeEventListener("keydown", onEsc);
 			lockScroll(false);
@@ -104,7 +104,14 @@ export default defineComponent({
 			onCancel,
 			onContinue,
 			close,
+			onEsc,
 		};
+	},
+	mounted(): any {
+		document.addEventListener("keydown", this.onEsc);
+
+		this.primaryBtnRef = useTemplateRef("primaryBtnRef").value
+			?.$el as HTMLButtonElement;
 	},
 });
 </script>
@@ -201,7 +208,7 @@ export default defineComponent({
 								<slot name="footer">
 									<template v-if="variant === 'confirm'">
 										<MoleculesButtonsCommon
-											ref="primaryBtnRefConfirm"
+											ref="primaryBtnRef"
 											:text="confirmText"
 											size="small"
 											@onclick="onConfirm"
