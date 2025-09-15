@@ -20,26 +20,72 @@ export default defineComponent({
 		const { form } = useVeterinariansEdit;
 		const id = useRoute().params.id as string;
 
-		const [
-			veterinarian,
-			userStatus,
-			optionsLinkedType,
-			optionsUFEnum,
-			optionsBoolean,
-		] = await Promise.all([
-			useVeterinariansDetails.find(id, {
-				"with[]": ["status", "user"],
-			}),
+		const [userStatus, linkedType, UFEnum, optsBoolean] = await Promise.all([
 			useUserStatusEnum.getOptions(),
 			useLinkedTypeEnum.getOptions(),
 			useUFEnum.getOptions(),
 			useBooleanEnum.getOptions(),
-		]);
+			useVeterinariansDetails.find(id, {
+				"with[]": ["status", "user"],
+			}),
+		]).then();
+
+		const veterinarian = useVeterinariansDetails.veterinarian;
 		const optionsUserStatus = computed(() =>
 			userStatus.map((item) => {
+				if (item.id === veterinarian?.status?.status.value) {
+					item.state = "activated";
+					useVeterinariansEdit.setFormField("status", item.id);
+				}
+
+				return item;
+			}),
+		);
+
+		const optionsLinkedType = computed(() =>
+			linkedType.map((item) => {
 				if (item.id === veterinarian?.linked_type?.value) {
 					item.state = "activated";
 					useVeterinariansEdit.setFormField("linked_type", item.id);
+				}
+
+				return item;
+			}),
+		);
+
+		const optionsUFEnum = computed(() =>
+			UFEnum.map((item) => {
+				if (item.id === veterinarian?.uf) {
+					item.state = "activated";
+					useVeterinariansEdit.setFormField("uf", item.id);
+				}
+
+				return item;
+			}),
+		);
+
+		const optionsBooleanCanAccessCastroMobile = computed(() =>
+			optsBoolean.map((item) => {
+				if (item.value === veterinarian?.can_access_castro_mobile) {
+					item.state = "activated";
+					useVeterinariansEdit.setFormField(
+						"permissions_can_access_castromovel",
+						item.id,
+					);
+				}
+
+				return item;
+			}),
+		);
+
+		const optionsBooleanCanApplyVaccine = computed(() =>
+			optsBoolean.map((item) => {
+				if (item.value === veterinarian?.can_apply_vaccine) {
+					item.state = "activated";
+					useVeterinariansEdit.setFormField(
+						"permissions_can_apply_vaccine",
+						item.id,
+					);
 				}
 
 				return item;
@@ -52,7 +98,6 @@ export default defineComponent({
 			veterinarian?.user?.document || "",
 		);
 		useVeterinariansEdit.setFormField("crmv", veterinarian?.crmv || "");
-		useVeterinariansEdit.setFormField("uf", veterinarian?.uf || "");
 		useVeterinariansEdit.setFormField("email", veterinarian?.user?.email || "");
 		useVeterinariansEdit.setFormField(
 			"phone",
@@ -79,7 +124,7 @@ export default defineComponent({
 		const showSuccess = ref(false);
 		const modalFeedback = {
 			confirm: {
-				title: "Deseja confirmar a criação?",
+				title: "Deseja confirmar a atualização?",
 				description: "Após confirmação, você irá visualizá-lo no painel",
 				confirmText: "Confirmar",
 				cancelText: "Cancelar",
@@ -88,7 +133,11 @@ export default defineComponent({
 						return;
 					}
 
-					await useVeterinariansEdit.create();
+					if (!veterinarian || !veterinarian.id) {
+						return;
+					}
+
+					await useVeterinariansEdit.update(veterinarian?.id);
 
 					if (useVeterinariansEdit.successMessage) {
 						showSuccess.value = true;
@@ -147,7 +196,8 @@ export default defineComponent({
 		return {
 			optionsUserStatus,
 			optionsLinkedType,
-			optionsBoolean,
+			optionsBooleanCanAccessCastroMobile,
+			optionsBooleanCanApplyVaccine,
 			optionsUFEnum,
 			form,
 			useVeterinariansEdit,
@@ -288,7 +338,7 @@ export default defineComponent({
 						name="Pode acessar Castramóvel"
 						label="Pode acessar Castramóvel"
 						max-width="30%"
-						:options="optionsBoolean"
+						:options="optionsBooleanCanAccessCastroMobile"
 						:value="
 							form.permissions_can_access_castromovel.value
 								? form.permissions_can_access_castromovel.value
@@ -308,7 +358,7 @@ export default defineComponent({
 						name="Pode aplicar vacinas"
 						label="Pode aplicar vacinas"
 						max-width="30%"
-						:options="optionsBoolean"
+						:options="optionsBooleanCanApplyVaccine"
 						:value="
 							form.permissions_can_apply_vaccine.value
 								? form.permissions_can_apply_vaccine.value
