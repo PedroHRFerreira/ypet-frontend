@@ -1,4 +1,5 @@
 import { useForm } from "~/composables/useForm";
+import { useAuthLoginStore } from "~/stores/auth/useAuthLoginStore";
 
 export const useEditStore = defineStore("veterinarians-edit", {
 	state: () => {
@@ -76,6 +77,9 @@ export const useEditStore = defineStore("veterinarians-edit", {
 				this.errorMessage =
 					response.message ||
 					"Não autorizado. Por favor, faça login novamente.";
+
+				const authStore = useAuthLoginStore();
+				authStore.logout();
 			}
 
 			if (response.status === 422) {
@@ -88,7 +92,7 @@ export const useEditStore = defineStore("veterinarians-edit", {
 
 			this.isLoading = false;
 		},
-		async create(): Promise<void> {
+		async update(id: number | string): Promise<void> {
 			if (this.isLoading) {
 				return;
 			}
@@ -99,8 +103,8 @@ export const useEditStore = defineStore("veterinarians-edit", {
 
 			const formData = this.getFormData();
 
-			await useFetch("/api/veterinarians/store", {
-				method: "POST",
+			await useFetch(`/api/veterinarians/${id}`, {
+				method: "PUT",
 				body: formData,
 				onResponse: ({ response }) => {
 					const responseData = response._data || ({} as IResponse);
@@ -109,12 +113,13 @@ export const useEditStore = defineStore("veterinarians-edit", {
 						return this.handleResponseError(responseData);
 					}
 
-					this.successMessage = responseData.message || "Criado com sucesso!";
+					this.successMessage =
+						responseData.message || "Atualizado com sucesso!";
 					this.veterinarian = responseData.data || ({} as IAnimal);
 					this.isLoading = false;
-
-					const router = useRouter();
-					router.push({ name: "veterinarian-list" });
+				},
+				onResponseError: () => {
+					this.isLoading = false;
 				},
 			});
 		},
