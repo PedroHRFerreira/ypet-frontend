@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent, computed } from "vue";
 
-type TypeColunm = {
+type TypeColumn = {
 	value: string;
 	style?: Record<string, string>;
 };
@@ -10,7 +10,7 @@ export default defineComponent({
 	name: "MoleculesListCardItem",
 	props: {
 		data: {
-			type: Array as PropType<TypeColunm[]>,
+			type: Array as PropType<TypeColumn[]>,
 			required: true,
 		},
 		padding: {
