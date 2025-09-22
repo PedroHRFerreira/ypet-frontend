@@ -11,6 +11,13 @@
 	gap: 1rem;
 }
 
+@media (max-width: 991.98px) {
+  .chart-card {
+    max-width: none;
+    width: 100%;
+  }
+}
+
 .header {
 	display: flex;
 	justify-content: space-between;

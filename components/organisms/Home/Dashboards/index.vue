@@ -67,4 +67,10 @@ export default defineComponent({
 		grid-template-columns: 1fr 1fr;
 	}
 }
+
+@media (max-width: 579.98px) {
+	.dashboard-container {
+		grid-template-columns: 1fr;
+	}
+}
 </style>
