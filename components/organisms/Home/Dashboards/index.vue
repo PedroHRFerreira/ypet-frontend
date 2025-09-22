@@ -58,7 +58,19 @@ export default defineComponent({
 <style scoped lang="scss">
 .dashboard-container {
 	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+	grid-template-columns: 1fr 1fr 1fr;
 	gap: 8px;
+}
+
+@media (max-width: 900px) {
+	.dashboard-container {
+		grid-template-columns: 1fr 1fr;
+	}
+}
+
+@media (max-width: 579.98px) {
+	.dashboard-container {
+		grid-template-columns: 1fr;
+	}
 }
 </style>
