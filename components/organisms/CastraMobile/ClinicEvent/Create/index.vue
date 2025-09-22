@@ -20,11 +20,6 @@ export default defineComponent({
 			useMobileEventStatusEnum.getOptions(),
 		]);
 
-		const optionsBoolean: IOption[] = [
-			{ id: 1, text: "Sim", state: "default" },
-			{ id: 0, text: "Não", state: "activated" },
-		];
-
 		const endDate = ref("");
 
 		const startDate = ref("");
@@ -68,7 +63,6 @@ export default defineComponent({
 			optionsGender,
 			optionsSpecies,
 			optionsStatus,
-			optionsBoolean,
 			endDate,
 			startDate,
 			form,
