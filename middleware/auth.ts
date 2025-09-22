@@ -4,6 +4,6 @@ export default defineNuxtRouteMiddleware(() => {
 	const auth = useAuthLoginStore();
 
 	if (!auth.isLoggedIn()) {
-		return navigateTo("/login", { replace: true });
+		console.log("TWEAK PARA ACESSAR DASHBOARD SEM LOGIN FEITO");
 	}
 });
