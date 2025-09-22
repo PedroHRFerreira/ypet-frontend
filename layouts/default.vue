@@ -1,7 +1,15 @@
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
 export default defineComponent({
 	name: "LayoutsDefault",
+	setup() {
+		const showMobileMenu = ref(false);
+
+		const openMobileMenu = () => (showMobileMenu.value = true);
+		const closeMobileMenu = () => (showMobileMenu.value = false);
+
+		return { showMobileMenu, openMobileMenu, closeMobileMenu };
+	},
 });
 </script>
 <template>
@@ -10,9 +18,18 @@ export default defineComponent({
 			<OrganismsSidebarNav />
 		</aside>
 		<div class="content">
-			<OrganismsHeader />
+			<OrganismsHeader @menu="openMobileMenu" />
 			<slot />
 		</div>
+
+		<div
+			v-if="showMobileMenu"
+			class="mobile-menu__overlay"
+			@click="closeMobileMenu"
+		/>
+		<nav class="mobile-menu" :class="{ open: showMobileMenu }">
+			<OrganismsSidebarNav @onclick="closeMobileMenu" />
+		</nav>
 	</main>
 </template>
 <style scoped lang="scss">
@@ -36,6 +53,27 @@ export default defineComponent({
 	}
 	.aside {
 		display: none;
+	}
+
+	.mobile-menu__overlay {
+		position: fixed;
+		inset: 0;
+		background: rgba(0, 0, 0, 0.4);
+		z-index: 5;
+	}
+	.mobile-menu {
+		position: fixed;
+		top: 0;
+		left: 0;
+		height: 100%;
+		width: 290px;
+		background: var(--white);
+		transform: translateX(-100%);
+		transition: transform 0.25s ease-in-out;
+		z-index: 20;
+	}
+	.mobile-menu.open {
+		transform: translateX(0);
 	}
 }
 </style>
