@@ -4,7 +4,9 @@ import { type ConcreteComponent, defineComponent } from "vue";
 export default defineComponent({
 	name: "TemplatesCastraMobile",
 	setup() {
-		const settingsComponent = resolveComponent("OrganismsCastraMobileSettings");
+		const settingsComponent = resolveComponent(
+			"OrganismsCastraMobileClinicEvent",
+		);
 		const dailyScheduleComponent = resolveComponent(
 			"OrganismsCastraMobileDailySchedule",
 		);
