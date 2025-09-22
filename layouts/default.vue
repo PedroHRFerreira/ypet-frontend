@@ -34,5 +34,8 @@ export default defineComponent({
 	.layout {
 		grid-template-columns: 0 auto;
 	}
+	.aside {
+		display: none;
+	}
 }
 </style>
