@@ -45,5 +45,33 @@
 			align-items: center;
 			@include flex(row, unset, center, 1.5rem);
 		}
+		.menu-trigger {
+			display: none;
+			background: transparent;
+			border: none;
+			padding: 8px;
+			cursor: pointer;
+
+			.bar {
+				width: 24px;
+				height: 2px;
+				background: var(--brand-color-blue-900);
+				border-radius: 2px;
+			}
+		}
+	}
+}
+
+@media (max-width: 991.98px) {
+	.header {
+		&__container {
+			.menu-trigger {
+				@include flex(column, center, center, 4px);
+			}
+			.input-search {
+				max-width: none;
+				flex: 1 1 auto;
+			}
+		}
 	}
 }
