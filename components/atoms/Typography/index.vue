@@ -32,7 +32,7 @@ const props = defineProps({
 		},
 	},
 	text: {
-		type: String,
+		type: [String, Number],
 		default: () => {
 			return "Typography";
 		},

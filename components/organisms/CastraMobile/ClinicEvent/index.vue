@@ -3,10 +3,10 @@ import { computed, defineComponent, ref } from "vue";
 import MoleculesListCardItem from "~/components/molecules/ListCardItem/index.vue";
 import { useDayjs } from "~/composables/useDayjs";
 import AtomsTypography from "~/components/atoms/Typography/index.vue";
-import { useListStore } from "~/stores/mobileClinicEvent/useListStore";
+import { useListStore } from "~/stores/castra-mobile/clinic-events/useListStore";
 
 export default defineComponent({
-	name: "OrganismsCastraMobileSettings",
+	name: "OrganismsCastraMobileClinicEvent",
 	components: {
 		AtomsTypography,
 		MoleculesListCardItem,
@@ -16,8 +16,8 @@ export default defineComponent({
 		await listStore.fetchList();
 		const header = computed(() => {
 			return {
-				title: "Seletor de mês",
-				subtitle: "",
+				title: "Eventos clínicos",
+				subtitle: "Gerencie os eventos clínicos aqui",
 				buttons: [
 					{
 						text: "Novo dia",
@@ -29,7 +29,10 @@ export default defineComponent({
 						nameIconRight: "",
 						size: "small",
 						width: "auto",
-						action: () => {},
+						action: () => {
+							const router = useRouter();
+							router.push({ name: "clinic-events-create" });
+						},
 					},
 				],
 			};
@@ -133,7 +136,7 @@ export default defineComponent({
 
 			if (event === "details") {
 				router.push({
-					name: "mobile-clinic-event-details",
+					name: "clinic-event-details",
 					params: { id: item.id },
 				});
 			}
