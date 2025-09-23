@@ -136,7 +136,7 @@ export default defineComponent({
 
 			if (event === "details") {
 				router.push({
-					name: "mobile-clinic-events-details",
+					name: "clinic-event-details",
 					params: { id: item.id },
 				});
 			}
