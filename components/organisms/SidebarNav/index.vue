@@ -21,8 +21,8 @@ export default defineComponent({
 			{
 				text: "Castramóvel",
 				icon: "truck",
-				active: "castramobile",
-				route: "castramobile",
+				active: "castra-mobile",
+				route: "castra-mobile",
 			},
 			{
 				text: "Ocorrências",

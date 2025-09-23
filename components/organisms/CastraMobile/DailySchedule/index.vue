@@ -3,7 +3,7 @@ import { computed, defineComponent, ref } from "vue";
 import MoleculesListCardItem from "~/components/molecules/ListCardItem/index.vue";
 import { useDayjs } from "~/composables/useDayjs";
 import AtomsTypography from "~/components/atoms/Typography/index.vue";
-import { useListStore } from "~/stores/registrations/useListStore";
+import { useListStore } from "~/stores/castra-mobile/registrations/useListStore";
 
 export default defineComponent({
 	name: "OrganismsCastraMobileDailySchedule",
@@ -123,8 +123,7 @@ export default defineComponent({
 		]);
 
 		const onSelectOptionAction = (event: string, item: IRegistration) => {
-			// Handle action selection
-			// no-console-ignore
+			// eslint-disable-next-line no-console
 			console.log(event, item);
 		};
 

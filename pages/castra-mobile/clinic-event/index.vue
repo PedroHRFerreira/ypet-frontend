@@ -2,7 +2,7 @@
 import { definePageMeta } from "#imports";
 
 useHead({
-	title: "Castramóvel",
+	title: "Castramóvel - Criar Configuração",
 	titleTemplate: (titleChunk) => {
 		return titleChunk ? `${titleChunk} | YPet` : "YPet";
 	},
@@ -11,13 +11,14 @@ useHead({
 definePageMeta({
 	layout: "default",
 	middleware: ["auth"],
+	name: "clinic-events-create",
 });
 
 defineComponent({
-	name: "PagesCastraMobile",
+	name: "PagesCastraMobileClinicEvent",
 });
 </script>
 
 <template>
-	<TemplatesCastraMobile />
+	<TemplatesCastraMobileClinicEvent />
 </template>
