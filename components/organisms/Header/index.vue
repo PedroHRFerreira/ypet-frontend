@@ -3,7 +3,7 @@ import { useAuthLoginStore } from "~/stores/auth/useAuthLoginStore";
 
 export default defineComponent({
 	name: "OrganismsHeader",
-	emits: ["notifications", "profile"],
+	emits: ["notifications", "profile", "menu"],
 	setup(_, { emit }) {
 		const useAuthLogin = useAuthLoginStore();
 		const dropdownRef = ref<HTMLElement | null>(null);
@@ -67,6 +67,16 @@ export default defineComponent({
 <template>
 	<header class="header">
 		<div class="header__container">
+			<button
+				type="button"
+				class="menu-trigger"
+				aria-label="Abrir menu mobile"
+				@click="$emit('menu')"
+			>
+				<span class="bar"></span>
+				<span class="bar"></span>
+				<span class="bar"></span>
+			</button>
 			<MoleculesInputSearch label="O que você procura?" class="input-search" />
 			<ul class="header__container--actions">
 				<li class="header__container--item" @click="$emit('notifications')">

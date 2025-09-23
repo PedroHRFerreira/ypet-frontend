@@ -61,4 +61,10 @@ export default defineComponent({
 	display: flex;
 	gap: 8px;
 }
+
+@media (max-width: 991.98px) {
+	.wrapper-graphics {
+		flex-direction: column;
+	}
+}
 </style>
