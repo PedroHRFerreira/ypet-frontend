@@ -4,7 +4,9 @@ import { type ConcreteComponent, defineComponent } from "vue";
 export default defineComponent({
 	name: "TemplatesCastraMobile",
 	setup() {
-		const settingsComponent = resolveComponent("OrganismsCastraMobileSettings");
+		const settingsComponent = resolveComponent(
+			"OrganismsCastraMobileClinicEvent",
+		);
 		const dailyScheduleComponent = resolveComponent(
 			"OrganismsCastraMobileDailySchedule",
 		);
@@ -16,7 +18,7 @@ export default defineComponent({
 		const tabs = ref([
 			{
 				id: "settings",
-				name: "Configurações",
+				name: "Eventos",
 				active: true,
 			},
 			{
