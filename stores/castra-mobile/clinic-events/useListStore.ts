@@ -6,7 +6,7 @@ export const useListStore = defineStore("list", {
 		const isLoading = ref(false);
 		const errorMessage = ref("");
 		const pagination = ref<IPagination>({} as IPagination);
-		const pathUrl = "/api/mobile-clinic-events";
+		const pathUrl = "/api/clinic-events";
 
 		return {
 			list,
