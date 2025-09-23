@@ -2,7 +2,7 @@
 import { definePageMeta } from "#imports";
 
 useHead({
-	title: "Detalhes do animal",
+	title: "Detalhes do Evento Clínico",
 	titleTemplate: (titleChunk) => {
 		return titleChunk ? `${titleChunk} | YPet` : "YPet";
 	},
@@ -11,7 +11,7 @@ useHead({
 definePageMeta({
 	layout: "default",
 	middleware: ["auth"],
-	name: "animals-details",
+	name: "clinic-event-details",
 });
 
 defineComponent({
@@ -20,5 +20,5 @@ defineComponent({
 </script>
 
 <template>
-	<TemplatesAnimalsDetails />
+	<TemplatesCastraMobileClinicEventDetails />
 </template>
