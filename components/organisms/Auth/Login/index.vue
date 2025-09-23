@@ -23,9 +23,12 @@ export default defineComponent({
 	},
 	methods: {
 		handleLogin(): void {
-			console.log("TWEAK PARA ACESSAR DASHBOARD SEM LOGIN FEITO");
-			useRouter().push({
-				name: "home",
+			this.useAuthLogin.login().then((res: boolean) => {
+				if (res) {
+					useRouter().push({
+						name: "home",
+					});
+				}
 			});
 		},
 		goToForgotPassword(): void {
