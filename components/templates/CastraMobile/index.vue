@@ -18,7 +18,7 @@ export default defineComponent({
 		const tabs = ref([
 			{
 				id: "settings",
-				name: "Configurações",
+				name: "Eventos",
 				active: true,
 			},
 			{

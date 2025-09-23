@@ -16,8 +16,8 @@ export default defineComponent({
 		await listStore.fetchList();
 		const header = computed(() => {
 			return {
-				title: "Seletor de mês",
-				subtitle: "",
+				title: "Eventos clínicos",
+				subtitle: "Gerencie os eventos clínicos aqui",
 				buttons: [
 					{
 						text: "Novo dia",
