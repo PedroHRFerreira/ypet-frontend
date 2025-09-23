@@ -47,6 +47,11 @@ export default defineComponent({
 	background-color: var(--greys-colors-100);
 }
 
+.mobile-menu,
+.mobile-menu__overlay {
+	display: none;
+}
+
 @media (max-width: 991.98px) {
 	.layout {
 		grid-template-columns: 0 auto;
@@ -60,8 +65,10 @@ export default defineComponent({
 		inset: 0;
 		background: rgba(0, 0, 0, 0.4);
 		z-index: 5;
+		display: block;
 	}
 	.mobile-menu {
+		display: block;
 		position: fixed;
 		top: 0;
 		left: 0;
