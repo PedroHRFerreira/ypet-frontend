@@ -1,28 +1,20 @@
 import { useForm } from "~/composables/useForm";
 
-export const useEditStore = defineStore("animals-edit", {
+export const useEditStore = defineStore("clinic-event-edit", {
 	state: () => {
 		const isLoading = ref(false);
 		const errorMessage = ref("");
 		const successMessage = ref("");
 		const form = useForm([
 			"name",
+			"description",
+			"location",
+			"start_date",
+			"end_date",
+			"status",
 			"species",
 			"gender",
-			"weight",
-			"castrated",
-			"dewormed",
-			"size",
-			"birth_date",
-			"entry_date",
-			"status",
-			"characteristics",
-			"surname",
-			"infirmity",
-			"color",
-			"coat",
-			"microchip_number",
-			"registration_number",
+			"max_registrations",
 		]);
 
 		return {
@@ -33,7 +25,7 @@ export const useEditStore = defineStore("animals-edit", {
 		};
 	},
 	actions: {
-		async update(animalId: number | string): Promise<void> {
+		async update(id: number | string): Promise<void> {
 			if (this.isLoading) {
 				return;
 			}
@@ -41,27 +33,29 @@ export const useEditStore = defineStore("animals-edit", {
 			this.isLoading = true;
 			this.errorMessage = "";
 			this.successMessage = "";
-			const formData = this.getFormData();
+			const formData = this.getFormJson();
 
-			await useFetch(`/api/animals/${animalId}`, {
+			await useFetch(`/api/clinic-events/${id}`, {
 				method: "PUT",
 				body: formData,
+				headers: {
+					"Content-Type": "multipart/form-data",
+					Accept: "multipart/form-data",
+				},
 				onResponse: ({ response }) => {
 					const result = response._data as IResponse;
-					this.successMessage =
-						result.message || "Animal atualizado com sucesso.";
+					this.successMessage = result.message || "Event updated successfully.";
 					this.isLoading = false;
 				},
 				onResponseError: ({ response }) => {
 					this.isLoading = false;
 
 					if (response.status === 422) {
-						this.errorMessage = response._data.message || "Erro de validação.";
+						this.errorMessage = response._data.message;
 						return;
 					}
 
-					this.errorMessage =
-						response._data.message || "Erro ao atualizar animal.";
+					this.errorMessage = response._data.message;
 				},
 			});
 		},
@@ -72,8 +66,8 @@ export const useEditStore = defineStore("animals-edit", {
 		setFormError(field: string, errorMessages: string[]): void {
 			this.form[field].errorMessages = errorMessages;
 		},
-		getFormData(): FormData {
-			const formData: FormData = new FormData();
+		getFormJson(): Record<string, any> {
+			const json: Record<string, any> = {};
 			for (const key in this.form) {
 				if (Object.prototype.hasOwnProperty.call(this.form, key)) {
 					const value = this.form[key].value as string | IOption;
@@ -81,20 +75,18 @@ export const useEditStore = defineStore("animals-edit", {
 					if (value === null || value === undefined) {
 						continue;
 					}
-
 					if (typeof value === "object") {
 						if (Object.prototype.hasOwnProperty.call(value, "id")) {
-							formData.set(key, String(value.id));
-
+							json[key] = value.id;
 							continue;
 						}
 					}
 
-					formData.set(key, String(value));
+					json[key] = value;
 				}
 			}
 
-			return formData;
+			return json;
 		},
 		resetForm() {
 			for (const key in this.form) {
