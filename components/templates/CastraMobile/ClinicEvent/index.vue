@@ -6,25 +6,9 @@ export default defineComponent({
 	setup() {
 		const header = computed(() => {
 			return {
-				title: "Cadastro de configuração",
-				subtitle: "Adicione um novo",
-				buttons: [
-					{
-						text: "Voltar",
-						type: "outline",
-						icon: "arrow-left",
-						iconLeft: true,
-						nameIconLeft: "arrow-left",
-						iconRight: false,
-						nameIconRight: "",
-						size: "small",
-						width: "auto",
-						action: () => {
-							const router = useRouter();
-							router.back();
-						},
-					},
-				],
+				title: "Editar evento clínico",
+				subtitle: "Altere as informações do evento clínico",
+				buttons: [],
 			};
 		});
 
@@ -55,7 +39,7 @@ export default defineComponent({
 						color="var(--brand-color-dark-blue-300)"
 					/>
 				</div>
-				<div class="header-actions">
+				<div v-if="header.buttons.length" class="header-actions">
 					<MoleculesButtonsCommon
 						v-for="button in header.buttons"
 						:key="button.text"
@@ -72,7 +56,7 @@ export default defineComponent({
 				</div>
 			</div>
 			<div class="main">
-				<OrganismsCastraMobileClinicEventCreate />
+				<OrganismsCastraMobileClinicEventEdit />
 			</div>
 		</div>
 	</div>
