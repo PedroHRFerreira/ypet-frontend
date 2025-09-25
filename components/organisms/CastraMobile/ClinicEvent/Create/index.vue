@@ -9,54 +9,94 @@ export default defineComponent({
 	name: "OrganismsClinicEventCreate",
 	async setup() {
 		const createStore = useCreateStore();
-		const useAnimalSpeciesEnum = useAnimalSpeciesEnumStore();
-		const useGenderEnum = useGenderEnumStore();
-		const useMobileEventStatusEnum = useMobileEventStatusEnumStore();
 		const { form } = createStore;
 
 		const [optionsSpecies, optionsGender, optionsStatus] = await Promise.all([
-			useAnimalSpeciesEnum.getOptions(),
-			useGenderEnum.getOptions(),
-			useMobileEventStatusEnum.getOptions(),
+			useAnimalSpeciesEnumStore().getOptions(),
+			useGenderEnumStore().getOptions(),
+			useMobileEventStatusEnumStore().getOptions(),
 		]);
 
 		const endDate = ref("");
-
 		const startDate = ref("");
-
-		const isCastrated = computed(() => {
-			return form.castrated.value === 1;
-		});
 
 		const showConfirm = ref(false);
 		const showSuccess = ref(false);
 
-		function openConfirm() {
-			showConfirm.value = true;
-		}
-		async function confirmCreate() {
-			if (createStore.isLoading) {
-				return;
-			}
+		const modalFeedback = {
+			confirm: {
+				title: "Deseja criar novo evento?",
+				description: "Após confirmação, você irá visualizá-lo no painel",
+				confirmText: "Confirmar",
+				cancelText: "Cancelar",
+				action: async () => {
+					if (createStore.isLoading) {
+						return;
+					}
 
-			await createStore.store();
+					await createStore.store();
 
-			if (createStore.successMessage) {
-				onSuccess();
-			}
+					if (createStore.successMessage) {
+						showSuccess.value = true;
+					}
 
-			showConfirm.value = false;
-		}
-		function onSuccess() {
-			showSuccess.value = true;
-		}
-		function continueFeedback() {
-			showSuccess.value = false;
-			createStore.resetForm();
+					showConfirm.value = false;
+				},
+			},
+			success: {
+				show: false,
+				title: "Criado com sucesso!",
+				description: "Visualize os dados na área de listagem.",
+				continueText: "Continuar",
+				action: () => {
+					showSuccess.value = false;
+					createStore.resetForm();
+				},
+			},
+		};
 
-			const router = useRouter();
-			router.back();
-		}
+		const header = {
+			title: {
+				label: "Criar evento clínico",
+				type: "text-p2",
+				weight: "medium",
+				color: "var(--brand-color-dark-blue-900)",
+			},
+		};
+
+		const footer = {
+			buttons: [
+				{
+					text: "Voltar",
+					type: "secondary",
+					icon: "arrow-left",
+					iconLeft: true,
+					nameIconLeft: "arrow-left",
+					iconRight: false,
+					nameIconRight: "",
+					size: "medium",
+					width: "auto",
+					action: () => {
+						const router = useRouter();
+						router.back();
+					},
+				},
+				{
+					text: "Cadastrar",
+					type: "primary",
+					icon: "plus",
+					iconLeft: true,
+					nameIconLeft: "plus",
+					iconRight: false,
+					nameIconRight: "",
+					size: "medium",
+					width: "auto",
+					action: () => {
+						showConfirm.value = true;
+					},
+				},
+			],
+		};
 
 		return {
 			useDayjs,
@@ -67,12 +107,11 @@ export default defineComponent({
 			startDate,
 			form,
 			createStore,
-			isCastrated,
+			header,
+			footer,
+			modalFeedback,
 			showConfirm,
 			showSuccess,
-			openConfirm,
-			confirmCreate,
-			continueFeedback,
 		};
 	},
 	watch: {
@@ -94,30 +133,32 @@ export default defineComponent({
 
 <template>
 	<MoleculesConfirmFeedbackModal
+		key="confirmCreateClinicEvent"
 		v-model:open="showConfirm"
 		variant="confirm"
-		title="Deseja confirmar o cadastro no animal?"
-		description="Após confirmação, você irá visualizá-lo no painel"
-		confirm-text="Confirmar"
-		cancel-text="Cancelar"
-		@confirm="confirmCreate"
+		:title="modalFeedback.confirm.title"
+		:description="modalFeedback.confirm.description"
+		:confirm-text="modalFeedback.confirm.confirmText"
+		:cancel-text="modalFeedback.confirm.cancelText"
+		@confirm="modalFeedback.confirm.action()"
 	/>
 	<MoleculesConfirmFeedbackModal
+		key="successCreateClinicEvent"
 		v-model:open="showSuccess"
 		variant="success"
-		title="Cadastro realizado com sucesso"
-		description="Visualize os dados na área de cadastro."
-		continue-text="Continuar"
-		@continue="continueFeedback"
+		:title="modalFeedback.success.title"
+		:description="modalFeedback.success.description"
+		:continue-text="modalFeedback.success.continueText"
+		@continue="modalFeedback.success.action()"
 	/>
 	<div class="settings-create">
 		<section class="settings-create__about-pet">
 			<div class="settings-create__about-pet__header">
 				<AtomsTypography
-					type="text-p2"
-					text="Sobre o pet"
-					weight="medium"
-					color="var(--brand-color-dark-blue-900)"
+					:type="header.title.type"
+					:text="header.title.label"
+					:weight="header.title.weight"
+					:color="header.title.color"
 				/>
 			</div>
 			<div class="settings-create__about-pet__content">
@@ -203,12 +244,17 @@ export default defineComponent({
 
 				<div class="settings-create__about-pet__content--footer">
 					<MoleculesButtonsCommon
-						type="primary"
-						text="Cadastrar"
-						width="128px"
-						:icon-right="true"
-						name-icon-right="plus"
-						@onclick="openConfirm"
+						v-for="button in footer.buttons"
+						:key="button.text"
+						:type="button.type"
+						:text="button.text"
+						:icon-left="button.iconLeft"
+						:icon-right="button.iconRight"
+						:name-icon-left="button.nameIconLeft"
+						:name-icon-right="button.nameIconRight"
+						:size="button.size"
+						:width="button.width"
+						@onclick="button.action"
 					/>
 				</div>
 			</div>
