@@ -20,5 +20,5 @@ defineComponent({
 </script>
 
 <template>
-	<TemplatesCastraMobileClinicEvent />
+	<TemplatesCastraMobileClinicEventCreate />
 </template>
