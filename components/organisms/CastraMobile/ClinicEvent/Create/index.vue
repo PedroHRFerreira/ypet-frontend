@@ -39,7 +39,7 @@ export default defineComponent({
 				return;
 			}
 
-			await createStore.createAnimal();
+			await createStore.store();
 
 			if (createStore.successMessage) {
 				onSuccess();
@@ -55,7 +55,7 @@ export default defineComponent({
 			createStore.resetForm();
 
 			const router = useRouter();
-			router.push({ name: "animals-list" });
+			router.back();
 		}
 
 		return {
