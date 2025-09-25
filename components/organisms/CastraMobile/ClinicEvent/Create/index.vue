@@ -8,11 +8,11 @@ import { useMobileEventStatusEnumStore } from "~/stores/Enums/useMobileEventStat
 export default defineComponent({
 	name: "OrganismsClinicEventCreate",
 	async setup() {
-		const useAnimalsCreate = useCreateStore();
+		const createStore = useCreateStore();
 		const useAnimalSpeciesEnum = useAnimalSpeciesEnumStore();
 		const useGenderEnum = useGenderEnumStore();
 		const useMobileEventStatusEnum = useMobileEventStatusEnumStore();
-		const { form } = useAnimalsCreate;
+		const { form } = createStore;
 
 		const [optionsSpecies, optionsGender, optionsStatus] = await Promise.all([
 			useAnimalSpeciesEnum.getOptions(),
@@ -35,13 +35,13 @@ export default defineComponent({
 			showConfirm.value = true;
 		}
 		async function confirmCreate() {
-			if (useAnimalsCreate.isLoading) {
+			if (createStore.isLoading) {
 				return;
 			}
 
-			await useAnimalsCreate.createAnimal();
+			await createStore.store();
 
-			if (useAnimalsCreate.successMessage) {
+			if (createStore.successMessage) {
 				onSuccess();
 			}
 
@@ -52,10 +52,10 @@ export default defineComponent({
 		}
 		function continueFeedback() {
 			showSuccess.value = false;
-			useAnimalsCreate.resetForm();
+			createStore.resetForm();
 
 			const router = useRouter();
-			router.push({ name: "animals-list" });
+			router.back();
 		}
 
 		return {
@@ -66,7 +66,7 @@ export default defineComponent({
 			endDate,
 			startDate,
 			form,
-			useAnimalsCreate,
+			createStore,
 			isCastrated,
 			showConfirm,
 			showSuccess,
@@ -78,13 +78,13 @@ export default defineComponent({
 	watch: {
 		endDate: {
 			handler(newValue) {
-				this.useAnimalsCreate.setFormField("end_date", newValue);
+				this.createStore.setFormField("end_date", newValue);
 			},
 			deep: true,
 		},
 		startDate: {
 			handler(newValue) {
-				this.useAnimalsCreate.setFormField("start_date", newValue);
+				this.createStore.setFormField("start_date", newValue);
 			},
 			deep: true,
 		},
@@ -127,14 +127,14 @@ export default defineComponent({
 						max-width="35%"
 						:value="form.name.value as string"
 						:message-error="form.name.errorMessages.join(', ')"
-						@on-input="useAnimalsCreate.setFormField('name', $event)"
+						@on-input="createStore.setFormField('name', $event)"
 					/>
 					<MoleculesInputCommon
 						label="Descrição"
 						max-width="65%"
 						:value="form.description.value as string"
 						:message-error="form.description.errorMessages.join(', ')"
-						@on-input="useAnimalsCreate.setFormField('description', $event)"
+						@on-input="createStore.setFormField('description', $event)"
 					/>
 				</div>
 				<div class="settings-create__about-pet__content--group">
@@ -143,21 +143,21 @@ export default defineComponent({
 						label="Tipo de Pet"
 						:options="optionsSpecies"
 						:message-error="form.species.errorMessages.join(', ')"
-						@item-selected="useAnimalsCreate.setFormField('species', $event)"
+						@item-selected="createStore.setFormField('species', $event)"
 					/>
 					<MoleculesSelectsSimple
 						max-width="35%"
 						label="Sexo"
 						:options="optionsGender"
 						:message-error="form.gender.errorMessages.join(', ')"
-						@item-selected="useAnimalsCreate.setFormField('gender', $event)"
+						@item-selected="createStore.setFormField('gender', $event)"
 					/>
 					<MoleculesSelectsSimple
 						max-width="30%"
 						label="Status"
 						:options="optionsStatus"
 						:message-error="form.status.errorMessages.join(', ')"
-						@item-selected="useAnimalsCreate.setFormField('status', $event)"
+						@item-selected="createStore.setFormField('status', $event)"
 					/>
 				</div>
 				<div class="settings-create__about-pet__content--group">
@@ -168,9 +168,7 @@ export default defineComponent({
 						:maxlength="2"
 						:value="form.max_registrations.value as string"
 						:message-error="form.max_registrations.errorMessages.join(', ')"
-						@on-input="
-							useAnimalsCreate.setFormField('max_registrations', $event)
-						"
+						@on-input="createStore.setFormField('max_registrations', $event)"
 					/>
 					<MoleculesInputDate
 						v-model="startDate"
@@ -199,7 +197,7 @@ export default defineComponent({
 						max-width="100%"
 						:value="form.location.value as string"
 						:message-error="form.location.errorMessages.join(', ')"
-						@on-input="useAnimalsCreate.setFormField('location', $event)"
+						@on-input="createStore.setFormField('location', $event)"
 					/>
 				</div>
 

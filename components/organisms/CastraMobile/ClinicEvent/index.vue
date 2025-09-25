@@ -140,6 +140,13 @@ export default defineComponent({
 					params: { id: item.id },
 				});
 			}
+
+			if (event === "edit") {
+				router.push({
+					name: "clinic-events-edit",
+					params: { id: item.id },
+				});
+			}
 		};
 
 		return {

@@ -80,7 +80,7 @@ export const useCreateStore = defineStore("clinic-events-create", {
 
 			this.isLoading = false;
 		},
-		async createAnimal(): Promise<void> {
+		async store(): Promise<void> {
 			if (this.isLoading) {
 				return;
 			}
