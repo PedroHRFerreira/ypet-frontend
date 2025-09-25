@@ -2,7 +2,7 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
-	name: "TemplatesCastraMobileClinicEvent",
+	name: "TemplatesCastraMobileClinicEventEdit",
 	setup() {
 		const header = computed(() => {
 			return {
