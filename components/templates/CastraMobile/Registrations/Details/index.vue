@@ -2,12 +2,12 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
-	name: "TemplatesCastraMobileClinicEventDetails",
+	name: "TemplatesCastraMobileRegistrationsDetails",
 	setup() {
 		const header = computed(() => {
 			return {
-				title: "Detalhes do Evento Clínico",
-				subtitle: "Visualize e gerencie os detalhes do evento clínico",
+				title: "Detalhes do Registro",
+				subtitle: "Visualize e gerencie os detalhes do registro",
 				buttons: [
 					{
 						text: "Voltar",
@@ -38,7 +38,7 @@ export default defineComponent({
 							const router = useRouter();
 							const id = useRoute().params.id;
 
-							router.push({ name: "clinic-event-edit", params: { id } });
+							router.push({ name: "registration-edit", params: { id } });
 						},
 					},
 				],
@@ -90,7 +90,7 @@ export default defineComponent({
 			</header>
 			<main class="main">
 				<div class="main-content">
-					<OrganismsCastraMobileClinicEventDetails />
+					<OrganismsCastraMobileRegistrationsDetails />
 				</div>
 			</main>
 		</div>
