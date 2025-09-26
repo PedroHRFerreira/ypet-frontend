@@ -6,7 +6,7 @@ import AtomsTypography from "~/components/atoms/Typography/index.vue";
 import { useListStore } from "~/stores/castra-mobile/registrations/useListStore";
 
 export default defineComponent({
-	name: "OrganismsCastraMobileDailySchedule",
+	name: "OrganismsCastraMobileRegistrations",
 	components: {
 		AtomsTypography,
 		MoleculesListCardItem,
@@ -45,13 +45,25 @@ export default defineComponent({
 
 		const columnsHeader = ref([
 			{
-				value: "hour",
-				text: "HORÁRIO",
+				value: "id",
+				text: "ID",
 				typeTypography: "text-p5",
 				weightTypography: "bold",
 				colorTypography: "var(--brand-color-dark-blue-300)",
 				style: {
-					width: "20%",
+					width: "5%",
+					gap: "16px",
+					wordBreak: "break-all",
+				},
+			},
+			{
+				value: "hour",
+				text: "DATA E HORA",
+				typeTypography: "text-p5",
+				weightTypography: "bold",
+				colorTypography: "var(--brand-color-dark-blue-300)",
+				style: {
+					width: "15%",
 					gap: "16px",
 					wordBreak: "break-all",
 				},
@@ -123,8 +135,14 @@ export default defineComponent({
 		]);
 
 		const onSelectOptionAction = (event: string, item: IRegistration) => {
-			// eslint-disable-next-line no-console
-			console.log(event, item);
+			const router = useRouter();
+
+			if (event === "details") {
+				router.push({
+					name: "castra-mobile.registrations.details",
+					params: { id: item.id },
+				});
+			}
 		};
 
 		return {
@@ -186,10 +204,18 @@ export default defineComponent({
 				:data="columnsHeader"
 				padding="0"
 			>
+				<template #id>
+					<AtomsTypography
+						type="text-p5"
+						:text="`#${item.id}`"
+						weight="regular"
+						color="var(--brand-color-dark-blue-300)"
+					/>
+				</template>
 				<template #hour>
 					<AtomsTypography
 						type="text-p5"
-						:text="useDayjs(item.created_at).format('HH:mm')"
+						:text="useDayjs(item.scheduler_at).format('DD/MM/YYYY - HH:mm')"
 						weight="regular"
 						color="var(--brand-color-dark-blue-300)"
 					/>
@@ -238,8 +264,9 @@ export default defineComponent({
 					<MoleculesActionDropdown
 						:key="item.id"
 						:actions="[
-							{ value: 'edit', label: 'Editar', icon: 'edit' },
-							{ value: 'close_day', label: 'Fechar dia', icon: 'edit' },
+							{ value: 'details', label: 'Detalhes' },
+							{ value: 'edit', label: 'Editar' },
+							{ value: 'close_day', label: 'Fechar dia' },
 						]"
 						@change-action="onSelectOptionAction($event, item)"
 					/>

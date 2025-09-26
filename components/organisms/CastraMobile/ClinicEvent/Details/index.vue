@@ -12,7 +12,7 @@ type AboutType = {
 };
 
 export default defineComponent({
-	name: "OrganismsClinicEventDetails",
+	name: "OrganismsCastraMobileClinicEventDetails",
 	setup() {
 		const detailsStore = useDetailStore();
 		const abouts = computed<AboutType[]>(() => {
