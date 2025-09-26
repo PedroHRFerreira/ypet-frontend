@@ -1,6 +1,7 @@
 declare global {
 	interface IRegistration {
 		id?: number | string;
+		scheduler_at?: string;
 		mobile_clinic_event_id: number;
 		user_id?: number;
 		animal_id?: number;

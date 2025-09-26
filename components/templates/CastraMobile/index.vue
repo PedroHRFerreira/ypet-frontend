@@ -8,7 +8,7 @@ export default defineComponent({
 			"OrganismsCastraMobileClinicEvent",
 		);
 		const dailyScheduleComponent = resolveComponent(
-			"OrganismsCastraMobileDailySchedule",
+			"OrganismsCastraMobileRegistrations",
 		);
 		const componentsMap: Record<string, ConcreteComponent> = {
 			settings: settingsComponent,
