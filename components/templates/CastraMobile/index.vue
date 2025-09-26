@@ -4,25 +4,25 @@ import { type ConcreteComponent, defineComponent } from "vue";
 export default defineComponent({
 	name: "TemplatesCastraMobile",
 	setup() {
-		const settingsComponent = resolveComponent(
+		const clinicEventComponent = resolveComponent(
 			"OrganismsCastraMobileClinicEvent",
 		);
 		const dailyScheduleComponent = resolveComponent(
-			"OrganismsCastraMobileDailySchedule",
+			"OrganismsCastraMobileRegistrations",
 		);
 		const componentsMap: Record<string, ConcreteComponent> = {
-			settings: settingsComponent,
-			dailySchedule: dailyScheduleComponent,
+			events: clinicEventComponent,
+			schedule: dailyScheduleComponent,
 		};
 
 		const tabs = ref([
 			{
-				id: "settings",
+				id: "events",
 				name: "Eventos",
 				active: true,
 			},
 			{
-				id: "dailySchedule",
+				id: "schedule",
 				name: "Agenda do dia",
 				active: false,
 			},
@@ -34,7 +34,7 @@ export default defineComponent({
 
 		const activeComponent = computed(() => {
 			if (!activeTab.value) {
-				return settingsComponent;
+				return clinicEventComponent;
 			}
 
 			const component = componentsMap[activeTab.value.id];
@@ -43,7 +43,7 @@ export default defineComponent({
 				return component;
 			}
 
-			return settingsComponent;
+			return clinicEventComponent;
 		});
 
 		const header = computed(() => {
@@ -62,8 +62,16 @@ export default defineComponent({
 		};
 	},
 	methods: {
+		setRouteDefault(tabId: string): void {
+			const router = useRouter();
+			router.replace({ name: "castra-mobile", query: { tab: tabId } });
+		},
 		setActiveTab(tab: ITab): void {
 			this.tabs = this.tabs.map((t) => {
+				if (t.id === tab.id) {
+					this.setRouteDefault(t.id);
+				}
+
 				return {
 					...t,
 					active: t.id === tab.id,
