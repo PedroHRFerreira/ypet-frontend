@@ -33,7 +33,10 @@ export default defineComponent({
 						nameIconRight: "",
 						size: "small",
 						width: "auto",
-						action: () => {},
+						action: () => {
+              const router = useRouter();
+              router.push({ name: "castra-mobile.registrations.create" });
+            },
 					},
 				],
 			};
