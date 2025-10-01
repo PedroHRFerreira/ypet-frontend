@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: 'ypet-staging-front',
+      name: 'YpetStagingFront',
       port: '3000',
       exec_mode: 'cluster',
       instances: 'max',
