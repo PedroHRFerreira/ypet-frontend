@@ -2,51 +2,49 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
-	name: "TemplatesCitizens",
+	name: "TemplatesCitizensCreate",
 	setup() {
 		const header = computed(() => {
 			return {
 				title: "Cadastro de cidadãos",
-				subtitle: "Visualize e gerencie os cadastros de cidadãos",
+				subtitle: "Adicione um novo cidadão ao sistema",
 				buttons: [
 					{
-						text: "Novo cadastro",
-						type: "primary",
-						icon: "plus",
-						iconLeft: false,
-						nameIconLeft: "",
-						iconRight: true,
-						nameIconRight: "plus",
+						text: "Voltar",
+						type: "outline",
+						icon: "arrow-left",
+						iconLeft: true,
+						nameIconLeft: "arrow-left",
+						iconRight: false,
+						nameIconRight: "",
+						size: "small",
+						width: "auto",
 						action: () => {
 							const router = useRouter();
-							router.push({ name: "citizens-create" });
+							router.back();
 						},
 					},
 				],
 			};
 		});
-
-		const emptyState = computed(() => {
-			return {
-				isEmpty: true,
-				isIcon: true,
-				title: "Nenhum cidadão cadastrado",
-				description:
-					"Você ainda não possui nenhum cidadão cadastrado.Clique no botão 'Novo cadastro' para adicionar um.",
-			};
-		});
+      
 		return {
 			header,
-			emptyState,
 		};
+	},
+	methods: {
+		back() {
+			const router = useRouter();
+			router.push({ name: "citizens" });
+		},
 	},
 });
 </script>
 
 <template>
-	<div class="wrapper-template">
+	<div class="citizens-create">
 		<div class="content">
-			<header class="header">
+			<div class="header">
 				<div class="header-content">
 					<AtomsTypography
 						type="title-h7"
@@ -73,22 +71,15 @@ export default defineComponent({
 						:icon-right="button.iconRight"
 						:name-icon-left="button.nameIconLeft"
 						:name-icon-right="button.nameIconRight"
+						:size="button.size"
+						:width="button.width"
 						@onclick="button.action"
 					/>
 				</div>
-			</header>
-			<main class="main">
-				<div v-if="emptyState.isEmpty" class="main-empty">
-					<MoleculesEmptyState
-						:is-icon="emptyState.isIcon"
-						:title="emptyState.title"
-						:description="emptyState.description"
-					/>
-				</div>
-				<div v-else class="main-content">
-					<OrganismsCitizensCreate/>
-				</div>
-			</main>
+			</div>
+			<div class="main">
+				<OrganismsCitizensCreate />
+			</div>
 		</div>
 	</div>
 </template>
