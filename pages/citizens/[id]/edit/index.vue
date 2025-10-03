@@ -2,7 +2,7 @@
 import { definePageMeta } from "#imports";
 
 useHead({
-	title: "Cadastro de cidadãos",
+	title: "Editar cidadão",
 	titleTemplate: (titleChunk) => {
 		return titleChunk ? `${titleChunk} | YPet` : "YPet";
 	},
@@ -11,12 +11,14 @@ useHead({
 definePageMeta({
 	layout: "default",
 	middleware: ["auth"],
+	name: "citizens-edit",
 });
 
 defineComponent({
-	name: "PagesCitizens",
+	name: "PagesCitizensEdit",
 });
 </script>
+
 <template>
-	<TemplatesCitizensList />
+	<TemplatesCitizensEdit />
 </template>

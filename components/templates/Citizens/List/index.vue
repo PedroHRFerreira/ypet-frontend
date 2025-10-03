@@ -1,9 +1,14 @@
 <script lang="ts">
 import { defineComponent } from "vue";
+import { useListStore } from "~/stores/citizens/useListStore";
 
 export default defineComponent({
 	name: "TemplatesCitizens",
-	setup() {
+	async setup() {
+		const citizensList = useListStore();
+		
+		await citizensList.fetchList();
+
 		const header = computed(() => {
 			return {
 				title: "Cadastro de cidadãos",
@@ -28,7 +33,7 @@ export default defineComponent({
 
 		const emptyState = computed(() => {
 			return {
-				isEmpty: true,
+				isEmpty: citizensList.citizens.length === 0,
 				isIcon: true,
 				title: "Nenhum cidadão cadastrado",
 				description:
@@ -63,7 +68,7 @@ export default defineComponent({
 						color="var(--brand-color-dark-blue-300)"
 					/>
 				</div>
-				<div class="header-actions">
+				<div v-if="emptyState.isEmpty" class="header-actions">
 					<MoleculesButtonsCommon
 						v-for="button in header.buttons"
 						:key="button.text"
@@ -86,7 +91,7 @@ export default defineComponent({
 					/>
 				</div>
 				<div v-else class="main-content">
-					<OrganismsCitizensCreate/>
+					<OrganismsCitizens/>
 				</div>
 			</main>
 		</div>
