@@ -1,40 +1,94 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import { useCreateStore } from "~/stores/citizens/useCreateStore";
 
 import { useUserStatusEnumStore } from "~/stores/Enums/useUserStatusEnumStore";
 import { useUFEnumStore } from "~/stores/Enums/useUFEnumStore";
-import { useBooleanEnumStore } from "~/stores/Enums/useBooleanEnumStore";
-import { useGenderEnumStore } from "~/stores/Enums/useGenderEnumStore";
+import { useDetailStore } from "~/stores/citizens/useDetailStore";
+import { useEditStore } from "~/stores/citizens/useEditStore";
 
 export default defineComponent({
-   name: "OrganismsCitizensCreate",
+   name: "OrganismsCitizensEdit",
 	async setup() {
-		const useCitizensCreate = useCreateStore();
-		const { form } = useCitizensCreate;
+		const useCitizenDetailsStore = useDetailStore();
+		const useCitizenEdit = useEditStore();
 		const useUFEnum = useUFEnumStore();
-		const useBooleanEnum = useBooleanEnumStore();
 		const useUserStatusEnum = useUserStatusEnumStore();
-		const useGenderEnum = useGenderEnumStore();
-		
+		const { form } = useCitizenEdit;
+		const id = useRoute().params.id as string;
 
 		const [
-			optionsUserStatus,
-			optionsUFEnum,
-			optionsBoolean,
+			userStatus,
+			UFEnum,
 		] = await Promise.all([
 			useUserStatusEnum.getOptions(),
 			useUFEnum.getOptions(),
-			useBooleanEnum.getOptions(),
-			useGenderEnum.getOptions(),
+			useCitizenDetailsStore.fetchCitizenById(id, {
+				"with[]": ["user","addresses"],
+			}),
 		]);
+		
+		const citizen = useCitizenDetailsStore.citizens;
+	
+		const optionsUFEnum = computed(() =>
+			UFEnum.map((item) => {
+				if (item.id === citizen?.state) {
+					item.state = "activated";
+					useCitizenEdit.setFormField("state", item.id);
+				}
 
-		const optionsGender: IOption[] = [
+				return item;
+			}),
+		);
+
+		const gender: IOption[] = [
 			{ id: 1, text: "Masculino", state: "default" },
 			{ id: 0, text: "Feminino", state: "default" },
 		];
+
+		const optionsGender = computed(() => {
+			return gender.map((item) => {
+				if (item.id === citizen.gender) {
+					item.state = "activated";
+					useCitizenEdit.setFormField("gender", item.id);
+				}
+
+				return item;
+			});
+		});
+
+		const optionsBoolean = computed((): IOption[] => {
+			return [
+				{ id: 1, text: "Sim", state: "default" },
+				{ id: 0, text: "Não", state: "default" },
+			];
+		});
+
+		const optionsUserStatus = computed(() =>
+			userStatus.map((item) => {
+			if (item.id === citizen?.status) { 
+				item.state = "activated";
+				useCitizenEdit.setFormField("status", item.id);
+			}
+				return item;
+			}),
+		);
+
+		useCitizenEdit.setFormField("name", citizen?.user?.name || "");
+		useCitizenEdit.setFormField("document",citizen?.document || "",);
+		useCitizenEdit.setFormField("email", citizen?.user?.email || "");
+		useCitizenEdit.setFormField("telephone",citizen?.user?.telephone || "");
+		const mainAddress = citizen?.addresses?.[0];
+
+		useCitizenEdit.setFormField("street", mainAddress?.street || "");
+		useCitizenEdit.setFormField("number", mainAddress?.number || "");
+		useCitizenEdit.setFormField("zip_code", mainAddress?.zip_code || "");
+		useCitizenEdit.setFormField("district", mainAddress?.district || "");
+		useCitizenEdit.setFormField("complement", mainAddress?.complement || "");
+		useCitizenEdit.setFormField("state", mainAddress?.state || "");
+		useCitizenEdit.setFormField("status", citizen?.status || "");
+		const birthDate = ref(citizen.birth_date || "");
 		
-		const birthDate = ref("");
+		
 		const showConfirm = ref(false);
 		const showSuccess = ref(false);
 
@@ -46,14 +100,14 @@ export default defineComponent({
 			showSuccess.value = true;
 		}
 	
-		async function confirmCreate() {
-			if (useCitizensCreate.isLoading) {
+		async function confirmUpdate() {
+			if (useCitizenEdit.isLoading) {
 				return;
 			}
 
-			await useCitizensCreate.create();
+			await useCitizenEdit.update(id);
 
-			if (useCitizensCreate.successMessage) {
+			if (useCitizenEdit.successMessage) {
 				onSuccess();
 			}
 
@@ -62,11 +116,45 @@ export default defineComponent({
 
 		function continueFeedback() {
 			showSuccess.value = false;
-			useCitizensCreate.resetForm();
+			useCitizenEdit.resetForm();
 
 			const router = useRouter();
 			router.push({ name: "citizens-list" });
 		}
+
+		const footer = {
+			buttons: [
+				{
+					text: "Voltar",
+					type: "secondary",
+					icon: "arrow-left",
+					iconLeft: true,
+					nameIconLeft: "arrow-left",
+					iconRight: false,
+					nameIconRight: "",
+					size: "medium",
+					width: "auto",
+					action: () => {
+						const router = useRouter();
+						router.back();
+					},
+				},
+				{
+					text: "Salvar",
+					type: "primary",
+					icon: "save",
+					iconLeft: true,
+					nameIconLeft: "save",
+					iconRight: false,
+					nameIconRight: "",
+					size: "medium",
+					width: "auto",
+					action: () => {
+						showConfirm.value = true;
+					},
+				},
+			],
+		};
 
 		return {
 			optionsBoolean,
@@ -75,19 +163,20 @@ export default defineComponent({
 			optionsGender,
 			showConfirm,
 			showSuccess,
-			useCitizensCreate,
+			useCitizenEdit,
 			birthDate,
 			form,
+			footer,
 			openConfirm,
 			onSuccess,
-			confirmCreate,
+			confirmUpdate,
 			continueFeedback
 		}
 	},
 	watch: {
 		birthDate: {
 			handler(newValue) {
-				this.useCitizensCreate.setFormField("birth_date", newValue);
+				this.useCitizenEdit.setFormField("birth_date", newValue);
 			},
 			deep: true,
 		},
@@ -102,7 +191,7 @@ export default defineComponent({
 		description="Após confirmação, você irá visualizá-lo no painel"
 		confirm-text="Confirmar"
 		cancel-text="Cancelar"
-		@confirm="confirmCreate"
+		@confirm="confirmUpdate"
 	/>
 	<MoleculesConfirmFeedbackModal
 		v-model:open="showSuccess"
@@ -129,21 +218,21 @@ export default defineComponent({
 						max-width="50%"
 						:value="form.name.value as string"
 						:message-error="form.name.errorMessages.join(', ')"
-						@on-input="useCitizensCreate.setFormField('name', $event)"
+						@on-input="useCitizenEdit.setFormField('name', $event)"
 					/>
 					<MoleculesInputCommon
 						label="CPF"
 						max-width="25%"
 						:value="form.document.value as string"
 						:message-error="form.document.errorMessages.join(', ')"
-						@on-input="useCitizensCreate.setFormField('document', $event)"
+						@on-input="useCitizenEdit.setFormField('document', $event)"
 					/>
 					<MoleculesSelectsSimple
 						max-width="25%"
 						label="Gênero"
 						:options="optionsGender"
 						:message-error="form.gender.errorMessages.join(', ')"
-						@item-selected="useCitizensCreate.setFormField('gender', $event)"
+						@item-selected="useCitizenEdit.setFormField('gender', $event)"
 					/>
 				</div>
 				<div class="citizens__input-data__content--group">
@@ -163,30 +252,14 @@ export default defineComponent({
 						max-width="25%"
 						:value="form.telephone.value as string"
 						:message-error="form.telephone.errorMessages.join(', ')"
-						@on-input="useCitizensCreate.setFormField('telephone', $event)"
+						@on-input="useCitizenEdit.setFormField('telephone', $event)"
 					/>
 					<MoleculesInputCommon
 						label="E-mail"
 						max-width="50%"
 						:value="form.email.value as string"
 						:message-error="form.email.errorMessages.join(', ')"
-						@on-input="useCitizensCreate.setFormField('email', $event)"
-					/>
-				</div>
-				<div class="citizens__input-data__content--group">
-					<MoleculesInputCommon
-						label="Senha"
-						max-width="50%"
-						:value="form.password.value as string"
-						:message-error="form.password.errorMessages.join(', ')"
-						@on-input="useCitizensCreate.setFormField('password', $event)"
-					/>
-					<MoleculesInputCommon
-						label="Confirme Senha"
-						max-width="50%"
-						:value="form.password_confirmation.value as string"
-						:message-error="form.password_confirmation.errorMessages.join(', ')"
-						@on-input="useCitizensCreate.setFormField('password_confirmation', $event)"
+						@on-input="useCitizenEdit.setFormField('email', $event)"
 					/>
 				</div>
 			</div>
@@ -207,7 +280,7 @@ export default defineComponent({
 						max-width="50%"
 						:value="form.street.value as string"
 						:message-error="form.street.errorMessages.join(', ')"
-						@on-input="useCitizensCreate.setFormField('street', $event)"
+						@on-input="useCitizenEdit.setFormField('street', $event)"
 					/>
 					<MoleculesInputCommon
 						label="Número"
@@ -215,14 +288,14 @@ export default defineComponent({
 						max-width="25%"
 						:value="form.number.value as string"
 						:message-error="form.number.errorMessages.join(', ')"
-						@on-input="useCitizensCreate.setFormField('number', $event)"
+						@on-input="useCitizenEdit.setFormField('number', $event)"
 					/>
 					<MoleculesInputCommon
 						label="CEP"
 						max-width="25%"
 						:value="form.zip_code.value as string"
 						:message-error="form.zip_code.errorMessages.join(', ')"
-						@on-input="useCitizensCreate.setFormField('zip_code', $event)"
+						@on-input="useCitizenEdit.setFormField('zip_code', $event)"
 					/>
 				</div>
 				<div class="citizens__input-data__content--group">
@@ -231,21 +304,21 @@ export default defineComponent({
 						max-width="50%"
 						:value="form.district.value as string"
 						:message-error="form.district.errorMessages.join(', ')"
-						@on-input="useCitizensCreate.setFormField('district', $event)"
+						@on-input="useCitizenEdit.setFormField('district', $event)"
 					/>
 					<MoleculesSelectsSimple
 						label="Estado"
 						max-width="25%"
 						:options="optionsUFEnum"
 						:message-error="form.state.errorMessages.join(', ')"
-						@item-selected="useCitizensCreate.setFormField('state', $event)"
+						@item-selected="useCitizenEdit.setFormField('state', $event)"
 					/>
 					<MoleculesInputCommon
 						label="Complemento"
 						max-width="25%"
 						:value="form.complement.value as string"
 						:message-error="form.complement.errorMessages.join(', ')"
-						@on-input="useCitizensCreate.setFormField('complement', $event)"
+						@on-input="useCitizenEdit.setFormField('complement', $event)"
 					/>
 				</div>
 			</div>
@@ -275,7 +348,7 @@ export default defineComponent({
 							form.can_report_abuse.errorMessages.join(', ')
 						"
 						@change-option="
-							useCitizensCreate.setFormField(
+							useCitizenEdit.setFormField(
 								'can_report_abuse',
 								$event.id,
 							)
@@ -295,7 +368,7 @@ export default defineComponent({
 							form.can_mobile_castration.errorMessages.join(', ')
 						"
 						@change-option="
-							useCitizensCreate.setFormField(
+							useCitizenEdit.setFormField(
 								'can_mobile_castration',
 								$event.id,
 							)
@@ -306,7 +379,7 @@ export default defineComponent({
 						max-width="50%"
 						:options="optionsUserStatus"
 						:message-error="form.status.errorMessages.join(', ')"
-						@item-selected="useCitizensCreate.setFormField('status', $event)"
+						@item-selected="useCitizenEdit.setFormField('status', $event)"
 						
 					/>
 				</div>
@@ -319,15 +392,20 @@ export default defineComponent({
 				</div>
 			</div>
 			<div class="citizens__input-data__footer">
-					<MoleculesButtonsCommon
-						type="primary"
-						text="Cadastrar"
-						width="128px"
-						:icon-right="true"
-						name-icon-right="plus"
-						@onclick="openConfirm"
-					/>
-				</div>
+				<MoleculesButtonsCommon
+					v-for="button in footer.buttons"
+					:key="button.text"
+					:type="button.type"
+					:text="button.text"
+					:icon-left="button.iconLeft"
+					:icon-right="button.iconRight"
+					:name-icon-left="button.nameIconLeft"
+					:name-icon-right="button.nameIconRight"
+					:size="button.size"
+					:width="button.width"
+					@onclick="button.action"
+				/>
+			</div>
 		</section>
 	</div>
 </template>
