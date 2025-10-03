@@ -6,6 +6,7 @@ declare global {
 		text: string;
 		value?: number;
 		state?: "default" | "activated" | "disabled";
+		data?: any;
 	}
 
 	interface IStatus {

@@ -17,6 +17,30 @@ export const useListStore = defineStore("list", {
 		};
 	},
 	actions: {
+		async fetchListWithoutPagination(params = {}): Promise<void> {
+			if (this.isLoading) {
+				return;
+			}
+			this.isLoading = true;
+			this.errorMessage = "";
+			await useFetch(this.pathUrl, {
+				method: "GET",
+				params: {
+					...params,
+					without_pagination: true,
+				},
+				onResponse: ({ response }) => {
+					const result: IResponse = response._data as IResponse;
+
+					this.list = (result.data as IMobileClinicEvent[]) || [];
+					this.isLoading = false;
+				},
+				onResponseError: ({ response }) => {
+					this.isLoading = false;
+					this.errorMessage = response._data?.message;
+				},
+			});
+		},
 		async fetchList(params = {}): Promise<void> {
 			if (this.isLoading) {
 				return;

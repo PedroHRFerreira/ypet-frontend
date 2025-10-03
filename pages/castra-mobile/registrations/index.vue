@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { definePageMeta } from "#imports";
-import TemplatesCastraMobileRegistrationsCreate
-  from "~/components/templates/CastraMobile/Registrations/Create/index.vue";
+import TemplatesCastraMobileRegistrationsCreate from "~/components/templates/CastraMobile/Registrations/Create/index.vue";
 
 useHead({
 	title: "Castramóvel - Criar Registro de Castração",
