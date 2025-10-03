@@ -6,10 +6,27 @@ export const useCreateStore = defineStore("registrations-create", {
 		const errorMessage = ref("");
 		const successMessage = ref("");
 		const form = useForm([
-      "scheduler_at",
+			"scheduler_at",
 			"mobile_clinic_event_id",
-			"animal_id",
-			"user_id",
+			"tutor_name",
+			"tutor_document",
+			"tutor_cellphone",
+			"tutor_email",
+			"tutor_address_zip_code",
+			"tutor_address_street",
+			"tutor_address_number",
+			"tutor_address_district",
+			"tutor_address_city",
+			"tutor_address_state",
+			"tutor_address_complement",
+			"animal_name",
+			"animal_specie",
+			"animal_gender",
+			"animal_size",
+			"animal_status",
+			"animal_color",
+			"animal_birth_date",
+			"animal_weight",
 		]);
 
 		return {
