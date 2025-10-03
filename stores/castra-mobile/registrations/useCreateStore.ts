@@ -1,20 +1,32 @@
 import { useForm } from "~/composables/useForm";
 
-export const useCreateStore = defineStore("clinic-events-create", {
+export const useCreateStore = defineStore("registrations-create", {
 	state: () => {
 		const isLoading = ref(false);
 		const errorMessage = ref("");
 		const successMessage = ref("");
 		const form = useForm([
-			"name",
-			"description",
-			"location",
-			"start_date",
-			"end_date",
-			"status",
-			"species",
-			"gender",
-			"max_registrations",
+			"scheduler_at",
+			"mobile_clinic_event_id",
+			"tutor_name",
+			"tutor_document",
+			"tutor_cellphone",
+			"tutor_email",
+			"tutor_address_zip_code",
+			"tutor_address_street",
+			"tutor_address_number",
+			"tutor_address_district",
+			"tutor_address_city",
+			"tutor_address_state",
+			"tutor_address_complement",
+			"animal_name",
+			"animal_specie",
+			"animal_gender",
+			"animal_size",
+			"animal_status",
+			"animal_color",
+			"animal_birth_date",
+			"animal_weight",
 		]);
 
 		return {
@@ -91,7 +103,7 @@ export const useCreateStore = defineStore("clinic-events-create", {
 
 			const formData = this.getFormData();
 
-			await useFetch("/api/clinic-events/store", {
+			await useFetch("/api/registrations/store", {
 				method: "POST",
 				body: formData,
 				onResponse: ({ response }) => {
@@ -107,7 +119,7 @@ export const useCreateStore = defineStore("clinic-events-create", {
 					const router = useRouter();
 					router.push({
 						name: "castra-mobile",
-						query: { tab: "events" },
+						query: { tab: "schedule" },
 					});
 				},
 			});

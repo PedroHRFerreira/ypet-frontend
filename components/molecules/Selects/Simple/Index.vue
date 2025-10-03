@@ -125,30 +125,6 @@ export default defineComponent({
 			option.value = opt;
 		};
 
-		watch(
-			() => props.options,
-			(newOptions) => {
-				optionsData.value = newOptions.map((opt) => {
-					const item = opt as IOption;
-					if (item.state === "activated") {
-						option.value = { ...item, state: "default" };
-						isFilled.value = true;
-					}
-					return { ...item };
-				});
-
-				const isAllOptionsDefault = optionsData.value.every(
-					(opt) => opt.state === "default",
-				);
-
-				if (isAllOptionsDefault) {
-					option.value = {} as IOption;
-					isFilled.value = false;
-				}
-			},
-			{ immediate: true },
-		);
-
 		onMounted(() => {
 			document.addEventListener("click", handleClickOutside);
 		});
@@ -170,6 +146,31 @@ export default defineComponent({
 			option,
 			status,
 		};
+	},
+	watch: {
+		options: {
+			handler(newOptions) {
+				this.optionsData = newOptions.map((opt) => {
+					const item = opt as IOption;
+					if (item.state === "activated") {
+						this.option = { ...item, state: "default" };
+						this.isFilled = true;
+					}
+					return { ...item };
+				});
+
+				const isAllOptionsDefault = this.optionsData.every(
+					(opt) => opt.state === "default",
+				);
+
+				if (isAllOptionsDefault) {
+					this.option = {} as IOption;
+					this.isFilled = false;
+				}
+			},
+			deep: true,
+			immediate: true,
+		},
 	},
 });
 </script>

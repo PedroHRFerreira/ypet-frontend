@@ -2,12 +2,12 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
-	name: "TemplatesCastraMobileClinicEventCreate",
+	name: "TemplatesCastraMobileRegistrationsCreate",
 	setup() {
 		const header = computed(() => {
 			return {
-				title: "Criar evento clínico",
-				subtitle: "Preencha os dados para criar um novo evento clínico",
+				title: "Criar registro de castração",
+				subtitle: "Preencha os dados para criar um novo registro de castração",
 				buttons: [],
 			};
 		});
@@ -56,7 +56,7 @@ export default defineComponent({
 				</div>
 			</div>
 			<div class="main">
-				<OrganismsCastraMobileClinicEventCreate />
+				<OrganismsCastraMobileRegistrationsCreate />
 			</div>
 		</div>
 	</div>
