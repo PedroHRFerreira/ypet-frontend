@@ -146,6 +146,12 @@ export default defineComponent({
 					params: { id: item.id },
 				});
 			}
+
+			if (event === "pre_surgery_assessment") {
+				router.push({
+					path: `/castra-mobile/registrations/${item.animal_id}/pre-surgery-assessment`,
+				});
+			}
 		};
 
 		return {
@@ -270,6 +276,7 @@ export default defineComponent({
 							{ value: 'details', label: 'Detalhes' },
 							{ value: 'edit', label: 'Editar' },
 							{ value: 'close_day', label: 'Fechar dia' },
+							{ value: 'pre_surgery_assessment', label: 'Triagem' },
 						]"
 						@change-action="onSelectOptionAction($event, item)"
 					/>
