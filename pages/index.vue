@@ -1,6 +1,6 @@
 <script setup lang="ts">
 useHead({
-	title: "Pagina Inicial",
+	title: "Página Inicial",
 	titleTemplate: (titleChunk) => {
 		return titleChunk ? `${titleChunk} | YPet` : "YPet";
 	},
