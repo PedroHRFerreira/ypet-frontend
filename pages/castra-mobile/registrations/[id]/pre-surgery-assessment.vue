@@ -16,7 +16,9 @@ useSeoMeta({
 
 <template>
 	<div class="page-pre-surgery-assessment">
-		<OrganismsCastraMobileRegistrationsPreSurgeryAssessment :animal-id="animalId" />
+		<OrganismsCastraMobileRegistrationsPreSurgeryAssessment
+			:animal-id="animalId"
+		/>
 	</div>
 </template>
 

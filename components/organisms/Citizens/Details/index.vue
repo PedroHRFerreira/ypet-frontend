@@ -24,23 +24,26 @@ export default defineComponent({
 					title: "Sobre o cidadão",
 					content: [
 						{ label: "Nome completo: ", value: citizen.user?.name || "N/A" },
-						{ label: "CPF:", value: citizen?.document},
+						{ label: "CPF:", value: citizen?.document },
 						{ label: "Gênero:", value: citizen?.gender, isEnum: true },
 						{
 							label: "Data de nascimento:",
 							value: proxy?.$formatDateTime(citizen?.birth_date) || "N/A",
 						},
-						{ label: "Email:", value: citizen.user?.email},
+						{ label: "Email:", value: citizen.user?.email },
 						{ label: "Telefone:", value: citizen.user?.telephone },
-						{ label: "Endereço:", value: citizen.addresses[0].street},
+						{ label: "Endereço:", value: citizen.addresses[0].street },
 						{
 							label: "Número:",
-							value:  citizen.addresses[0].number,
+							value: citizen.addresses[0].number,
 						},
-						{ label: "Complemento:", value:  citizen.addresses[0].complement || "N/A" },
-						{ label: "Bairro:", value:  citizen.addresses[0].district },
-						{ label: "Cidade:", value:  citizen.addresses[0].city},
-						{ label: "Estado:", value:  citizen.addresses[0].state},
+						{
+							label: "Complemento:",
+							value: citizen.addresses[0].complement || "N/A",
+						},
+						{ label: "Bairro:", value: citizen.addresses[0].district },
+						{ label: "Cidade:", value: citizen.addresses[0].city },
+						{ label: "Estado:", value: citizen.addresses[0].state },
 					],
 				},
 				{
@@ -54,13 +57,14 @@ export default defineComponent({
 							label: "Pode acessar Castramóvel:",
 							value: proxy?.$booleanToSimNao(citizen?.can_mobile_castration),
 						},
-						{ 
-							label: "Status:", 
-							value: citizen?.status, isEnum: true 
+						{
+							label: "Status:",
+							value: citizen?.status,
+							isEnum: true,
 						},
-						{ 
-							label: "Observações:", 
-							value: ""
+						{
+							label: "Observações:",
+							value: "",
 						},
 					],
 				},
@@ -70,7 +74,7 @@ export default defineComponent({
 		onMounted(async () => {
 			const id = useRoute().params.id as string;
 			await citizensDetailsStore.fetchCitizenById(id, {
-				"with[]": ["user","addresses"],
+				"with[]": ["user", "addresses"],
 			});
 		});
 

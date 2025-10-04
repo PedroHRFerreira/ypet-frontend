@@ -7,7 +7,7 @@ import { useDetailStore } from "~/stores/citizens/useDetailStore";
 import { useEditStore } from "~/stores/citizens/useEditStore";
 
 export default defineComponent({
-   name: "OrganismsCitizensEdit",
+	name: "OrganismsCitizensEdit",
 	async setup() {
 		const useCitizenDetailsStore = useDetailStore();
 		const useCitizenEdit = useEditStore();
@@ -16,19 +16,16 @@ export default defineComponent({
 		const { form } = useCitizenEdit;
 		const id = useRoute().params.id as string;
 
-		const [
-			userStatus,
-			UFEnum,
-		] = await Promise.all([
+		const [userStatus, UFEnum] = await Promise.all([
 			useUserStatusEnum.getOptions(),
 			useUFEnum.getOptions(),
 			useCitizenDetailsStore.fetchCitizenById(id, {
-				"with[]": ["user","addresses"],
+				"with[]": ["user", "addresses"],
 			}),
 		]);
-		
+
 		const citizen = useCitizenDetailsStore.citizens;
-	
+
 		const optionsUFEnum = computed(() =>
 			UFEnum.map((item) => {
 				if (item.id === citizen?.state) {
@@ -65,18 +62,18 @@ export default defineComponent({
 
 		const optionsUserStatus = computed(() =>
 			userStatus.map((item) => {
-			if (item.id === citizen?.status) { 
-				item.state = "activated";
-				useCitizenEdit.setFormField("status", item.id);
-			}
+				if (item.id === citizen?.status) {
+					item.state = "activated";
+					useCitizenEdit.setFormField("status", item.id);
+				}
 				return item;
 			}),
 		);
 
 		useCitizenEdit.setFormField("name", citizen?.user?.name || "");
-		useCitizenEdit.setFormField("document",citizen?.document || "",);
+		useCitizenEdit.setFormField("document", citizen?.document || "");
 		useCitizenEdit.setFormField("email", citizen?.user?.email || "");
-		useCitizenEdit.setFormField("telephone",citizen?.user?.telephone || "");
+		useCitizenEdit.setFormField("telephone", citizen?.user?.telephone || "");
 		const mainAddress = citizen?.addresses?.[0];
 
 		useCitizenEdit.setFormField("street", mainAddress?.street || "");
@@ -87,8 +84,7 @@ export default defineComponent({
 		useCitizenEdit.setFormField("state", mainAddress?.state || "");
 		useCitizenEdit.setFormField("status", citizen?.status || "");
 		const birthDate = ref(citizen.birth_date || "");
-		
-		
+
 		const showConfirm = ref(false);
 		const showSuccess = ref(false);
 
@@ -99,7 +95,7 @@ export default defineComponent({
 		function onSuccess() {
 			showSuccess.value = true;
 		}
-	
+
 		async function confirmUpdate() {
 			if (useCitizenEdit.isLoading) {
 				return;
@@ -170,8 +166,8 @@ export default defineComponent({
 			openConfirm,
 			onSuccess,
 			confirmUpdate,
-			continueFeedback
-		}
+			continueFeedback,
+		};
 	},
 	watch: {
 		birthDate: {
@@ -181,7 +177,7 @@ export default defineComponent({
 			deep: true,
 		},
 	},
-})
+});
 </script>
 <template>
 	<MoleculesConfirmFeedbackModal
@@ -340,18 +336,11 @@ export default defineComponent({
 						max-width="25%"
 						:options="optionsBoolean"
 						:value="
-							form.can_report_abuse.value
-								? form.can_report_abuse.value
-								: 0
+							form.can_report_abuse.value ? form.can_report_abuse.value : 0
 						"
-						:message-error="
-							form.can_report_abuse.errorMessages.join(', ')
-						"
+						:message-error="form.can_report_abuse.errorMessages.join(', ')"
 						@change-option="
-							useCitizenEdit.setFormField(
-								'can_report_abuse',
-								$event.id,
-							)
+							useCitizenEdit.setFormField('can_report_abuse', $event.id)
 						"
 					/>
 					<MoleculesInputOptionGroup
@@ -364,14 +353,9 @@ export default defineComponent({
 								? form.can_mobile_castration.value
 								: 0
 						"
-						:message-error="
-							form.can_mobile_castration.errorMessages.join(', ')
-						"
+						:message-error="form.can_mobile_castration.errorMessages.join(', ')"
 						@change-option="
-							useCitizenEdit.setFormField(
-								'can_mobile_castration',
-								$event.id,
-							)
+							useCitizenEdit.setFormField('can_mobile_castration', $event.id)
 						"
 					/>
 					<MoleculesSelectsSimple
@@ -380,7 +364,6 @@ export default defineComponent({
 						:options="optionsUserStatus"
 						:message-error="form.status.errorMessages.join(', ')"
 						@item-selected="useCitizenEdit.setFormField('status', $event)"
-						
 					/>
 				</div>
 				<div class="citizens__input-data__content--group">

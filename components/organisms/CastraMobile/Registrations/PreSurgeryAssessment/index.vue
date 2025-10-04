@@ -1,12 +1,16 @@
 <script setup lang="ts">
 import { computed, ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import { useAnimalSpeciesEnumStore } from "~/stores/Enums/useAnimalSpeciesEnumStore";
-import { useGenderEnumStore } from "~/stores/Enums/useGenderEnumStore";
+import { usePreSurgeryAssessmentStore } from "~/stores/castra-mobile/registrations/usePreSurgeryAssessmentStore";
+import { useDetailStore } from "~/stores/animals/useDetailStore";
 import { useMucosaEnumStore } from "~/stores/Enums/useMucosaEnumStore";
 import { useHydrationEnumStore } from "~/stores/Enums/useHydrationEnumStore";
 import { useAbdominalPalpationEnumStore } from "~/stores/Enums/useAbdominalPalpationEnumStore";
 import { usePalpationOfLymphNodesEnumStore } from "~/stores/Enums/usePalpationOfLymphNodesEnumStore";
+
+defineOptions({
+	name: "PreSurgeryAssessment",
+});
 
 // Props
 interface Props {
@@ -17,146 +21,105 @@ const props = defineProps<Props>();
 const router = useRouter();
 
 // Stores
-const speciesStore = useAnimalSpeciesEnumStore();
-const genderStore = useGenderEnumStore();
+const assessmentStore = usePreSurgeryAssessmentStore();
+const animalDetailStore = useDetailStore();
 const mucosaStore = useMucosaEnumStore();
 const hydrationStore = useHydrationEnumStore();
 const abdominalPalpationStore = useAbdominalPalpationEnumStore();
 const lymphNodesStore = usePalpationOfLymphNodesEnumStore();
 
-// Loading states
-const isLoadingAnimal = ref(false);
-const animalData = ref<any>(null);
-
-// Form data
-const formData = ref({
-	// Dados do Animal (serão preenchidos pela API)
-	animalName: "",
-	animalSpecies: "",
-	animalBreed: "",
-	animalAge: "",
-	animalGender: "",
-	animalWeight: "",
-
-	// Exame Físico
-	mucosa: "",
-	hydration: "",
-	bodyScore: "3",
-	heartRate: "",
-	respiratoryRate: "",
-
-	// Jejum
-	adequateFasting: false,
-	fastingTime: "",
-
-	// Palpação
-	abdominalPalpation: "",
-	abdominalPalpationDescription: "",
-	lymphNodesPalpation: "",
-
-	// Avaliação Reprodutiva
-	vulvarSecretion: false,
-	prepucialSecretion: false,
-	ectopicTesticle: false,
-
-	// Observações e Intercorrências
-	generalObservations: "",
-	transoperativeComplications: "",
-	measuresTaken: "",
-});
-
 // Options for selects
-const speciesOptions = ref([] as IOption[]);
-const genderOptions = ref([] as IOption[]);
 const mucosaOptions = ref([] as IOption[]);
 const hydrationOptions = ref([] as IOption[]);
 const abdominalPalpationOptions = ref([] as IOption[]);
 const lymphNodesOptions = ref([] as IOption[]);
 
-// Fetch animal data
-const fetchAnimalData = async () => {
-	if (!props.animalId) return;
+// Modal states
+const showSuccess = ref(false);
 
-	try {
-		isLoadingAnimal.value = true;
-		const response = (await $fetch(`/api/animals/${props.animalId}`)) as any;
-
-		if (response?.data) {
-			animalData.value = response.data;
-			// Preencher os dados do formulário
-			formData.value.animalName = response.data.name || "";
-			formData.value.animalSpecies = response.data.species?.name || "";
-			formData.value.animalBreed = response.data.breed || "";
-			formData.value.animalAge = response.data.birth_date || "";
-			formData.value.animalGender = response.data.gender?.name || "";
-			formData.value.animalWeight = response.data.weight
-				? String(response.data.weight)
-			: "";
-		}
-	} catch {
-		// console.error("Erro ao buscar dados do animal:", error);
-	} finally {
-		isLoadingAnimal.value = false;
-	}
-};
+const modalFeedback = ref({
+	success: {
+		title: "Triagem salva com sucesso!",
+		description: "A avaliação pré-cirúrgica foi registrada no sistema.",
+		continueText: "Concluído",
+		action: () => {
+			showSuccess.value = false;
+			assessmentStore.resetForm();
+			router.push("/castra-mobile/registrations");
+		},
+	},
+});
 
 // Load options and animal data
 onMounted(async () => {
 	// Carregar opções dos enums
-	const [species, gender, mucosa, hydration, abdominalPalpation, lymphNodes] =
-		await Promise.all([
-			speciesStore.getOptions(),
-		  genderStore.getOptions(),
-		  mucosaStore.getOptions(),
-		  hydrationStore.getOptions(),
-		  abdominalPalpationStore.getOptions(),
-		  lymphNodesStore.getOptions(),
-	]);
+	const [mucosa, hydration, abdominalPalpation, lymphNodes] = await Promise.all(
+		[
+			mucosaStore.getOptions(),
+			hydrationStore.getOptions(),
+			abdominalPalpationStore.getOptions(),
+			lymphNodesStore.getOptions(),
+		],
+	);
 
-	speciesOptions.value = species;
-	genderOptions.value = gender;
 	mucosaOptions.value = mucosa;
 	hydrationOptions.value = hydration;
 	abdominalPalpationOptions.value = abdominalPalpation;
 	lymphNodesOptions.value = lymphNodes;
 
-	// Buscar dados do animal
-	await fetchAnimalData();
+	// Buscar dados do animal usando o store específico
+	if (props.animalId) {
+		await animalDetailStore.fetchAnimalById(String(props.animalId));
+
+		// Inicializar o store de assessment com o animal_id
+		assessmentStore.setFormField("animal_id", Number(props.animalId));
+	}
 });
 
 const header = computed(() => ({
 	title: "Formulário de Triagem do Animal",
 	subtitle: "Preencha os dados para realizar a triagem pré-cirúrgica",
 }));
-
 const handleBack = () => {
 	router.push("/castra-mobile/registrations");
 };
 
-const handleSave = () => {
-	// Implementar salvamento
-	// console.log("Salvando dados:", formData.value);
-	// Aqui você faria a chamada para a API
+const handleSave = async () => {
+	await assessmentStore.store();
+	// Se a operação foi bem-sucedida, mostrar modal de sucesso
+	if (assessmentStore.successMessage) {
+		showSuccess.value = true;
+	}
 };
 
 const onSelectMucosa = (option: IOption) => {
-	formData.value.mucosa = String(option.id);
+	assessmentStore.setFormField("mucosa", String(option.id));
 };
 
 const onSelectHydration = (option: IOption) => {
-	formData.value.hydration = String(option.id);
+	assessmentStore.setFormField("hydration", String(option.id));
 };
 
 const onSelectAbdominalPalpation = (option: IOption) => {
-	formData.value.abdominalPalpation = String(option.id);
+	assessmentStore.setFormField("abdominal_palpation", String(option.id));
 };
 
 const onSelectLymphNodes = (option: IOption) => {
-	formData.value.lymphNodesPalpation = String(option.id);
+	assessmentStore.setFormField("palpation_of_lymph_nodes", String(option.id));
 };
 </script>
 
 <template>
+	<MoleculesConfirmFeedbackModal
+		v-if="modalFeedback"
+		key="successPreSurgeryAssessment"
+		v-model:open="showSuccess"
+		variant="success"
+		:title="modalFeedback.success.title"
+		:description="modalFeedback.success.description"
+		:continue-text="modalFeedback.success.continueText"
+		@continue="modalFeedback.success.action()"
+	/>
 	<section class="pre-surgery-assessment">
 		<!-- Header -->
 		<div class="pre-surgery-assessment__header">
@@ -190,37 +153,42 @@ const onSelectLymphNodes = (option: IOption) => {
 					<div class="form-row">
 						<MoleculesInputCommon
 							label="Nome do animal"
-							:value="formData.animalName"
+							:value="animalDetailStore.animal.name || ''"
 							:is-disabled="true"
 						/>
 						<MoleculesInputCommon
 							label="Espécie"
-							:value="formData.animalSpecies"
+							:value="animalDetailStore.animal.species?.name || ''"
 							:is-disabled="true"
 						/>
 						<MoleculesInputCommon
-							label="Raça"
-							:value="formData.animalBreed"
+							label="Porte"
+							:value="animalDetailStore.animal.size?.name || ''"
 							:is-disabled="true"
 						/>
 					</div>
 					<div class="form-row">
 						<MoleculesInputCommon
 							label="Sexo"
-							:value="formData.animalGender"
+							:value="animalDetailStore.animal.gender?.name || ''"
 							:is-disabled="true"
 						/>
-            <MoleculesInputDate
-              v-model="formData.animalAge"
-              label="Data de nascimento"
-              name="birth_date"
-              placeholder="YYYY-MM-DD"
-              min="1900-01-01"
-              max="2025-12-31"
-					/>
+						<MoleculesInputDate
+							v-model="animalDetailStore.animal.birth_date"
+							label="Data de nascimento"
+							name="birth_date"
+							placeholder="YYYY-MM-DD"
+							min="1900-01-01"
+							max="2025-12-31"
+						/>
 						<MoleculesInputCommon
 							label="Peso (kg)"
-							:value="formData.animalWeight"
+							:value="
+								animalDetailStore.animal.weight
+									? String(animalDetailStore.animal.weight)
+									: ''
+							"
+							@on-input="assessmentStore.setFormField('weight', $event)"
 						/>
 					</div>
 				</div>
@@ -241,35 +209,46 @@ const onSelectLymphNodes = (option: IOption) => {
 							label="Mucosa"
 							:options="mucosaOptions"
 							placeholder-text="Selecione"
+							:message-error="
+								assessmentStore.form.mucosa.errorMessages.join(', ')
+							"
 							@item-selected="onSelectMucosa"
 						/>
 						<MoleculesSelectsSimple
 							label="Hidratação"
 							:options="hydrationOptions"
 							placeholder-text="Selecione"
+							:message-error="
+								assessmentStore.form.hydration.errorMessages.join(', ')
+							"
 							@item-selected="onSelectHydration"
 						/>
 						<MoleculesInputCommon
-							v-model="formData.bodyScore"
+							v-model="assessmentStore.form.escore_corporal.value"
 							label="Escore Corporal (1-5)"
 							type-input="number"
 							min="1"
 							max="5"
-							@on-input="formData.bodyScore = String($event)"
-						/>
-					</div>
-					<div class="form-row">
-						<MoleculesInputCommon
-							label="Frequência Cardíaca (bpm)"
-							v-model="formData.heartRate"
-							type-input="number"
-							@on-input="formData.heartRate = $event"
+							@on-input="
+								assessmentStore.setFormField('escore_corporal', $event)
+							"
+							:message-error="
+								assessmentStore.form.escore_corporal.errorMessages.join(', ')
+							"
 						/>
 						<MoleculesInputCommon
-							label="Frequência Respiratória (rpm)"
-							v-model="formData.respiratoryRate"
+							v-model="assessmentStore.form.heart_rate.value"
+							label="Freq. Cardíaca (bpm)"
 							type-input="number"
-							@on-input="formData.respiratoryRate = $event"
+							@on-input="assessmentStore.setFormField('heart_rate', $event)"
+						/>
+						<MoleculesInputCommon
+							v-model="assessmentStore.form.respiratory_rate.value"
+							label="Freq. Respiratória (rpm)"
+							type-input="number"
+							@on-input="
+								assessmentStore.setFormField('respiratory_rate', $event)
+							"
 						/>
 					</div>
 				</div>
@@ -287,14 +266,14 @@ const onSelectLymphNodes = (option: IOption) => {
 				<div class="form-grid">
 					<div class="form-row">
 						<MoleculesInputCheckbox
-							v-model="formData.adequateFasting"
+							v-model="assessmentStore.form.adequate_fasting.value"
 							label="Jejum adequado"
 						/>
 						<MoleculesInputCommon
 							label="Tempo de jejum (horas)"
-							v-model="formData.fastingTime"
+							v-model="assessmentStore.form.fasting_time.value"
 							type-input="number"
-							@on-input="formData.fastingTime = $event"
+							@on-input="assessmentStore.setFormField('fasting_time', $event)"
 						/>
 					</div>
 				</div>
@@ -315,27 +294,51 @@ const onSelectLymphNodes = (option: IOption) => {
 							label="Palpação Abdominal"
 							:options="abdominalPalpationOptions"
 							placeholder-text="Selecione"
+							:message-error="
+								assessmentStore.form.abdominal_palpation.errorMessages.join(
+									', ',
+								)
+							"
 							@item-selected="onSelectAbdominalPalpation"
 						/>
 						<MoleculesSelectsSimple
 							label="Palpação de Linfonodos"
 							:options="lymphNodesOptions"
 							placeholder-text="Selecione"
+							:message-error="
+								assessmentStore.form.palpation_of_lymph_nodes.errorMessages.join(
+									', ',
+								)
+							"
 							@item-selected="onSelectLymphNodes"
 						/>
 					</div>
 					<div class="form-row full-width">
 						<MoleculesInputCommon
-							v-model="formData.abdominalPalpationDescription"
+							v-model="
+								assessmentStore.form.abdominal_palpation_description.value
+							"
 							label="Descrição da Palpação Abdominal"
-							@on-input="formData.abdominalPalpationDescription = $event"
+							@on-input="
+								assessmentStore.setFormField(
+									'abdominal_palpation_description',
+									$event,
+								)
+							"
 						/>
 					</div>
 					<div class="form-row full-width">
 						<MoleculesInputCommon
-							v-model="formData.abdominalPalpationDescription"
+							v-model="
+								assessmentStore.form.palpation_of_lymph_nodes_description.value
+							"
 							label="Localização e Descrição dos Linfonodos"
-							@on-input="formData.abdominalPalpationDescription = $event"
+							@on-input="
+								assessmentStore.setFormField(
+									'palpation_of_lymph_nodes_description',
+									$event,
+								)
+							"
 						/>
 					</div>
 				</div>
@@ -353,15 +356,15 @@ const onSelectLymphNodes = (option: IOption) => {
 				<div class="form-grid">
 					<div class="form-row">
 						<MoleculesInputCheckbox
-							v-model="formData.vulvarSecretion"
+							v-model="assessmentStore.form.vulvar_discharge.value"
 							label="Secreção vulvar"
 						/>
 						<MoleculesInputCheckbox
-							v-model="formData.prepucialSecretion"
+							v-model="assessmentStore.form.foreskin_discharge.value"
 							label="Secreção prepucial"
 						/>
 						<MoleculesInputCheckbox
-							v-model="formData.ectopicTesticle"
+							v-model="assessmentStore.form.ectopic_testicle.value"
 							label="Testículo ectópico"
 						/>
 					</div>
@@ -380,23 +383,28 @@ const onSelectLymphNodes = (option: IOption) => {
 				<div class="form-grid">
 					<div class="form-row full-width">
 						<MoleculesInputCommon
+							v-model="assessmentStore.form.obervations.value"
 							label="Observações Gerais"
-							v-model="formData.generalObservations"
-							@on-input="formData.generalObservations = $event"
+							@on-input="assessmentStore.setFormField('obervations', $event)"
 						/>
 					</div>
 					<div class="form-row full-width">
 						<MoleculesInputCommon
+							v-model="assessmentStore.form.transsurgical_intercurrences.value"
 							label="Intercorrências Transcirúrgicas"
-							v-model="formData.transoperativeComplications"
-							@on-input="formData.transoperativeComplications = $event"
+							@on-input="
+								assessmentStore.setFormField(
+									'transsurgical_intercurrences',
+									$event,
+								)
+							"
 						/>
 					</div>
 					<div class="form-row full-width">
 						<MoleculesInputCommon
 							label="Medidas Tomadas"
-							v-model="formData.measuresTaken"
-							@on-input="formData.measuresTaken = $event"
+							v-model="assessmentStore.form.measures_taken.value"
+							@on-input="assessmentStore.setFormField('measures_taken', $event)"
 						/>
 					</div>
 				</div>

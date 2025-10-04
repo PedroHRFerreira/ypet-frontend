@@ -43,9 +43,9 @@ export const useAbdominalPalpationEnumStore = defineStore(
 				}
 
 				if (
-				this.abdominalPalpationEnum &&
-				this.abdominalPalpationEnum.length > 0
-			) {
+					this.abdominalPalpationEnum &&
+					this.abdominalPalpationEnum.length > 0
+				) {
 					const options = this.abdominalPalpationEnum.map((item) => ({
 						id: item.value,
 						text: item.label,
