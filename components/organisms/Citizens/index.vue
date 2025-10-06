@@ -1,30 +1,27 @@
 <script lang="ts">
 import { computed, defineComponent, ref } from "vue";
+import { useListStore } from "~/stores/citizens/useListStore";
 import MoleculesListCardItem from "~/components/molecules/ListCardItem/index.vue";
-import { useDayjs } from "~/composables/useDayjs";
 import AtomsTypography from "~/components/atoms/Typography/index.vue";
-import { useListStore } from "~/stores/castra-mobile/registrations/useListStore";
+import AtomsBadges from "~/components/atoms/Badges/Index.vue";
 
 export default defineComponent({
-	name: "OrganismsCastraMobileRegistrations",
+	name: "OrganismsCitizens",
 	components: {
+		AtomsBadges,
 		AtomsTypography,
 		MoleculesListCardItem,
 	},
-	async setup() {
-		const listStore = useListStore();
-		await listStore.fetchList({
-			"with[]": ["user", "animal"],
-			"filter[date]": useDayjs().format("YYYY-MM-DD"),
-		});
+	setup() {
+		const citizensList = useListStore();
 
 		const header = computed(() => {
 			return {
-				title: "Agenda do dia",
+				title: "Todos os cidadãos cadastrados",
 				subtitle: "",
 				buttons: [
 					{
-						text: "Registar",
+						text: "Novo cadastro",
 						type: "primary",
 						icon: "plus",
 						iconLeft: true,
@@ -35,82 +32,38 @@ export default defineComponent({
 						width: "auto",
 						action: () => {
 							const router = useRouter();
-							router.push({ name: "castra-mobile.registrations.create" });
+							router.push({ name: "citizens-create" });
 						},
 					},
 				],
 			};
 		});
 
-		const list = computed((): IRegistration[] => {
-			return listStore.list;
+		const list = computed((): ICitizens[] => {
+			return citizensList.citizens;
 		});
 
 		const columnsHeader = ref([
 			{
-				value: "id",
-				text: "ID",
-				typeTypography: "text-p5",
-				weightTypography: "bold",
-				colorTypography: "var(--brand-color-dark-blue-300)",
-				style: {
-					width: "5%",
-					gap: "16px",
-					wordBreak: "break-all",
-				},
-			},
-			{
-				value: "hour",
-				text: "DATA E HORA",
-				typeTypography: "text-p5",
-				weightTypography: "bold",
-				colorTypography: "var(--brand-color-dark-blue-300)",
-				style: {
-					width: "15%",
-					gap: "16px",
-					wordBreak: "break-all",
-				},
-			},
-			{
-				value: "tutor",
-				text: "TUTOR",
-				typeTypography: "text-p5",
-				weightTypography: "bold",
-				colorTypography: "var(--brand-color-dark-blue-300)",
-				style: {
-					width: "15%",
-				},
-			},
-			{
-				value: "pet",
-				text: "PET",
-				typeTypography: "text-p5",
-				weightTypography: "bold",
-				colorTypography: "var(--brand-color-dark-blue-300)",
-				style: {
-					width: "15%",
-				},
-			},
-			{
-				value: "species",
-				text: "ESPÉCIES",
+				value: "name",
+				text: "NOME",
 				typeTypography: "text-p5",
 				weightTypography: "bold",
 				colorTypography: "var(--brand-color-dark-blue-300)",
 				style: {
 					width: "20%",
-					justifyContent: "flex-end",
+					gap: "16px",
+					wordBreak: "break-all",
 				},
 			},
 			{
-				value: "weight",
-				text: "PESO",
+				value: "document",
+				text: "CPF",
 				typeTypography: "text-p5",
 				weightTypography: "bold",
 				colorTypography: "var(--brand-color-dark-blue-300)",
 				style: {
-					width: "10%",
-					justifyContent: "flex-end",
+					width: "15%",
 				},
 			},
 			{
@@ -120,7 +73,17 @@ export default defineComponent({
 				weightTypography: "bold",
 				colorTypography: "var(--brand-color-dark-blue-300)",
 				style: {
-					width: "10%",
+					width: "15%",
+				},
+			},
+			{
+				value: "telephone",
+				text: "TELEFONE",
+				typeTypography: "text-p5",
+				weightTypography: "bold",
+				colorTypography: "var(--brand-color-dark-blue-300)",
+				style: {
+					width: "20%",
 					justifyContent: "flex-end",
 				},
 			},
@@ -137,29 +100,22 @@ export default defineComponent({
 			},
 		]);
 
-		const onSelectOptionAction = (event: string, item: IRegistration) => {
+		const onSelectOptionAction = (event: string, item: ICitizens) => {
 			const router = useRouter();
 
 			if (event === "details") {
-				router.push({
-					name: "castra-mobile.registrations.details",
-					params: { id: item.id },
-				});
+				router.push({ name: "citizens-details", params: { id: item.id } });
+
+				return;
 			}
 
-			if (event === "pre_surgery_assessment") {
-				router.push({
-					path: `/castra-mobile/registrations/${item.animal_id}/pre-surgery-assessment`,
-				});
+			if (event === "edit") {
+				router.push({ name: "citizens-edit", params: { id: item.id } });
 			}
-
-      if (event === "download_term") {
-        listStore.downloadTerm(item.id);
-      }
 		};
 
 		return {
-			listStore,
+			citizensList,
 			columnsHeader,
 			header,
 			list,
@@ -217,58 +173,33 @@ export default defineComponent({
 				:data="columnsHeader"
 				padding="0"
 			>
-				<template #id>
+				<template #name>
 					<AtomsTypography
 						type="text-p5"
-						:text="`#${item.id}`"
+						:text="item.user.name"
 						weight="regular"
 						color="var(--brand-color-dark-blue-300)"
 					/>
 				</template>
-				<template #hour>
+				<template #document>
 					<AtomsTypography
 						type="text-p5"
-						:text="useDayjs(item.scheduler_at).format('DD/MM/YYYY - HH:mm')"
-						weight="regular"
-						color="var(--brand-color-dark-blue-300)"
-					/>
-				</template>
-				<template #tutor>
-					<AtomsTypography
-						type="text-p5"
-						:text="item.user?.name || '---'"
-						weight="regular"
-						color="var(--brand-color-dark-blue-300)"
-					/>
-				</template>
-				<template #pet>
-					<AtomsTypography
-						type="text-p5"
-						:text="item.animal?.name || '---'"
-						weight="regular"
-						color="var(--brand-color-dark-blue-300)"
-					/>
-				</template>
-				<template #species>
-					<AtomsTypography
-						type="text-p5"
-						:text="item.animal?.species.label || '---'"
-						weight="regular"
-						color="var(--brand-color-dark-blue-300)"
-					/>
-				</template>
-				<template #weight>
-					<AtomsTypography
-						type="text-p5"
-						:text="item.animal?.weight ? `${item.animal.weight} kg` : '---'"
+						:text="item.document"
 						weight="regular"
 						color="var(--brand-color-dark-blue-300)"
 					/>
 				</template>
 				<template #status>
+					<AtomsBadges
+						type="text"
+						:size="'small'"
+						:text="item.status || '---'"
+					/>
+				</template>
+				<template #telephone>
 					<AtomsTypography
 						type="text-p5"
-						:text="item.status.label"
+						:text="item.user.telephone"
 						weight="regular"
 						color="var(--brand-color-dark-blue-300)"
 					/>
@@ -276,11 +207,6 @@ export default defineComponent({
 				<template #actions>
 					<MoleculesActionDropdown
 						:key="item.id"
-						:actions="[
-							{ value: 'details', label: 'Detalhes' },
-							{ value: 'pre_surgery_assessment', label: 'Triagem' },
-							{ value: 'download_term', label: 'Baixar termo' },
-						]"
 						@change-action="onSelectOptionAction($event, item)"
 					/>
 				</template>
@@ -288,10 +214,10 @@ export default defineComponent({
 		</div>
 		<div class="wrapper-list-card__footer">
 			<MoleculesPaginationControls
-				v-if="listStore.pagination"
-				:total-items="listStore.pagination.total"
-				:current-page="listStore.pagination.current_page"
-				:per-page="listStore.pagination.per_page"
+				v-if="citizensList.pagination"
+				:total-items="citizensList.pagination.total"
+				:current-page="citizensList.pagination.current_page"
+				:per-page="citizensList.pagination.per_page"
 			/>
 		</div>
 	</section>

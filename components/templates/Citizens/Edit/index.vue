@@ -1,41 +1,50 @@
 <script lang="ts">
 import { defineComponent } from "vue";
+import { useDetailStore } from "~/stores/citizens/useDetailStore";
+import { useEditStore } from "~/stores/citizens/useEditStore";
 
 export default defineComponent({
-	name: "TemplatesCitizens",
+	name: "TemplatesCitizensEdit",
 	setup() {
+		const citizenDetailsStore = useDetailStore();
+		const citizenEditStore = useEditStore();
+		const title = computed(() => {
+			if (citizenDetailsStore.isLoading) {
+				return "Carregando...";
+			}
+
+			return citizenDetailsStore.citizens
+				? "# " + citizenDetailsStore.citizens.user?.name + " "
+				: "";
+		});
+		const subtitle = computed(() => {
+			if (citizenDetailsStore.isLoading) {
+				return "Carregando...";
+			}
+
+			const textStart = "Editar informações do cidadão: ";
+
+			return textStart + (citizenDetailsStore.citizens?.name || "");
+		});
 		const header = computed(() => {
 			return {
-				title: "Cadastro de cidadãos",
-				subtitle: "Visualize e gerencie os cadastros de cidadãos",
-				buttons: [
-					{
-						text: "Novo cadastro",
-						type: "primary",
-						icon: "plus",
-						iconLeft: false,
-						nameIconLeft: "",
-						iconRight: true,
-						nameIconRight: "plus",
-						action: () => {
-							// TODO: Adicionar ação de redirecionamento para criação
-						},
-					},
-				],
+				title: title.value,
+				subtitle: subtitle.value,
+				buttons: [],
 			};
 		});
 
-		const emptyState = computed(() => {
-			return {
-				isEmpty: true,
-				isIcon: true,
-				title: "",
-				description: "",
-			};
+		onMounted(async () => {
+			const id = useRoute().params.id as string;
+			await citizenDetailsStore.fetchCitizenById(id, {
+				"with[]": ["user"],
+			});
 		});
+
 		return {
 			header,
-			emptyState,
+			citizenDetailsStore,
+			citizenEditStore,
 		};
 	},
 });
@@ -71,26 +80,19 @@ export default defineComponent({
 						:icon-right="button.iconRight"
 						:name-icon-left="button.nameIconLeft"
 						:name-icon-right="button.nameIconRight"
+						:size="button.size"
+						:width="button.width"
 						@onclick="button.action"
 					/>
 				</div>
 			</header>
 			<main class="main">
-				<div v-if="emptyState.isEmpty" class="main-empty">
-					<MoleculesEmptyState
-						:is-icon="emptyState.isIcon"
-						:title="emptyState.title"
-						:description="emptyState.description"
-					/>
-				</div>
-				<div v-else class="main-content">
-					<h2>Organismos de lista</h2>
-				</div>
+				<OrganismsCitizensEdit />
 			</main>
 		</div>
 	</div>
 </template>
 
 <style scoped lang="scss">
-@use "styles.module";
+@use "style.module";
 </style>

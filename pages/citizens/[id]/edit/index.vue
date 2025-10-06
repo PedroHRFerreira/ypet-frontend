@@ -1,19 +1,24 @@
 <script setup lang="ts">
+import { definePageMeta } from "#imports";
+
 useHead({
-	title: "Página Inicial",
+	title: "Editar cidadão",
 	titleTemplate: (titleChunk) => {
 		return titleChunk ? `${titleChunk} | YPet` : "YPet";
 	},
 });
 
 definePageMeta({
-	description: "Bem vindo ao nosso sistama de gestão",
-	name: "home",
 	layout: "default",
 	middleware: ["auth"],
+	name: "citizens-edit",
+});
+
+defineComponent({
+	name: "PagesCitizensEdit",
 });
 </script>
 
 <template>
-	<TemplatesHome />
+	<TemplatesCitizensEdit />
 </template>
