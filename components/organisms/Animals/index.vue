@@ -200,7 +200,9 @@ export default defineComponent({
 					<AtomsTypography
 						type="text-p5"
 						:text="
-							item.registration_number ? `#${item.registration_number}` : '---'
+							item.entry_data?.registration_number
+								? `#${item.entry_data.registration_number}`
+								: '---'
 						"
 						weight="regular"
 						color="var(--brand-color-dark-blue-300)"
@@ -242,7 +244,7 @@ export default defineComponent({
 				<template #castrated>
 					<AtomsTypography
 						type="text-p5"
-						:text="$booleanToSimNao(item.castrated)"
+						:text="$booleanToSimNao(item.entry_data?.castrated)"
 						weight="regular"
 						color="var(--brand-color-dark-blue-300)"
 					/>
