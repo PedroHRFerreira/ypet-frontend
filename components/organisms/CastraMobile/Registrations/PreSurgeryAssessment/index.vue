@@ -229,11 +229,11 @@ const onSelectLymphNodes = (option: IOption) => {
 							type-input="number"
 							min="1"
 							max="5"
-							@on-input="
-								assessmentStore.setFormField('escore_corporal', $event)
-							"
 							:message-error="
 								assessmentStore.form.escore_corporal.errorMessages.join(', ')
+							"
+							@on-input="
+								assessmentStore.setFormField('escore_corporal', $event)
 							"
 						/>
 						<MoleculesInputCommon
@@ -270,8 +270,8 @@ const onSelectLymphNodes = (option: IOption) => {
 							label="Jejum adequado"
 						/>
 						<MoleculesInputCommon
-							label="Tempo de jejum (horas)"
 							v-model="assessmentStore.form.fasting_time.value"
+							label="Tempo de jejum (horas)"
 							type-input="number"
 							@on-input="assessmentStore.setFormField('fasting_time', $event)"
 						/>
@@ -402,8 +402,8 @@ const onSelectLymphNodes = (option: IOption) => {
 					</div>
 					<div class="form-row full-width">
 						<MoleculesInputCommon
-							label="Medidas Tomadas"
 							v-model="assessmentStore.form.measures_taken.value"
+							label="Medidas Tomadas"
 							@on-input="assessmentStore.setFormField('measures_taken', $event)"
 						/>
 					</div>
