@@ -16,15 +16,14 @@ export const useListStore = defineStore("list", {
 	},
 	actions: {
 		async fetchList(params = {}): Promise<void> {
-
 			if (this.isLoading) {
 				return;
 			}
-			
+
 			this.isLoading = true;
 			this.errorMessage = "";
-			
-			await useFetch('/api/citizens', {
+
+			await useFetch("/api/citizens", {
 				method: "GET",
 				params: {
 					...params,

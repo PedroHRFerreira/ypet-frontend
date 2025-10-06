@@ -176,9 +176,7 @@ export default defineComponent({
 				<template #name>
 					<AtomsTypography
 						type="text-p5"
-						:text="
-							item.user.name
-						"
+						:text="item.user.name"
 						weight="regular"
 						color="var(--brand-color-dark-blue-300)"
 					/>

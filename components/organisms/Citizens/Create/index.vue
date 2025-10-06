@@ -8,7 +8,7 @@ import { useBooleanEnumStore } from "~/stores/Enums/useBooleanEnumStore";
 import { useGenderEnumStore } from "~/stores/Enums/useGenderEnumStore";
 
 export default defineComponent({
-   name: "OrganismsCitizensCreate",
+	name: "OrganismsCitizensCreate",
 	async setup() {
 		const useCitizensCreate = useCreateStore();
 		const { form } = useCitizensCreate;
@@ -16,24 +16,20 @@ export default defineComponent({
 		const useBooleanEnum = useBooleanEnumStore();
 		const useUserStatusEnum = useUserStatusEnumStore();
 		const useGenderEnum = useGenderEnumStore();
-		
 
-		const [
-			optionsUserStatus,
-			optionsUFEnum,
-			optionsBoolean,
-		] = await Promise.all([
-			useUserStatusEnum.getOptions(),
-			useUFEnum.getOptions(),
-			useBooleanEnum.getOptions(),
-			useGenderEnum.getOptions(),
-		]);
+		const [optionsUserStatus, optionsUFEnum, optionsBoolean] =
+			await Promise.all([
+				useUserStatusEnum.getOptions(),
+				useUFEnum.getOptions(),
+				useBooleanEnum.getOptions(),
+				useGenderEnum.getOptions(),
+			]);
 
 		const optionsGender: IOption[] = [
 			{ id: 1, text: "Masculino", state: "default" },
 			{ id: 0, text: "Feminino", state: "default" },
 		];
-		
+
 		const birthDate = ref("");
 		const showConfirm = ref(false);
 		const showSuccess = ref(false);
@@ -45,7 +41,7 @@ export default defineComponent({
 		function onSuccess() {
 			showSuccess.value = true;
 		}
-	
+
 		async function confirmCreate() {
 			if (useCitizensCreate.isLoading) {
 				return;
@@ -81,8 +77,8 @@ export default defineComponent({
 			openConfirm,
 			onSuccess,
 			confirmCreate,
-			continueFeedback
-		}
+			continueFeedback,
+		};
 	},
 	watch: {
 		birthDate: {
@@ -92,7 +88,7 @@ export default defineComponent({
 			deep: true,
 		},
 	},
-})
+});
 </script>
 <template>
 	<MoleculesConfirmFeedbackModal
@@ -186,7 +182,9 @@ export default defineComponent({
 						max-width="50%"
 						:value="form.password_confirmation.value as string"
 						:message-error="form.password_confirmation.errorMessages.join(', ')"
-						@on-input="useCitizensCreate.setFormField('password_confirmation', $event)"
+						@on-input="
+							useCitizensCreate.setFormField('password_confirmation', $event)
+						"
 					/>
 				</div>
 			</div>
@@ -267,18 +265,11 @@ export default defineComponent({
 						max-width="25%"
 						:options="optionsBoolean"
 						:value="
-							form.can_report_abuse.value
-								? form.can_report_abuse.value
-								: 0
+							form.can_report_abuse.value ? form.can_report_abuse.value : 0
 						"
-						:message-error="
-							form.can_report_abuse.errorMessages.join(', ')
-						"
+						:message-error="form.can_report_abuse.errorMessages.join(', ')"
 						@change-option="
-							useCitizensCreate.setFormField(
-								'can_report_abuse',
-								$event.id,
-							)
+							useCitizensCreate.setFormField('can_report_abuse', $event.id)
 						"
 					/>
 					<MoleculesInputOptionGroup
@@ -291,14 +282,9 @@ export default defineComponent({
 								? form.can_mobile_castration.value
 								: 0
 						"
-						:message-error="
-							form.can_mobile_castration.errorMessages.join(', ')
-						"
+						:message-error="form.can_mobile_castration.errorMessages.join(', ')"
 						@change-option="
-							useCitizensCreate.setFormField(
-								'can_mobile_castration',
-								$event.id,
-							)
+							useCitizensCreate.setFormField('can_mobile_castration', $event.id)
 						"
 					/>
 					<MoleculesSelectsSimple
@@ -307,7 +293,6 @@ export default defineComponent({
 						:options="optionsUserStatus"
 						:message-error="form.status.errorMessages.join(', ')"
 						@item-selected="useCitizensCreate.setFormField('status', $event)"
-						
 					/>
 				</div>
 				<div class="citizens__input-data__content--group">
@@ -319,15 +304,15 @@ export default defineComponent({
 				</div>
 			</div>
 			<div class="citizens__input-data__footer">
-					<MoleculesButtonsCommon
-						type="primary"
-						text="Cadastrar"
-						width="128px"
-						:icon-right="true"
-						name-icon-right="plus"
-						@onclick="openConfirm"
-					/>
-				</div>
+				<MoleculesButtonsCommon
+					type="primary"
+					text="Cadastrar"
+					width="128px"
+					:icon-right="true"
+					name-icon-right="plus"
+					@onclick="openConfirm"
+				/>
+			</div>
 		</section>
 	</div>
 </template>

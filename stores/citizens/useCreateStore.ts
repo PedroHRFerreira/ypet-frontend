@@ -24,7 +24,7 @@ export const useCreateStore = defineStore("citizens-create", {
 			"state",
 			"status",
 			"can_report_abuse",
-			"can_mobile_castration"
+			"can_mobile_castration",
 		]);
 
 		return {
@@ -42,10 +42,10 @@ export const useCreateStore = defineStore("citizens-create", {
 		},
 		setFormError(field: string, errorMessages: string[]): void {
 			this.form[field].errorMessages = errorMessages;
-		},	
+		},
 		getFormData(): FormData {
 			const formData = new FormData();
-		
+
 			const addressFields = [
 				"zip_code",
 				"street",
@@ -55,16 +55,16 @@ export const useCreateStore = defineStore("citizens-create", {
 				"city",
 				"state",
 			];
-		
+
 			for (const key in this.form) {
 				if (!Object.prototype.hasOwnProperty.call(this.form, key)) continue;
-		
+
 				const value = this.form[key].value as string | IOption;
-		
+
 				if (value === null || value === undefined) continue;
-		
+
 				let finalValue: string;
-		
+
 				if (typeof value === "object" && value !== null && "id" in value) {
 					finalValue = String(value.id);
 				} else {
@@ -79,9 +79,9 @@ export const useCreateStore = defineStore("citizens-create", {
 			}
 
 			formData.append("special_permissions", "0");
-		
+
 			return formData;
-		},	
+		},
 		handleResponseError(response: IResponse): void {
 			if (response.type !== "error") {
 				return;
