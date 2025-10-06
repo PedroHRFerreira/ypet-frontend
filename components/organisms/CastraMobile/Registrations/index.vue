@@ -146,6 +146,10 @@ export default defineComponent({
 					params: { id: item.id },
 				});
 			}
+
+      if (event === "download_term") {
+        listStore.downloadTerm(item.id);
+      }
 		};
 
 		return {
@@ -268,8 +272,7 @@ export default defineComponent({
 						:key="item.id"
 						:actions="[
 							{ value: 'details', label: 'Detalhes' },
-							{ value: 'edit', label: 'Editar' },
-							{ value: 'close_day', label: 'Fechar dia' },
+							{ value: 'download_term', label: 'Baixar termo' },
 						]"
 						@change-action="onSelectOptionAction($event, item)"
 					/>
