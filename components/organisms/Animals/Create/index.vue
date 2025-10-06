@@ -34,7 +34,7 @@ export default defineComponent({
 
 		const optionsBoolean: IOption[] = [
 			{ id: 1, text: "Sim", state: "default" },
-			{ id: 0, text: "Não", state: "activated" },
+			{ id: 0, text: "Não", state: "default" },
 		];
 
 		const birthDate = ref("");
@@ -261,7 +261,7 @@ export default defineComponent({
 						label="Castrado"
 						max-width="20%"
 						:options="optionsBoolean"
-						:value="form.castrated.value ? form.castrated.value : 0"
+						:value="form.castrated.value ? form.castrated.value : null"
 						:message-error="form.castrated.errorMessages.join(', ')"
 						@change-option="
 							useAnimalsCreate.setFormField('castrated', $event.id)
@@ -272,7 +272,7 @@ export default defineComponent({
 						label="Vermifugado"
 						max-width="20%"
 						:options="optionsBoolean"
-						:value="form.dewormed.value ? form.dewormed.value : 0"
+						:value="form.dewormed.value ? form.dewormed.value : null"
 						:message-error="form.dewormed.errorMessages.join(', ')"
 						@change-option="
 							useAnimalsCreate.setFormField('dewormed', $event.id)
