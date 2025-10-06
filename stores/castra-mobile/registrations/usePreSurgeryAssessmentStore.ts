@@ -159,6 +159,7 @@ export const usePreSurgeryAssessmentStore = defineStore(
 						},
 					});
 				} catch (error) {
+					// eslint-disable-next-line no-console
 					console.error("Erro ao buscar dados do animal:", error);
 					this.errorMessage = "Erro ao buscar dados do animal.";
 					this.isLoadingAnimal = false;
