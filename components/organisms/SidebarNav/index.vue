@@ -116,15 +116,8 @@ export default defineComponent({
 <template>
 	<div class="sidebar">
 		<div class="sidebar__logo">
-			<div class="sidebar__logo">
-				<img
-					src="/images/pet-dos-vales.svg"
-					alt="Logo Pet dos Vales"
-					width="89"
-					height="40"
-				/>
-			</div>
-		</div>
+  <img src="/images/pet-dos-vales.svg" alt="Logo Pet dos Vales" width="100" height="50" />
+</div>
 		<div class="sidebar__options">
 			<MoleculesSidebarIten
 				v-for="(item, index) in menuItems.slice(0, -1)"
