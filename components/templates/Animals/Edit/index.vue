@@ -13,18 +13,14 @@ export default defineComponent({
 				return "Carregando...";
 			}
 
-			return animalDetailsStore.animal
-				? "# " + animalDetailsStore.animal.id + " "
-				: "";
+			return animalDetailsStore.animal ? "Editar do animal" : "";
 		});
 		const subtitle = computed(() => {
 			if (animalDetailsStore.isLoading) {
 				return "Carregando...";
 			}
 
-			const textStart = "Editar informações do animal: ";
-
-			return textStart + (animalDetailsStore.animal?.name || "");
+			return animalDetailsStore.animal ? "Editar informações do animal" : "";
 		});
 		const header = computed(() => {
 			return {
