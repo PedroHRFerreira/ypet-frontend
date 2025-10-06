@@ -4,16 +4,16 @@ import { IAddresses } from "~/types/addresses";
 declare global {
 	interface ICitizens {
 		id?: number;
-		uuid?:string
+		uuid?: string;
 		name: string;
 		document: string;
 		gender: string;
 		birth_date: string;
 		telephone: string;
 		email: string;
-		street:string;
+		street: string;
 		number: string;
-		zip_code:string;
+		zip_code: string;
 		district: string;
 		city: string;
 		complement?: string;

@@ -77,7 +77,7 @@ export default defineComponent({
 				<span class="bar"></span>
 				<span class="bar"></span>
 			</button>
-      <div class="header__container--search"></div>
+			<div class="header__container--search"></div>
 			<ul class="header__container--actions">
 				<li class="header__container--item" @click="$emit('notifications')">
 					<div class="header__container--notifications" />
