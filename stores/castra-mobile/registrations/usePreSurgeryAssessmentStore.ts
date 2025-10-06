@@ -235,7 +235,10 @@ export const usePreSurgeryAssessmentStore = defineStore(
 				const validations: ValidationRule[] = [
 					{ field: "mucosa", message: "Mucosa é obrigatória" },
 					{ field: "hydration", message: "Hidratação é obrigatória" },
-					{ field: "adequate_fasting", message: "Jejum adequado é obrigatório" },
+					{
+						field: "adequate_fasting",
+						message: "Jejum adequado é obrigatório",
+					},
 					{
 						field: "escore_corporal",
 						message: "Escore corporal é obrigatório",
@@ -255,7 +258,10 @@ export const usePreSurgeryAssessmentStore = defineStore(
 						field: "palpation_of_lymph_nodes",
 						message: "Palpação de linfonodos é obrigatória",
 					},
-					{ field: "vulvar_discharge", message: "Secreção vulvar é obrigatória" },
+					{
+						field: "vulvar_discharge",
+						message: "Secreção vulvar é obrigatória",
+					},
 					{
 						field: "foreskin_discharge",
 						message: "Secreção prepucial é obrigatória",
