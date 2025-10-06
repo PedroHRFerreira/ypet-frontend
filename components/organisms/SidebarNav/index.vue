@@ -116,7 +116,15 @@ export default defineComponent({
 <template>
 	<div class="sidebar">
 		<div class="sidebar__logo">
-			<AtomsIcon name="logo-blue" width="89px" height="40px" />
+			<div class="sidebar__logo">
+			<img
+				src="/images/pet-dos-vales.svg"
+				alt="Logo Pet dos Vales"
+				width="89"
+				height="40"
+			/>
+			</div>
+
 		</div>
 		<div class="sidebar__options">
 			<MoleculesSidebarIten
