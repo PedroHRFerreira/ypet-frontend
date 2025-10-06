@@ -165,6 +165,8 @@ export default defineComponent({
 				continueText: "Continuar",
 				action: () => {
 					showSuccess.value = false;
+					const router = useRouter();
+					router.back();
 				},
 			},
 		};
