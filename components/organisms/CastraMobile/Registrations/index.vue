@@ -153,9 +153,9 @@ export default defineComponent({
 				});
 			}
 
-      if (event === "download_term") {
-        listStore.downloadTerm(item.id);
-      }
+			if (event === "download_term") {
+				listStore.downloadTerm(item.id);
+			}
 		};
 
 		return {
