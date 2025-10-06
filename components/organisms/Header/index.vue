@@ -92,11 +92,11 @@ export default defineComponent({
 						<AtomsTypography
 							class="text"
 							type="text-p5"
-							text="Davi Bruno"
+							text="Thiago Barbosa"
 							color="var(--brand-color-blue-900)"
 							@click="$emit('profile')"
 						/>
-						<MoleculesAvatarIcon name-user="Davi Bruno" />
+						<MoleculesAvatarIcon name-user="Thiago Barbosa" />
 					</div>
 					<div v-if="isOpenDropdown" class="header__container--item__dropdown">
 						<AtomsDropdownItem
