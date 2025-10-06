@@ -117,14 +117,13 @@ export default defineComponent({
 	<div class="sidebar">
 		<div class="sidebar__logo">
 			<div class="sidebar__logo">
-			<img
-				src="/images/pet-dos-vales.svg"
-				alt="Logo Pet dos Vales"
-				width="89"
-				height="40"
-			/>
+				<img
+					src="/images/pet-dos-vales.svg"
+					alt="Logo Pet dos Vales"
+					width="89"
+					height="40"
+				/>
 			</div>
-
 		</div>
 		<div class="sidebar__options">
 			<MoleculesSidebarIten
