@@ -33,7 +33,7 @@ export default defineComponent({
 						width: "auto",
 						action: () => {
 							const router = useRouter();
-							router.push({ name: "animals-create" });
+							router.push({ name: "employees-create" });
 						},
 					},
 				],
