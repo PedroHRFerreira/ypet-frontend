@@ -9,7 +9,7 @@ export default defineComponent({
 			default: "Senha",
 		},
 		value: {
-			type: String,
+			type: [String, Number, null, Boolean, Array<any>],
 			default: "",
 		},
 		message: {
