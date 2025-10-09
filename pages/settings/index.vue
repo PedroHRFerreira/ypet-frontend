@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { definePageMeta } from "#imports";
+import { definePageMeta, useHead } from "#imports";
+import TemplatesSettings from "@/components/templates/Settings/index.vue";
 
 useHead({
 	title: "Configurações",
@@ -17,6 +18,7 @@ defineComponent({
 	name: "PagesSettings",
 });
 </script>
+
 <template>
 	<TemplatesSettings />
 </template>
