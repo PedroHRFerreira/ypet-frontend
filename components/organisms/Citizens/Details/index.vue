@@ -19,31 +19,35 @@ export default defineComponent({
 		const abouts = computed<AboutType[]>(() => {
 			const citizen = citizensDetailsStore.citizens;
 
+			const gender = {
+				"0": "Feminino",
+				"1":"Masculino",
+			}
+
+
 			return [
 				{
 					title: "Sobre o cidadão",
 					content: [
+						{ label: "", value: citizen.image, isImage: true},
 						{ label: "Nome completo: ", value: citizen.user?.name || "N/A" },
-						{ label: "CPF:", value: citizen?.document },
-						{ label: "Gênero:", value: citizen?.gender, isEnum: true },
+						{ label: "CPF:", value: citizen?.document},
+						{ label: "Gênero:", value: gender[citizen?.gender] },
 						{
 							label: "Data de nascimento:",
 							value: proxy?.$formatDateTime(citizen?.birth_date) || "N/A",
 						},
-						{ label: "Email:", value: citizen.user?.email },
+						{ label: "Email:", value: citizen.user?.email},
 						{ label: "Telefone:", value: citizen.user?.telephone },
-						{ label: "Endereço:", value: citizen.addresses[0].street },
+						{ label: "Endereço:", value: citizen.addresses[0].street},
 						{
 							label: "Número:",
-							value: citizen.addresses[0].number,
+							value:  citizen.addresses[0].number,
 						},
-						{
-							label: "Complemento:",
-							value: citizen.addresses[0].complement || "N/A",
-						},
-						{ label: "Bairro:", value: citizen.addresses[0].district },
-						{ label: "Cidade:", value: citizen.addresses[0].city },
-						{ label: "Estado:", value: citizen.addresses[0].state },
+						{ label: "Complemento:", value:  citizen.addresses[0].complement || "N/A" },
+						{ label: "Bairro:", value:  citizen.addresses[0].district },
+						{ label: "Cidade:", value:  citizen.addresses[0].city},
+						{ label: "Estado:", value:  citizen.addresses[0].state},
 					],
 				},
 				{
@@ -57,14 +61,13 @@ export default defineComponent({
 							label: "Pode acessar Castramóvel:",
 							value: proxy?.$booleanToSimNao(citizen?.can_mobile_castration),
 						},
-						{
-							label: "Status:",
-							value: citizen?.status,
-							isEnum: true,
+						{ 
+							label: "Status:", 
+							value: citizen?.status
 						},
-						{
-							label: "Observações:",
-							value: "",
+						{ 
+							label: "Observações:", 
+							value: ""
 						},
 					],
 				},
@@ -74,7 +77,7 @@ export default defineComponent({
 		onMounted(async () => {
 			const id = useRoute().params.id as string;
 			await citizensDetailsStore.fetchCitizenById(id, {
-				"with[]": ["user", "addresses"],
+				"with[]": ["user","addresses"],
 			});
 		});
 
@@ -100,7 +103,7 @@ export default defineComponent({
 					color="var(--brand-color-dark-blue-700)"
 				/>
 			</div>
-
+			
 			<div class="wrapper-details__about-content">
 				<div
 					v-for="(item, index) in about.content"
@@ -114,17 +117,25 @@ export default defineComponent({
 						color="var(--brand-color-dark-blue-300)"
 					/>
 					<AtomsTypography
-						v-if="!item.isEnum"
+						v-if="!item.isEnum && !item.isImage"
 						type="text-p5"
-						:text="(item.value as string) || 'N/A'"
+						:text="(item.value as string)"
 						weight="regular"
 						color="var(--brand-color-dark-blue-900)"
 					/>
 					<AtomsBadges
-						v-else
+						v-else-if="item.isEnum"
 						type="text"
 						:text="(item.value as IEnum)?.label || 'N/A'"
 						:color="(item.value as IEnum)?.color || 'gray'"
+					/>
+					<AtomsImageCustom
+						v-else-if="item.isImage"
+						:src="item.value"
+						alt="imagem usuário"
+						width="fit-content"
+						height="150px"
+						object-fit="contain"
 					/>
 				</div>
 			</div>

@@ -6,7 +6,7 @@ export default defineComponent({
 	name: "TemplatesCitizens",
 	async setup() {
 		const citizensList = useListStore();
-
+		
 		await citizensList.fetchList();
 
 		const header = computed(() => {
@@ -91,7 +91,7 @@ export default defineComponent({
 					/>
 				</div>
 				<div v-else class="main-content">
-					<OrganismsCitizens />
+					<OrganismsCitizens/>
 				</div>
 			</main>
 		</div>

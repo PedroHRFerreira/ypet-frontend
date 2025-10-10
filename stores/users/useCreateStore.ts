@@ -2,20 +2,29 @@ import { useForm } from "~/composables/useForm";
 
 export const useCreateStore = defineStore("create", {
 	state: () => {
+		const user = ref({} as IUser);
 		const isLoading = ref(false);
 		const errorMessage = ref("");
 		const successMessage = ref("");
 		const form = useForm([
 			"name",
-			"email",
-			"password",
-			"password_confirmation",
+			"species",
+			"gender",
+			"weight",
+			"castrated",
+			"birth_date",
+			"entry_date",
 			"status",
-			"roles",
+			"castration_site",
+			"collection_reason",
+			"collection_site",
+			"registration_number",
+			"microchip_number",
 		]);
-		const pathUrl = "/api/users/store";
+		const pathUrl = "/api/animals/store";
 
 		return {
+			user,
 			isLoading,
 			errorMessage,
 			successMessage,
@@ -39,14 +48,6 @@ export const useCreateStore = defineStore("create", {
 
 					if (value === null || value === undefined) {
 						continue;
-					}
-
-					if (key === "roles" && typeof value === "object") {
-						if (Object.prototype.hasOwnProperty.call(value, "id")) {
-							formData.set("roles[]", String(value.id));
-
-							continue;
-						}
 					}
 
 					if (typeof value === "object") {
@@ -87,7 +88,7 @@ export const useCreateStore = defineStore("create", {
 
 			this.isLoading = false;
 		},
-		async store(): Promise<void> {
+		async create(): Promise<void> {
 			if (this.isLoading) {
 				return;
 			}
@@ -109,20 +110,10 @@ export const useCreateStore = defineStore("create", {
 					}
 
 					this.successMessage = responseData.message || "Criado com sucesso!";
+					this.user = responseData.data || ({} as IUser);
 					this.isLoading = false;
 				},
 			});
-		},
-		resetForm() {
-			for (const key in this.form) {
-				if (Object.prototype.hasOwnProperty.call(this.form, key)) {
-					this.form[key].value = null;
-					this.form[key].errorMessages = [];
-				}
-			}
-			this.isLoading = false;
-			this.errorMessage = "";
-			this.successMessage = "";
 		},
 	},
 });

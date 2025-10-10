@@ -7,6 +7,7 @@ export const useEditStore = defineStore("citizens-edit", {
 		const successMessage = ref("");
 		const form = useForm([
 			"name",
+			"image",
 			"document",
 			"email",
 			"gender",
@@ -20,7 +21,7 @@ export const useEditStore = defineStore("citizens-edit", {
 			"state",
 			"status",
 			"can_report_abuse",
-			"can_mobile_castration",
+			"can_mobile_castration"
 		]);
 
 		return {
@@ -72,7 +73,7 @@ export const useEditStore = defineStore("citizens-edit", {
 		},
 		getFormData(): FormData {
 			const formData = new FormData();
-
+			
 			const addressFields = [
 				"zip_code",
 				"street",
@@ -82,31 +83,34 @@ export const useEditStore = defineStore("citizens-edit", {
 				"city",
 				"state",
 			];
-
-			for (const key in this.form) {
-				if (!Object.prototype.hasOwnProperty.call(this.form, key)) continue;
-
-				const value = this.form[key].value as string | IOption;
-
-				if (value === null || value === undefined) continue;
-
-				let finalValue: string;
-
-				if (typeof value === "object" && value !== null && "id" in value) {
-					finalValue = String(value.id);
-				} else {
-					finalValue = String(value);
-				}
-
-				if (addressFields.includes(key)) {
-					formData.append(`address[0][${key}]`, finalValue);
-				} else {
-					formData.append(key, finalValue);
+			
+			const addressObj: Record<string, any> = {};
+			for (const key of addressFields) {
+				const value = this.form[key]?.value;
+				if (value !== null && value !== undefined && value !== "") {
+				addressObj[key] = typeof value === "object" && "id" in value ? value.id : value;
 				}
 			}
-
+		
+			formData.append("address", JSON.stringify([addressObj]));
+			
+			for (const key in this.form) {
+				if (!Object.prototype.hasOwnProperty.call(this.form, key)) continue;
+				if (addressFields.includes(key)) continue; // já foi adicionado no endereço
+			
+				const value = this.form[key]?.value;
+				if (value === null || value === undefined || value === "") continue;
+			
+				formData.append(
+				key,
+				typeof value === "object" && "id" in value ? String(value.id) : String(value)
+				);
+			}
+			
+			formData.append("special_permissions", "0");
+			
 			return formData;
-		},
+		},	 
 		resetForm() {
 			for (const key in this.form) {
 				if (Object.prototype.hasOwnProperty.call(this.form, key)) {

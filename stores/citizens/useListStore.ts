@@ -1,6 +1,6 @@
 import type { IPagination } from "~/types/global";
 
-export const useListStore = defineStore("list", {
+export const useListStore = defineStore("citizens-list", {
 	state: () => {
 		const citizens = ref([] as ICitizens[]);
 		const isLoading = ref(false);
@@ -16,14 +16,15 @@ export const useListStore = defineStore("list", {
 	},
 	actions: {
 		async fetchList(params = {}): Promise<void> {
+
 			if (this.isLoading) {
 				return;
 			}
-
+			
 			this.isLoading = true;
 			this.errorMessage = "";
-
-			await useFetch("/api/citizens", {
+			
+			await useFetch('/api/citizens', {
 				method: "GET",
 				params: {
 					...params,

@@ -18,7 +18,6 @@ defineComponent({
 	name: "PagesSettings",
 });
 </script>
-
 <template>
 	<TemplatesSettings />
 </template>

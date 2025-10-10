@@ -38,10 +38,7 @@ export default defineComponent({
 							const router = useRouter();
 							const citizenUuid = useRoute().params.id;
 
-							router.push({
-								name: "citizens-edit",
-								params: { id: citizenUuid },
-							});
+							router.push({ name: "citizens-edit", params: { id: citizenUuid } });
 						},
 					},
 				],
