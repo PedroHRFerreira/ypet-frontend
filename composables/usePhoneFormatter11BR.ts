@@ -1,4 +1,6 @@
 export const usePhoneFormatter11BR = (value: string): string => {
+	if (!value) return ''
+
 	const numericValue = value.replace(/\D/g, "");
 
 	const match = numericValue.match(/^(\d{2})(\d{5})(\d{4})$/);

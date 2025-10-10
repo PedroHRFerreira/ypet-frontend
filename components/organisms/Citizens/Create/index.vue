@@ -1,6 +1,8 @@
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, onUnmounted} from "vue";
 import { useCreateStore } from "~/stores/citizens/useCreateStore";
+import MoleculesUploadField from "~/components/molecules/ListCardItem/index.vue";
+
 
 import { useUserStatusEnumStore } from "~/stores/Enums/useUserStatusEnumStore";
 import { useUFEnumStore } from "~/stores/Enums/useUFEnumStore";
@@ -9,6 +11,9 @@ import { useGenderEnumStore } from "~/stores/Enums/useGenderEnumStore";
 
 export default defineComponent({
    name: "OrganismsCitizensCreate",
+	components: {
+		MoleculesUploadField,
+	},
 	async setup() {
 		const useCitizensCreate = useCreateStore();
 		const { form } = useCitizensCreate;
@@ -16,7 +21,14 @@ export default defineComponent({
 		const useBooleanEnum = useBooleanEnumStore();
 		const useUserStatusEnum = useUserStatusEnumStore();
 		const useGenderEnum = useGenderEnumStore();
-		
+		useCitizensCreate.setFormField('can_mobile_castration', 0)
+		useCitizensCreate.setFormField('can_report_abuse', 0)
+
+
+
+		onUnmounted(() => {
+			useCitizensCreate.resetForm();
+		});
 
 		const [
 			optionsUserStatus,
@@ -35,6 +47,11 @@ export default defineComponent({
 		];
 		
 		const birthDate = ref("");
+		const document = ref("")
+		const telephone = ref("")
+		const zipCode = ref("")
+		const file = ref<File | null>(null);
+		const errorMessage = ref("");
 		const showConfirm = ref(false);
 		const showSuccess = ref(false);
 
@@ -68,6 +85,37 @@ export default defineComponent({
 			router.push({ name: "citizens-list" });
 		}
 
+		function onInputDocument(value: string, ) {
+			document.value = useMaskDocument(value)
+			useCitizensCreate.setFormField('document', value.replace(/\D/g, ''))
+		}
+
+		function onInputTelephone(value: string, ) {
+			telephone.value = usePhoneFormatter11BR(value)
+			useCitizensCreate.setFormField('telephone', value.replace(/\D/g, ''))
+		}
+
+		function onInputZipCode(value: string, ) {
+			zipCode.value = useMaskZipCode(value)
+			useCitizensCreate.setFormField('zip_code', value.replace(/\D/g, ''))
+		}
+
+		function handleInput(payload: string | File) {
+			if (payload instanceof File) {
+				file.value = payload;
+			} else {
+				console.log("Base64 recebido:", payload.slice(0, 30) + "...");
+			}
+		}
+
+		function handleChange(selectedFile: File) {
+			console.log("Arquivo trocado:", selectedFile);
+		}
+
+		function handleError(message: string) {
+			errorMessage.value = message;
+		}
+
 		return {
 			optionsBoolean,
 			optionsUserStatus,
@@ -78,11 +126,23 @@ export default defineComponent({
 			useCitizensCreate,
 			birthDate,
 			form,
+			document,
+			telephone,
+			zipCode,
+			onInputDocument,
+			onInputTelephone,
+			onInputZipCode,
 			openConfirm,
 			onSuccess,
 			confirmCreate,
-			continueFeedback
+			continueFeedback,
+			file, 
+			errorMessage, 
+			handleInput, 
+			handleChange, 
+			handleError
 		}
+
 	},
 	watch: {
 		birthDate: {
@@ -124,54 +184,72 @@ export default defineComponent({
 			</div>
 			<div class="citizens__input-data__content">
 				<div class="citizens__input-data__content--group">
-					<MoleculesInputCommon
-						label="Nome"
-						max-width="50%"
-						:value="form.name.value as string"
-						:message-error="form.name.errorMessages.join(', ')"
-						@on-input="useCitizensCreate.setFormField('name', $event)"
+					<MoleculesUploadField
+						label="Selecione um arquivo para enviar"
+						description= "Arquivo até 2mb"
+						:accept="'image/*'"
+						:maxSize="2 * 1024 * 1024"
+						maxWidth="40%" 
+						:maxHeight="180"
+						:preview="true"
+						@input="handleInput"
+						@change="handleChange"
+						@error="handleError"
 					/>
-					<MoleculesInputCommon
-						label="CPF"
-						max-width="25%"
-						:value="form.document.value as string"
-						:message-error="form.document.errorMessages.join(', ')"
-						@on-input="useCitizensCreate.setFormField('document', $event)"
-					/>
-					<MoleculesSelectsSimple
-						max-width="25%"
-						label="Gênero"
-						:options="optionsGender"
-						:message-error="form.gender.errorMessages.join(', ')"
-						@item-selected="useCitizensCreate.setFormField('gender', $event)"
-					/>
-				</div>
-				<div class="citizens__input-data__content--group">
-					<MoleculesInputDate
-						v-model="birthDate"
-						label="Data de nascimento"
-						name="birth_date"
-						placeholder="YYYY-MM-DD"
-						min="1900-01-01"
-						max="2025-12-31"
-						width="25%"
-						:required="true"
-						:error-messages="form.birth_date.errorMessages"
-					/>
-					<MoleculesInputCommon
-						label="Telefone"
-						max-width="25%"
-						:value="form.telephone.value as string"
-						:message-error="form.telephone.errorMessages.join(', ')"
-						@on-input="useCitizensCreate.setFormField('telephone', $event)"
-					/>
-					<MoleculesInputCommon
-						label="E-mail"
-						max-width="50%"
-						:value="form.email.value as string"
-						:message-error="form.email.errorMessages.join(', ')"
-						@on-input="useCitizensCreate.setFormField('email', $event)"
-					/>
+					<div class="citizens__input-data__content">
+						<div class="citizens__input-data__content--group">
+							<MoleculesInputCommon
+								label="Nome"
+								max-width="50%"
+								:value="form.name.value as string"
+								:message-error="form.name.errorMessages.join(', ')"
+								@on-input="useCitizensCreate.setFormField('name', $event)"
+							/>
+							<MoleculesInputCommon
+								label="CPF"
+								max-width="25%"
+								:maxlength="14"
+								:value="document as string"
+								:message-error="form.document.errorMessages.join(', ')"
+								@on-input="onInputDocument($event)"
+							/>
+							<MoleculesSelectsSimple
+								max-width="25%"
+								label="Gênero"
+								:options="optionsGender"
+								:message-error="form.gender.errorMessages.join(', ')"
+								@item-selected="useCitizensCreate.setFormField('gender', $event)"
+							/>
+						</div>
+						<div class="citizens__input-data__content--group">
+							<MoleculesInputDate
+								v-model="birthDate"
+								label="Data de nascimento"
+								name="birth_date"
+								placeholder="YYYY-MM-DD"
+								min="1900-01-01"
+								max="2025-12-31"
+								width="25%"
+								:required="true"
+								:error-messages="form.birth_date.errorMessages"
+							/>
+							<MoleculesInputCommon
+								label="Telefone"
+								max-width="25%"
+								:maxlength="19"
+								:value="telephone as string"
+								:message-error="form.telephone.errorMessages.join(', ')"
+								@on-input="onInputTelephone($event)"
+							/>
+							<MoleculesInputCommon
+								label="E-mail"
+								max-width="50%"
+								:value="form.email.value as string"
+								:message-error="form.email.errorMessages.join(', ')"
+								@on-input="useCitizensCreate.setFormField('email', $event)"
+							/>
+						</div>
+					</div>
 				</div>
 				<div class="citizens__input-data__content--group">
 					<MoleculesInputCommon
@@ -219,19 +297,27 @@ export default defineComponent({
 					/>
 					<MoleculesInputCommon
 						label="CEP"
+						:maxlength="9"
 						max-width="25%"
-						:value="form.zip_code.value as string"
+						:value="zipCode as string"
 						:message-error="form.zip_code.errorMessages.join(', ')"
-						@on-input="useCitizensCreate.setFormField('zip_code', $event)"
+						@on-input="onInputZipCode($event)"
 					/>
 				</div>
 				<div class="citizens__input-data__content--group">
 					<MoleculesInputCommon
 						label="Bairro"
-						max-width="50%"
+						max-width="25%"
 						:value="form.district.value as string"
 						:message-error="form.district.errorMessages.join(', ')"
 						@on-input="useCitizensCreate.setFormField('district', $event)"
+					/>
+					<MoleculesInputCommon
+						label="Cidade"
+						max-width="25%"
+						:value="form.city.value as string"
+						:message-error="form.city.errorMessages.join(', ')"
+						@on-input="useCitizensCreate.setFormField('city', $event)"
 					/>
 					<MoleculesSelectsSimple
 						label="Estado"
@@ -266,11 +352,7 @@ export default defineComponent({
 						label="Pode denunciar maus tratos"
 						max-width="25%"
 						:options="optionsBoolean"
-						:value="
-							form.can_report_abuse.value
-								? form.can_report_abuse.value
-								: 0
-						"
+						:value="form.can_report_abuse.value"
 						:message-error="
 							form.can_report_abuse.errorMessages.join(', ')
 						"
@@ -286,11 +368,7 @@ export default defineComponent({
 						label="Pode solicitar castramóvel"
 						max-width="25%"
 						:options="optionsBoolean"
-						:value="
-							form.can_mobile_castration.value
-								? form.can_mobile_castration.value
-								: 0
-						"
+						:value="form.can_mobile_castration.value"
 						:message-error="
 							form.can_mobile_castration.errorMessages.join(', ')
 						"

@@ -1,6 +1,6 @@
 import type { IPagination } from "~/types/global";
 
-export const useListStore = defineStore("list", {
+export const useListStore = defineStore("citizens-list", {
 	state: () => {
 		const citizens = ref([] as ICitizens[]);
 		const isLoading = ref(false);

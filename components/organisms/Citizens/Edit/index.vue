@@ -31,7 +31,7 @@ export default defineComponent({
 	
 		const optionsUFEnum = computed(() =>
 			UFEnum.map((item) => {
-				if (item.id === citizen?.state) {
+				if (item.value == citizen?.state) {
 					item.state = "activated";
 					useCitizenEdit.setFormField("state", item.id);
 				}
@@ -47,7 +47,7 @@ export default defineComponent({
 
 		const optionsGender = computed(() => {
 			return gender.map((item) => {
-				if (item.id === citizen.gender) {
+				if (item.id == citizen.gender) {
 					item.state = "activated";
 					useCitizenEdit.setFormField("gender", item.id);
 				}
@@ -74,23 +74,38 @@ export default defineComponent({
 		);
 
 		useCitizenEdit.setFormField("name", citizen?.user?.name || "");
-		useCitizenEdit.setFormField("document",citizen?.document || "",);
 		useCitizenEdit.setFormField("email", citizen?.user?.email || "");
-		useCitizenEdit.setFormField("telephone",citizen?.user?.telephone || "");
 		const mainAddress = citizen?.addresses?.[0];
 
 		useCitizenEdit.setFormField("street", mainAddress?.street || "");
 		useCitizenEdit.setFormField("number", mainAddress?.number || "");
-		useCitizenEdit.setFormField("zip_code", mainAddress?.zip_code || "");
 		useCitizenEdit.setFormField("district", mainAddress?.district || "");
 		useCitizenEdit.setFormField("complement", mainAddress?.complement || "");
 		useCitizenEdit.setFormField("state", mainAddress?.state || "");
 		useCitizenEdit.setFormField("status", citizen?.status || "");
+
 		const birthDate = ref(citizen.birth_date || "");
-		
+		const document = ref(useMaskDocument(citizen?.document || "") )
+		const telephone = ref(usePhoneFormatter11BR(citizen?.user?.telephone || "") )
+		const zipCode = ref(useMaskZipCode(mainAddress?.zip_code  || ""))
 		
 		const showConfirm = ref(false);
 		const showSuccess = ref(false);
+
+		function onInputDocument(value: string, ) {
+			document.value = useMaskDocument(value)
+			useCitizenEdit.setFormField('document', value.replace(/\D/g, ''))
+		}
+
+		function onInputTelephone(value: string, ) {
+			telephone.value = usePhoneFormatter11BR(value)
+			useCitizenEdit.setFormField('telephone', value.replace(/\D/g, ''))
+		}
+
+		function onInputZipCode(value: string, ) {
+			zipCode.value = useMaskZipCode(value)
+			useCitizenEdit.setFormField('zip_code', value.replace(/\D/g, ''))
+		}
 
 		function openConfirm() {
 			showConfirm.value = true;
@@ -165,12 +180,18 @@ export default defineComponent({
 			showSuccess,
 			useCitizenEdit,
 			birthDate,
+			document,
+			zipCode,
+			telephone,
 			form,
 			footer,
 			openConfirm,
 			onSuccess,
 			confirmUpdate,
-			continueFeedback
+			continueFeedback,
+			onInputDocument,
+			onInputTelephone,
+			onInputZipCode
 		}
 	},
 	watch: {
@@ -213,6 +234,20 @@ export default defineComponent({
 			</div>
 			<div class="citizens__input-data__content">
 				<div class="citizens__input-data__content--group">
+					<MoleculesUploadField
+						label="Selecione um arquivo para enviar"
+						description= "Arquivo até 2mb"
+						:accept="'image/*'"
+						:maxSize="2 * 1024 * 1024"
+						maxWidth="40%" 
+						:maxHeight="180"
+						:preview="true"
+						@input="handleInput"
+						@change="handleChange"
+						@error="handleError"
+					/>
+					<div class="citizens__input-data__content">
+						<div class="citizens__input-data__content--group">
 					<MoleculesInputCommon
 						label="Nome"
 						max-width="50%"
@@ -223,9 +258,10 @@ export default defineComponent({
 					<MoleculesInputCommon
 						label="CPF"
 						max-width="25%"
-						:value="form.document.value as string"
+						:maxlength="14"
+						:value="document as string"
 						:message-error="form.document.errorMessages.join(', ')"
-						@on-input="useCitizenEdit.setFormField('document', $event)"
+						@on-input="onInputDocument($event)"
 					/>
 					<MoleculesSelectsSimple
 						max-width="25%"
@@ -234,34 +270,38 @@ export default defineComponent({
 						:message-error="form.gender.errorMessages.join(', ')"
 						@item-selected="useCitizenEdit.setFormField('gender', $event)"
 					/>
+						</div>
+						<div class="citizens__input-data__content--group">
+							<MoleculesInputDate
+								v-model="birthDate"
+								label="Data de nascimento"
+								name="birth_date"
+								placeholder="YYYY-MM-DD"
+								min="1900-01-01"
+								max="2025-12-31"
+								width="25%"
+								:required="true"
+								:error-messages="form.birth_date.errorMessages"
+							/>
+							<MoleculesInputCommon
+								label="Telefone"
+								max-width="25%"
+								:maxlength="19"
+								:value="telephone as string"
+								:message-error="form.telephone.errorMessages.join(', ')"
+								@on-input="onInputTelephone($event)"
+							/>
+							<MoleculesInputCommon
+								label="E-mail"
+								max-width="50%"
+								:value="form.email.value as string"
+								:message-error="form.email.errorMessages.join(', ')"
+								@on-input="useCitizenEdit.setFormField('email', $event)"
+							/>
+						</div>
+					</div>
 				</div>
-				<div class="citizens__input-data__content--group">
-					<MoleculesInputDate
-						v-model="birthDate"
-						label="Data de nascimento"
-						name="birth_date"
-						placeholder="YYYY-MM-DD"
-						min="1900-01-01"
-						max="2025-12-31"
-						width="25%"
-						:required="true"
-						:error-messages="form.birth_date.errorMessages"
-					/>
-					<MoleculesInputCommon
-						label="Telefone"
-						max-width="25%"
-						:value="form.telephone.value as string"
-						:message-error="form.telephone.errorMessages.join(', ')"
-						@on-input="useCitizenEdit.setFormField('telephone', $event)"
-					/>
-					<MoleculesInputCommon
-						label="E-mail"
-						max-width="50%"
-						:value="form.email.value as string"
-						:message-error="form.email.errorMessages.join(', ')"
-						@on-input="useCitizenEdit.setFormField('email', $event)"
-					/>
-				</div>
+				
 			</div>
 		</section>
 		<section class="citizens__input-data">
@@ -292,10 +332,11 @@ export default defineComponent({
 					/>
 					<MoleculesInputCommon
 						label="CEP"
+						:maxlength="9"
 						max-width="25%"
-						:value="form.zip_code.value as string"
+						:value="zipCode as string"
 						:message-error="form.zip_code.errorMessages.join(', ')"
-						@on-input="useCitizenEdit.setFormField('zip_code', $event)"
+						@on-input="onInputZipCode($event)"
 					/>
 				</div>
 				<div class="citizens__input-data__content--group">
