@@ -1,55 +1,28 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import { useDetailStore } from "~/stores/animals/useDetailStore";
-import { useEditStore } from "~/stores/animals/useEditStore";
 
 export default defineComponent({
-	name: "TemplatesAnimalsEdit",
+	name: "TemplatesEmployeesCreate",
 	setup() {
-		const animalDetailsStore = useDetailStore();
-		const animalEditStore = useEditStore();
-		const title = computed(() => {
-			if (animalDetailsStore.isLoading) {
-				return "Carregando...";
-			}
-
-			return animalDetailsStore.animal ? "Editar do animal" : "";
-		});
-		const subtitle = computed(() => {
-			if (animalDetailsStore.isLoading) {
-				return "Carregando...";
-			}
-
-			return animalDetailsStore.animal ? "Editar informações do animal" : "";
-		});
 		const header = computed(() => {
 			return {
-				title: title.value,
-				subtitle: subtitle.value,
+				title: "Criar colaborador",
+				subtitle: "Preencha os dados para criar um novo colaborador",
 				buttons: [],
 			};
 		});
 
-		onMounted(async () => {
-			const id = useRoute().params.id as string;
-			await animalDetailsStore.fetchAnimalById(id, {
-				"with[]": ["status", "entryData"],
-			});
-		});
-
 		return {
 			header,
-			animalDetailsStore,
-			animalEditStore,
 		};
 	},
 });
 </script>
 
 <template>
-	<div class="wrapper-template">
+	<div class="animal-create">
 		<div class="content">
-			<header class="header">
+			<div class="header">
 				<div class="header-content">
 					<AtomsTypography
 						type="title-h7"
@@ -66,7 +39,7 @@ export default defineComponent({
 						color="var(--brand-color-dark-blue-300)"
 					/>
 				</div>
-				<div class="header-actions">
+				<div v-if="header.buttons.length" class="header-actions">
 					<MoleculesButtonsCommon
 						v-for="button in header.buttons"
 						:key="button.text"
@@ -81,14 +54,14 @@ export default defineComponent({
 						@onclick="button.action"
 					/>
 				</div>
-			</header>
-			<main class="main">
-				<OrganismsAnimalsEdit />
-			</main>
+			</div>
+			<div class="main">
+				<OrganismsEmployeesCreate />
+			</div>
 		</div>
 	</div>
 </template>
 
 <style scoped lang="scss">
-@use "style.module";
+@use "styles.module";
 </style>

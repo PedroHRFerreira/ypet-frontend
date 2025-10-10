@@ -6,6 +6,8 @@ import { useUserStatusEnumStore } from "~/stores/Enums/useUserStatusEnumStore";
 import { useLinkedTypeEnumStore } from "~/stores/Enums/useLinkedTypeEnumStore";
 import { useUFEnumStore } from "~/stores/Enums/useUFEnumStore";
 import { useBooleanEnumStore } from "~/stores/Enums/useBooleanEnumStore";
+import { useMaskDocument } from "~/composables/useMaskDocument";
+import { useUnmaskDocument } from "~/composables/useUnmaskDocument";
 
 export default defineComponent({
 	name: "OrganismsVeterinariansCreate",
@@ -31,6 +33,15 @@ export default defineComponent({
 
 		const showConfirm = ref(false);
 		const showSuccess = ref(false);
+		const maskedDocument = computed(() => {
+			const documentValue = form.document.value as string;
+			return documentValue ? useMaskDocument(documentValue) : "";
+		});
+
+		const handleDocumentInput = (value: string) => {
+			const unmaskedValue = useUnmaskDocument(value);
+			useVeterinariansCreate.setFormField("document", unmaskedValue);
+		};
 		const modalFeedback = {
 			confirm: {
 				title: "Deseja confirmar a criação?",
@@ -109,6 +120,8 @@ export default defineComponent({
 			showSuccess,
 			modalFeedback,
 			footer,
+			maskedDocument,
+			handleDocumentInput,
 		};
 	},
 });
@@ -154,9 +167,9 @@ export default defineComponent({
 					<MoleculesInputCommon
 						label="CPF"
 						max-width="25%"
-						:value="form.document.value as string"
+						:value="maskedDocument"
 						:message-error="form.document.errorMessages.join(', ')"
-						@on-input="useVeterinariansCreate.setFormField('document', $event)"
+						@on-input="handleDocumentInput($event)"
 					/>
 					<MoleculesInputCommon
 						label="CRMV"

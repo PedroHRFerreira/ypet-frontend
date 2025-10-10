@@ -77,7 +77,7 @@ export default defineComponent({
 				<span class="bar"></span>
 				<span class="bar"></span>
 			</button>
-      <div class="header__container--search"></div>
+			<div class="header__container--search"></div>
 			<ul class="header__container--actions">
 				<li class="header__container--item" @click="$emit('notifications')">
 					<div class="header__container--notifications" />
@@ -92,11 +92,11 @@ export default defineComponent({
 						<AtomsTypography
 							class="text"
 							type="text-p5"
-							text="Davi Bruno"
+							text="Thiago Barbosa"
 							color="var(--brand-color-blue-900)"
 							@click="$emit('profile')"
 						/>
-						<MoleculesAvatarIcon name-user="Davi Bruno" />
+						<MoleculesAvatarIcon name-user="Thiago Barbosa" />
 					</div>
 					<div v-if="isOpenDropdown" class="header__container--item__dropdown">
 						<AtomsDropdownItem

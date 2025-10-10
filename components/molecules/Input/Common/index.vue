@@ -7,7 +7,7 @@ export default defineComponent({
 			default: "",
 		},
 		value: {
-			type: [String, Number],
+			type: [String, Number, null, Boolean, Array<any>],
 			default: "",
 		},
 		message: {

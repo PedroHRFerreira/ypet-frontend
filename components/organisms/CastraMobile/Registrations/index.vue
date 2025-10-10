@@ -146,6 +146,16 @@ export default defineComponent({
 					params: { id: item.id },
 				});
 			}
+
+			if (event === "pre_surgery_assessment") {
+				router.push({
+					path: `/castra-mobile/registrations/${item.animal_id}/pre-surgery-assessment`,
+				});
+			}
+
+			if (event === "download_term") {
+				listStore.downloadTerm(item.id);
+			}
 		};
 
 		return {
@@ -268,8 +278,8 @@ export default defineComponent({
 						:key="item.id"
 						:actions="[
 							{ value: 'details', label: 'Detalhes' },
-							{ value: 'edit', label: 'Editar' },
-							{ value: 'close_day', label: 'Fechar dia' },
+							{ value: 'pre_surgery_assessment', label: 'Triagem' },
+							{ value: 'download_term', label: 'Baixar termo' },
 						]"
 						@change-action="onSelectOptionAction($event, item)"
 					/>

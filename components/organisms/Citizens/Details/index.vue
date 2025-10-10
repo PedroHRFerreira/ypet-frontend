@@ -90,7 +90,6 @@ export default defineComponent({
 
 <template>
 	<div class="wrapper-details">
-
 		<div
 			v-for="(about, key) in abouts"
 			:key="key"

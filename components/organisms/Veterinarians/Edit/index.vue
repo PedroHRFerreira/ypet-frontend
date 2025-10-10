@@ -7,6 +7,8 @@ import { useLinkedTypeEnumStore } from "~/stores/Enums/useLinkedTypeEnumStore";
 import { useUFEnumStore } from "~/stores/Enums/useUFEnumStore";
 import { useBooleanEnumStore } from "~/stores/Enums/useBooleanEnumStore";
 import { useDetailStore } from "~/stores/veterinarians/useDetailStore";
+import { useMaskDocument } from "~/composables/useMaskDocument";
+import { useUnmaskDocument } from "~/composables/useUnmaskDocument";
 
 export default defineComponent({
 	name: "OrganismsVeterinariansEdit",
@@ -95,7 +97,7 @@ export default defineComponent({
 		useVeterinariansEdit.setFormField("name", veterinarian?.user?.name || "");
 		useVeterinariansEdit.setFormField(
 			"document",
-			veterinarian?.user?.document || "",
+			useUnmaskDocument(veterinarian?.user?.document || ""),
 		);
 		useVeterinariansEdit.setFormField("crmv", veterinarian?.crmv || "");
 		useVeterinariansEdit.setFormField("email", veterinarian?.user?.email || "");
@@ -122,6 +124,18 @@ export default defineComponent({
 
 		const showConfirm = ref(false);
 		const showSuccess = ref(false);
+
+		// Computed para exibir CPF com máscara
+		const maskedDocument = computed(() => {
+			const documentValue = form.document.value as string;
+			return documentValue ? useMaskDocument(documentValue) : "";
+		});
+
+		// Função para lidar com input do CPF
+		const handleDocumentInput = (value: string) => {
+			const unmaskedValue = useUnmaskDocument(value);
+			useVeterinariansEdit.setFormField("document", unmaskedValue);
+		};
 		const modalFeedback = {
 			confirm: {
 				title: "Deseja confirmar a atualização?",
@@ -205,6 +219,8 @@ export default defineComponent({
 			showSuccess,
 			modalFeedback,
 			footer,
+			maskedDocument,
+			handleDocumentInput,
 		};
 	},
 });
@@ -250,9 +266,9 @@ export default defineComponent({
 					<MoleculesInputCommon
 						label="CPF"
 						max-width="25%"
-						:value="form.document.value as string"
+						:value="maskedDocument"
 						:message-error="form.document.errorMessages.join(', ')"
-						@on-input="useVeterinariansEdit.setFormField('document', $event)"
+						@on-input="handleDocumentInput($event)"
 					/>
 					<MoleculesInputCommon
 						label="CRMV"

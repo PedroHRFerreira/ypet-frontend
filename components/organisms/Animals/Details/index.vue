@@ -67,14 +67,6 @@ export default defineComponent({
 							value: proxy?.$booleanToSimNao(animal?.entry_data?.dewormed),
 						},
 						{
-							label: "Local da castração:",
-							value: animal?.entry_data?.castration_site || "N/A",
-						},
-						{
-							label: "Motivo do recolhimento:",
-							value: animal?.entry_data?.collection_reason || "N/A",
-						},
-						{
 							label: "Númerio de inscrição:",
 							value: animal?.entry_data?.registration_number || "N/A",
 						},

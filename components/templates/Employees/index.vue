@@ -23,7 +23,8 @@ export default defineComponent({
 						size: "small",
 						width: "auto",
 						action: () => {
-							// TODO: Adicionar ação de redirecionamento para criação
+							const router = useRouter();
+							router.push({ name: "employees-create" });
 						},
 					},
 				],
