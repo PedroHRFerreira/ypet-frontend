@@ -2,7 +2,7 @@
 import { reactive } from "vue";
 import AtomsTypography from "~/components/atoms/Typography/index.vue";
 import MoleculesInputCommon from "~/components/molecules/Input/Common/index.vue";
-import MoleculesButtonsCommon from "~/components/molecules/Buttons/Common/index.vue";
+import MoleculesButtonsCommon from "~/components/molecules/Buttons/Common/Index.vue";
 import $style from "./styles.module.scss";
 
 const user = reactive({
