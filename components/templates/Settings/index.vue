@@ -7,7 +7,7 @@ export default defineComponent({
 	setup() {
 		const header = computed(() => ({
 			title: "Configurações",
-			subtitle: "Gerencie os dados da conta e informações da operação",
+			subtitle: "Gerencie os dados da sua conta e informações da operação",
 		}));
 
 		return {

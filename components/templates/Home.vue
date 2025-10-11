@@ -5,7 +5,7 @@ export default defineComponent({
 	setup() {
 		const header = computed(() => {
 			return {
-				title: "Pagina Inicial",
+				title: "Página Inicial",
 				subtitle: "Bem vindo ao nosso sistema de gestão",
 				buttons: [],
 			};

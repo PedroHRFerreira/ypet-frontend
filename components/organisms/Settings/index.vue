@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import AtomsTypography from "@/components/atoms/Typography/index.vue";
-import MoleculesInputCommon from "@/components/molecules/Input/Common/index.vue";
+import { reactive } from "vue";
+import AtomsTypography from "~/components/atoms/Typography/index.vue";
+import MoleculesInputCommon from "~/components/molecules/Input/Common/index.vue";
+import MoleculesButtonsCommon from "~/components/molecules/Buttons/Common/index.vue";
 import $style from "./styles.module.scss";
 
 const user = reactive({
@@ -22,32 +24,36 @@ const errors = reactive({
 	whatsapp: "",
 	contactEmail: "",
 });
+
+const months = [
+	{ name: "Janeiro", available: true, fileUrl: "#" },
+	{ name: "Fevereiro", available: false },
+	{ name: "Março", available: false },
+	{ name: "Abril", available: true, fileUrl: "#" },
+	{ name: "Maio", available: false },
+	{ name: "Junho", available: false },
+	{ name: "Julho", available: false },
+	{ name: "Agosto", available: false },
+	{ name: "Setembro", available: false },
+	{ name: "Outubro", available: false },
+	{ name: "Novembro", available: false },
+	{ name: "Dezembro", available: false },
+];
+
+function openExtract(url: string) {
+	window.open(url, "_blank");
+}
 </script>
 
 <template>
-	<section :class="$style.container">
-		<!-- Cabeçalho da tela -->
-		<div :class="$style.header">
-			<AtomsTypography
-				type="title-h7"
-				text="Configurações"
-				weight="bold"
-				color="var(--gray-900)"
-			/>
-			<AtomsTypography
-				type="text-p3"
-				text="Gerencie os dados da conta e informações da operação"
-				color="var(--gray-600)"
-			/>
-		</div>
-
+	<div :class="$style.settings">
 		<!-- Conta do Usuário -->
 		<section :class="$style.section">
 			<AtomsTypography
 				type="text-p2"
 				text="Conta do usuário"
 				weight="medium"
-				color="var(--gray-900)"
+				color="var(--brand-color-dark-blue-900)"
 			/>
 
 			<div :class="$style.formGroup">
@@ -74,7 +80,7 @@ const errors = reactive({
 				type="text-p2"
 				text="Alterar senha"
 				weight="medium"
-				color="var(--gray-900)"
+				color="var(--brand-color-dark-blue-900)"
 			/>
 
 			<div :class="$style.formGroup">
@@ -85,7 +91,6 @@ const errors = reactive({
 					:message-error="errors.currentPassword"
 					@on-input="user.currentPassword = $event"
 				/>
-
 				<MoleculesInputCommon
 					label="Nova senha"
 					type-input="password"
@@ -93,58 +98,55 @@ const errors = reactive({
 					:message-error="errors.newPassword"
 					@on-input="user.newPassword = $event"
 				/>
-			</div>
-		</section>
-
-		<!-- Contatos institucionais -->
-		<section :class="$style.section">
-			<AtomsTypography
-				type="text-p2"
-				text="Contatos institucionais"
-				weight="medium"
-				color="var(--gray-900)"
-			/>
-
-			<div :class="$style.formGroup">
 				<MoleculesInputCommon
-					label="Telefone"
-					type-input="text"
-					:value="user.phone"
-					:message-error="errors.phone"
-					@on-input="user.phone = $event"
-				/>
-
-				<MoleculesInputCommon
-					label="WhatsApp institucional"
-					type-input="text"
-					:value="user.whatsapp"
-					:message-error="errors.whatsapp"
-					@on-input="user.whatsapp = $event"
-				/>
-
-				<MoleculesInputCommon
-					label="E-mail de atendimento"
-					type-input="email"
-					:value="user.contactEmail"
-					:message-error="errors.contactEmail"
-					@on-input="user.contactEmail = $event"
+					label="Confirmar nova senha"
+					type-input="password"
 				/>
 			</div>
 		</section>
 
-		<!-- Informações da operação -->
-		<section :class="$style.section">
-			<AtomsTypography
-				type="text-p2"
-				text="Informações da operação"
-				weight="medium"
-				color="var(--gray-900)"
-			/>
+<!-- Extratos Mensais -->
+<section :class="$style.section">
+  <AtomsTypography
+    type="text-p2"
+    text="Extratos Mensais"
+    weight="medium"
+    color="var(--brand-color-dark-blue-900)"
+  />
 
-			<div :class="$style.infoGroup">
-				<p><strong>Cidade/UF:</strong> Governador Valadares/MG</p>
-				<p><strong>Fuso horário:</strong> America/Sao_Paulo</p>
-			</div>
-		</section>
-	</section>
+  <div :class="$style.extractGrid">
+    <div
+      v-for="month in months"
+      :key="month.name"
+      :class="$style.extractItem"
+    >
+      <AtomsTypography
+        type="text-p4"
+        :text="month.name"
+        color="var(--brand-color-dark-blue-900)"
+      />
+
+      <AtomsTypography
+        v-if="month.available"
+        type="text-p5"
+        text="Disponível"
+        color="var(--brand-color-success-700)"
+      />
+
+      <MoleculesButtonsCommon
+        v-if="month.available"
+        text="Visualizar PDF"
+        type="secondary"
+        width="100%"
+        name-icon-right="download"
+        :icon-right="true"
+        @onclick="openExtract(month.fileUrl)"
+      />
+    </div>
+  </div>
+</section>
+
+
+
+	</div>
 </template>
