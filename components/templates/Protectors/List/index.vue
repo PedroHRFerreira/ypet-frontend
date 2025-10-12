@@ -1,9 +1,14 @@
 <script lang="ts">
 import { defineComponent } from "vue";
+import { useListStore } from "~/stores/protectors/useListStore";
 
 export default defineComponent({
-	name: "TemplatesCaretakers",
-	setup() {
+	name: "TemplatesProtectors",
+	async setup() {
+		const protectorsList = useListStore();
+		
+		await protectorsList.fetchList();
+
 		const header = computed(() => {
 			return {
 				title: "Protetores",
@@ -18,7 +23,8 @@ export default defineComponent({
 						iconRight: true,
 						nameIconRight: "plus",
 						action: () => {
-							// TODO: Adicionar ação de redirecionamento para criação
+							const router = useRouter();
+							router.push({ name: "protectors-create" });
 						},
 					},
 				],
@@ -27,10 +33,11 @@ export default defineComponent({
 
 		const emptyState = computed(() => {
 			return {
-				isEmpty: true,
+				isEmpty: protectorsList.protectors.length === 0,
 				isIcon: true,
-				title: "",
-				description: "",
+				title: "Nenhum protetor cadastrado",
+				description:
+					"Você ainda não possui nenhum cidadão cadastrado. Clique no botão 'Novo cadastro' para adicionar um.",
 			};
 		});
 		return {
@@ -63,6 +70,7 @@ export default defineComponent({
 				</div>
 				<div class="header-actions">
 					<MoleculesButtonsCommon
+						v-show="emptyState.isEmpty"
 						v-for="button in header.buttons"
 						:key="button.text"
 						:type="button.type"
@@ -84,7 +92,7 @@ export default defineComponent({
 					/>
 				</div>
 				<div v-else class="main-content">
-					<h2>Organismos de lista</h2>
+					<OrganismsProtectors/>
 				</div>
 			</main>
 		</div>

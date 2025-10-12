@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent, onUnmounted} from "vue";
-import { useCreateStore } from "~/stores/citizens/useCreateStore";
+import { useCreateStore } from "~/stores/protectors/useCreateStore";
 import MoleculesUploadField from "~/components/molecules/ListCardItem/index.vue";
 
 
@@ -10,24 +10,22 @@ import { useBooleanEnumStore } from "~/stores/Enums/useBooleanEnumStore";
 import { useGenderEnumStore } from "~/stores/Enums/useGenderEnumStore";
 
 export default defineComponent({
-   name: "OrganismsCitizensCreate",
+   name: "OrganismsProtectorsCreate",
 	components: {
 		MoleculesUploadField,
 	},
 	async setup() {
-		const useCitizensCreate = useCreateStore();
-		const { form } = useCitizensCreate;
+		const useProtectorsCreate = useCreateStore();
+		const { form } = useProtectorsCreate;
 		const useUFEnum = useUFEnumStore();
 		const useBooleanEnum = useBooleanEnumStore();
 		const useUserStatusEnum = useUserStatusEnumStore();
 		const useGenderEnum = useGenderEnumStore();
-		useCitizensCreate.setFormField('can_mobile_castration', 0)
-		useCitizensCreate.setFormField('can_report_abuse', 0)
-
-
+		useProtectorsCreate.setFormField('can_mobile_castration', 0)
+		useProtectorsCreate.setFormField('can_report_abuse', 0)
 
 		onUnmounted(() => {
-			useCitizensCreate.resetForm();
+			useProtectorsCreate.resetForm();
 		});
 
 		const [
@@ -64,13 +62,13 @@ export default defineComponent({
 		}
 	
 		async function confirmCreate() {
-			if (useCitizensCreate.isLoading) {
+			if (useProtectorsCreate.isLoading) {
 				return;
 			}
 
-			await useCitizensCreate.create();
+			await useProtectorsCreate.create();
 
-			if (useCitizensCreate.successMessage) {
+			if (useProtectorsCreate.successMessage) {
 				onSuccess();
 			}
 
@@ -79,25 +77,25 @@ export default defineComponent({
 
 		function continueFeedback() {
 			showSuccess.value = false;
-			useCitizensCreate.resetForm();
+			useProtectorsCreate.resetForm();
 
 			const router = useRouter();
-			router.push({ name: "citizens-list" });
+			router.push({ name: "protectors-list" });
 		}
 
 		function onInputDocument(value: string, ) {
 			document.value = useMaskDocument(value)
-			useCitizensCreate.setFormField('document', value.replace(/\D/g, ''))
+			useProtectorsCreate.setFormField('document', value.replace(/\D/g, ''))
 		}
 
 		function onInputTelephone(value: string, ) {
 			telephone.value = usePhoneFormatter11BR(value)
-			useCitizensCreate.setFormField('telephone', value.replace(/\D/g, ''))
+			useProtectorsCreate.setFormField('telephone', value.replace(/\D/g, ''))
 		}
 
 		function onInputZipCode(value: string, ) {
 			zipCode.value = useMaskZipCode(value)
-			useCitizensCreate.setFormField('zip_code', value.replace(/\D/g, ''))
+			useProtectorsCreate.setFormField('zip_code', value.replace(/\D/g, ''))
 		}
 
 		function handleInput(payload: string | File) {
@@ -123,7 +121,7 @@ export default defineComponent({
 			optionsGender,
 			showConfirm,
 			showSuccess,
-			useCitizensCreate,
+			useProtectorsCreate,
 			birthDate,
 			form,
 			document,
@@ -147,7 +145,7 @@ export default defineComponent({
 	watch: {
 		birthDate: {
 			handler(newValue) {
-				this.useCitizensCreate.setFormField("birth_date", newValue);
+				this.useProtectorsCreate.setFormField("birth_date", newValue);
 			},
 			deep: true,
 		},
@@ -172,9 +170,9 @@ export default defineComponent({
 		continue-text="Continuar"
 		@continue="continueFeedback"
 	/>
-	<div class="citizens">
-		<section class="citizens__input-data">
-			<div class="citizens__about__header">
+	<div class="protectors">
+		<section class="protectors__input-data">
+			<div class="protectors__about__header">
 				<AtomsTypography
 					type="text-p2"
 					text="Sobre o cidadão"
@@ -182,8 +180,8 @@ export default defineComponent({
 					color="var(--brand-color-dark-blue-900)"
 				/>
 			</div>
-			<div class="citizens__input-data__content">
-				<div class="citizens__input-data__content--group">
+			<div class="protectors__input-data__content">
+				<div class="protectors__input-data__content--group">
 					<MoleculesUploadField
 						label="Selecione um arquivo para enviar"
 						description= "Arquivo até 2mb"
@@ -196,14 +194,14 @@ export default defineComponent({
 						@change="handleChange"
 						@error="handleError"
 					/>
-					<div class="citizens__input-data__content">
-						<div class="citizens__input-data__content--group">
+					<div class="protectors__input-data__content">
+						<div class="protectors__input-data__content--group">
 							<MoleculesInputCommon
 								label="Nome"
 								max-width="50%"
 								:value="form.name.value as string"
 								:message-error="form.name.errorMessages.join(', ')"
-								@on-input="useCitizensCreate.setFormField('name', $event)"
+								@on-input="useProtectorsCreate.setFormField('name', $event)"
 							/>
 							<MoleculesInputCommon
 								label="CPF"
@@ -218,10 +216,10 @@ export default defineComponent({
 								label="Gênero"
 								:options="optionsGender"
 								:message-error="form.gender.errorMessages.join(', ')"
-								@item-selected="useCitizensCreate.setFormField('gender', $event)"
+								@item-selected="useProtectorsCreate.setFormField('gender', $event)"
 							/>
 						</div>
-						<div class="citizens__input-data__content--group">
+						<div class="protectors__input-data__content--group">
 							<MoleculesInputDate
 								v-model="birthDate"
 								label="Data de nascimento"
@@ -246,31 +244,31 @@ export default defineComponent({
 								max-width="50%"
 								:value="form.email.value as string"
 								:message-error="form.email.errorMessages.join(', ')"
-								@on-input="useCitizensCreate.setFormField('email', $event)"
+								@on-input="useProtectorsCreate.setFormField('email', $event)"
 							/>
 						</div>
 					</div>
 				</div>
-				<div class="citizens__input-data__content--group">
+				<div class="protectors__input-data__content--group">
 					<MoleculesInputCommon
 						label="Senha"
 						max-width="50%"
 						:value="form.password.value as string"
 						:message-error="form.password.errorMessages.join(', ')"
-						@on-input="useCitizensCreate.setFormField('password', $event)"
+						@on-input="useProtectorsCreate.setFormField('password', $event)"
 					/>
 					<MoleculesInputCommon
 						label="Confirme Senha"
 						max-width="50%"
 						:value="form.password_confirmation.value as string"
 						:message-error="form.password_confirmation.errorMessages.join(', ')"
-						@on-input="useCitizensCreate.setFormField('password_confirmation', $event)"
+						@on-input="useProtectorsCreate.setFormField('password_confirmation', $event)"
 					/>
 				</div>
 			</div>
 		</section>
-		<section class="citizens__input-data">
-			<div class="citizens__input-data-header">
+		<section class="protectors__input-data">
+			<div class="protectors__input-data-header">
 				<AtomsTypography
 					type="text-p2"
 					text="Endereço"
@@ -278,14 +276,14 @@ export default defineComponent({
 					color="var(--brand-color-dark-blue-900)"
 				/>
 			</div>
-			<div class="citizens__input-data__content">
-				<div class="citizens__input-data__content--group">
+			<div class="protectors__input-data__content">
+				<div class="protectors__input-data__content--group">
 					<MoleculesInputCommon
 						label="Rua"
 						max-width="50%"
 						:value="form.street.value as string"
 						:message-error="form.street.errorMessages.join(', ')"
-						@on-input="useCitizensCreate.setFormField('street', $event)"
+						@on-input="useProtectorsCreate.setFormField('street', $event)"
 					/>
 					<MoleculesInputCommon
 						label="Número"
@@ -293,7 +291,7 @@ export default defineComponent({
 						max-width="25%"
 						:value="form.number.value as string"
 						:message-error="form.number.errorMessages.join(', ')"
-						@on-input="useCitizensCreate.setFormField('number', $event)"
+						@on-input="useProtectorsCreate.setFormField('number', $event)"
 					/>
 					<MoleculesInputCommon
 						label="CEP"
@@ -304,40 +302,40 @@ export default defineComponent({
 						@on-input="onInputZipCode($event)"
 					/>
 				</div>
-				<div class="citizens__input-data__content--group">
+				<div class="protectors__input-data__content--group">
 					<MoleculesInputCommon
 						label="Bairro"
 						max-width="25%"
 						:value="form.district.value as string"
 						:message-error="form.district.errorMessages.join(', ')"
-						@on-input="useCitizensCreate.setFormField('district', $event)"
+						@on-input="useProtectorsCreate.setFormField('district', $event)"
 					/>
 					<MoleculesInputCommon
 						label="Cidade"
 						max-width="25%"
 						:value="form.city.value as string"
 						:message-error="form.city.errorMessages.join(', ')"
-						@on-input="useCitizensCreate.setFormField('city', $event)"
+						@on-input="useProtectorsCreate.setFormField('city', $event)"
 					/>
 					<MoleculesSelectsSimple
 						label="Estado"
 						max-width="25%"
 						:options="optionsUFEnum"
 						:message-error="form.state.errorMessages.join(', ')"
-						@item-selected="useCitizensCreate.setFormField('state', $event)"
+						@item-selected="useProtectorsCreate.setFormField('state', $event)"
 					/>
 					<MoleculesInputCommon
 						label="Complemento"
 						max-width="25%"
 						:value="form.complement.value as string"
 						:message-error="form.complement.errorMessages.join(', ')"
-						@on-input="useCitizensCreate.setFormField('complement', $event)"
+						@on-input="useProtectorsCreate.setFormField('complement', $event)"
 					/>
 				</div>
 			</div>
 		</section>
-		<section class="citizens__input-data">
-			<div class="citizens__input-data-header">
+		<section class="protectors__input-data">
+			<div class="protectors__input-data-header">
 				<AtomsTypography
 					type="text-p2"
 					text="Permissões"
@@ -345,8 +343,8 @@ export default defineComponent({
 					color="var(--brand-color-dark-blue-900)"
 				/>
 			</div>
-			<div class="citizens__input-data__content">
-				<div class="citizens__input-data__content--group">
+			<div class="protectors__input-data__content">
+				<div class="protectors__input-data__content--group">
 					<MoleculesInputOptionGroup
 						name="Pode denunciar maus tratos"
 						label="Pode denunciar maus tratos"
@@ -357,7 +355,7 @@ export default defineComponent({
 							form.can_report_abuse.errorMessages.join(', ')
 						"
 						@change-option="
-							useCitizensCreate.setFormField(
+							useProtectorsCreate.setFormField(
 								'can_report_abuse',
 								$event.id,
 							)
@@ -373,7 +371,7 @@ export default defineComponent({
 							form.can_mobile_castration.errorMessages.join(', ')
 						"
 						@change-option="
-							useCitizensCreate.setFormField(
+							useProtectorsCreate.setFormField(
 								'can_mobile_castration',
 								$event.id,
 							)
@@ -384,11 +382,11 @@ export default defineComponent({
 						max-width="50%"
 						:options="optionsUserStatus"
 						:message-error="form.status.errorMessages.join(', ')"
-						@item-selected="useCitizensCreate.setFormField('status', $event)"
+						@item-selected="useProtectorsCreate.setFormField('status', $event)"
 						
 					/>
 				</div>
-				<div class="citizens__input-data__content--group">
+				<div class="protectors__input-data__content--group">
 					<MoleculesInputCommon
 						label="Observações"
 						message="Descreva com detalhes suas observações finais"
@@ -396,7 +394,7 @@ export default defineComponent({
 					/>
 				</div>
 			</div>
-			<div class="citizens__input-data__footer">
+			<div class="protectors__input-data__footer">
 					<MoleculesButtonsCommon
 						type="primary"
 						text="Cadastrar"

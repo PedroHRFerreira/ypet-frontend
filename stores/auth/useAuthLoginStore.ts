@@ -15,6 +15,10 @@ export const useAuthLoginStore = defineStore("authLogin", {
 				value: false,
 				errorMessage: [] as string | string[],
 			},
+			token: {
+				value: "",
+				errorMessage: [] as string | string[],
+			},
 		});
 
 		const isLoading = ref(false);
