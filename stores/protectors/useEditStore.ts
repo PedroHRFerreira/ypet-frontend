@@ -1,6 +1,6 @@
 import { useForm } from "~/composables/useForm";
 
-export const useEditStore = defineStore("citizens-edit", {
+export const useEditStore = defineStore("protectors-edit", {
 	state: () => {
 		const isLoading = ref(false);
 		const errorMessage = ref("");
@@ -33,7 +33,7 @@ export const useEditStore = defineStore("citizens-edit", {
 		};
 	},
 	actions: {
-		async update(citizenId: number | string): Promise<void> {
+		async update(protectorId: number | string): Promise<void> {
 			if (this.isLoading) {
 				return;
 			}
@@ -43,13 +43,13 @@ export const useEditStore = defineStore("citizens-edit", {
 			this.successMessage = "";
 			const formData = this.getFormData();
 
-			await useFetch(`/api/citizens/${citizenId}`, {
+			await useFetch(`/api/protectors/${protectorId}`, {
 				method: "PUT",
 				body: formData,
 				onResponse: ({ response }) => {
 					const result = response._data as IResponse;
 					this.successMessage =
-						result.message || "Cidadão atualizado com sucesso.";
+						result.message || "Protetor atualizado com sucesso.";
 					this.isLoading = false;
 				},
 				onResponseError: ({ response }) => {
@@ -97,7 +97,7 @@ export const useEditStore = defineStore("citizens-edit", {
 			
 			for (const key in this.form) {
 				if (!Object.prototype.hasOwnProperty.call(this.form, key)) continue;
-				if (addressFields.includes(key)) continue; // já foi adicionado no endereço
+				if (addressFields.includes(key)) continue; 
 			
 				const value = this.form[key]?.value;
 				if (value === null || value === undefined || value === "") continue;

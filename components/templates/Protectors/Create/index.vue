@@ -1,36 +1,13 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import { useDetailStore } from "~/stores/citizens/useDetailStore";
-import { useEditStore } from "~/stores/citizens/useEditStore";
 
 export default defineComponent({
-	name: "TemplatesCitizensEdit",
+	name: "TemplatesProtectorsCreate",
 	setup() {
-		const citizenDetailsStore = useDetailStore();
-		const citizenEditStore = useEditStore();
-		const title = computed(() => {
-			if (citizenDetailsStore.isLoading) {
-				return "Carregando...";
-			}
-
-			return citizenDetailsStore.citizens
-				? "# " + citizenDetailsStore.citizens.user?.name + " "
-				: "";
-		});
-		const subtitle = computed(() => {
-			if (citizenDetailsStore.isLoading) {
-				return "Carregando...";
-			}
-
-			const textStart = "Editar informações do cidadão: ";
-			
-
-			return textStart + (citizenDetailsStore.citizens?.name || "");
-		});
 		const header = computed(() => {
 			return {
-				title: title.value,
-				subtitle: subtitle.value,
+				title: "Cadastro de protetores",
+				subtitle: "Adicione um novo cidadão ao sistema",
 				buttons: [
 					{
 						text: "Voltar",
@@ -50,20 +27,24 @@ export default defineComponent({
 				],
 			};
 		});
-
+      
 		return {
 			header,
-			citizenDetailsStore,
-			citizenEditStore,
 		};
+	},
+	methods: {
+		back() {
+			const router = useRouter();
+			router.push({ name: "protectors" });
+		},
 	},
 });
 </script>
 
 <template>
-	<div class="wrapper-template">
+	<div class="protectors-create">
 		<div class="content">
-			<header class="header">
+			<div class="header">
 				<div class="header-content">
 					<AtomsTypography
 						type="title-h7"
@@ -95,14 +76,14 @@ export default defineComponent({
 						@onclick="button.action"
 					/>
 				</div>
-			</header>
-			<main class="main">
-				<OrganismsCitizensEdit />
-			</main>
+			</div>
+			<div class="main">
+				<OrganismsProtectorsCreate />
+			</div>
 		</div>
 	</div>
 </template>
 
 <style scoped lang="scss">
-@use "style.module";
+@use "styles.module";
 </style>

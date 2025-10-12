@@ -57,8 +57,8 @@ export default defineComponent({
 			{
 				text: "Protetores",
 				icon: "heart",
-				active: "caretakers",
-				route: "caretakers",
+				active: "protectors",
+				route: "protectors",
 			},
 			{
 				text: "Produtos e insumos",
