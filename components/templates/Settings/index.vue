@@ -1,15 +1,14 @@
 <script lang="ts">
 import { defineComponent } from "vue";
+import OrganismsSettings from "@/components/organisms/Settings/index.vue";
 
 export default defineComponent({
 	name: "TemplatesSettings",
 	setup() {
-		const header = computed(() => {
-			return {
-				title: "Configurações",
-				subtitle: "Visualize e gerencie os cadastros de colaboradores",
-			};
-		});
+		const header = computed(() => ({
+			title: "Configurações",
+			subtitle: "Gerencie os dados da sua conta e informações da operação",
+		}));
 
 		return {
 			header,
@@ -39,8 +38,9 @@ export default defineComponent({
 					/>
 				</div>
 			</header>
+
 			<main class="main">
-				<h2>Configurações</h2>
+				<OrganismsSettings />
 			</main>
 		</div>
 	</div>

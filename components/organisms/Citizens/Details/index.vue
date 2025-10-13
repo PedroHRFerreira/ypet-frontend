@@ -19,13 +19,20 @@ export default defineComponent({
 		const abouts = computed<AboutType[]>(() => {
 			const citizen = citizensDetailsStore.citizens;
 
+			const gender = {
+				"0": "Feminino",
+				"1":"Masculino",
+			}
+
+
 			return [
 				{
 					title: "Sobre o cidadão",
 					content: [
+						{ label: "", value: citizen.image, isImage: true},
 						{ label: "Nome completo: ", value: citizen.user?.name || "N/A" },
-						{ label: "CPF:", value: citizen?.document },
-						{ label: "Gênero:", value: citizen?.gender, isEnum: true },
+						{ label: "CPF:", value: citizen?.document},
+						{ label: "Gênero:", value: gender[citizen?.gender] },
 						{
 							label: "Data de nascimento:",
 							value: proxy?.$formatDateTime(citizen?.birth_date) || "N/A",
@@ -59,8 +66,7 @@ export default defineComponent({
 						},
 						{
 							label: "Status:",
-							value: citizen?.status,
-							isEnum: true,
+							value: citizen?.status
 						},
 						{
 							label: "Observações:",
@@ -114,17 +120,25 @@ export default defineComponent({
 						color="var(--brand-color-dark-blue-300)"
 					/>
 					<AtomsTypography
-						v-if="!item.isEnum"
+						v-if="!item.isEnum && !item.isImage"
 						type="text-p5"
-						:text="(item.value as string) || 'N/A'"
+						:text="(item.value as string)"
 						weight="regular"
 						color="var(--brand-color-dark-blue-900)"
 					/>
 					<AtomsBadges
-						v-else
+						v-else-if="item.isEnum"
 						type="text"
 						:text="(item.value as IEnum)?.label || 'N/A'"
 						:color="(item.value as IEnum)?.color || 'gray'"
+					/>
+					<AtomsImageCustom
+						v-else-if="item.isImage"
+						:src="item.value"
+						alt="imagem usuário"
+						width="fit-content"
+						height="150px"
+						object-fit="contain"
 					/>
 				</div>
 			</div>

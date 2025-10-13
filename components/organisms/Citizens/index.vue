@@ -14,7 +14,7 @@ export default defineComponent({
 	},
 	setup() {
 		const citizensList = useListStore();
-
+		
 		const header = computed(() => {
 			return {
 				title: "Todos os cidadãos cadastrados",
@@ -42,6 +42,10 @@ export default defineComponent({
 		const list = computed((): ICitizens[] => {
 			return citizensList.citizens;
 		});
+
+		async function paginationChange(value: number) {
+			await citizensList.fetchList({ page:value });
+		}
 
 		const columnsHeader = ref([
 			{
@@ -114,12 +118,25 @@ export default defineComponent({
 			}
 		};
 
+		const optionsStatus: IEnum[] = [
+			{ value: "active", name: "ACTIVE", label: "Ativo", color: "#00b374" },
+			{ value: "inactive", name: "INACTIVE", label: "Inativo", color: "#999999" },
+			{ value: "suspended", name: "SUSPENDED", label: "Suspenso", color: "#e6a832" },
+			{ value: "deleted", name: "DELETED", label: "Deletado", color: "#cc3333" },
+		]
+
+		const getStatus = (status: string | number) => {
+			return optionsStatus.find((s) => s.value === status)
+		}
+
 		return {
 			citizensList,
 			columnsHeader,
 			header,
 			list,
+			getStatus,
 			onSelectOptionAction,
+			paginationChange
 		};
 	},
 	methods: {
@@ -184,7 +201,7 @@ export default defineComponent({
 				<template #document>
 					<AtomsTypography
 						type="text-p5"
-						:text="item.document"
+						:text="useMaskDocument(item.document)"
 						weight="regular"
 						color="var(--brand-color-dark-blue-300)"
 					/>
@@ -192,14 +209,15 @@ export default defineComponent({
 				<template #status>
 					<AtomsBadges
 						type="text"
+						:color="getStatus(item.status)?.color"
 						:size="'small'"
-						:text="item.status || '---'"
+						:text="getStatus(item.status)?.label  || '---'"
 					/>
 				</template>
 				<template #telephone>
 					<AtomsTypography
 						type="text-p5"
-						:text="item.user.telephone"
+						:text="usePhoneFormatter11BR(item.user.telephone)"
 						weight="regular"
 						color="var(--brand-color-dark-blue-300)"
 					/>
@@ -218,6 +236,7 @@ export default defineComponent({
 				:total-items="citizensList.pagination.total"
 				:current-page="citizensList.pagination.current_page"
 				:per-page="citizensList.pagination.per_page"
+				@pageChange="paginationChange($event)"
 			/>
 		</div>
 	</section>

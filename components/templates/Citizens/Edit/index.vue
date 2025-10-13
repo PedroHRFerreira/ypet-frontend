@@ -23,6 +23,7 @@ export default defineComponent({
 			}
 
 			const textStart = "Editar informações do cidadão: ";
+			
 
 			return textStart + (citizenDetailsStore.citizens?.name || "");
 		});
@@ -30,15 +31,24 @@ export default defineComponent({
 			return {
 				title: title.value,
 				subtitle: subtitle.value,
-				buttons: [],
+				buttons: [
+					{
+						text: "Voltar",
+						type: "outline",
+						icon: "arrow-left",
+						iconLeft: true,
+						nameIconLeft: "arrow-left",
+						iconRight: false,
+						nameIconRight: "",
+						size: "small",
+						width: "auto",
+						action: () => {
+							const router = useRouter();
+							router.back();
+						},
+					},
+				],
 			};
-		});
-
-		onMounted(async () => {
-			const id = useRoute().params.id as string;
-			await citizenDetailsStore.fetchCitizenById(id, {
-				"with[]": ["user"],
-			});
 		});
 
 		return {
