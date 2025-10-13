@@ -1,8 +1,8 @@
 import { useForm } from "~/composables/useForm";
 
-export const useCreateStore = defineStore("citizens-create", {
+export const useCreateStore = defineStore("protectors-create", {
   state: () => {
-    const citizens = ref({} as ICitizens);
+    const protectors = ref({} as IProtectors);
     const isLoading = ref(false);
     const errorMessage = ref("");
     const successMessage = ref("");
@@ -29,7 +29,7 @@ export const useCreateStore = defineStore("citizens-create", {
       "can_mobile_castration"
     ]);
 
-    return { citizens, isLoading, errorMessage, successMessage, form };
+    return { protectors, isLoading, errorMessage, successMessage, form };
   },
   actions: {
     setFormField(field: string, value: any) {
@@ -41,7 +41,7 @@ export const useCreateStore = defineStore("citizens-create", {
     },
     getFormData(): FormData {
       const formData = new FormData();
-
+      
       const addressFields = [
         "zip_code",
         "street",
@@ -51,7 +51,7 @@ export const useCreateStore = defineStore("citizens-create", {
         "city",
         "state",
       ];
-
+      
       const addressObj: Record<string, any> = {};
       for (const key of addressFields) {
         const value = this.form[key]?.value;
@@ -61,24 +61,24 @@ export const useCreateStore = defineStore("citizens-create", {
       }
 
       formData.append("address", JSON.stringify([addressObj]));
-
+      
       for (const key in this.form) {
         if (!Object.prototype.hasOwnProperty.call(this.form, key)) continue;
-        if (addressFields.includes(key)) continue; // já foi adicionado no endereço
-
+        if (addressFields.includes(key)) continue;
+      
         const value = this.form[key]?.value;
         if (value === null || value === undefined || value === "") continue;
-
+      
         formData.append(
         key,
         typeof value === "object" && "id" in value ? String(value.id) : String(value)
         );
       }
-
+      
       formData.append("special_permissions", "0");
-
+      
       return formData;
-	  },
+	  },	  
     handleResponseError(response: IResponse) {
       if (response.type !== "error") return;
 
@@ -99,6 +99,7 @@ export const useCreateStore = defineStore("citizens-create", {
       this.isLoading = false;
     },
     async create(): Promise<void> {
+
       if (this.isLoading) return;
 
       this.isLoading = true;
@@ -107,7 +108,7 @@ export const useCreateStore = defineStore("citizens-create", {
 
       const formData = this.getFormData();
 
-      await useFetch("/api/citizens/store", {
+      await useFetch("/api/protectors/store", {
         method: "POST",
         body: formData,
         onResponse: ({ response }) => {
@@ -116,11 +117,11 @@ export const useCreateStore = defineStore("citizens-create", {
           if (responseData.type === "error") return this.handleResponseError(responseData);
 
           this.successMessage = responseData.message || "Criado com sucesso!";
-          this.citizens = responseData.data || ({} as ICitizens);
+          this.protectors = responseData.data || ({} as IProtectors);
           this.isLoading = false;
 
           const router = useRouter();
-          router.push({ name: "citizens-list" });
+          router.push({ name: "protectors-list" });
         },
       });
     },
@@ -133,7 +134,7 @@ export const useCreateStore = defineStore("citizens-create", {
       }
       this.errorMessage = "";
       this.successMessage = "";
-      this.citizens = {} as ICitizens;
+      this.protectors = {} as IProtectors;
     },
   },
 });

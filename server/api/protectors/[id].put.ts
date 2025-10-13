@@ -4,7 +4,7 @@ export default defineEventHandler(async (event): Promise<IResponse> => {
 	try {
 		
 		const id = event.context.params?.id;
-		const path = `/citizen/${id}`;
+		const path = `/protector/${id}`;
 
 		const formData = await readFormData(event);
 		const payload: Record<string, any> = {};

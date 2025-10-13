@@ -1,31 +1,31 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import { useDetailStore } from "~/stores/citizens/useDetailStore";
-import { useEditStore } from "~/stores/citizens/useEditStore";
+import { useDetailStore } from "~/stores/protectors/useDetailStore";
+import { useEditStore } from "~/stores/protectors/useEditStore";
 
 export default defineComponent({
-	name: "TemplatesCitizensEdit",
+	name: "TemplatesProtectorsEdit",
 	setup() {
-		const citizenDetailsStore = useDetailStore();
-		const citizenEditStore = useEditStore();
+		const protectorDetailsStore = useDetailStore();
+		const protectorEditStore = useEditStore();
 		const title = computed(() => {
-			if (citizenDetailsStore.isLoading) {
+			if (protectorDetailsStore.isLoading) {
 				return "Carregando...";
 			}
 
-			return citizenDetailsStore.citizens
-				? "# " + citizenDetailsStore.citizens.user?.name + " "
+			return protectorDetailsStore.protectors
+				? "# " + protectorDetailsStore.protectors.user?.name + " "
 				: "";
 		});
 		const subtitle = computed(() => {
-			if (citizenDetailsStore.isLoading) {
+			if (protectorDetailsStore.isLoading) {
 				return "Carregando...";
 			}
 
-			const textStart = "Editar informações do cidadão: ";
+			const textStart = "Editar informações do protetor: ";
 			
 
-			return textStart + (citizenDetailsStore.citizens?.name || "");
+			return textStart + (protectorDetailsStore.protectors?.name || "");
 		});
 		const header = computed(() => {
 			return {
@@ -53,8 +53,8 @@ export default defineComponent({
 
 		return {
 			header,
-			citizenDetailsStore,
-			citizenEditStore,
+			protectorDetailsStore,
+			protectorEditStore,
 		};
 	},
 });
@@ -97,7 +97,7 @@ export default defineComponent({
 				</div>
 			</header>
 			<main class="main">
-				<OrganismsCitizensEdit />
+				<OrganismsProtectorsEdit />
 			</main>
 		</div>
 	</div>

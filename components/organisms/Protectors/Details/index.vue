@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import { useDetailStore } from "~/stores/citizens/useDetailStore";
+import { useDetailStore } from "~/stores/protectors/useDetailStore";
 
 type AboutType = {
 	title: string;
@@ -12,12 +12,12 @@ type AboutType = {
 };
 
 export default defineComponent({
-	name: "OrganismsCitizensDetails",
+	name: "OrganismsProtectorsDetails",
 	setup() {
-		const citizensDetailsStore = useDetailStore();
+		const useProtectorDetailsStore = useDetailStore();
 		const { proxy } = getCurrentInstance()!;
 		const abouts = computed<AboutType[]>(() => {
-			const citizen = citizensDetailsStore.citizens;
+			const protector = useProtectorDetailsStore.protectors;
 
 			const gender = {
 				"0": "Feminino",
@@ -29,25 +29,25 @@ export default defineComponent({
 				{
 					title: "Sobre o cidadão",
 					content: [
-						{ label: "", value: citizen.image, isImage: true},
-						{ label: "Nome completo: ", value: citizen.user?.name || "N/A" },
-						{ label: "CPF:", value: citizen?.document},
-						{ label: "Gênero:", value: gender[citizen?.gender] },
+						{ label: "", value: protector.image, isImage: true},
+						{ label: "Nome completo: ", value: protector.user?.name || "N/A" },
+						{ label: "CPF:", value: protector?.document},
+						{ label: "Gênero:", value: gender[protector?.gender] },
 						{
 							label: "Data de nascimento:",
-							value: proxy?.$formatDateTime(citizen?.birth_date) || "N/A",
+							value: proxy?.$formatDateTime(protector?.birth_date) || "N/A",
 						},
-						{ label: "Email:", value: citizen.user?.email},
-						{ label: "Telefone:", value: citizen.user?.telephone },
-						{ label: "Endereço:", value: citizen.addresses[0].street},
+						{ label: "Email:", value: protector.user?.email},
+						{ label: "Telefone:", value: protector.user?.telephone },
+						{ label: "Endereço:", value: protector.addresses[0].street},
 						{
 							label: "Número:",
-							value:  citizen.addresses[0].number,
+							value:  protector.addresses[0].number,
 						},
-						{ label: "Complemento:", value:  citizen.addresses[0].complement || "N/A" },
-						{ label: "Bairro:", value:  citizen.addresses[0].district },
-						{ label: "Cidade:", value:  citizen.addresses[0].city},
-						{ label: "Estado:", value:  citizen.addresses[0].state},
+						{ label: "Complemento:", value:  protector.addresses[0].complement || "N/A" },
+						{ label: "Bairro:", value:  protector.addresses[0].district },
+						{ label: "Cidade:", value:  protector.addresses[0].city},
+						{ label: "Estado:", value:  protector.addresses[0].state},
 					],
 				},
 				{
@@ -55,18 +55,18 @@ export default defineComponent({
 					content: [
 						{
 							label: "Pode denunciar maus tratos:",
-							value: proxy?.$booleanToSimNao(citizen?.can_report_abuse),
+							value: proxy?.$booleanToSimNao(protector?.can_report_abuse),
 						},
 						{
 							label: "Pode acessar Castramóvel:",
-							value: proxy?.$booleanToSimNao(citizen?.can_mobile_castration),
+							value: proxy?.$booleanToSimNao(protector?.can_mobile_castration),
 						},
-						{
-							label: "Status:",
-							value: citizen?.status
+						{ 
+							label: "Status:", 
+							value: protector?.status
 						},
-						{
-							label: "Observações:",
+						{ 
+							label: "Observações:", 
 							value: ""
 						},
 					],
@@ -76,9 +76,9 @@ export default defineComponent({
 
 		onMounted(async () => {
 			const id = useRoute().params.id as string;
-			await citizensDetailsStore.fetchCitizenById(id, {
+			await useProtectorDetailsStore.fetchProtectorById(id, {
 				"with[]": ["user","addresses"],
-			});
+			})
 		});
 
 		return {
@@ -103,7 +103,7 @@ export default defineComponent({
 					color="var(--brand-color-dark-blue-700)"
 				/>
 			</div>
-
+			
 			<div class="wrapper-details__about-content">
 				<div
 					v-for="(item, index) in about.content"

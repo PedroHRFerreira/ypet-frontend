@@ -1,12 +1,13 @@
 import { useForm } from "~/composables/useForm";
 
-export const useEditStore = defineStore("citizens-edit", {
+export const useEditStore = defineStore("protectors-edit", {
 	state: () => {
 		const isLoading = ref(false);
 		const errorMessage = ref("");
 		const successMessage = ref("");
 		const form = useForm([
 			"name",
+			"image",
 			"document",
 			"email",
 			"gender",
@@ -15,6 +16,7 @@ export const useEditStore = defineStore("citizens-edit", {
 			"street",
 			"number",
 			"zip_code",
+			"city",
 			"district",
 			"complement",
 			"state",
@@ -31,7 +33,7 @@ export const useEditStore = defineStore("citizens-edit", {
 		};
 	},
 	actions: {
-		async update(citizenId: number | string): Promise<void> {
+		async update(protectorId: number | string): Promise<void> {
 			if (this.isLoading) {
 				return;
 			}
@@ -41,13 +43,13 @@ export const useEditStore = defineStore("citizens-edit", {
 			this.successMessage = "";
 			const formData = this.getFormData();
 
-			await useFetch(`/api/citizens/${citizenId}`, {
+			await useFetch(`/api/protectors/${protectorId}`, {
 				method: "PUT",
 				body: formData,
 				onResponse: ({ response }) => {
 					const result = response._data as IResponse;
 					this.successMessage =
-						result.message || "Cidadão atualizado com sucesso.";
+						result.message || "Protetor atualizado com sucesso.";
 					this.isLoading = false;
 				},
 				onResponseError: ({ response }) => {
@@ -72,7 +74,7 @@ export const useEditStore = defineStore("citizens-edit", {
 		},
 		getFormData(): FormData {
 			const formData = new FormData();
-
+			
 			const addressFields = [
 				"zip_code",
 				"street",
@@ -82,7 +84,7 @@ export const useEditStore = defineStore("citizens-edit", {
 				"city",
 				"state",
 			];
-
+			
 			const addressObj: Record<string, any> = {};
 			for (const key of addressFields) {
 				const value = this.form[key]?.value;
@@ -90,26 +92,26 @@ export const useEditStore = defineStore("citizens-edit", {
 				addressObj[key] = typeof value === "object" && "id" in value ? value.id : value;
 				}
 			}
-
+		
 			formData.append("address", JSON.stringify([addressObj]));
-
+			
 			for (const key in this.form) {
 				if (!Object.prototype.hasOwnProperty.call(this.form, key)) continue;
-				if (addressFields.includes(key)) continue; // já foi adicionado no endereço
-
+				if (addressFields.includes(key)) continue; 
+			
 				const value = this.form[key]?.value;
 				if (value === null || value === undefined || value === "") continue;
-
+			
 				formData.append(
 				key,
 				typeof value === "object" && "id" in value ? String(value.id) : String(value)
 				);
 			}
-
+			
 			formData.append("special_permissions", "0");
-
+			
 			return formData;
-		},
+		},	 
 		resetForm() {
 			for (const key in this.form) {
 				if (Object.prototype.hasOwnProperty.call(this.form, key)) {

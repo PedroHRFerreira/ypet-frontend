@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { definePageMeta, useHead } from "#imports";
-import TemplatesSettings from "@/components/templates/Settings/index.vue";
+import { definePageMeta } from "#imports";
 
 useHead({
-	title: "Configurações",
+	title: "Cadastro de protetores",
 	titleTemplate: (titleChunk) => {
 		return titleChunk ? `${titleChunk} | YPet` : "YPet";
 	},
@@ -12,12 +11,13 @@ useHead({
 definePageMeta({
 	layout: "default",
 	middleware: ["auth"],
+	name: "protectors-list",
 });
 
 defineComponent({
-	name: "PagesSettings",
+	name: "PagesProtectors",
 });
 </script>
 <template>
-	<TemplatesSettings />
+	<TemplatesProtectorsList />
 </template>

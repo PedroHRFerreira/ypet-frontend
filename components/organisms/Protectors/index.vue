@@ -1,23 +1,23 @@
 <script lang="ts">
 import { computed, defineComponent, ref } from "vue";
-import { useListStore } from "~/stores/citizens/useListStore";
+import { useListStore } from "~/stores/protectors/useListStore";
 import MoleculesListCardItem from "~/components/molecules/ListCardItem/index.vue";
 import AtomsTypography from "~/components/atoms/Typography/index.vue";
 import AtomsBadges from "~/components/atoms/Badges/Index.vue";
 
 export default defineComponent({
-	name: "OrganismsCitizens",
+	name: "OrganismsProtectors",
 	components: {
 		AtomsBadges,
 		AtomsTypography,
 		MoleculesListCardItem,
 	},
 	setup() {
-		const citizensList = useListStore();
+		const protectorsList = useListStore();
 		
 		const header = computed(() => {
 			return {
-				title: "Todos os cidadãos cadastrados",
+				title: "Todos os protetores cadastrados",
 				subtitle: "",
 				buttons: [
 					{
@@ -32,19 +32,19 @@ export default defineComponent({
 						width: "auto",
 						action: () => {
 							const router = useRouter();
-							router.push({ name: "citizens-create" });
+							router.push({ name: "protectors-create" });
 						},
 					},
 				],
 			};
 		});
 
-		const list = computed((): ICitizens[] => {
-			return citizensList.citizens;
+		const list = computed((): IProtectors[] => {
+			return protectorsList.protectors;
 		});
 
 		async function paginationChange(value: number) {
-			await citizensList.fetchList({ page:value });
+			await protectorsList.fetchList({ page:value });
 		}
 
 		const columnsHeader = ref([
@@ -104,17 +104,17 @@ export default defineComponent({
 			},
 		]);
 
-		const onSelectOptionAction = (event: string, item: ICitizens) => {
+		const onSelectOptionAction = (event: string, item: IProtectors) => {
+			
 			const router = useRouter();
 
 			if (event === "details") {
-				router.push({ name: "citizens-details", params: { id: item.id } });
-
+				router.push({ name: "protectors-details", params: { id: item.id } });
 				return;
 			}
 
 			if (event === "edit") {
-				router.push({ name: "citizens-edit", params: { id: item.id } });
+				router.push({ name: "protectors-edit", params: { id: item.id } });
 			}
 		};
 
@@ -130,7 +130,7 @@ export default defineComponent({
 		}
 
 		return {
-			citizensList,
+			protectorsList,
 			columnsHeader,
 			header,
 			list,
@@ -193,7 +193,9 @@ export default defineComponent({
 				<template #name>
 					<AtomsTypography
 						type="text-p5"
-						:text="item.user.name"
+						:text="
+							item.user.name
+						"
 						weight="regular"
 						color="var(--brand-color-dark-blue-300)"
 					/>
@@ -232,10 +234,10 @@ export default defineComponent({
 		</div>
 		<div class="wrapper-list-card__footer">
 			<MoleculesPaginationControls
-				v-if="citizensList.pagination"
-				:total-items="citizensList.pagination.total"
-				:current-page="citizensList.pagination.current_page"
-				:per-page="citizensList.pagination.per_page"
+				v-if="protectorsList.pagination"
+				:total-items="protectorsList.pagination.total"
+				:current-page="protectorsList.pagination.current_page"
+				:per-page="protectorsList.pagination.per_page"
 				@pageChange="paginationChange($event)"
 			/>
 		</div>

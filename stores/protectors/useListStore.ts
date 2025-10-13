@@ -1,14 +1,14 @@
 import type { IPagination } from "~/types/global";
 
-export const useListStore = defineStore("citizens-list", {
+export const useListStore = defineStore("protectors-list", {
 	state: () => {
-		const citizens = ref([] as ICitizens[]);
+		const protectors = ref([] as IProtectors[]);
 		const isLoading = ref(false);
 		const errorMessage = ref("");
 		const pagination = ref<IPagination>({} as IPagination);
 
 		return {
-			citizens,
+			protectors,
 			isLoading,
 			errorMessage,
 			pagination,
@@ -16,14 +16,15 @@ export const useListStore = defineStore("citizens-list", {
 	},
 	actions: {
 		async fetchList(params = {}): Promise<void> {
+
 			if (this.isLoading) {
 				return;
 			}
-
+			
 			this.isLoading = true;
 			this.errorMessage = "";
-
-			await useFetch("/api/citizens", {
+			
+			await useFetch('/api/protectors', {
 				method: "GET",
 				params: {
 					...params,
@@ -33,7 +34,7 @@ export const useListStore = defineStore("citizens-list", {
 					const result: IResponse = response._data as IResponse;
 
 					this.pagination = (result.data as IPagination) || ({} as IPagination);
-					this.citizens = (this.pagination?.data as ICitizens[]) || [];
+					this.protectors = (this.pagination?.data as IProtectors[]) || [];
 					this.isLoading = false;
 				},
 				onResponseError: ({ response }) => {

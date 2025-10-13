@@ -1,36 +1,13 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import { useDetailStore } from "~/stores/citizens/useDetailStore";
-import { useEditStore } from "~/stores/citizens/useEditStore";
 
 export default defineComponent({
-	name: "TemplatesCitizensEdit",
+	name: "TemplatesProtectorsDetails",
 	setup() {
-		const citizenDetailsStore = useDetailStore();
-		const citizenEditStore = useEditStore();
-		const title = computed(() => {
-			if (citizenDetailsStore.isLoading) {
-				return "Carregando...";
-			}
-
-			return citizenDetailsStore.citizens
-				? "# " + citizenDetailsStore.citizens.user?.name + " "
-				: "";
-		});
-		const subtitle = computed(() => {
-			if (citizenDetailsStore.isLoading) {
-				return "Carregando...";
-			}
-
-			const textStart = "Editar informações do cidadão: ";
-			
-
-			return textStart + (citizenDetailsStore.citizens?.name || "");
-		});
 		const header = computed(() => {
 			return {
-				title: title.value,
-				subtitle: subtitle.value,
+				title: "Detalhes do protetor",
+				subtitle: "Visualize e gerencie os detalhes do protetor",
 				buttons: [
 					{
 						text: "Voltar",
@@ -47,14 +24,38 @@ export default defineComponent({
 							router.back();
 						},
 					},
+					{
+						text: "Editar",
+						type: "primary",
+						icon: "edit",
+						iconLeft: true,
+						nameIconLeft: "edit",
+						iconRight: false,
+						nameIconRight: "",
+						size: "small",
+						width: "auto",
+						action: () => {
+							const router = useRouter();
+							const protectorUuid = useRoute().params.id;
+
+							router.push({ name: "protectors-edit", params: { id: protectorUuid } });
+						},
+					},
 				],
 			};
 		});
 
+		const emptyState = computed(() => {
+			return {
+				isEmpty: true,
+				isIcon: true,
+				title: "",
+				description: "",
+			};
+		});
 		return {
 			header,
-			citizenDetailsStore,
-			citizenEditStore,
+			emptyState,
 		};
 	},
 });
@@ -97,7 +98,9 @@ export default defineComponent({
 				</div>
 			</header>
 			<main class="main">
-				<OrganismsCitizensEdit />
+				<div class="main-content">
+					<OrganismsProtectorsDetails />
+				</div>
 			</main>
 		</div>
 	</div>

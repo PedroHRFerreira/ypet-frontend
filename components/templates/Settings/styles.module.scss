@@ -1,1 +1,43 @@
-@use "assets/scss/main.scss";
+.wrapper-template {
+	display: flex;
+	width: 100%;
+	padding: 48px;
+	flex-direction: column;
+	justify-content: center;
+	align-items: flex-start;
+}
+
+.header {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+}
+
+.header-content {
+	display: flex;
+	flex-direction: column;
+	gap: 0.25rem;
+}
+
+.main {
+	display: flex;
+	flex-direction: column;
+	gap: 2rem;
+}
+
+.settings__extract-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--neutral-100);
+  border-radius: 4px;
+  padding: 12px 16px;
+  width: 100%;
+}
+
+.settings__extract-status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+

@@ -2,7 +2,7 @@
 import { definePageMeta } from "#imports";
 
 useHead({
-	title: "Cadastro de protetores",
+	title: "Editar protetores",
 	titleTemplate: (titleChunk) => {
 		return titleChunk ? `${titleChunk} | YPet` : "YPet";
 	},
@@ -11,12 +11,14 @@ useHead({
 definePageMeta({
 	layout: "default",
 	middleware: ["auth"],
+	name: "protectors-edit",
 });
 
 defineComponent({
-	name: "PagesCaretakers",
+	name: "PagesProtectorsEdit",
 });
 </script>
+
 <template>
-	<TemplatesCaretakers />
+	<TemplatesProtectorsEdit />
 </template>

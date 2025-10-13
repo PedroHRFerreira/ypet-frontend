@@ -2,7 +2,7 @@ import type { IEnum } from "~/types/global";
 import { IUser } from "~/types/user";
 import { IAddresses } from "~/types/addresses";
 declare global {
-	interface ICitizens {
+	interface IProtectors {
 		image?: [File, string];
 		id?: number;
 		uuid?:string;
@@ -12,9 +12,9 @@ declare global {
 		birth_date: string;
 		telephone: string;
 		email: string;
-		street: string;
+		street:string;
 		number: string;
-		zip_code: string;
+		zip_code:string;
 		district: string;
 		city: string;
 		complement?: string;
@@ -32,4 +32,4 @@ declare global {
 	}
 }
 
-export { ICitizens };
+export { IProtectors };
