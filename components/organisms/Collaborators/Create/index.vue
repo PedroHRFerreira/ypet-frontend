@@ -1,22 +1,21 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import { useRolesEnumStore } from "~/stores/Enums/useRolesEnumStore";
+import { useCollaboratorRoleEnumStore } from "~/stores/Enums/useCollaboratorRoleEnumStore";
 import { useUserStatusEnumStore } from "~/stores/Enums/useUserStatusEnumStore";
 
-import { useCreateStore } from "~/stores/users/useCreateStore";
+import { useCreateStore } from "~/stores/collaborators/useCreateStore";
 
 export default defineComponent({
-	name: "OrganismsEmployeesCreate",
+	name: "OrganismsCollaboratorsCreate",
 	async setup() {
 		const createStore = useCreateStore();
 		const { form } = createStore;
 
 		const [optionsStatus, optionsRoles] = await Promise.all([
 			useUserStatusEnumStore().getOptions(),
-			useRolesEnumStore().getOptions(),
+      useCollaboratorRoleEnumStore().getOptions(),
 		]);
 
-		const endDate = ref("");
 		const startDate = ref("");
 
 		const showConfirm = ref(false);
@@ -56,11 +55,17 @@ export default defineComponent({
 
 		const header = {
 			title: {
-				label: "Criar novo colaborador",
+				label: "Informações do colaborador",
 				type: "text-p2",
 				weight: "medium",
 				color: "var(--brand-color-dark-blue-900)",
 			},
+      titleSecond: {
+        label: "Dados bancários",
+        type: "text-p2",
+        weight: "medium",
+        color: "var(--brand-color-dark-blue-900)",
+      },
 		};
 
 		const footer = {
@@ -101,7 +106,6 @@ export default defineComponent({
 			useDayjs,
 			optionsRoles,
 			optionsStatus,
-			endDate,
 			startDate,
 			form,
 			createStore,
@@ -113,15 +117,9 @@ export default defineComponent({
 		};
 	},
 	watch: {
-		endDate: {
-			handler(newValue) {
-				this.createStore.setFormField("end_date", newValue);
-			},
-			deep: true,
-		},
 		startDate: {
 			handler(newValue) {
-				this.createStore.setFormField("start_date", newValue);
+				this.createStore.setFormField("work_started_at", newValue);
 			},
 			deep: true,
 		},
@@ -164,69 +162,77 @@ export default defineComponent({
 					<MoleculesInputCommon
 						label="Nome"
 						max-width="35%"
-						:value="form.name.value"
-						:message-error="form.name.errorMessages.join(', ')"
-						@on-input="createStore.setFormField('name', $event)"
+						:value="form.user_name.value"
+						:message-error="form.user_name.errorMessages.join(', ')"
+						@on-input="createStore.setFormField('user_name', $event)"
 					/>
 					<MoleculesInputCommon
 						label="Email"
 						max-width="65%"
 						type-input="email"
-						:value="form.email.value"
-						:message-error="form.email.errorMessages.join(', ')"
-						@on-input="createStore.setFormField('email', $event)"
+						:value="form.user_email.value"
+						:message-error="form.user_email.errorMessages.join(', ')"
+						@on-input="createStore.setFormField('user_email', $event)"
 					/>
 				</div>
 				<div class="settings-create__about-pet__content--group">
 					<MoleculesInputPassword
 						label="Senha"
 						max-width="50%"
-						:value="form.password.value"
-						:message-error="form.password.errorMessages.join(', ')"
-						@oninput="createStore.setFormField('password', $event)"
+						:value="form.user_password.value"
+						:message-error="form.user_password.errorMessages.join(', ')"
+						@oninput="createStore.setFormField('user_password', $event)"
 					/>
 					<MoleculesInputPassword
 						max-width="50%"
 						label="Confirmar Senha"
-						:value="form.password_confirmation.value"
-						:message-error="form.password_confirmation.errorMessages.join(', ')"
-						@oninput="createStore.setFormField('password_confirmation', $event)"
+						:value="form.user_password_confirmation.value"
+						:message-error="form.user_password_confirmation.errorMessages.join(', ')"
+						@oninput="createStore.setFormField('user_password_confirmation', $event)"
 					/>
 				</div>
 				<div class="settings-create__about-pet__content--group">
 					<MoleculesSelectsSimple
-						max-width="50%"
+						max-width="35%"
 						label="Status"
 						:options="optionsStatus"
-						:message-error="form.status.errorMessages.join(', ')"
-						@item-selected="createStore.setFormField('status', $event)"
+						:message-error="form.user_status.errorMessages.join(', ')"
+						@item-selected="createStore.setFormField('user_status', $event)"
 					/>
 					<MoleculesSelectsSimple
-						max-width="50%"
+						max-width="35%"
 						label="Função"
 						:options="optionsRoles"
-						:message-error="form.roles.errorMessages.join(', ')"
-						@item-selected="createStore.setFormField('roles', $event)"
+						:message-error="form.user_role.errorMessages.join(', ')"
+						@item-selected="createStore.setFormField('user_role', $event)"
 					/>
-				</div>
-
-				<div class="settings-create__about-pet__content--footer">
-					<MoleculesButtonsCommon
-						v-for="button in footer.buttons"
-						:key="button.text"
-						:type="button.type"
-						:text="button.text"
-						:icon-left="button.iconLeft"
-						:icon-right="button.iconRight"
-						:name-icon-left="button.nameIconLeft"
-						:name-icon-right="button.nameIconRight"
-						:size="button.size"
-						:width="button.width"
-						@onclick="button.action"
-					/>
+          <MoleculesInputDate
+            v-model="startDate"
+            label="Data de início do trabalho"
+            name="work_started_at"
+            placeholder="YYYY-MM-DD"
+            width="30%"
+            :required="true"
+            :error-messages="form.work_started_at.errorMessages"
+          />
 				</div>
 			</div>
 		</section>
+    <div class="settings-create__about-pet__content--footer">
+      <MoleculesButtonsCommon
+        v-for="button in footer.buttons"
+        :key="button.text"
+        :type="button.type"
+        :text="button.text"
+        :icon-left="button.iconLeft"
+        :icon-right="button.iconRight"
+        :name-icon-left="button.nameIconLeft"
+        :name-icon-right="button.nameIconRight"
+        :size="button.size"
+        :width="button.width"
+        @onclick="button.action"
+      />
+    </div>
 	</div>
 </template>
 

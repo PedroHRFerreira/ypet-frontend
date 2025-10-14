@@ -2,7 +2,7 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
-	name: "TemplatesEmployeesCreate",
+	name: "TemplatesCollaboratorsCreate",
 	setup() {
 		const header = computed(() => {
 			return {
@@ -56,7 +56,7 @@ export default defineComponent({
 				</div>
 			</div>
 			<div class="main">
-				<OrganismsEmployeesCreate />
+				<OrganismsCollaboratorsCreate />
 			</div>
 		</div>
 	</div>

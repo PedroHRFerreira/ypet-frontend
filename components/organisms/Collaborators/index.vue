@@ -1,13 +1,13 @@
 <script lang="ts">
 import { computed, defineComponent, ref } from "vue";
-import { useListStore } from "~/stores/users/useListStore";
+import { useListStore } from "~/stores/collaborators/useListStore";
 import MoleculesListCardItem from "~/components/molecules/ListCardItem/index.vue";
 import { useDayjs } from "~/composables/useDayjs";
 import AtomsTypography from "~/components/atoms/Typography/index.vue";
 import AtomsBadges from "~/components/atoms/Badges/Index.vue";
 
 export default defineComponent({
-	name: "OrganismsEmployees",
+	name: "OrganismsCollaborators",
 	components: {
 		AtomsBadges,
 		AtomsTypography,
@@ -33,14 +33,14 @@ export default defineComponent({
 						width: "auto",
 						action: () => {
 							const router = useRouter();
-							router.push({ name: "employees-create" });
+							router.push({ name: "collaborators-create" });
 						},
 					},
 				],
 			};
 		});
 
-		const list = computed((): IUser[] => {
+		const list = computed((): ICollaborator[] => {
 			return listStore.list;
 		});
 
@@ -112,17 +112,17 @@ export default defineComponent({
 			},
 		]);
 
-		const onSelectOptionAction = (event: string, item: IUser) => {
+		const onSelectOptionAction = (event: string, item: ICollaborator) => {
 			const router = useRouter();
 
 			if (event === "details") {
-				router.push({ name: "animals-details", params: { id: item.id } });
+				router.push({ name: "collaborators-details", params: { id: item.id } });
 
 				return;
 			}
 
 			if (event === "edit") {
-				router.push({ name: "animals-edit", params: { id: item.id } });
+				router.push({ name: "collaborators-edit", params: { id: item.id } });
 			}
 		};
 
@@ -188,7 +188,7 @@ export default defineComponent({
 				<template #name>
 					<AtomsTypography
 						type="text-p5"
-						:text="item.name || 'N/A'"
+						:text="item.user.name || 'N/A'"
 						weight="regular"
 						color="var(--brand-color-dark-blue-300)"
 					/>
@@ -196,7 +196,7 @@ export default defineComponent({
 				<template #email>
 					<AtomsTypography
 						type="text-p5"
-						:text="item.email || 'N/A'"
+						:text="item.user.email || 'N/A'"
 						weight="regular"
 						color="var(--brand-color-dark-blue-300)"
 					/>
@@ -205,8 +205,8 @@ export default defineComponent({
 					<AtomsTypography
 						type="text-p5"
 						:text="
-							item.roles?.length
-								? item.roles.map((role) => role.name).join(', ')
+							item.user.roles?.length
+								? item.user.roles.map((role) => role.name).join(', ')
 								: 'N/A'
 						"
 						weight="regular"
@@ -215,11 +215,11 @@ export default defineComponent({
 				</template>
 				<template #status>
 					<AtomsBadges
-						v-if="item.status?.status"
+						v-if="item.user.status?.status"
 						type="text"
 						:size="'small'"
-						:color="item.status?.status.color"
-						:text="item.status?.status.label || 'Sem status'"
+						:color="item.user.status?.status.color"
+						:text="item.user.status?.status.label || 'Sem status'"
 					/>
 				</template>
 				<template #created_at>
@@ -233,6 +233,10 @@ export default defineComponent({
 				<template #actions>
 					<MoleculesActionDropdown
 						:key="item.id"
+            :actions="[
+              { label: 'Ver detalhes', value: 'details' },
+              { label: 'Editar', value: 'edit' }
+            ]"
 						@change-action="onSelectOptionAction($event, item)"
 					/>
 				</template>

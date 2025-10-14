@@ -45,8 +45,8 @@ export default defineComponent({
 			{
 				text: "Colaboradores",
 				icon: "user-plus",
-				active: "employees",
-				route: "employees",
+				active: "collaborators",
+				route: "collaborators",
 			},
 			{
 				text: "Cidadãos",

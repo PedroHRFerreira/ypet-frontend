@@ -1,9 +1,9 @@
 export const useDetailStore = defineStore("detail", {
 	state: () => {
-		const detail = ref({} as IUser);
+		const detail = ref({} as ICollaborator);
 		const isLoading = ref(false);
 		const errorMessage = ref("");
-		const pathUrl = "/api/users";
+		const pathUrl = "/api/collaborators";
 
 		return {
 			detail,
@@ -23,7 +23,7 @@ export const useDetailStore = defineStore("detail", {
 				params,
 				onResponse: ({ response }) => {
 					const result = response._data as IResponse;
-					this.detail = result.data || ({} as IUser);
+					this.detail = result.data || ({} as ICollaborator);
 					this.errorMessage = "";
 					this.isLoading = false;
 				},
