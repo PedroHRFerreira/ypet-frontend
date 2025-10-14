@@ -14,6 +14,15 @@ export default defineComponent({
 	async setup() {
 		const listStore = useListStore();
 		await listStore.fetchList();
+
+		// ✅ Filtro de data
+		const selectedDate = ref<string>("");
+
+		async function onFilterDate() {
+			console.log("Filtro acionado:", selectedDate.value);
+			await listStore.fetchList({ date: selectedDate.value });
+		}
+
 		const header = computed(() => {
 			return {
 				title: "Eventos clínicos",
@@ -155,6 +164,8 @@ export default defineComponent({
 			header,
 			list,
 			onSelectOptionAction,
+			selectedDate,
+			onFilterDate,
 		};
 	},
 	methods: {
@@ -174,7 +185,18 @@ export default defineComponent({
 					color="var(--brand-color-dark-blue-300)"
 				/>
 			</div>
+
 			<div class="wrapper-list-card__header-actions">
+				<!-- ✅ Filtro de Data -->
+				<input
+					type="date"
+					v-model="selectedDate"
+					@change="onFilterDate"
+					class="border border-[var(--brand-color-dark-blue-200)] rounded px-3 py-2 text-sm text-[var(--brand-color-dark-blue-300)] focus:ring-1 focus:ring-[var(--brand-color-dark-blue-300)]"
+					style="height: 36px;"
+				/>
+
+				<!-- Botão Novo Dia -->
 				<MoleculesButtonsCommon
 					v-for="button in header.buttons"
 					:key="button.text"
@@ -190,7 +212,7 @@ export default defineComponent({
 				/>
 			</div>
 		</div>
-		<div class="wrapper-list-card__search"></div>
+
 		<div class="wrapper-list-card__body">
 			<MoleculesListCardItem :data="columnsHeader" padding="16px 0">
 				<template v-for="(item, key) in columnsHeader" #[item.value] :key="key">
@@ -202,6 +224,7 @@ export default defineComponent({
 					/>
 				</template>
 			</MoleculesListCardItem>
+
 			<MoleculesListCardItem
 				v-for="(item, key) in list"
 				:key="key"
@@ -213,7 +236,7 @@ export default defineComponent({
 						type="text-p5"
 						:text="
 							item.start_date && item.end_date
-								? `${item.start_date} - ${item.start_date}`
+								? `${item.start_date} - ${item.end_date}`
 								: '---'
 						"
 						weight="regular"
@@ -276,6 +299,7 @@ export default defineComponent({
 				</template>
 			</MoleculesListCardItem>
 		</div>
+
 		<div class="wrapper-list-card__footer">
 			<MoleculesPaginationControls
 				v-if="listStore.pagination"

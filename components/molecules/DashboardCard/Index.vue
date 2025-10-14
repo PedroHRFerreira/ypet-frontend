@@ -22,7 +22,7 @@ export default defineComponent({
 		},
 		icon: {
 			type: String,
-			default: "cash",
+			default: "paste",
 		},
 	},
 });

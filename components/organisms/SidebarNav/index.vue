@@ -37,7 +37,7 @@ export default defineComponent({
 				route: "samupet",
 			},
 			{
-				text: "Vacina e vermifugação",
+				text: "Aplicações e Procedimentos",
 				icon: "vaccine",
 				active: "vaccine",
 				route: "vaccine",
