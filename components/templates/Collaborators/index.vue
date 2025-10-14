@@ -1,9 +1,9 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import { useListStore } from "~/stores/users/useListStore";
+import { useListStore } from "~/stores/collaborators/useListStore";
 
 export default defineComponent({
-	name: "TemplatesEmployees",
+	name: "TemplatesCollaborators",
 	async setup() {
 		const listSore = useListStore();
 		await listSore.fetchList();
@@ -24,7 +24,7 @@ export default defineComponent({
 						width: "auto",
 						action: () => {
 							const router = useRouter();
-							router.push({ name: "employees-create" });
+							router.push({ name: "collaborators-create" });
 						},
 					},
 				],
@@ -90,7 +90,7 @@ export default defineComponent({
 					/>
 				</div>
 				<div v-else class="main-content">
-					<OrganismsEmployees />
+					<OrganismsCollaborators />
 				</div>
 			</main>
 		</div>
