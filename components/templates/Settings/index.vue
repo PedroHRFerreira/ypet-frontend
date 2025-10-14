@@ -1,6 +1,5 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import OrganismsSettings from "@/components/organisms/Settings/index.vue";
 
 export default defineComponent({
 	name: "TemplatesSettings",

@@ -1,5 +1,5 @@
 export const usePhoneFormatter11BR = (value: string): string => {
-	if (!value) return ''
+	if (!value) return "";
 
 	const numericValue = value.replace(/\D/g, "");
 
