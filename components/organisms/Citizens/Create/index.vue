@@ -28,19 +28,6 @@ export default defineComponent({
 				useUserStatusEnum.getOptions(),
 				useUFEnum.getOptions(),
 				useBooleanEnum.getOptions(),
-				useGenderEnum.getOptions(),
-			]);
-
-		onUnmounted(() => {
-			useCitizensCreate.resetForm();
-		});
-
-		const [optionsUserStatus, optionsUFEnum, optionsBoolean] =
-			await Promise.all([
-				useUserStatusEnum.getOptions(),
-				useUFEnum.getOptions(),
-				useBooleanEnum.getOptions(),
-				useGenderEnum.getOptions(),
 			]);
 
 		const optionsGender: IOption[] = [
