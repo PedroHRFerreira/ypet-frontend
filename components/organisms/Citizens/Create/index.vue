@@ -30,6 +30,8 @@ export default defineComponent({
 				useBooleanEnum.getOptions(),
 			]);
 
+git add components/organisms/Citizens/Create/index.vue
+git rebase --continue
 		const optionsGender: IOption[] = [
 			{ id: 1, text: "Masculino", state: "default" },
 			{ id: 0, text: "Feminino", state: "default" },

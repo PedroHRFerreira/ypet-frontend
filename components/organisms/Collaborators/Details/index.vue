@@ -30,42 +30,49 @@ export default defineComponent({
 							label: "Data de inicio do trabalho:",
 							value: proxy?.$formatDateTime(detail?.work_started_at) || "N/A",
 						},
-            {
-              label: "Data de termíno do trabalho:",
-              value: proxy?.$formatDateTime(detail?.work_ended_at) || "N/A",
-            },
+						{
+							label: "Data de termíno do trabalho:",
+							value: proxy?.$formatDateTime(detail?.work_ended_at) || "N/A",
+						},
 						{
 							label: "Observações:",
 							value: detail?.observations || "N/A",
 						},
-						{ label: "Status:", value: detail?.user.status?.status, isEnum: true },
+						{
+							label: "Status:",
+							value: detail?.user.status?.status,
+							isEnum: true,
+						},
 					],
 				},
 				{
 					title: "Dados de bancários",
 					content: [
-            {
-              label: "Tipo de conta:",
-              value: detail?.bank_account?.account_type,
-              isEnum: true,
-            },
-            { label: "Banco:", value: detail?.bank_account?.bank_name || "N/A" },
-            {
-              label: "Agência:",
-              value: detail?.bank_account?.agency || "N/A",
-            },
-            {
-              label: "Número da conta:",
-              value: detail?.bank_account?.account_number || "N/A",
-            },
-            {
-              label: "Titular da conta:",
-              value: detail?.bank_account?.account_holder_name || "N/A",
-            },
-            {
-              label: "Documento do titular:",
-              value: detail?.bank_account?.account_holder_document || "N/A",
-            },
+						{
+							label: "Tipo de conta:",
+							value: detail?.bank_account?.account_type,
+							isEnum: true,
+						},
+						{
+							label: "Banco:",
+							value: detail?.bank_account?.bank_name || "N/A",
+						},
+						{
+							label: "Agência:",
+							value: detail?.bank_account?.agency || "N/A",
+						},
+						{
+							label: "Número da conta:",
+							value: detail?.bank_account?.account_number || "N/A",
+						},
+						{
+							label: "Titular da conta:",
+							value: detail?.bank_account?.account_holder_name || "N/A",
+						},
+						{
+							label: "Documento do titular:",
+							value: detail?.bank_account?.account_holder_document || "N/A",
+						},
 					],
 				},
 			] as AboutType[];

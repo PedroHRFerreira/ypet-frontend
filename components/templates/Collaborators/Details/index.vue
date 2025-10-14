@@ -38,9 +38,9 @@ export default defineComponent({
 							const router = useRouter();
 
 							router.push({
-                name: "collaborators-edit",
-                params: { id: useRoute().params.id }
-              });
+								name: "collaborators-edit",
+								params: { id: useRoute().params.id },
+							});
 						},
 					},
 				],

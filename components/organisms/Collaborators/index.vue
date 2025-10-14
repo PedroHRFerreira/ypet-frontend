@@ -233,10 +233,10 @@ export default defineComponent({
 				<template #actions>
 					<MoleculesActionDropdown
 						:key="item.id"
-            :actions="[
-              { label: 'Ver detalhes', value: 'details' },
-              { label: 'Editar', value: 'edit' }
-            ]"
+						:actions="[
+							{ label: 'Ver detalhes', value: 'details' },
+							{ label: 'Editar', value: 'edit' },
+						]"
 						@change-action="onSelectOptionAction($event, item)"
 					/>
 				</template>

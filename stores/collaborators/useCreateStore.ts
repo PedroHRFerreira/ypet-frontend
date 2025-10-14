@@ -6,16 +6,16 @@ export const useCreateStore = defineStore("create", {
 		const errorMessage = ref("");
 		const successMessage = ref("");
 		const form = useForm([
-      "cnpj",
-      "work_started_at",
-      "work_ended_at",
-      "observations",
-      "user_role",
-      "user_email",
-      "user_name",
-      "user_password",
-      "user_password_confirmation",
-      "user_status",
+			"cnpj",
+			"work_started_at",
+			"work_ended_at",
+			"observations",
+			"user_role",
+			"user_email",
+			"user_name",
+			"user_password",
+			"user_password_confirmation",
+			"user_status",
 		]);
 		const pathUrl = "/api/collaborators/store";
 

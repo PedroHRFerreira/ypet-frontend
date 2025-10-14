@@ -13,7 +13,7 @@ export default defineComponent({
 
 		const [optionsStatus, optionsRoles] = await Promise.all([
 			useUserStatusEnumStore().getOptions(),
-      useCollaboratorRoleEnumStore().getOptions(),
+			useCollaboratorRoleEnumStore().getOptions(),
 		]);
 
 		const startDate = ref("");
@@ -60,12 +60,12 @@ export default defineComponent({
 				weight: "medium",
 				color: "var(--brand-color-dark-blue-900)",
 			},
-      titleSecond: {
-        label: "Dados bancários",
-        type: "text-p2",
-        weight: "medium",
-        color: "var(--brand-color-dark-blue-900)",
-      },
+			titleSecond: {
+				label: "Dados bancários",
+				type: "text-p2",
+				weight: "medium",
+				color: "var(--brand-color-dark-blue-900)",
+			},
 		};
 
 		const footer = {
@@ -187,8 +187,12 @@ export default defineComponent({
 						max-width="50%"
 						label="Confirmar Senha"
 						:value="form.user_password_confirmation.value"
-						:message-error="form.user_password_confirmation.errorMessages.join(', ')"
-						@oninput="createStore.setFormField('user_password_confirmation', $event)"
+						:message-error="
+							form.user_password_confirmation.errorMessages.join(', ')
+						"
+						@oninput="
+							createStore.setFormField('user_password_confirmation', $event)
+						"
 					/>
 				</div>
 				<div class="settings-create__about-pet__content--group">
@@ -206,33 +210,33 @@ export default defineComponent({
 						:message-error="form.user_role.errorMessages.join(', ')"
 						@item-selected="createStore.setFormField('user_role', $event)"
 					/>
-          <MoleculesInputDate
-            v-model="startDate"
-            label="Data de início do trabalho"
-            name="work_started_at"
-            placeholder="YYYY-MM-DD"
-            width="30%"
-            :required="true"
-            :error-messages="form.work_started_at.errorMessages"
-          />
+					<MoleculesInputDate
+						v-model="startDate"
+						label="Data de início do trabalho"
+						name="work_started_at"
+						placeholder="YYYY-MM-DD"
+						width="30%"
+						:required="true"
+						:error-messages="form.work_started_at.errorMessages"
+					/>
 				</div>
 			</div>
 		</section>
-    <div class="settings-create__about-pet__content--footer">
-      <MoleculesButtonsCommon
-        v-for="button in footer.buttons"
-        :key="button.text"
-        :type="button.type"
-        :text="button.text"
-        :icon-left="button.iconLeft"
-        :icon-right="button.iconRight"
-        :name-icon-left="button.nameIconLeft"
-        :name-icon-right="button.nameIconRight"
-        :size="button.size"
-        :width="button.width"
-        @onclick="button.action"
-      />
-    </div>
+		<div class="settings-create__about-pet__content--footer">
+			<MoleculesButtonsCommon
+				v-for="button in footer.buttons"
+				:key="button.text"
+				:type="button.type"
+				:text="button.text"
+				:icon-left="button.iconLeft"
+				:icon-right="button.iconRight"
+				:name-icon-left="button.nameIconLeft"
+				:name-icon-right="button.nameIconRight"
+				:size="button.size"
+				:width="button.width"
+				@onclick="button.action"
+			/>
+		</div>
 	</div>
 </template>
 

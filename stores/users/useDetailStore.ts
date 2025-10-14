@@ -35,8 +35,7 @@ export const useDetailStore = defineStore("detail", {
 						return;
 					}
 
-					this.errorMessage =
-						response._data.message || "Erro ao buscar.";
+					this.errorMessage = response._data.message || "Erro ao buscar.";
 				},
 			});
 		},

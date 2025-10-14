@@ -28,11 +28,7 @@ export const useListStore = defineStore("list", {
 				method: "GET",
 				params: {
 					...params,
-					"with[]": [
-            "user.status",
-            "user.roles",
-            "bankAccount",
-          ],
+					"with[]": ["user.status", "user.roles", "bankAccount"],
 				},
 				onResponse: ({ response }) => {
 					const result: IResponse = response._data as IResponse;
