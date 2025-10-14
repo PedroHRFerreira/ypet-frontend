@@ -57,7 +57,13 @@ export default defineComponent({
 
 		const header = {
 			title: {
-				label: "Criar evento clínico",
+				label: "Dados do evento",
+				type: "text-p2",
+				weight: "medium",
+				color: "var(--brand-color-dark-blue-900)",
+			},
+			titleSecond: {
+				label: "Regras do evento (Especie, Sexo e Max. de vagas)",
 				type: "text-p2",
 				weight: "medium",
 				color: "var(--brand-color-dark-blue-900)",
@@ -286,7 +292,19 @@ export default defineComponent({
 						@on-input="createStore.setFormField('location', $event)"
 					/>
 				</div>
+			</div>
+		</section>
 
+		<section class="settings-create__about-pet">
+			<div class="settings-create__about-pet__header">
+				<AtomsTypography
+					:type="header.titleSecond.type"
+					:text="header.titleSecond.label"
+					:weight="header.titleSecond.weight"
+					:color="header.titleSecond.color"
+				/>
+			</div>
+			<div class="settings-create__about-pet__content">
 				<div
 					v-for="(rule, index) in clinicEventRules"
 					class="settings-create__about-pet__content--group"

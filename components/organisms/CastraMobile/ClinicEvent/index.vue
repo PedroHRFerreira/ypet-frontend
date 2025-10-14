@@ -20,7 +20,7 @@ export default defineComponent({
 				subtitle: "Gerencie os eventos clínicos aqui",
 				buttons: [
 					{
-						text: "Novo dia",
+						text: "Cadastrar",
 						type: "primary",
 						icon: "plus",
 						iconLeft: true,
@@ -271,6 +271,10 @@ export default defineComponent({
 				<template #actions>
 					<MoleculesActionDropdown
 						:key="item.id"
+						:actions="[
+							{ value: 'details', label: 'Detalhes' },
+							{ value: 'edit', label: 'Editar' },
+						]"
 						@change-action="onSelectOptionAction($event, item)"
 					/>
 				</template>

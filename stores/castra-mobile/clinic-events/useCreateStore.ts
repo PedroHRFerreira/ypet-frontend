@@ -12,9 +12,6 @@ export const useCreateStore = defineStore("clinic-events-create", {
 			"start_date",
 			"end_date",
 			"status",
-			"species",
-			"gender",
-			"max_registrations",
 			"rules",
 		]);
 
