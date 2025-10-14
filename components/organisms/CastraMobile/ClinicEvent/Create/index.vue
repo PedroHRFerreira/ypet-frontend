@@ -97,6 +97,74 @@ export default defineComponent({
 				},
 			],
 		};
+		const clinicEventRules = ref([
+			{
+				specie: {
+					label: "Cão",
+					value: "dog",
+				},
+				gender: {
+					label: "Fêmea",
+					value: "female",
+				},
+				max_registrations: {
+					label: "Max. de vagas",
+					value: 0,
+				},
+			},
+			{
+				specie: {
+					label: "Gato",
+					value: "cat",
+				},
+				gender: {
+					label: "Fêmea",
+					value: "female",
+				},
+				max_registrations: {
+					label: "Max. de vagas",
+					value: 0,
+				},
+			},
+			{
+				specie: {
+					label: "Cão",
+					value: "dog",
+				},
+				gender: {
+					label: "Macho",
+					value: "male",
+				},
+				max_registrations: {
+					label: "Max. de vagas",
+					value: 0,
+				},
+			},
+			{
+				specie: {
+					label: "Gato",
+					value: "cat",
+				},
+				gender: {
+					label: "Macho",
+					value: "male",
+				},
+				max_registrations: {
+					label: "Max. de vagas",
+					value: 0,
+				},
+			},
+		]);
+
+		const changeMaxRegistrations = (index: number, value: number) => {
+			clinicEventRules.value[index].max_registrations.value = value;
+			const rules = clinicEventRules.value.map((rule) => ({
+				specie: rule.specie.value,
+				gender: rule.gender.value,
+				max_registrations: rule.max_registrations.value,
+			}));
+			createStore.setFormField("rules", rules);
+		};
 
 		return {
 			useDayjs,
@@ -112,6 +180,8 @@ export default defineComponent({
 			modalFeedback,
 			showConfirm,
 			showSuccess,
+			clinicEventRules,
+			changeMaxRegistrations,
 		};
 	},
 	watch: {
@@ -180,36 +250,11 @@ export default defineComponent({
 				</div>
 				<div class="settings-create__about-pet__content--group">
 					<MoleculesSelectsSimple
-						max-width="35%"
-						label="Tipo de Pet"
-						:options="optionsSpecies"
-						:message-error="form.species.errorMessages.join(', ')"
-						@item-selected="createStore.setFormField('species', $event)"
-					/>
-					<MoleculesSelectsSimple
-						max-width="35%"
-						label="Sexo"
-						:options="optionsGender"
-						:message-error="form.gender.errorMessages.join(', ')"
-						@item-selected="createStore.setFormField('gender', $event)"
-					/>
-					<MoleculesSelectsSimple
 						max-width="30%"
 						label="Status"
 						:options="optionsStatus"
 						:message-error="form.status.errorMessages.join(', ')"
 						@item-selected="createStore.setFormField('status', $event)"
-					/>
-				</div>
-				<div class="settings-create__about-pet__content--group">
-					<MoleculesInputCommon
-						label="Max. de vagas"
-						type-input="number"
-						max-width="30%"
-						:maxlength="2"
-						:value="form.max_registrations.value as string"
-						:message-error="form.max_registrations.errorMessages.join(', ')"
-						@on-input="createStore.setFormField('max_registrations', $event)"
 					/>
 					<MoleculesInputDate
 						v-model="startDate"
@@ -239,6 +284,42 @@ export default defineComponent({
 						:value="form.location.value as string"
 						:message-error="form.location.errorMessages.join(', ')"
 						@on-input="createStore.setFormField('location', $event)"
+					/>
+				</div>
+
+				<div
+					v-for="(rule, index) in clinicEventRules"
+					class="settings-create__about-pet__content--group"
+				>
+					<MoleculesSelectsSimple
+						max-width="35%"
+						label="Tipo de Pet"
+						:options="[
+							{
+								id: rule.specie.value,
+								text: rule.specie.label,
+								state: 'activated',
+							},
+						]"
+					/>
+					<MoleculesSelectsSimple
+						max-width="35%"
+						label="Sexo"
+						:options="[
+							{
+								id: rule.gender.value,
+								text: rule.gender.label,
+								state: 'activated',
+							},
+						]"
+					/>
+					<MoleculesInputCommon
+						label="Max. de vagas"
+						type-input="number"
+						max-width="30%"
+						:maxlength="2"
+						:value="rule.max_registrations.value"
+						@on-input="changeMaxRegistrations(index, $event)"
 					/>
 				</div>
 

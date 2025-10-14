@@ -20,7 +20,7 @@ export const useEditStore = defineStore("citizens-edit", {
 			"state",
 			"status",
 			"can_report_abuse",
-			"can_mobile_castration"
+			"can_mobile_castration",
 		]);
 
 		return {
@@ -87,7 +87,8 @@ export const useEditStore = defineStore("citizens-edit", {
 			for (const key of addressFields) {
 				const value = this.form[key]?.value;
 				if (value !== null && value !== undefined && value !== "") {
-				addressObj[key] = typeof value === "object" && "id" in value ? value.id : value;
+					addressObj[key] =
+						typeof value === "object" && "id" in value ? value.id : value;
 				}
 			}
 
@@ -101,8 +102,10 @@ export const useEditStore = defineStore("citizens-edit", {
 				if (value === null || value === undefined || value === "") continue;
 
 				formData.append(
-				key,
-				typeof value === "object" && "id" in value ? String(value.id) : String(value)
+					key,
+					typeof value === "object" && "id" in value
+						? String(value.id)
+						: String(value),
 				);
 			}
 

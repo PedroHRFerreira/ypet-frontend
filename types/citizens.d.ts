@@ -5,7 +5,7 @@ declare global {
 	interface ICitizens {
 		image?: [File, string];
 		id?: number;
-		uuid?:string;
+		uuid?: string;
 		name: string;
 		document: string;
 		gender: string;

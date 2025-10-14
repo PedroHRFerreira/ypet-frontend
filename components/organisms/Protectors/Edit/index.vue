@@ -7,7 +7,7 @@ import { useDetailStore } from "~/stores/protectors/useDetailStore";
 import { useEditStore } from "~/stores/protectors/useEditStore";
 
 export default defineComponent({
-   name: "OrganismsProtectorsEdit",
+	name: "OrganismsProtectorsEdit",
 	async setup() {
 		const useProtectorDetailsStore = useDetailStore();
 		const useProtectorEdit = useEditStore();
@@ -16,19 +16,16 @@ export default defineComponent({
 		const { form } = useProtectorEdit;
 		const id = useRoute().params.id as string;
 
-		const [
-			userStatus,
-			UFEnum,
-		] = await Promise.all([
+		const [userStatus, UFEnum] = await Promise.all([
 			useUserStatusEnum.getOptions(),
 			useUFEnum.getOptions(),
 			useProtectorDetailsStore.fetchProtectorById(id, {
-				"with[]": ["user","addresses"],
+				"with[]": ["user", "addresses"],
 			}),
 		]);
-		
+
 		const protector = useProtectorDetailsStore.protectors;
-	
+
 		const optionsUFEnum = computed(() =>
 			UFEnum.map((item) => {
 				if (item.value == protector?.state) {
@@ -65,10 +62,10 @@ export default defineComponent({
 
 		const optionsUserStatus = computed(() =>
 			userStatus.map((item) => {
-			if (item.id === protector?.status) { 
-				item.state = "activated";
-				useProtectorEdit.setFormField("status", item.id);
-			}
+				if (item.id === protector?.status) {
+					item.state = "activated";
+					useProtectorEdit.setFormField("status", item.id);
+				}
 				return item;
 			}),
 		);
@@ -85,26 +82,28 @@ export default defineComponent({
 		useProtectorEdit.setFormField("status", protector?.status || "");
 
 		const birthDate = ref(protector.birth_date || "");
-		const document = ref(useMaskDocument(protector?.document || "") )
-		const telephone = ref(usePhoneFormatter11BR(protector?.user?.telephone || "") )
-		const zipCode = ref(useMaskZipCode(mainAddress?.zip_code  || ""))
-		
+		const document = ref(useMaskDocument(protector?.document || ""));
+		const telephone = ref(
+			usePhoneFormatter11BR(protector?.user?.telephone || ""),
+		);
+		const zipCode = ref(useMaskZipCode(mainAddress?.zip_code || ""));
+
 		const showConfirm = ref(false);
 		const showSuccess = ref(false);
 
-		function onInputDocument(value: string, ) {
-			document.value = useMaskDocument(value)
-			useProtectorEdit.setFormField('document', value.replace(/\D/g, ''))
+		function onInputDocument(value: string) {
+			document.value = useMaskDocument(value);
+			useProtectorEdit.setFormField("document", value.replace(/\D/g, ""));
 		}
 
-		function onInputTelephone(value: string, ) {
-			telephone.value = usePhoneFormatter11BR(value)
-			useProtectorEdit.setFormField('telephone', value.replace(/\D/g, ''))
+		function onInputTelephone(value: string) {
+			telephone.value = usePhoneFormatter11BR(value);
+			useProtectorEdit.setFormField("telephone", value.replace(/\D/g, ""));
 		}
 
-		function onInputZipCode(value: string, ) {
-			zipCode.value = useMaskZipCode(value)
-			useProtectorEdit.setFormField('zip_code', value.replace(/\D/g, ''))
+		function onInputZipCode(value: string) {
+			zipCode.value = useMaskZipCode(value);
+			useProtectorEdit.setFormField("zip_code", value.replace(/\D/g, ""));
 		}
 
 		function openConfirm() {
@@ -114,7 +113,7 @@ export default defineComponent({
 		function onSuccess() {
 			showSuccess.value = true;
 		}
-	
+
 		async function confirmUpdate() {
 			if (useProtectorEdit.isLoading) {
 				return;
@@ -191,8 +190,8 @@ export default defineComponent({
 			continueFeedback,
 			onInputDocument,
 			onInputTelephone,
-			onInputZipCode
-		}
+			onInputZipCode,
+		};
 	},
 	watch: {
 		birthDate: {
@@ -202,7 +201,7 @@ export default defineComponent({
 			deep: true,
 		},
 	},
-})
+});
 </script>
 <template>
 	<MoleculesConfirmFeedbackModal
@@ -236,10 +235,10 @@ export default defineComponent({
 				<div class="protectors__input-data__content--group">
 					<MoleculesUploadField
 						label="Selecione um arquivo para enviar"
-						description= "Arquivo até 2mb"
+						description="Arquivo até 2mb"
 						:accept="'image/*'"
 						:maxSize="2 * 1024 * 1024"
-						maxWidth="40%" 
+						maxWidth="40%"
 						:maxHeight="180"
 						:preview="true"
 						@input="handleInput"
@@ -248,28 +247,28 @@ export default defineComponent({
 					/>
 					<div class="protectors__input-data__content">
 						<div class="protectors__input-data__content--group">
-					<MoleculesInputCommon
-						label="Nome"
-						max-width="50%"
-						:value="form.name.value as string"
-						:message-error="form.name.errorMessages.join(', ')"
-						@on-input="useProtectorEdit.setFormField('name', $event)"
-					/>
-					<MoleculesInputCommon
-						label="CPF"
-						max-width="25%"
-						:maxlength="14"
-						:value="document as string"
-						:message-error="form.document.errorMessages.join(', ')"
-						@on-input="onInputDocument($event)"
-					/>
-					<MoleculesSelectsSimple
-						max-width="25%"
-						label="Gênero"
-						:options="optionsGender"
-						:message-error="form.gender.errorMessages.join(', ')"
-						@item-selected="useProtectorEdit.setFormField('gender', $event)"
-					/>
+							<MoleculesInputCommon
+								label="Nome"
+								max-width="50%"
+								:value="form.name.value as string"
+								:message-error="form.name.errorMessages.join(', ')"
+								@on-input="useProtectorEdit.setFormField('name', $event)"
+							/>
+							<MoleculesInputCommon
+								label="CPF"
+								max-width="25%"
+								:maxlength="14"
+								:value="document as string"
+								:message-error="form.document.errorMessages.join(', ')"
+								@on-input="onInputDocument($event)"
+							/>
+							<MoleculesSelectsSimple
+								max-width="25%"
+								label="Gênero"
+								:options="optionsGender"
+								:message-error="form.gender.errorMessages.join(', ')"
+								@item-selected="useProtectorEdit.setFormField('gender', $event)"
+							/>
 						</div>
 						<div class="protectors__input-data__content--group">
 							<MoleculesInputDate
@@ -301,7 +300,6 @@ export default defineComponent({
 						</div>
 					</div>
 				</div>
-				
 			</div>
 		</section>
 		<section class="protectors__input-data">
@@ -381,18 +379,11 @@ export default defineComponent({
 						max-width="25%"
 						:options="optionsBoolean"
 						:value="
-							form.can_report_abuse.value
-								? form.can_report_abuse.value
-								: 0
+							form.can_report_abuse.value ? form.can_report_abuse.value : 0
 						"
-						:message-error="
-							form.can_report_abuse.errorMessages.join(', ')
-						"
+						:message-error="form.can_report_abuse.errorMessages.join(', ')"
 						@change-option="
-							useProtectorEdit.setFormField(
-								'can_report_abuse',
-								$event.id,
-							)
+							useProtectorEdit.setFormField('can_report_abuse', $event.id)
 						"
 					/>
 					<MoleculesInputOptionGroup
@@ -405,14 +396,9 @@ export default defineComponent({
 								? form.can_mobile_castration.value
 								: 0
 						"
-						:message-error="
-							form.can_mobile_castration.errorMessages.join(', ')
-						"
+						:message-error="form.can_mobile_castration.errorMessages.join(', ')"
 						@change-option="
-							useProtectorEdit.setFormField(
-								'can_mobile_castration',
-								$event.id,
-							)
+							useProtectorEdit.setFormField('can_mobile_castration', $event.id)
 						"
 					/>
 					<MoleculesSelectsSimple
@@ -421,7 +407,6 @@ export default defineComponent({
 						:options="optionsUserStatus"
 						:message-error="form.status.errorMessages.join(', ')"
 						@item-selected="useProtectorEdit.setFormField('status', $event)"
-						
 					/>
 				</div>
 				<div class="protectors__input-data__content--group">

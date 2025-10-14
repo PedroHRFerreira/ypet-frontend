@@ -1,8 +1,7 @@
 <script lang="ts">
-import { defineComponent, onUnmounted} from "vue";
+import { defineComponent, onUnmounted } from "vue";
 import { useCreateStore } from "~/stores/citizens/useCreateStore";
 import MoleculesUploadField from "~/components/molecules/ListCardItem/index.vue";
-
 
 import { useUserStatusEnumStore } from "~/stores/Enums/useUserStatusEnumStore";
 import { useUFEnumStore } from "~/stores/Enums/useUFEnumStore";
@@ -10,7 +9,7 @@ import { useBooleanEnumStore } from "~/stores/Enums/useBooleanEnumStore";
 import { useGenderEnumStore } from "~/stores/Enums/useGenderEnumStore";
 
 export default defineComponent({
-   name: "OrganismsCitizensCreate",
+	name: "OrganismsCitizensCreate",
 	components: {
 		MoleculesUploadField,
 	},
@@ -21,9 +20,8 @@ export default defineComponent({
 		const useBooleanEnum = useBooleanEnumStore();
 		const useUserStatusEnum = useUserStatusEnumStore();
 		const useGenderEnum = useGenderEnumStore();
-		useCitizensCreate.setFormField('can_mobile_castration', 0)
-		useCitizensCreate.setFormField('can_report_abuse', 0)
-
+		useCitizensCreate.setFormField("can_mobile_castration", 0);
+		useCitizensCreate.setFormField("can_report_abuse", 0);
 
 		const [optionsUserStatus, optionsUFEnum, optionsBoolean] =
 			await Promise.all([
@@ -37,16 +35,13 @@ export default defineComponent({
 			useCitizensCreate.resetForm();
 		});
 
-		const [
-			optionsUserStatus,
-			optionsUFEnum,
-			optionsBoolean,
-		] = await Promise.all([
-			useUserStatusEnum.getOptions(),
-			useUFEnum.getOptions(),
-			useBooleanEnum.getOptions(),
-			useGenderEnum.getOptions(),
-		]);
+		const [optionsUserStatus, optionsUFEnum, optionsBoolean] =
+			await Promise.all([
+				useUserStatusEnum.getOptions(),
+				useUFEnum.getOptions(),
+				useBooleanEnum.getOptions(),
+				useGenderEnum.getOptions(),
+			]);
 
 		const optionsGender: IOption[] = [
 			{ id: 1, text: "Masculino", state: "default" },
@@ -54,9 +49,9 @@ export default defineComponent({
 		];
 
 		const birthDate = ref("");
-		const document = ref("")
-		const telephone = ref("")
-		const zipCode = ref("")
+		const document = ref("");
+		const telephone = ref("");
+		const zipCode = ref("");
 		const file = ref<File | null>(null);
 		const errorMessage = ref("");
 		const showConfirm = ref(false);
@@ -92,19 +87,19 @@ export default defineComponent({
 			router.push({ name: "citizens-list" });
 		}
 
-		function onInputDocument(value: string, ) {
-			document.value = useMaskDocument(value)
-			useCitizensCreate.setFormField('document', value.replace(/\D/g, ''))
+		function onInputDocument(value: string) {
+			document.value = useMaskDocument(value);
+			useCitizensCreate.setFormField("document", value.replace(/\D/g, ""));
 		}
 
-		function onInputTelephone(value: string, ) {
-			telephone.value = usePhoneFormatter11BR(value)
-			useCitizensCreate.setFormField('telephone', value.replace(/\D/g, ''))
+		function onInputTelephone(value: string) {
+			telephone.value = usePhoneFormatter11BR(value);
+			useCitizensCreate.setFormField("telephone", value.replace(/\D/g, ""));
 		}
 
-		function onInputZipCode(value: string, ) {
-			zipCode.value = useMaskZipCode(value)
-			useCitizensCreate.setFormField('zip_code', value.replace(/\D/g, ''))
+		function onInputZipCode(value: string) {
+			zipCode.value = useMaskZipCode(value);
+			useCitizensCreate.setFormField("zip_code", value.replace(/\D/g, ""));
 		}
 
 		function handleInput(payload: string | File) {
@@ -147,9 +142,8 @@ export default defineComponent({
 			errorMessage,
 			handleInput,
 			handleChange,
-			handleError
-		}
-
+			handleError,
+		};
 	},
 	watch: {
 		birthDate: {
@@ -193,7 +187,7 @@ export default defineComponent({
 				<div class="citizens__input-data__content--group">
 					<MoleculesUploadField
 						label="Selecione um arquivo para enviar"
-						description= "Arquivo até 2mb"
+						description="Arquivo até 2mb"
 						:accept="'image/*'"
 						:maxSize="2 * 1024 * 1024"
 						maxWidth="40%"
@@ -225,7 +219,9 @@ export default defineComponent({
 								label="Gênero"
 								:options="optionsGender"
 								:message-error="form.gender.errorMessages.join(', ')"
-								@item-selected="useCitizensCreate.setFormField('gender', $event)"
+								@item-selected="
+									useCitizensCreate.setFormField('gender', $event)
+								"
 							/>
 						</div>
 						<div class="citizens__input-data__content--group">
@@ -362,14 +358,9 @@ export default defineComponent({
 						max-width="25%"
 						:options="optionsBoolean"
 						:value="form.can_report_abuse.value"
-						:message-error="
-							form.can_report_abuse.errorMessages.join(', ')
-						"
+						:message-error="form.can_report_abuse.errorMessages.join(', ')"
 						@change-option="
-							useCitizensCreate.setFormField(
-								'can_report_abuse',
-								$event.id,
-							)
+							useCitizensCreate.setFormField('can_report_abuse', $event.id)
 						"
 					/>
 					<MoleculesInputOptionGroup
@@ -378,14 +369,9 @@ export default defineComponent({
 						max-width="25%"
 						:options="optionsBoolean"
 						:value="form.can_mobile_castration.value"
-						:message-error="
-							form.can_mobile_castration.errorMessages.join(', ')
-						"
+						:message-error="form.can_mobile_castration.errorMessages.join(', ')"
 						@change-option="
-							useCitizensCreate.setFormField(
-								'can_mobile_castration',
-								$event.id,
-							)
+							useCitizensCreate.setFormField('can_mobile_castration', $event.id)
 						"
 					/>
 					<MoleculesSelectsSimple
@@ -394,7 +380,6 @@ export default defineComponent({
 						:options="optionsUserStatus"
 						:message-error="form.status.errorMessages.join(', ')"
 						@item-selected="useCitizensCreate.setFormField('status', $event)"
-
 					/>
 				</div>
 				<div class="citizens__input-data__content--group">

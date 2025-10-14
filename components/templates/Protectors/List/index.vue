@@ -6,7 +6,7 @@ export default defineComponent({
 	name: "TemplatesProtectors",
 	async setup() {
 		const protectorsList = useListStore();
-		
+
 		await protectorsList.fetchList();
 
 		const header = computed(() => {
@@ -92,7 +92,7 @@ export default defineComponent({
 					/>
 				</div>
 				<div v-else class="main-content">
-					<OrganismsProtectors/>
+					<OrganismsProtectors />
 				</div>
 			</main>
 		</div>

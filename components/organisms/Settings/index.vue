@@ -105,48 +105,45 @@ function openExtract(url: string) {
 			</div>
 		</section>
 
-<!-- Extratos Mensais -->
-<section :class="$style.section">
-  <AtomsTypography
-    type="text-p2"
-    text="Extratos Mensais"
-    weight="medium"
-    color="var(--brand-color-dark-blue-900)"
-  />
+		<!-- Extratos Mensais -->
+		<section :class="$style.section">
+			<AtomsTypography
+				type="text-p2"
+				text="Extratos Mensais"
+				weight="medium"
+				color="var(--brand-color-dark-blue-900)"
+			/>
 
-  <div :class="$style.extractGrid">
-    <div
-      v-for="month in months"
-      :key="month.name"
-      :class="$style.extractItem"
-    >
-      <AtomsTypography
-        type="text-p4"
-        :text="month.name"
-        color="var(--brand-color-dark-blue-900)"
-      />
+			<div :class="$style.extractGrid">
+				<div
+					v-for="month in months"
+					:key="month.name"
+					:class="$style.extractItem"
+				>
+					<AtomsTypography
+						type="text-p4"
+						:text="month.name"
+						color="var(--brand-color-dark-blue-900)"
+					/>
 
-      <AtomsTypography
-        v-if="month.available"
-        type="text-p5"
-        text="Disponível"
-        color="var(--brand-color-success-700)"
-      />
+					<AtomsTypography
+						v-if="month.available"
+						type="text-p5"
+						text="Disponível"
+						color="var(--brand-color-success-700)"
+					/>
 
-      <MoleculesButtonsCommon
-        v-if="month.available"
-        text="Visualizar PDF"
-        type="secondary"
-        width="100%"
-        name-icon-right="download"
-        :icon-right="true"
-        @onclick="openExtract(month.fileUrl)"
-      />
-    </div>
-  </div>
-</section>
-
-
-
+					<MoleculesButtonsCommon
+						v-if="month.available"
+						text="Visualizar PDF"
+						type="secondary"
+						width="100%"
+						name-icon-right="download"
+						:icon-right="true"
+						@onclick="openExtract(month.fileUrl)"
+					/>
+				</div>
+			</div>
+		</section>
 	</div>
 </template>

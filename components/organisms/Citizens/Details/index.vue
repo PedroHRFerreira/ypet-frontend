@@ -21,33 +21,35 @@ export default defineComponent({
 
 			const gender = {
 				"0": "Feminino",
-				"1":"Masculino",
-			}
-
+				"1": "Masculino",
+			};
 
 			return [
 				{
 					title: "Sobre o cidadão",
 					content: [
-						{ label: "", value: citizen.image, isImage: true},
+						{ label: "", value: citizen.image, isImage: true },
 						{ label: "Nome completo: ", value: citizen.user?.name || "N/A" },
-						{ label: "CPF:", value: citizen?.document},
+						{ label: "CPF:", value: citizen?.document },
 						{ label: "Gênero:", value: gender[citizen?.gender] },
 						{
 							label: "Data de nascimento:",
 							value: proxy?.$formatDateTime(citizen?.birth_date) || "N/A",
 						},
-						{ label: "Email:", value: citizen.user?.email},
+						{ label: "Email:", value: citizen.user?.email },
 						{ label: "Telefone:", value: citizen.user?.telephone },
-						{ label: "Endereço:", value: citizen.addresses[0].street},
+						{ label: "Endereço:", value: citizen.addresses[0].street },
 						{
 							label: "Número:",
-							value:  citizen.addresses[0].number,
+							value: citizen.addresses[0].number,
 						},
-						{ label: "Complemento:", value:  citizen.addresses[0].complement || "N/A" },
-						{ label: "Bairro:", value:  citizen.addresses[0].district },
-						{ label: "Cidade:", value:  citizen.addresses[0].city},
-						{ label: "Estado:", value:  citizen.addresses[0].state},
+						{
+							label: "Complemento:",
+							value: citizen.addresses[0].complement || "N/A",
+						},
+						{ label: "Bairro:", value: citizen.addresses[0].district },
+						{ label: "Cidade:", value: citizen.addresses[0].city },
+						{ label: "Estado:", value: citizen.addresses[0].state },
 					],
 				},
 				{
@@ -63,11 +65,11 @@ export default defineComponent({
 						},
 						{
 							label: "Status:",
-							value: citizen?.status
+							value: citizen?.status,
 						},
 						{
 							label: "Observações:",
-							value: ""
+							value: "",
 						},
 					],
 				},
@@ -77,7 +79,7 @@ export default defineComponent({
 		onMounted(async () => {
 			const id = useRoute().params.id as string;
 			await citizensDetailsStore.fetchCitizenById(id, {
-				"with[]": ["user","addresses"],
+				"with[]": ["user", "addresses"],
 			});
 		});
 
@@ -119,7 +121,7 @@ export default defineComponent({
 					<AtomsTypography
 						v-if="!item.isEnum && !item.isImage"
 						type="text-p5"
-						:text="(item.value as string)"
+						:text="item.value as string"
 						weight="regular"
 						color="var(--brand-color-dark-blue-900)"
 					/>

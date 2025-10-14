@@ -21,33 +21,35 @@ export default defineComponent({
 
 			const gender = {
 				"0": "Feminino",
-				"1":"Masculino",
-			}
-
+				"1": "Masculino",
+			};
 
 			return [
 				{
 					title: "Sobre o cidadão",
 					content: [
-						{ label: "", value: protector.image, isImage: true},
+						{ label: "", value: protector.image, isImage: true },
 						{ label: "Nome completo: ", value: protector.user?.name || "N/A" },
-						{ label: "CPF:", value: protector?.document},
+						{ label: "CPF:", value: protector?.document },
 						{ label: "Gênero:", value: gender[protector?.gender] },
 						{
 							label: "Data de nascimento:",
 							value: proxy?.$formatDateTime(protector?.birth_date) || "N/A",
 						},
-						{ label: "Email:", value: protector.user?.email},
+						{ label: "Email:", value: protector.user?.email },
 						{ label: "Telefone:", value: protector.user?.telephone },
-						{ label: "Endereço:", value: protector.addresses[0].street},
+						{ label: "Endereço:", value: protector.addresses[0].street },
 						{
 							label: "Número:",
-							value:  protector.addresses[0].number,
+							value: protector.addresses[0].number,
 						},
-						{ label: "Complemento:", value:  protector.addresses[0].complement || "N/A" },
-						{ label: "Bairro:", value:  protector.addresses[0].district },
-						{ label: "Cidade:", value:  protector.addresses[0].city},
-						{ label: "Estado:", value:  protector.addresses[0].state},
+						{
+							label: "Complemento:",
+							value: protector.addresses[0].complement || "N/A",
+						},
+						{ label: "Bairro:", value: protector.addresses[0].district },
+						{ label: "Cidade:", value: protector.addresses[0].city },
+						{ label: "Estado:", value: protector.addresses[0].state },
 					],
 				},
 				{
@@ -61,13 +63,13 @@ export default defineComponent({
 							label: "Pode acessar Castramóvel:",
 							value: proxy?.$booleanToSimNao(protector?.can_mobile_castration),
 						},
-						{ 
-							label: "Status:", 
-							value: protector?.status
+						{
+							label: "Status:",
+							value: protector?.status,
 						},
-						{ 
-							label: "Observações:", 
-							value: ""
+						{
+							label: "Observações:",
+							value: "",
 						},
 					],
 				},
@@ -77,8 +79,8 @@ export default defineComponent({
 		onMounted(async () => {
 			const id = useRoute().params.id as string;
 			await useProtectorDetailsStore.fetchProtectorById(id, {
-				"with[]": ["user","addresses"],
-			})
+				"with[]": ["user", "addresses"],
+			});
 		});
 
 		return {
@@ -103,7 +105,7 @@ export default defineComponent({
 					color="var(--brand-color-dark-blue-700)"
 				/>
 			</div>
-			
+
 			<div class="wrapper-details__about-content">
 				<div
 					v-for="(item, index) in about.content"
@@ -119,7 +121,7 @@ export default defineComponent({
 					<AtomsTypography
 						v-if="!item.isEnum && !item.isImage"
 						type="text-p5"
-						:text="(item.value as string)"
+						:text="item.value as string"
 						weight="regular"
 						color="var(--brand-color-dark-blue-900)"
 					/>

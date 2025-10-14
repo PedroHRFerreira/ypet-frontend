@@ -33,7 +33,9 @@ export default defineComponent({
 			type: String,
 			default: "default",
 			validator: (value: string) => {
-				return ["default", "hover", "pressed", "disabled", "error"].includes(value);
+				return ["default", "hover", "pressed", "disabled", "error"].includes(
+					value,
+				);
 			},
 		},
 	},
@@ -101,7 +103,11 @@ export default defineComponent({
 </script>
 
 <template>
-	<div class="upload-wrapper" :class="[state, { error: hasError }]" :style="boxStyle">
+	<div
+		class="upload-wrapper"
+		:class="[state, { error: hasError }]"
+		:style="boxStyle"
+	>
 		<input
 			ref="inputUpload"
 			class="upload-input"
@@ -126,7 +132,6 @@ export default defineComponent({
 					color="var(--brand-color-dark-blue-300)"
 				/>
 			</div>
-			
 
 			<div v-else class="upload-preview">
 				<img :src="filePreview" alt="Preview" />
