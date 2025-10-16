@@ -2,7 +2,7 @@
 import { definePageMeta } from "#imports";
 
 useHead({
-	title: "Cadastro de fornecedores",
+	title: "Cadastre um fornecedor",
 	titleTemplate: (titleChunk) => {
 		return titleChunk ? `${titleChunk} | YPet` : "YPet";
 	},
@@ -11,14 +11,13 @@ useHead({
 definePageMeta({
 	layout: "default",
 	middleware: ["auth"],
-	name: "suppliers-list",
 });
 
 defineComponent({
-	name: "PagesSuppliers",
+	name: "PagesSuppliersCreate",
 });
 </script>
 
 <template>
-	<TemplatesSuppliersList />
+	<TemplatesSuppliersCreate />
 </template>
