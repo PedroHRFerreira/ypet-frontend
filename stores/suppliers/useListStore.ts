@@ -31,7 +31,6 @@ export const useListStore = defineStore("suppliers-list", {
 				},
 				onResponse: ({ response }) => {
 					const result: IResponse = response._data as IResponse;
-					console.log("result", result, response._data);
 
 					this.pagination = (result.data as IPagination) || ({} as IPagination);
 					this.suppliers = (this.pagination?.data as ISupplier[]) || [];

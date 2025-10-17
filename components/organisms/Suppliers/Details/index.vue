@@ -18,7 +18,6 @@ export default defineComponent({
 		const abouts = computed<AboutType[]>(() => {
 			const supplier = suppliersDetailsStore.supplier;
 
-			console.log("for no estado", supplier, supplier.legal_name);
 			return [
 				{
 					title: "Sobre o fornecedor",

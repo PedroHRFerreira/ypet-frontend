@@ -116,7 +116,6 @@ export const useCreateStore = defineStore("supplier-create", {
 
 			if (response.status === 422) {
 				for (const field in response.errors) {
-					console.log("err 422", field);
 					if (Object.prototype.hasOwnProperty.call(response.errors, field)) {
 						this.setFormError(field, response.errors[field]);
 					}
@@ -133,7 +132,6 @@ export const useCreateStore = defineStore("supplier-create", {
 			this.successMessage = "";
 
 			const payload = this.getPayload();
-			console.log("payload", payload, this.form);
 			await $fetch("/api/suppliers/store", {
 				method: "POST",
 				body: payload,

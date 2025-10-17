@@ -105,7 +105,6 @@ export default defineComponent({
 		]);
 
 		const onSelectOptionAction = (event: string, item: ISupplier) => {
-			console.log("click to action", event, item);
 			const router = useRouter();
 
 			if (event === "details") {

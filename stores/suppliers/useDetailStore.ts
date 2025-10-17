@@ -22,7 +22,6 @@ export const useDetailStore = defineStore("suppliers-detail", {
 				onResponse: ({ response }) => {
 					const result = response._data as IResponse;
 					this.supplier = result.data || ({} as ISupplier);
-					console.log("detalhes", this.supplier);
 					this.errorMessage = "";
 					this.isLoading = false;
 				},
