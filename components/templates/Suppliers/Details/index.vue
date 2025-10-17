@@ -2,23 +2,46 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
-	name: "TemplatesSuppliers",
+	name: "TemplatesSuppliersDetails",
 	setup() {
 		const header = computed(() => {
 			return {
-				title: "Cadastro de fornecedores",
-				subtitle: "Visualize e gerencie os cadastros de fornecedores",
+				title: "Detalhes do fornecedor",
+				subtitle: "Visualize e gerencie os detalhes do fornecedor",
 				buttons: [
 					{
-						text: "Novo cadastro",
-						type: "primary",
-						icon: "plus",
-						iconLeft: false,
-						nameIconLeft: "",
-						iconRight: true,
-						nameIconRight: "plus",
+						text: "Voltar",
+						type: "outline",
+						icon: "arrow-left",
+						iconLeft: true,
+						nameIconLeft: "arrow-left",
+						iconRight: false,
+						nameIconRight: "",
+						size: "small",
+						width: "auto",
 						action: () => {
-							// TODO: Adicionar ação de redirecionamento para criação
+							const router = useRouter();
+							router.back();
+						},
+					},
+					{
+						text: "Editar",
+						type: "primary",
+						icon: "edit",
+						iconLeft: true,
+						nameIconLeft: "edit",
+						iconRight: false,
+						nameIconRight: "",
+						size: "small",
+						width: "auto",
+						action: () => {
+							const router = useRouter();
+							const supplierUuid = useRoute().params.id;
+
+							router.push({
+								name: "suppliers-edit",
+								params: { id: supplierUuid },
+							});
 						},
 					},
 				],
@@ -71,20 +94,15 @@ export default defineComponent({
 						:icon-right="button.iconRight"
 						:name-icon-left="button.nameIconLeft"
 						:name-icon-right="button.nameIconRight"
+						:size="button.size"
+						:width="button.width"
 						@onclick="button.action"
 					/>
 				</div>
 			</header>
 			<main class="main">
-				<div v-if="emptyState.isEmpty" class="main-empty">
-					<MoleculesEmptyState
-						:is-icon="emptyState.isIcon"
-						:title="emptyState.title"
-						:description="emptyState.description"
-					/>
-				</div>
-				<div v-else class="main-content">
-					<h2>Organismos de lista</h2>
+				<div class="main-content">
+					<OrganismsSuppliersDetails />
 				</div>
 			</main>
 		</div>
@@ -92,5 +110,5 @@ export default defineComponent({
 </template>
 
 <style scoped lang="scss">
-@use "styles.module";
+@use "style.module";
 </style>
