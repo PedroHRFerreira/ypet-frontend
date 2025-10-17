@@ -232,36 +232,11 @@ export default defineComponent({
 				</div>
 				<div class="settings-create__about-pet__content--group">
 					<MoleculesSelectsSimple
-						max-width="35%"
-						label="Tipo de Pet"
-						:options="optionsSpecies"
-						:message-error="form.species.errorMessages.join(', ')"
-						@item-selected="editStore.setFormField('species', $event)"
-					/>
-					<MoleculesSelectsSimple
-						max-width="35%"
-						label="Sexo"
-						:options="optionsGender"
-						:message-error="form.gender.errorMessages.join(', ')"
-						@item-selected="editStore.setFormField('gender', $event)"
-					/>
-					<MoleculesSelectsSimple
 						max-width="30%"
 						label="Status"
 						:options="optionsStatus"
 						:message-error="form.status.errorMessages.join(', ')"
 						@item-selected="editStore.setFormField('status', $event)"
-					/>
-				</div>
-				<div class="settings-create__about-pet__content--group">
-					<MoleculesInputCommon
-						label="Max. de vagas"
-						type-input="number"
-						max-width="30%"
-						:maxlength="2"
-						:value="form.max_registrations.value as string"
-						:message-error="form.max_registrations.errorMessages.join(', ')"
-						@on-input="editStore.setFormField('max_registrations', $event)"
 					/>
 					<MoleculesInputDate
 						v-model="startDate"

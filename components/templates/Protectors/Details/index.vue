@@ -38,7 +38,10 @@ export default defineComponent({
 							const router = useRouter();
 							const protectorUuid = useRoute().params.id;
 
-							router.push({ name: "protectors-edit", params: { id: protectorUuid } });
+							router.push({
+								name: "protectors-edit",
+								params: { id: protectorUuid },
+							});
 						},
 					},
 				],

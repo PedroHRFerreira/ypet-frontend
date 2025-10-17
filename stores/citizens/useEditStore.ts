@@ -7,7 +7,6 @@ export const useEditStore = defineStore("citizens-edit", {
 		const successMessage = ref("");
 		const form = useForm([
 			"name",
-			"image",
 			"document",
 			"email",
 			"gender",
@@ -16,7 +15,6 @@ export const useEditStore = defineStore("citizens-edit", {
 			"street",
 			"number",
 			"zip_code",
-			"city",
 			"district",
 			"complement",
 			"state",
@@ -89,7 +87,8 @@ export const useEditStore = defineStore("citizens-edit", {
 			for (const key of addressFields) {
 				const value = this.form[key]?.value;
 				if (value !== null && value !== undefined && value !== "") {
-				addressObj[key] = typeof value === "object" && "id" in value ? value.id : value;
+					addressObj[key] =
+						typeof value === "object" && "id" in value ? value.id : value;
 				}
 			}
 
@@ -103,8 +102,10 @@ export const useEditStore = defineStore("citizens-edit", {
 				if (value === null || value === undefined || value === "") continue;
 
 				formData.append(
-				key,
-				typeof value === "object" && "id" in value ? String(value.id) : String(value)
+					key,
+					typeof value === "object" && "id" in value
+						? String(value.id)
+						: String(value),
 				);
 			}
 

@@ -14,7 +14,7 @@ export default defineComponent({
 			},
 			{
 				id: 2,
-				title: "Ocorrências",
+				title: "Castrações",
 				value: 0,
 				difference: "+0",
 				subtitle: "Desde o mês passado",
@@ -58,13 +58,20 @@ export default defineComponent({
 <style scoped lang="scss">
 .dashboard-container {
 	display: grid;
-	grid-template-columns: 1fr 1fr 1fr;
-	gap: 8px;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	gap: 12px;
+	padding: 0 8px;
+
+	// Diminui o tamanho visual do card
+	.dashboard-card {
+		padding: 16px !important;
+		min-height: 110px;
+	}
 }
 
 @media (max-width: 900px) {
 	.dashboard-container {
-		grid-template-columns: 1fr 1fr;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
 	}
 }
 
@@ -73,4 +80,5 @@ export default defineComponent({
 		grid-template-columns: 1fr;
 	}
 }
+
 </style>

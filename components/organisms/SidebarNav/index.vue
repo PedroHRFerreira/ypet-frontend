@@ -37,7 +37,7 @@ export default defineComponent({
 				route: "samupet",
 			},
 			{
-				text: "Vacina e vermifugação",
+				text: "Aplicações e Procedimentos",
 				icon: "vaccine",
 				active: "vaccine",
 				route: "vaccine",
@@ -45,8 +45,8 @@ export default defineComponent({
 			{
 				text: "Colaboradores",
 				icon: "user-plus",
-				active: "employees",
-				route: "employees",
+				active: "collaborators",
+				route: "collaborators",
 			},
 			{
 				text: "Cidadãos",
@@ -116,8 +116,13 @@ export default defineComponent({
 <template>
 	<div class="sidebar">
 		<div class="sidebar__logo">
-  <img src="/images/pet-dos-vales.svg" alt="Logo Pet dos Vales" width="100" height="50" />
-</div>
+			<img
+				src="/images/pet-dos-vales.svg"
+				alt="Logo Pet dos Vales"
+				width="100"
+				height="50"
+			/>
+		</div>
 		<div class="sidebar__options">
 			<MoleculesSidebarIten
 				v-for="(item, index) in menuItems.slice(0, -1)"

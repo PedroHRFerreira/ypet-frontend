@@ -13,14 +13,31 @@ export default defineComponent({
 	},
 	setup() {
 		const listStore = useListStore();
+		const dayjs = useDayjs();
 
+		// ✅ Filtros
+		const selectedDate = ref<string>(dayjs.format("YYYY-MM-DD"));
+		const selectedSpecies = ref<string>("");
+		const selectedStatus = ref<string>("");
+
+		// ✅ Aplicar filtros (front ou back)
+		async function applyFilters() {
+			await listStore.fetchList({
+				"with[]": ["user", "animal"],
+				...(selectedDate.value && { "filter[date]": selectedDate.value }),
+				...(selectedSpecies.value && { "filter[species]": selectedSpecies.value }),
+				...(selectedStatus.value && { "filter[status]": selectedStatus.value }),
+			});
+		}
+
+		// ✅ Header
 		const header = computed(() => {
 			return {
 				title: "Agenda do dia",
 				subtitle: "",
 				buttons: [
 					{
-						text: "Registar",
+						text: "Registrar",
 						type: "primary",
 						icon: "plus",
 						iconLeft: true,
@@ -49,11 +66,7 @@ export default defineComponent({
 				typeTypography: "text-p5",
 				weightTypography: "bold",
 				colorTypography: "var(--brand-color-dark-blue-300)",
-				style: {
-					width: "5%",
-					gap: "16px",
-					wordBreak: "break-all",
-				},
+				style: { width: "5%", wordBreak: "break-all" },
 			},
 			{
 				value: "hour",
@@ -61,11 +74,7 @@ export default defineComponent({
 				typeTypography: "text-p5",
 				weightTypography: "bold",
 				colorTypography: "var(--brand-color-dark-blue-300)",
-				style: {
-					width: "15%",
-					gap: "16px",
-					wordBreak: "break-all",
-				},
+				style: { width: "15%", wordBreak: "break-all" },
 			},
 			{
 				value: "tutor",
@@ -73,9 +82,7 @@ export default defineComponent({
 				typeTypography: "text-p5",
 				weightTypography: "bold",
 				colorTypography: "var(--brand-color-dark-blue-300)",
-				style: {
-					width: "15%",
-				},
+				style: { width: "15%" },
 			},
 			{
 				value: "pet",
@@ -83,9 +90,7 @@ export default defineComponent({
 				typeTypography: "text-p5",
 				weightTypography: "bold",
 				colorTypography: "var(--brand-color-dark-blue-300)",
-				style: {
-					width: "15%",
-				},
+				style: { width: "15%" },
 			},
 			{
 				value: "species",
@@ -93,10 +98,7 @@ export default defineComponent({
 				typeTypography: "text-p5",
 				weightTypography: "bold",
 				colorTypography: "var(--brand-color-dark-blue-300)",
-				style: {
-					width: "20%",
-					justifyContent: "flex-end",
-				},
+				style: { width: "20%", justifyContent: "flex-end" },
 			},
 			{
 				value: "weight",
@@ -104,10 +106,7 @@ export default defineComponent({
 				typeTypography: "text-p5",
 				weightTypography: "bold",
 				colorTypography: "var(--brand-color-dark-blue-300)",
-				style: {
-					width: "10%",
-					justifyContent: "flex-end",
-				},
+				style: { width: "10%", justifyContent: "flex-end" },
 			},
 			{
 				value: "status",
@@ -115,10 +114,7 @@ export default defineComponent({
 				typeTypography: "text-p5",
 				weightTypography: "bold",
 				colorTypography: "var(--brand-color-dark-blue-300)",
-				style: {
-					width: "10%",
-					justifyContent: "flex-end",
-				},
+				style: { width: "10%", justifyContent: "flex-end" },
 			},
 			{
 				value: "actions",
@@ -126,13 +122,11 @@ export default defineComponent({
 				typeTypography: "text-p5",
 				weightTypography: "bold",
 				colorTypography: "var(--brand-color-dark-blue-300)",
-				style: {
-					width: "10%",
-					justifyContent: "flex-end",
-				},
+				style: { width: "10%", justifyContent: "flex-end" },
 			},
 		]);
 
+		// ✅ Ações da listagem
 		const onSelectOptionAction = (event: string, item: IRegistration) => {
 			const router = useRouter();
 
@@ -167,6 +161,10 @@ export default defineComponent({
 			header,
 			list,
 			onSelectOptionAction,
+			selectedDate,
+			selectedSpecies,
+			selectedStatus,
+			applyFilters,
 		};
 	},
 	methods: {
@@ -186,7 +184,37 @@ export default defineComponent({
 					color="var(--brand-color-dark-blue-300)"
 				/>
 			</div>
+
+			<!-- ✅ Filtros -->
 			<div class="wrapper-list-card__header-actions">
+				<input
+					type="date"
+					v-model="selectedDate"
+					@change="applyFilters"
+					class="filter-input"
+				/>
+
+				<select
+					v-model="selectedSpecies"
+					@change="applyFilters"
+					class="filter-select"
+				>
+					<option value="">Todas as espécies</option>
+					<option value="dog">Cães</option>
+					<option value="cat">Gatos</option>
+				</select>
+
+				<select
+					v-model="selectedStatus"
+					@change="applyFilters"
+					class="filter-select"
+				>
+					<option value="">Todos os status</option>
+					<option value="scheduled">Agendado</option>
+					<option value="done">Concluído</option>
+					<option value="absent">Faltou</option>
+				</select>
+
 				<MoleculesButtonsCommon
 					v-for="button in header.buttons"
 					:key="button.text"
@@ -202,7 +230,7 @@ export default defineComponent({
 				/>
 			</div>
 		</div>
-		<div class="wrapper-list-card__search"></div>
+
 		<div class="wrapper-list-card__body">
 			<MoleculesListCardItem :data="columnsHeader" padding="16px 0">
 				<template v-for="(item, key) in columnsHeader" #[item.value] :key="key">
@@ -214,6 +242,7 @@ export default defineComponent({
 					/>
 				</template>
 			</MoleculesListCardItem>
+
 			<MoleculesListCardItem
 				v-for="(item, key) in list"
 				:key="key"
@@ -228,6 +257,7 @@ export default defineComponent({
 						color="var(--brand-color-dark-blue-300)"
 					/>
 				</template>
+
 				<template #hour>
 					<AtomsTypography
 						type="text-p5"
@@ -236,6 +266,7 @@ export default defineComponent({
 						color="var(--brand-color-dark-blue-300)"
 					/>
 				</template>
+
 				<template #tutor>
 					<AtomsTypography
 						type="text-p5"
@@ -244,6 +275,7 @@ export default defineComponent({
 						color="var(--brand-color-dark-blue-300)"
 					/>
 				</template>
+
 				<template #pet>
 					<AtomsTypography
 						type="text-p5"
@@ -252,6 +284,7 @@ export default defineComponent({
 						color="var(--brand-color-dark-blue-300)"
 					/>
 				</template>
+
 				<template #species>
 					<AtomsTypography
 						type="text-p5"
@@ -260,6 +293,7 @@ export default defineComponent({
 						color="var(--brand-color-dark-blue-300)"
 					/>
 				</template>
+
 				<template #weight>
 					<AtomsTypography
 						type="text-p5"
@@ -268,6 +302,7 @@ export default defineComponent({
 						color="var(--brand-color-dark-blue-300)"
 					/>
 				</template>
+
 				<template #status>
 					<AtomsTypography
 						type="text-p5"
@@ -276,6 +311,7 @@ export default defineComponent({
 						color="var(--brand-color-dark-blue-300)"
 					/>
 				</template>
+
 				<template #actions>
 					<MoleculesActionDropdown
 						:key="item.id"
@@ -289,6 +325,7 @@ export default defineComponent({
 				</template>
 			</MoleculesListCardItem>
 		</div>
+
 		<div class="wrapper-list-card__footer">
 			<MoleculesPaginationControls
 				v-if="listStore.pagination"
@@ -303,42 +340,32 @@ export default defineComponent({
 <style scoped lang="scss">
 @use "styles.module";
 
-.header__container--item {
-	position: relative;
-	cursor: pointer;
+.wrapper-list-card__header-actions {
+	display: flex;
+	align-items: center;
+	gap: 16px;
 
-	&__select {
-		padding: 8px;
+	.filter-input,
+	.filter-select {
+		height: 36px;
+		padding: 6px 12px;
+		font-size: 14px;
+		color: var(--brand-color-dark-blue-300);
 		border: 1px solid var(--brand-color-dark-blue-200);
 		border-radius: 4px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		gap: 8px;
 		background-color: var(--brand-color-white);
-		color: var(--brand-color-dark-blue-300);
-		font-size: 14px;
-		font-weight: 500;
-		transition:
-			background-color 0.3s,
-			color 0.3s;
+		cursor: pointer;
+		transition: border-color 0.2s;
 
 		&:hover {
-			background-color: var(--brand-color-dark-blue-100);
-			color: var(--brand-color-dark-blue-900);
+			border-color: var(--brand-color-dark-blue-300);
 		}
-	}
 
-	&__dropdown {
-		position: absolute;
-		top: 110%;
-		right: 0;
-		background-color: var(--white);
-		border: 1px solid var(--brand-color-dark-blue-200);
-		border-radius: 4px;
-		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-		z-index: 1000;
-		min-width: 150px;
+		&:focus {
+			outline: none;
+			border-color: var(--brand-color-dark-blue-300);
+			box-shadow: 0 0 0 2px rgba(0, 55, 122, 0.1);
+		}
 	}
 }
 </style>

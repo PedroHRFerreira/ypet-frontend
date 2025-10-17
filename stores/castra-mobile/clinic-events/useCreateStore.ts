@@ -12,9 +12,7 @@ export const useCreateStore = defineStore("clinic-events-create", {
 			"start_date",
 			"end_date",
 			"status",
-			"species",
-			"gender",
-			"max_registrations",
+			"rules",
 		]);
 
 		return {
@@ -39,6 +37,12 @@ export const useCreateStore = defineStore("clinic-events-create", {
 					const value = this.form[key].value as string | IOption;
 
 					if (value === null || value === undefined) {
+						continue;
+					}
+
+					if (key === "rules" && Array.isArray(value)) {
+						formData.append("rules", JSON.stringify(value));
+
 						continue;
 					}
 

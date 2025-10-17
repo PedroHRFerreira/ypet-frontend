@@ -1,30 +1,46 @@
 <script lang="ts">
-import { computed, defineComponent, onMounted } from "vue";
-import { useListStore } from "~/stores/users/useListStore";
+import { defineComponent } from "vue";
 
 export default defineComponent({
-	name: "TemplatesEmployees",
+	name: "TemplatesCollaboratorsDetails",
 	setup() {
-		const listStore = useListStore();
-
 		const header = computed(() => {
 			return {
-				title: "Colaboradores",
-				subtitle: "Visualize e gerencie os cadastros de colaboradores",
+				title: "Detalhes do colaborador",
+				subtitle: "Visualize e gerencie os detalhes do colaborador",
 				buttons: [
 					{
-						text: "Novo cadastro",
-						type: "primary",
-						icon: "plus",
-						iconLeft: false,
-						nameIconLeft: "",
-						iconRight: true,
-						nameIconRight: "plus",
+						text: "Voltar",
+						type: "outline",
+						icon: "arrow-left",
+						iconLeft: true,
+						nameIconLeft: "arrow-left",
+						iconRight: false,
+						nameIconRight: "",
 						size: "small",
 						width: "auto",
 						action: () => {
 							const router = useRouter();
-							router.push({ name: "employees-create" });
+							router.back();
+						},
+					},
+					{
+						text: "Editar",
+						type: "primary",
+						icon: "edit",
+						iconLeft: true,
+						nameIconLeft: "edit",
+						iconRight: false,
+						nameIconRight: "",
+						size: "small",
+						width: "auto",
+						action: () => {
+							const router = useRouter();
+
+							router.push({
+								name: "collaborators-edit",
+								params: { id: useRoute().params.id },
+							});
 						},
 					},
 				],
@@ -33,16 +49,12 @@ export default defineComponent({
 
 		const emptyState = computed(() => {
 			return {
-				isEmpty: !listStore.list || listStore.list.length === 0,
+				isEmpty: true,
 				isIcon: true,
 				title: "",
 				description: "",
 			};
 		});
-		onMounted(async () => {
-			await listStore.fetchList();
-		});
-
 		return {
 			header,
 			emptyState,
@@ -71,7 +83,7 @@ export default defineComponent({
 						color="var(--brand-color-dark-blue-300)"
 					/>
 				</div>
-				<div v-if="emptyState.isEmpty" class="header-actions">
+				<div class="header-actions">
 					<MoleculesButtonsCommon
 						v-for="button in header.buttons"
 						:key="button.text"
@@ -81,20 +93,15 @@ export default defineComponent({
 						:icon-right="button.iconRight"
 						:name-icon-left="button.nameIconLeft"
 						:name-icon-right="button.nameIconRight"
+						:size="button.size"
+						:width="button.width"
 						@onclick="button.action"
 					/>
 				</div>
 			</header>
 			<main class="main">
-				<div v-if="emptyState.isEmpty" class="main-empty">
-					<MoleculesEmptyState
-						:is-icon="emptyState.isIcon"
-						:title="emptyState.title"
-						:description="emptyState.description"
-					/>
-				</div>
-				<div v-else class="main-content">
-					<OrganismsEmployees />
+				<div class="main-content">
+					<OrganismsCollaboratorsDetails />
 				</div>
 			</main>
 		</div>
@@ -102,5 +109,5 @@ export default defineComponent({
 </template>
 
 <style scoped lang="scss">
-@use "styles.module";
+@use "style.module";
 </style>

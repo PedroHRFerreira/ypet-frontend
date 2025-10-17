@@ -21,17 +21,16 @@ export default defineComponent({
 
 			const gender = {
 				"0": "Feminino",
-				"1":"Masculino",
-			}
-
+				"1": "Masculino",
+			};
 
 			return [
 				{
 					title: "Sobre o cidadão",
 					content: [
-						{ label: "", value: citizen.image, isImage: true},
+						{ label: "", value: citizen.image, isImage: true },
 						{ label: "Nome completo: ", value: citizen.user?.name || "N/A" },
-						{ label: "CPF:", value: citizen?.document},
+						{ label: "CPF:", value: citizen?.document },
 						{ label: "Gênero:", value: gender[citizen?.gender] },
 						{
 							label: "Data de nascimento:",
@@ -66,7 +65,7 @@ export default defineComponent({
 						},
 						{
 							label: "Status:",
-							value: citizen?.status
+							value: citizen?.status,
 						},
 						{
 							label: "Observações:",
@@ -122,7 +121,7 @@ export default defineComponent({
 					<AtomsTypography
 						v-if="!item.isEnum && !item.isImage"
 						type="text-p5"
-						:text="(item.value as string)"
+						:text="item.value as string"
 						weight="regular"
 						color="var(--brand-color-dark-blue-900)"
 					/>

@@ -18,15 +18,14 @@ export const useListStore = defineStore("protectors-list", {
 	},
 	actions: {
 		async fetchList(params = {}): Promise<void> {
-
 			if (this.isLoading) {
 				return;
 			}
-			
+
 			this.isLoading = true;
 			this.errorMessage = "";
-			
-			await useFetch('/api/protectors', {
+
+			await useFetch("/api/protectors", {
 				method: "GET",
 				params: {
 					...params,

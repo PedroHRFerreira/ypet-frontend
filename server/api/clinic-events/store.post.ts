@@ -6,6 +6,11 @@ export default defineEventHandler(async (event): Promise<IResponse> => {
 		const formData = await readFormData(event);
 		const payload: Record<string, any> = {};
 		formData.forEach((value, key) => {
+			if (key === "rules") {
+				payload[key] = JSON.parse(value as string);
+				return;
+			}
+
 			payload[key] = value;
 		});
 

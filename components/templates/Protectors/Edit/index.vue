@@ -23,7 +23,6 @@ export default defineComponent({
 			}
 
 			const textStart = "Editar informações do protetor: ";
-			
 
 			return textStart + (protectorDetailsStore.protectors?.name || "");
 		});

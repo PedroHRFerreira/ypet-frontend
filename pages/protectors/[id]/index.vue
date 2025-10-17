@@ -20,5 +20,5 @@ defineComponent({
 </script>
 
 <template>
-	<TemplatesProtectorsDetails/>
+	<TemplatesProtectorsDetails />
 </template>
