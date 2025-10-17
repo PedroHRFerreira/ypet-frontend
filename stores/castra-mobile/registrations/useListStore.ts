@@ -1,4 +1,6 @@
 import type { IPagination } from "~/types/global";
+import { defineStore } from "pinia";
+import { ref } from "vue";
 
 export const useListStore = defineStore("list-registrations", {
 	state: () => {

@@ -1,5 +1,5 @@
 <script lang="ts">
-import { computed, defineComponent, ref } from "vue";
+import { computed, defineComponent, onMounted, ref } from "vue";
 import MoleculesListCardItem from "~/components/molecules/ListCardItem/index.vue";
 import { useDayjs } from "~/composables/useDayjs";
 import AtomsTypography from "~/components/atoms/Typography/index.vue";
@@ -11,9 +11,9 @@ export default defineComponent({
 		AtomsTypography,
 		MoleculesListCardItem,
 	},
-	async setup() {
+	setup() {
 		const listStore = useListStore();
-		await listStore.fetchList();
+
 		const header = computed(() => {
 			return {
 				title: "Eventos clínicos",
@@ -148,6 +148,10 @@ export default defineComponent({
 				});
 			}
 		};
+
+		onMounted(async () => {
+			await listStore.fetchList();
+		});
 
 		return {
 			listStore,

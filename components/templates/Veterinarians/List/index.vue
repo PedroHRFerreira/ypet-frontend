@@ -1,13 +1,12 @@
 <script lang="ts">
-import { defineComponent } from "vue";
+import { computed, defineComponent, onMounted } from "vue";
 import { useListStore } from "~/stores/veterinarians/useListStore";
 
 export default defineComponent({
 	name: "TemplatesVeterinariansList",
-	async setup() {
+	setup() {
 		const veterinariansList = useListStore();
 
-		await veterinariansList.fetchList();
 		const header = computed(() => {
 			return {
 				title: "Cadastro de veterinários",
@@ -33,13 +32,17 @@ export default defineComponent({
 
 		const emptyState = computed(() => {
 			return {
-				isEmpty: veterinariansList.veterinarians.length === 0,
+				isEmpty: !veterinariansList.veterinarians || veterinariansList.veterinarians.length === 0,
 				isIcon: true,
 				title: "Nenhum veterinário cadastrado",
 				description:
 					"Você ainda não possui nenhum veterinário cadastrado. Clique no botão 'Novo cadastro' para adicionar um.",
 			};
 		});
+		onMounted(async () => {
+			await veterinariansList.fetchList();
+		});
+
 		return {
 			header,
 			emptyState,

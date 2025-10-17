@@ -1,5 +1,5 @@
 <script lang="ts">
-import { computed, defineComponent, ref } from "vue";
+import { computed, defineComponent, onMounted, ref } from "vue";
 import MoleculesListCardItem from "~/components/molecules/ListCardItem/index.vue";
 import { useDayjs } from "~/composables/useDayjs";
 import AtomsTypography from "~/components/atoms/Typography/index.vue";
@@ -11,12 +11,8 @@ export default defineComponent({
 		AtomsTypography,
 		MoleculesListCardItem,
 	},
-	async setup() {
+	setup() {
 		const listStore = useListStore();
-		await listStore.fetchList({
-			"with[]": ["user", "animal"],
-			"filter[date]": useDayjs().format("YYYY-MM-DD"),
-		});
 
 		const header = computed(() => {
 			return {
@@ -157,6 +153,13 @@ export default defineComponent({
 				listStore.downloadTerm(item.id);
 			}
 		};
+
+		onMounted(async () => {
+			await listStore.fetchList({
+				"with[]": ["user", "animal"],
+				"filter[date]": useDayjs().format("YYYY-MM-DD"),
+			});
+		});
 
 		return {
 			listStore,

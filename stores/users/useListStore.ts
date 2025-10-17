@@ -1,6 +1,8 @@
 import type { IPagination } from "~/types/global";
+import { defineStore } from "pinia";
+import { ref } from "vue";
 
-export const useListStore = defineStore("list", {
+export const useListStore = defineStore("users-list", {
 	state: () => {
 		const list = ref([] as IUser[]);
 		const isLoading = ref(false);
