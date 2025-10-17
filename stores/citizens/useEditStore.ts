@@ -17,6 +17,7 @@ export const useEditStore = defineStore("citizens-edit", {
 			"zip_code",
 			"district",
 			"complement",
+			"city",
 			"state",
 			"status",
 			"can_report_abuse",
