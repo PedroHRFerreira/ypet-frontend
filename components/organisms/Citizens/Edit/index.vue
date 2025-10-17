@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent } from "vue";
+import { computed, defineComponent, onMounted, ref } from "vue";
 
 import { useUserStatusEnumStore } from "~/stores/Enums/useUserStatusEnumStore";
 import { useUFEnumStore } from "~/stores/Enums/useUFEnumStore";
@@ -8,7 +8,7 @@ import { useEditStore } from "~/stores/citizens/useEditStore";
 
 export default defineComponent({
 	name: "OrganismsCitizensEdit",
-	async setup() {
+	setup() {
 		const useCitizenDetailsStore = useDetailStore();
 		const useCitizenEdit = useEditStore();
 		const useUFEnum = useUFEnumStore();
@@ -16,26 +16,26 @@ export default defineComponent({
 		const { form } = useCitizenEdit;
 		const id = useRoute().params.id as string;
 
-		const [userStatus, UFEnum] = await Promise.all([
-			useUserStatusEnum.getOptions(),
-			useUFEnum.getOptions(),
-			useCitizenDetailsStore.fetchCitizenById(id, {
-				"with[]": ["user", "addresses"],
-			}),
-		]);
+		const userStatus = ref<IOption[]>([]);
+		const UFEnum = ref<IOption[]>([]);
+		const birthDate = ref("");
+		const document = ref("");
+		const telephone = ref("");
+		const zipCode = ref("");
+		const showConfirm = ref(false);
+		const showSuccess = ref(false);
 
-		const citizen = useCitizenDetailsStore.citizens;
-
-		const optionsUFEnum = computed(() =>
-			UFEnum.map((item) => {
-				if (item.value == citizen?.state) {
+		const optionsUFEnum = computed(() => {
+			const citizen = useCitizenDetailsStore.citizens;
+			return UFEnum.value.map((item) => {
+				if (item.value === citizen?.state) {
 					item.state = "activated";
 					useCitizenEdit.setFormField("state", item.id);
 				}
 
 				return item;
-			}),
-		);
+			});
+		});
 
 		const gender: IOption[] = [
 			{ id: 1, text: "Masculino", state: "default" },
@@ -43,8 +43,9 @@ export default defineComponent({
 		];
 
 		const optionsGender = computed(() => {
+			const citizen = useCitizenDetailsStore.citizens;
 			return gender.map((item) => {
-				if (item.id == citizen.gender) {
+				if (item.id === citizen?.gender) {
 					item.state = "activated";
 					useCitizenEdit.setFormField("gender", item.id);
 				}
@@ -60,37 +61,47 @@ export default defineComponent({
 			];
 		});
 
-		const optionsUserStatus = computed(() =>
-			userStatus.map((item) => {
+		const optionsUserStatus = computed(() => {
+			const citizen = useCitizenDetailsStore.citizens;
+			return userStatus.value.map((item) => {
 				if (item.id === citizen?.status) {
 					item.state = "activated";
 					useCitizenEdit.setFormField("status", item.id);
 				}
 				return item;
-			}),
-		);
+			});
+		});
 
-		useCitizenEdit.setFormField("name", citizen?.user?.name || "");
-		useCitizenEdit.setFormField("email", citizen?.user?.email || "");
-		const mainAddress = citizen?.addresses?.[0];
+		onMounted(async () => {
+			const [userStatusData, UFEnumData] = await Promise.all([
+				useUserStatusEnum.getOptions(),
+				useUFEnum.getOptions(),
+				useCitizenDetailsStore.fetchCitizenById(id, {
+					"with[]": ["user", "addresses"],
+				}),
+			]);
 
-		useCitizenEdit.setFormField("street", mainAddress?.street || "");
-		useCitizenEdit.setFormField("number", mainAddress?.number || "");
-		useCitizenEdit.setFormField("district", mainAddress?.district || "");
-		useCitizenEdit.setFormField("complement", mainAddress?.complement || "");
-		useCitizenEdit.setFormField("state", mainAddress?.state || "");
-		useCitizenEdit.setFormField("city", mainAddress?.city || "");
-		useCitizenEdit.setFormField("status", citizen?.status || "");
+			userStatus.value = userStatusData;
+			UFEnum.value = UFEnumData;
 
-		const birthDate = ref(citizen.birth_date || "");
-		const document = ref(useMaskDocument(citizen?.document || ""));
-		const telephone = ref(
-			usePhoneFormatter11BR(citizen?.user?.telephone || ""),
-		);
-		const zipCode = ref(useMaskZipCode(mainAddress?.zip_code || ""));
+			const citizen = useCitizenDetailsStore.citizens;
+			useCitizenEdit.setFormField("name", citizen?.user?.name || "");
+			useCitizenEdit.setFormField("email", citizen?.user?.email || "");
+			const mainAddress = citizen?.addresses?.[0];
 
-		const showConfirm = ref(false);
-		const showSuccess = ref(false);
+			useCitizenEdit.setFormField("street", mainAddress?.street || "");
+			useCitizenEdit.setFormField("number", mainAddress?.number || "");
+			useCitizenEdit.setFormField("district", mainAddress?.district || "");
+			useCitizenEdit.setFormField("complement", mainAddress?.complement || "");
+			useCitizenEdit.setFormField("state", mainAddress?.state || "");
+			useCitizenEdit.setFormField("city", mainAddress?.city || "");
+			useCitizenEdit.setFormField("status", citizen?.status || "");
+
+			birthDate.value = citizen.birth_date || "";
+			document.value = useMaskDocument(citizen?.document || "");
+			telephone.value = usePhoneFormatter11BR(citizen?.user?.telephone || "");
+			zipCode.value = useMaskZipCode(mainAddress?.zip_code || "");
+		});
 
 		function onInputDocument(value: string) {
 			document.value = useMaskDocument(value);
@@ -135,6 +146,21 @@ export default defineComponent({
 
 			const router = useRouter();
 			router.push({ name: "citizens-list" });
+		}
+
+		function handleInput(file: File) {
+			// Handle file input
+			console.log("File selected:", file);
+		}
+
+		function handleChange(file: File) {
+			// Handle file change
+			console.log("File changed:", file);
+		}
+
+		function handleError(error: string) {
+			// Handle file upload error
+			console.error("Upload error:", error);
 		}
 
 		const footer = {
@@ -192,6 +218,9 @@ export default defineComponent({
 			onInputDocument,
 			onInputTelephone,
 			onInputZipCode,
+			handleInput,
+			handleChange,
+			handleError,
 		};
 	},
 	watch: {

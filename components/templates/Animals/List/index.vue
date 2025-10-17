@@ -1,13 +1,11 @@
 <script lang="ts">
-import { defineComponent } from "vue";
+import { computed, defineComponent, onMounted } from "vue";
 import { useListStore } from "~/stores/animals/useListStore";
 
 export default defineComponent({
 	name: "TemplatesAnimalsList",
-	async setup() {
+	setup() {
 		const animalsList = useListStore();
-
-		await animalsList.fetchAnimals();
 
 		const header = computed(() => {
 			return {
@@ -33,12 +31,16 @@ export default defineComponent({
 
 		const emptyState = computed(() => {
 			return {
-				isEmpty: animalsList.animals.length === 0,
+				isEmpty: !animalsList.animals || animalsList.animals.length === 0,
 				isIcon: true,
 				title: "Nenhum animal cadastrado",
 				description:
 					"Você ainda não possui nenhum animal cadastrado.Clique no botão 'Novo cadastro' para adicionar um.",
 			};
+		});
+
+		onMounted(async () => {
+			await animalsList.fetchAnimals();
 		});
 
 		return {

@@ -1,12 +1,12 @@
 <script lang="ts">
-import { defineComponent } from "vue";
-import { useListStore } from "~/stores/collaborators/useListStore";
+import { computed, defineComponent, onMounted } from "vue";
+import { useListStore } from "~/stores/users/useListStore";
 
 export default defineComponent({
-	name: "TemplatesCollaborators",
-	async setup() {
-		const listSore = useListStore();
-		await listSore.fetchList();
+	name: "TemplatesEmployees",
+	setup() {
+		const listStore = useListStore();
+
 		const header = computed(() => {
 			return {
 				title: "Colaboradores",
@@ -33,12 +33,16 @@ export default defineComponent({
 
 		const emptyState = computed(() => {
 			return {
-				isEmpty: listSore.list.length === 0,
+				isEmpty: !listStore.list || listStore.list.length === 0,
 				isIcon: true,
 				title: "",
 				description: "",
 			};
 		});
+		onMounted(async () => {
+			await listStore.fetchList();
+		});
+
 		return {
 			header,
 			emptyState,

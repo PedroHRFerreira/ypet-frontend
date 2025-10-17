@@ -1,13 +1,11 @@
 <script lang="ts">
-import { defineComponent } from "vue";
+import { computed, defineComponent, onMounted } from "vue";
 import { useListStore } from "~/stores/protectors/useListStore";
 
 export default defineComponent({
 	name: "TemplatesProtectors",
-	async setup() {
+	setup() {
 		const protectorsList = useListStore();
-
-		await protectorsList.fetchList();
 
 		const header = computed(() => {
 			return {
@@ -33,13 +31,17 @@ export default defineComponent({
 
 		const emptyState = computed(() => {
 			return {
-				isEmpty: protectorsList.protectors.length === 0,
+				isEmpty: !protectorsList.protectors || protectorsList.protectors.length === 0,
 				isIcon: true,
 				title: "Nenhum protetor cadastrado",
 				description:
 					"Você ainda não possui nenhum cidadão cadastrado. Clique no botão 'Novo cadastro' para adicionar um.",
 			};
 		});
+		onMounted(async () => {
+			await protectorsList.fetchList();
+		});
+
 		return {
 			header,
 			emptyState,
@@ -70,8 +72,8 @@ export default defineComponent({
 				</div>
 				<div class="header-actions">
 					<MoleculesButtonsCommon
-						v-show="emptyState.isEmpty"
 						v-for="button in header.buttons"
+						v-show="emptyState.isEmpty"
 						:key="button.text"
 						:type="button.type"
 						:text="button.text"

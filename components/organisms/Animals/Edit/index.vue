@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent } from "vue";
+import { computed, defineComponent, onMounted, ref } from "vue";
 import { useAnimalSpeciesEnumStore } from "~/stores/Enums/useAnimalSpeciesEnumStore";
 import { useGenderEnumStore } from "~/stores/Enums/useGenderEnumStore";
 import { useAnimalStatusEnumStore } from "~/stores/Enums/useAnimalStatusEnumStore";
@@ -10,7 +10,7 @@ import { useDetailStore } from "~/stores/animals/useDetailStore";
 
 export default defineComponent({
 	name: "OrganismsAnimalsEdit",
-	async setup() {
+	setup() {
 		const animalDetailsStore = useDetailStore();
 		const useAnimalsEdit = useEditStore();
 		const useAnimalSpeciesEnum = useAnimalSpeciesEnumStore();
@@ -21,51 +21,19 @@ export default defineComponent({
 		const { form } = useAnimalsEdit;
 		const id = useRoute().params.id as string;
 
-		const [species, gender, animalStatus, animalSize, animalCoat] =
-			await Promise.all([
-				useAnimalSpeciesEnum.getOptions(),
-				useGenderEnum.getOptions(),
-				useAnimalStatusEnum.getOptions(),
-				useAnimalSizeEnum.getOptions(),
-				useAnimalCoatEnum.getOptions(),
-				animalDetailsStore.fetchAnimalById(id, {
-					"with[]": ["status", "entryData"],
-				}),
-			]);
+		const species = ref<IOption[]>([]);
+		const gender = ref<IOption[]>([]);
+		const animalStatus = ref<IOption[]>([]);
+		const animalSize = ref<IOption[]>([]);
+		const animalCoat = ref<IOption[]>([]);
 
-		const birthDate = ref(animalDetailsStore.animal.birth_date || "");
-		const entryDate = ref(
-			animalDetailsStore.animal.entry_data?.entry_date || "",
-		);
-		const animal = animalDetailsStore.animal;
-		useAnimalsEdit.setFormField("name", animal.name);
-		useAnimalsEdit.setFormField(
-			"microchip_number",
-			animal.entry_data?.microchip_number,
-		);
-		useAnimalsEdit.setFormField("entry_date", animal.entry_data?.entry_date);
-		useAnimalsEdit.setFormField("weight", animal.weight);
-		useAnimalsEdit.setFormField("color", animal.color);
-		useAnimalsEdit.setFormField("characteristics", animal.characteristics);
-		useAnimalsEdit.setFormField("surname", animal?.surname || "");
-		useAnimalsEdit.setFormField(
-			"registration_number",
-			animal.entry_data?.registration_number,
-		);
-		useAnimalsEdit.setFormField("infirmity", animal.entry_data?.infirmity);
-		useAnimalsEdit.setFormField(
-			"castrated",
-			animal.entry_data?.castrated ? 1 : 0,
-		);
-		useAnimalsEdit.setFormField(
-			"dewormed",
-			animal.entry_data?.dewormed ? 1 : 0,
-		);
+		const birthDate = ref("");
+		const entryDate = ref("");
 
 		const optionsAnimalCoat = computed(() => {
 			const animal = animalDetailsStore.animal;
 
-			return animalCoat.map((item) => {
+			return animalCoat.value.map((item) => {
 				if (item.id === animal?.coat?.value) {
 					item.state = "activated";
 					useAnimalsEdit.setFormField("coat", item.id);
@@ -78,7 +46,7 @@ export default defineComponent({
 		const optionsAnimalStatus = computed(() => {
 			const animal = animalDetailsStore.animal;
 
-			return animalStatus.map((item) => {
+			return animalStatus.value.map((item) => {
 				if (item.id === animal.status?.status.value) {
 					item.state = "activated";
 					useAnimalsEdit.setFormField("status", item.id);
@@ -91,7 +59,7 @@ export default defineComponent({
 		const optionsAnimalSize = computed(() => {
 			const animal = animalDetailsStore.animal;
 
-			return animalSize.map((item) => {
+			return animalSize.value.map((item) => {
 				if (item.id === animal.size.value) {
 					item.state = "activated";
 					useAnimalsEdit.setFormField("size", item.id);
@@ -104,7 +72,7 @@ export default defineComponent({
 		const optionsSpecies = computed(() => {
 			const animal = animalDetailsStore.animal;
 
-			return species.map((item) => {
+			return species.value.map((item) => {
 				if (item.id === animal.species.value) {
 					item.state = "activated";
 					useAnimalsEdit.setFormField("species", item.id);
@@ -117,7 +85,7 @@ export default defineComponent({
 		const optionsGender = computed(() => {
 			const animal = animalDetailsStore.animal;
 
-			return gender.map((item) => {
+			return gender.value.map((item) => {
 				if (item.id === animal.gender.value) {
 					item.state = "activated";
 					useAnimalsEdit.setFormField("gender", item.id);
@@ -204,6 +172,55 @@ export default defineComponent({
 				},
 			],
 		};
+
+		onMounted(async () => {
+			const [speciesData, genderData, animalStatusData, animalSizeData, animalCoatData] =
+				await Promise.all([
+					useAnimalSpeciesEnum.getOptions(),
+					useGenderEnum.getOptions(),
+					useAnimalStatusEnum.getOptions(),
+					useAnimalSizeEnum.getOptions(),
+					useAnimalCoatEnum.getOptions(),
+					animalDetailsStore.fetchAnimalById(id, {
+						"with[]": ["status", "entryData"],
+					}),
+				]);
+
+			species.value = speciesData;
+			gender.value = genderData;
+			animalStatus.value = animalStatusData;
+			animalSize.value = animalSizeData;
+			animalCoat.value = animalCoatData;
+
+			birthDate.value = animalDetailsStore.animal.birth_date || "";
+			entryDate.value = animalDetailsStore.animal.entry_data?.entry_date || "";
+
+			const animal = animalDetailsStore.animal;
+			useAnimalsEdit.setFormField("name", animal.name);
+			useAnimalsEdit.setFormField(
+				"microchip_number",
+				animal.entry_data?.microchip_number,
+			);
+			useAnimalsEdit.setFormField("entry_date", animal.entry_data?.entry_date);
+			useAnimalsEdit.setFormField("weight", animal.weight);
+			useAnimalsEdit.setFormField("color", animal.color);
+			useAnimalsEdit.setFormField("characteristics", animal.characteristics);
+			useAnimalsEdit.setFormField("surname", animal?.surname || "");
+			useAnimalsEdit.setFormField(
+				"registration_number",
+				animal.entry_data?.registration_number,
+			);
+			useAnimalsEdit.setFormField("infirmity", animal.entry_data?.infirmity);
+			useAnimalsEdit.setFormField(
+				"castrated",
+				animal.entry_data?.castrated ? 1 : 0,
+			);
+			useAnimalsEdit.setFormField(
+				"dewormed",
+				animal.entry_data?.dewormed ? 1 : 0,
+			);
+		});
+
 		return {
 			optionsGender,
 			optionsSpecies,

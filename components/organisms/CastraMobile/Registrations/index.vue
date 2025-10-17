@@ -1,5 +1,5 @@
 <script lang="ts">
-import { computed, defineComponent, ref } from "vue";
+import { computed, defineComponent, onMounted, ref } from "vue";
 import MoleculesListCardItem from "~/components/molecules/ListCardItem/index.vue";
 import { useDayjs } from "~/composables/useDayjs";
 import AtomsTypography from "~/components/atoms/Typography/index.vue";
@@ -11,7 +11,7 @@ export default defineComponent({
 		AtomsTypography,
 		MoleculesListCardItem,
 	},
-	async setup() {
+	setup() {
 		const listStore = useListStore();
 		const dayjs = useDayjs();
 
@@ -19,12 +19,6 @@ export default defineComponent({
 		const selectedDate = ref<string>(dayjs.format("YYYY-MM-DD"));
 		const selectedSpecies = ref<string>("");
 		const selectedStatus = ref<string>("");
-
-		// ✅ Busca inicial
-		await listStore.fetchList({
-			"with[]": ["user", "animal"],
-			"filter[date]": selectedDate.value,
-		});
 
 		// ✅ Aplicar filtros (front ou back)
 		async function applyFilters() {
@@ -153,6 +147,13 @@ export default defineComponent({
 				listStore.downloadTerm(item.id);
 			}
 		};
+
+		onMounted(async () => {
+			await listStore.fetchList({
+				"with[]": ["user", "animal"],
+				"filter[date]": useDayjs().format("YYYY-MM-DD"),
+			});
+		});
 
 		return {
 			listStore,

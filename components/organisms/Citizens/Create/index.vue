@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, onUnmounted } from "vue";
+import { computed, defineComponent, onMounted, onUnmounted, ref } from "vue";
 import { useCreateStore } from "~/stores/citizens/useCreateStore";
 import MoleculesUploadField from "~/components/molecules/ListCardItem/index.vue";
 
@@ -23,17 +23,30 @@ export default defineComponent({
 		useCitizensCreate.setFormField("can_mobile_castration", 0);
 		useCitizensCreate.setFormField("can_report_abuse", 0);
 
-		const [optionsUserStatus, optionsUFEnum, optionsBoolean] =
-			await Promise.all([
-				useUserStatusEnum.getOptions(),
-				useUFEnum.getOptions(),
-				useBooleanEnum.getOptions(),
-			]);
+		const optionsUserStatus = ref<IOption[]>([]);
+		const optionsUFEnum = ref<IOption[]>([]);
+		const optionsBoolean = ref<IOption[]>([]);
+
+		onUnmounted(() => {
+			useCitizensCreate.resetForm();
+		});
 
 		const optionsGender: IOption[] = [
 			{ id: 1, text: "Masculino", state: "default" },
 			{ id: 0, text: "Feminino", state: "default" },
 		];
+
+		onMounted(async () => {
+			const [userStatus, UFEnum, booleanEnum] = await Promise.all([
+				useUserStatusEnum.getOptions(),
+				useUFEnum.getOptions(),
+				useBooleanEnum.getOptions(),
+			]);
+
+			optionsUserStatus.value = userStatus;
+			optionsUFEnum.value = UFEnum;
+			optionsBoolean.value = booleanEnum;
+		});
 
 		const birthDate = ref("");
 		const document = ref("");
