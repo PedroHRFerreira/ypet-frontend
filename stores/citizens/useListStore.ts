@@ -1,4 +1,6 @@
 import type { IPagination } from "~/types/global";
+import { defineStore } from "pinia";
+import { ref } from "vue";
 
 export const useListStore = defineStore("citizens-list", {
 	state: () => {
@@ -16,15 +18,14 @@ export const useListStore = defineStore("citizens-list", {
 	},
 	actions: {
 		async fetchList(params = {}): Promise<void> {
-
 			if (this.isLoading) {
 				return;
 			}
-			
+
 			this.isLoading = true;
 			this.errorMessage = "";
-			
-			await useFetch('/api/citizens', {
+
+			await useFetch("/api/citizens", {
 				method: "GET",
 				params: {
 					...params,

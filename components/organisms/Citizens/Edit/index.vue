@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent } from "vue";
+import { computed, defineComponent, onMounted, ref } from "vue";
 
 import { useUserStatusEnumStore } from "~/stores/Enums/useUserStatusEnumStore";
 import { useUFEnumStore } from "~/stores/Enums/useUFEnumStore";
@@ -7,8 +7,8 @@ import { useDetailStore } from "~/stores/citizens/useDetailStore";
 import { useEditStore } from "~/stores/citizens/useEditStore";
 
 export default defineComponent({
-   name: "OrganismsCitizensEdit",
-	async setup() {
+	name: "OrganismsCitizensEdit",
+	setup() {
 		const useCitizenDetailsStore = useDetailStore();
 		const useCitizenEdit = useEditStore();
 		const useUFEnum = useUFEnumStore();
@@ -16,29 +16,26 @@ export default defineComponent({
 		const { form } = useCitizenEdit;
 		const id = useRoute().params.id as string;
 
-		const [
-			userStatus,
-			UFEnum,
-		] = await Promise.all([
-			useUserStatusEnum.getOptions(),
-			useUFEnum.getOptions(),
-			useCitizenDetailsStore.fetchCitizenById(id, {
-				"with[]": ["user","addresses"],
-			}),
-		]);
-		
-		const citizen = useCitizenDetailsStore.citizens;
-	
-		const optionsUFEnum = computed(() =>
-			UFEnum.map((item) => {
-				if (item.value == citizen?.state) {
+		const userStatus = ref<IOption[]>([]);
+		const UFEnum = ref<IOption[]>([]);
+		const birthDate = ref("");
+		const document = ref("");
+		const telephone = ref("");
+		const zipCode = ref("");
+		const showConfirm = ref(false);
+		const showSuccess = ref(false);
+
+		const optionsUFEnum = computed(() => {
+			const citizen = useCitizenDetailsStore.citizens;
+			return UFEnum.value.map((item) => {
+				if (item.value === citizen?.state) {
 					item.state = "activated";
 					useCitizenEdit.setFormField("state", item.id);
 				}
 
 				return item;
-			}),
-		);
+			});
+		});
 
 		const gender: IOption[] = [
 			{ id: 1, text: "Masculino", state: "default" },
@@ -46,8 +43,9 @@ export default defineComponent({
 		];
 
 		const optionsGender = computed(() => {
+			const citizen = useCitizenDetailsStore.citizens;
 			return gender.map((item) => {
-				if (item.id == citizen.gender) {
+				if (item.id === citizen?.gender) {
 					item.state = "activated";
 					useCitizenEdit.setFormField("gender", item.id);
 				}
@@ -63,48 +61,61 @@ export default defineComponent({
 			];
 		});
 
-		const optionsUserStatus = computed(() =>
-			userStatus.map((item) => {
-			if (item.id === citizen?.status) { 
-				item.state = "activated";
-				useCitizenEdit.setFormField("status", item.id);
-			}
+		const optionsUserStatus = computed(() => {
+			const citizen = useCitizenDetailsStore.citizens;
+			return userStatus.value.map((item) => {
+				if (item.id === citizen?.status) {
+					item.state = "activated";
+					useCitizenEdit.setFormField("status", item.id);
+				}
 				return item;
-			}),
-		);
+			});
+		});
 
-		useCitizenEdit.setFormField("name", citizen?.user?.name || "");
-		useCitizenEdit.setFormField("email", citizen?.user?.email || "");
-		const mainAddress = citizen?.addresses?.[0];
+		onMounted(async () => {
+			const [userStatusData, UFEnumData] = await Promise.all([
+				useUserStatusEnum.getOptions(),
+				useUFEnum.getOptions(),
+				useCitizenDetailsStore.fetchCitizenById(id, {
+					"with[]": ["user", "addresses"],
+				}),
+			]);
 
-		useCitizenEdit.setFormField("street", mainAddress?.street || "");
-		useCitizenEdit.setFormField("number", mainAddress?.number || "");
-		useCitizenEdit.setFormField("district", mainAddress?.district || "");
-		useCitizenEdit.setFormField("complement", mainAddress?.complement || "");
-		useCitizenEdit.setFormField("state", mainAddress?.state || "");
-		useCitizenEdit.setFormField("status", citizen?.status || "");
+			userStatus.value = userStatusData;
+			UFEnum.value = UFEnumData;
 
-		const birthDate = ref(citizen.birth_date || "");
-		const document = ref(useMaskDocument(citizen?.document || "") )
-		const telephone = ref(usePhoneFormatter11BR(citizen?.user?.telephone || "") )
-		const zipCode = ref(useMaskZipCode(mainAddress?.zip_code  || ""))
-		
-		const showConfirm = ref(false);
-		const showSuccess = ref(false);
+			const citizen = useCitizenDetailsStore.citizens;
+			useCitizenEdit.setFormField("name", citizen?.user?.name || "");
+			useCitizenEdit.setFormField("email", citizen?.user?.email || "");
+			const mainAddress = citizen?.addresses?.[0];
 
-		function onInputDocument(value: string, ) {
-			document.value = useMaskDocument(value)
-			useCitizenEdit.setFormField('document', value.replace(/\D/g, ''))
+			useCitizenEdit.setFormField("street", mainAddress?.street || "");
+			useCitizenEdit.setFormField("number", mainAddress?.number || "");
+			useCitizenEdit.setFormField("district", mainAddress?.district || "");
+			useCitizenEdit.setFormField("complement", mainAddress?.complement || "");
+			useCitizenEdit.setFormField("state", mainAddress?.state || "");
+			useCitizenEdit.setFormField("city", mainAddress?.city || "");
+			useCitizenEdit.setFormField("status", citizen?.status || "");
+
+			birthDate.value = citizen.birth_date || "";
+			document.value = useMaskDocument(citizen?.document || "");
+			telephone.value = usePhoneFormatter11BR(citizen?.user?.telephone || "");
+			zipCode.value = useMaskZipCode(mainAddress?.zip_code || "");
+		});
+
+		function onInputDocument(value: string) {
+			document.value = useMaskDocument(value);
+			useCitizenEdit.setFormField("document", value.replace(/\D/g, ""));
 		}
 
-		function onInputTelephone(value: string, ) {
-			telephone.value = usePhoneFormatter11BR(value)
-			useCitizenEdit.setFormField('telephone', value.replace(/\D/g, ''))
+		function onInputTelephone(value: string) {
+			telephone.value = usePhoneFormatter11BR(value);
+			useCitizenEdit.setFormField("telephone", value.replace(/\D/g, ""));
 		}
 
-		function onInputZipCode(value: string, ) {
-			zipCode.value = useMaskZipCode(value)
-			useCitizenEdit.setFormField('zip_code', value.replace(/\D/g, ''))
+		function onInputZipCode(value: string) {
+			zipCode.value = useMaskZipCode(value);
+			useCitizenEdit.setFormField("zip_code", value.replace(/\D/g, ""));
 		}
 
 		function openConfirm() {
@@ -114,7 +125,7 @@ export default defineComponent({
 		function onSuccess() {
 			showSuccess.value = true;
 		}
-	
+
 		async function confirmUpdate() {
 			if (useCitizenEdit.isLoading) {
 				return;
@@ -135,6 +146,21 @@ export default defineComponent({
 
 			const router = useRouter();
 			router.push({ name: "citizens-list" });
+		}
+
+		function handleInput(file: File) {
+			// Handle file input
+			console.log("File selected:", file);
+		}
+
+		function handleChange(file: File) {
+			// Handle file change
+			console.log("File changed:", file);
+		}
+
+		function handleError(error: string) {
+			// Handle file upload error
+			console.error("Upload error:", error);
 		}
 
 		const footer = {
@@ -191,8 +217,11 @@ export default defineComponent({
 			continueFeedback,
 			onInputDocument,
 			onInputTelephone,
-			onInputZipCode
-		}
+			onInputZipCode,
+			handleInput,
+			handleChange,
+			handleError,
+		};
 	},
 	watch: {
 		birthDate: {
@@ -202,7 +231,7 @@ export default defineComponent({
 			deep: true,
 		},
 	},
-})
+});
 </script>
 <template>
 	<MoleculesConfirmFeedbackModal
@@ -236,10 +265,10 @@ export default defineComponent({
 				<div class="citizens__input-data__content--group">
 					<MoleculesUploadField
 						label="Selecione um arquivo para enviar"
-						description= "Arquivo até 2mb"
+						description="Arquivo até 2mb"
 						:accept="'image/*'"
 						:maxSize="2 * 1024 * 1024"
-						maxWidth="40%" 
+						maxWidth="40%"
 						:maxHeight="180"
 						:preview="true"
 						@input="handleInput"
@@ -248,28 +277,28 @@ export default defineComponent({
 					/>
 					<div class="citizens__input-data__content">
 						<div class="citizens__input-data__content--group">
-					<MoleculesInputCommon
-						label="Nome"
-						max-width="50%"
-						:value="form.name.value as string"
-						:message-error="form.name.errorMessages.join(', ')"
-						@on-input="useCitizenEdit.setFormField('name', $event)"
-					/>
-					<MoleculesInputCommon
-						label="CPF"
-						max-width="25%"
-						:maxlength="14"
-						:value="document as string"
-						:message-error="form.document.errorMessages.join(', ')"
-						@on-input="onInputDocument($event)"
-					/>
-					<MoleculesSelectsSimple
-						max-width="25%"
-						label="Gênero"
-						:options="optionsGender"
-						:message-error="form.gender.errorMessages.join(', ')"
-						@item-selected="useCitizenEdit.setFormField('gender', $event)"
-					/>
+							<MoleculesInputCommon
+								label="Nome"
+								max-width="50%"
+								:value="form.name.value as string"
+								:message-error="form.name.errorMessages.join(', ')"
+								@on-input="useCitizenEdit.setFormField('name', $event)"
+							/>
+							<MoleculesInputCommon
+								label="CPF"
+								max-width="25%"
+								:maxlength="14"
+								:value="document as string"
+								:message-error="form.document.errorMessages.join(', ')"
+								@on-input="onInputDocument($event)"
+							/>
+							<MoleculesSelectsSimple
+								max-width="25%"
+								label="Gênero"
+								:options="optionsGender"
+								:message-error="form.gender.errorMessages.join(', ')"
+								@item-selected="useCitizenEdit.setFormField('gender', $event)"
+							/>
 						</div>
 						<div class="citizens__input-data__content--group">
 							<MoleculesInputDate
@@ -301,7 +330,6 @@ export default defineComponent({
 						</div>
 					</div>
 				</div>
-				
 			</div>
 		</section>
 		<section class="citizens__input-data">
@@ -347,6 +375,13 @@ export default defineComponent({
 						:message-error="form.district.errorMessages.join(', ')"
 						@on-input="useCitizenEdit.setFormField('district', $event)"
 					/>
+					<MoleculesInputCommon
+						label="Cidade"
+						max-width="25%"
+						:value="form.city.value as string"
+						:message-error="form.city.errorMessages.join(', ')"
+						@on-input="useCitizenEdit.setFormField('city', $event)"
+					/>
 					<MoleculesSelectsSimple
 						label="Estado"
 						max-width="25%"
@@ -381,18 +416,11 @@ export default defineComponent({
 						max-width="25%"
 						:options="optionsBoolean"
 						:value="
-							form.can_report_abuse.value
-								? form.can_report_abuse.value
-								: 0
+							form.can_report_abuse.value ? form.can_report_abuse.value : 0
 						"
-						:message-error="
-							form.can_report_abuse.errorMessages.join(', ')
-						"
+						:message-error="form.can_report_abuse.errorMessages.join(', ')"
 						@change-option="
-							useCitizenEdit.setFormField(
-								'can_report_abuse',
-								$event.id,
-							)
+							useCitizenEdit.setFormField('can_report_abuse', $event.id)
 						"
 					/>
 					<MoleculesInputOptionGroup
@@ -405,14 +433,9 @@ export default defineComponent({
 								? form.can_mobile_castration.value
 								: 0
 						"
-						:message-error="
-							form.can_mobile_castration.errorMessages.join(', ')
-						"
+						:message-error="form.can_mobile_castration.errorMessages.join(', ')"
 						@change-option="
-							useCitizenEdit.setFormField(
-								'can_mobile_castration',
-								$event.id,
-							)
+							useCitizenEdit.setFormField('can_mobile_castration', $event.id)
 						"
 					/>
 					<MoleculesSelectsSimple
@@ -421,7 +444,6 @@ export default defineComponent({
 						:options="optionsUserStatus"
 						:message-error="form.status.errorMessages.join(', ')"
 						@item-selected="useCitizenEdit.setFormField('status', $event)"
-						
 					/>
 				</div>
 				<div class="citizens__input-data__content--group">

@@ -20,6 +20,15 @@
 	width: 100%;
 }
 
+.card-body {
+	padding-top: 8px;
+	padding-bottom: 8px;
+}
+
+.value {
+	font-size: 1.25rem; // antes provavelmente 1.5rem ou 2rem
+}
+
 .card-header {
 	display: flex;
 	width: 100%;
@@ -72,6 +81,7 @@
 }
 
 .icon-container {
+	background-color: var(--brand-color-blue-50);
 	border-radius: 50px;
 	background: #e5f1ff;
 	display: flex;

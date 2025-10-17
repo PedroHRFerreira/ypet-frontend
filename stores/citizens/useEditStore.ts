@@ -7,7 +7,6 @@ export const useEditStore = defineStore("citizens-edit", {
 		const successMessage = ref("");
 		const form = useForm([
 			"name",
-			"image",
 			"document",
 			"email",
 			"gender",
@@ -18,10 +17,11 @@ export const useEditStore = defineStore("citizens-edit", {
 			"zip_code",
 			"district",
 			"complement",
+			"city",
 			"state",
 			"status",
 			"can_report_abuse",
-			"can_mobile_castration"
+			"can_mobile_castration",
 		]);
 
 		return {
@@ -73,7 +73,7 @@ export const useEditStore = defineStore("citizens-edit", {
 		},
 		getFormData(): FormData {
 			const formData = new FormData();
-			
+
 			const addressFields = [
 				"zip_code",
 				"street",
@@ -83,34 +83,37 @@ export const useEditStore = defineStore("citizens-edit", {
 				"city",
 				"state",
 			];
-			
+
 			const addressObj: Record<string, any> = {};
 			for (const key of addressFields) {
 				const value = this.form[key]?.value;
 				if (value !== null && value !== undefined && value !== "") {
-				addressObj[key] = typeof value === "object" && "id" in value ? value.id : value;
+					addressObj[key] =
+						typeof value === "object" && "id" in value ? value.id : value;
 				}
 			}
-		
+
 			formData.append("address", JSON.stringify([addressObj]));
-			
+
 			for (const key in this.form) {
 				if (!Object.prototype.hasOwnProperty.call(this.form, key)) continue;
 				if (addressFields.includes(key)) continue; // já foi adicionado no endereço
-			
+
 				const value = this.form[key]?.value;
 				if (value === null || value === undefined || value === "") continue;
-			
+
 				formData.append(
-				key,
-				typeof value === "object" && "id" in value ? String(value.id) : String(value)
+					key,
+					typeof value === "object" && "id" in value
+						? String(value.id)
+						: String(value),
 				);
 			}
-			
+
 			formData.append("special_permissions", "0");
-			
+
 			return formData;
-		},	 
+		},
 		resetForm() {
 			for (const key in this.form) {
 				if (Object.prototype.hasOwnProperty.call(this.form, key)) {

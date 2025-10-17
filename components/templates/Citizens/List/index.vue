@@ -1,13 +1,11 @@
 <script lang="ts">
-import { defineComponent } from "vue";
+import { computed, defineComponent, onMounted } from "vue";
 import { useListStore } from "~/stores/citizens/useListStore";
 
 export default defineComponent({
 	name: "TemplatesCitizens",
-	async setup() {
+	setup() {
 		const citizensList = useListStore();
-		
-		await citizensList.fetchList();
 
 		const header = computed(() => {
 			return {
@@ -33,13 +31,17 @@ export default defineComponent({
 
 		const emptyState = computed(() => {
 			return {
-				isEmpty: citizensList.citizens.length === 0,
+				isEmpty: !citizensList.citizens || citizensList.citizens.length === 0,
 				isIcon: true,
 				title: "Nenhum cidadão cadastrado",
 				description:
 					"Você ainda não possui nenhum cidadão cadastrado.Clique no botão 'Novo cadastro' para adicionar um.",
 			};
 		});
+		onMounted(async () => {
+			await citizensList.fetchList();
+		});
+
 		return {
 			header,
 			emptyState,
@@ -91,7 +93,7 @@ export default defineComponent({
 					/>
 				</div>
 				<div v-else class="main-content">
-					<OrganismsCitizens/>
+					<OrganismsCitizens />
 				</div>
 			</main>
 		</div>

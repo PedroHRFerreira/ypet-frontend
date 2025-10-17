@@ -23,7 +23,7 @@ export const useDetailStore = defineStore("detail", {
 				params,
 				onResponse: ({ response }) => {
 					const result = response._data as IResponse;
-					this.detail = result.data || ({} as IAnimal);
+					this.detail = result.data || ({} as IUser);
 					this.errorMessage = "";
 					this.isLoading = false;
 				},
@@ -31,12 +31,11 @@ export const useDetailStore = defineStore("detail", {
 					this.isLoading = false;
 
 					if (response.status === 404) {
-						this.errorMessage = "Animal não encontrado.";
+						this.errorMessage = "Não encontrado.";
 						return;
 					}
 
-					this.errorMessage =
-						response._data.message || "Erro ao buscar animal.";
+					this.errorMessage = response._data.message || "Erro ao buscar.";
 				},
 			});
 		},

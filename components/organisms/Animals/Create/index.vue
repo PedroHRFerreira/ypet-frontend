@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent } from "vue";
+import { computed, defineComponent, onMounted, ref } from "vue";
 import { useCreateStore } from "~/stores/animals/useCreateStore";
 import { useAnimalSpeciesEnumStore } from "~/stores/Enums/useAnimalSpeciesEnumStore";
 import { useGenderEnumStore } from "~/stores/Enums/useGenderEnumStore";
@@ -9,7 +9,7 @@ import { useAnimalCoatEnumStore } from "~/stores/Enums/useAnimalCoatEnumStore";
 
 export default defineComponent({
 	name: "OrganismsAnimalsCreate",
-	async setup() {
+	setup() {
 		const useAnimalsCreate = useCreateStore();
 		const useAnimalSpeciesEnum = useAnimalSpeciesEnumStore();
 		const useGenderEnum = useGenderEnumStore();
@@ -18,19 +18,11 @@ export default defineComponent({
 		const useAnimalCoatEnum = useAnimalCoatEnumStore();
 		const { form } = useAnimalsCreate;
 
-		const [
-			optionsSpecies,
-			optionsGender,
-			optionsAnimalStatus,
-			optionsAnimalSize,
-			optionsAnimalCoat,
-		] = await Promise.all([
-			useAnimalSpeciesEnum.getOptions(),
-			useGenderEnum.getOptions(),
-			useAnimalStatusEnum.getOptions(),
-			useAnimalSizeEnum.getOptions(),
-			useAnimalCoatEnum.getOptions(),
-		]);
+		const optionsSpecies = ref<IOption[]>([]);
+		const optionsGender = ref<IOption[]>([]);
+		const optionsAnimalStatus = ref<IOption[]>([]);
+		const optionsAnimalSize = ref<IOption[]>([]);
+		const optionsAnimalCoat = ref<IOption[]>([]);
 
 		const optionsBoolean: IOption[] = [
 			{ id: 1, text: "Sim", state: "default" },
@@ -38,8 +30,24 @@ export default defineComponent({
 		];
 
 		const birthDate = ref("");
-
 		const entryDate = ref("");
+
+		onMounted(async () => {
+			const [species, gender, animalStatus, animalSize, animalCoat] =
+				await Promise.all([
+					useAnimalSpeciesEnum.getOptions(),
+					useGenderEnum.getOptions(),
+					useAnimalStatusEnum.getOptions(),
+					useAnimalSizeEnum.getOptions(),
+					useAnimalCoatEnum.getOptions(),
+				]);
+
+			optionsSpecies.value = species;
+			optionsGender.value = gender;
+			optionsAnimalStatus.value = animalStatus;
+			optionsAnimalSize.value = animalSize;
+			optionsAnimalCoat.value = animalCoat;
+		});
 
 		const isCastrated = computed(() => {
 			return form.castrated.value === 1;

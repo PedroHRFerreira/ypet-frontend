@@ -14,7 +14,7 @@ export default defineComponent({
 	},
 	setup() {
 		const citizensList = useListStore();
-		
+
 		const header = computed(() => {
 			return {
 				title: "Todos os cidadãos cadastrados",
@@ -44,7 +44,7 @@ export default defineComponent({
 		});
 
 		async function paginationChange(value: number) {
-			await citizensList.fetchList({ page:value });
+			await citizensList.fetchList({ page: value });
 		}
 
 		const columnsHeader = ref([
@@ -120,14 +120,29 @@ export default defineComponent({
 
 		const optionsStatus: IEnum[] = [
 			{ value: "active", name: "ACTIVE", label: "Ativo", color: "#00b374" },
-			{ value: "inactive", name: "INACTIVE", label: "Inativo", color: "#999999" },
-			{ value: "suspended", name: "SUSPENDED", label: "Suspenso", color: "#e6a832" },
-			{ value: "deleted", name: "DELETED", label: "Deletado", color: "#cc3333" },
-		]
+			{
+				value: "inactive",
+				name: "INACTIVE",
+				label: "Inativo",
+				color: "#999999",
+			},
+			{
+				value: "suspended",
+				name: "SUSPENDED",
+				label: "Suspenso",
+				color: "#e6a832",
+			},
+			{
+				value: "deleted",
+				name: "DELETED",
+				label: "Deletado",
+				color: "#cc3333",
+			},
+		];
 
 		const getStatus = (status: string | number) => {
-			return optionsStatus.find((s) => s.value === status)
-		}
+			return optionsStatus.find((s) => s.value === status);
+		};
 
 		return {
 			citizensList,
@@ -136,7 +151,7 @@ export default defineComponent({
 			list,
 			getStatus,
 			onSelectOptionAction,
-			paginationChange
+			paginationChange,
 		};
 	},
 	methods: {
@@ -193,9 +208,7 @@ export default defineComponent({
 				<template #name>
 					<AtomsTypography
 						type="text-p5"
-						:text="
-							item.user.name
-						"
+						:text="item.user.name"
 						weight="regular"
 						color="var(--brand-color-dark-blue-300)"
 					/>
@@ -213,7 +226,7 @@ export default defineComponent({
 						type="text"
 						:color="getStatus(item.status)?.color"
 						:size="'small'"
-						:text="getStatus(item.status)?.label  || '---'"
+						:text="getStatus(item.status)?.label || '---'"
 					/>
 				</template>
 				<template #telephone>

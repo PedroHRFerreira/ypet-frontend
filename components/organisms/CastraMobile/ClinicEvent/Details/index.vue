@@ -32,17 +32,20 @@ export default defineComponent({
 						{ label: "Local:", value: data?.location || "N/A" },
 						{ label: "Nº. De Vagas:", value: data?.max_registrations },
 						{ label: "Vagas preenchidas:", value: data?.current_registrations },
-						{
-							label: "Espécies:",
-							value: data?.species,
-							isEnum: true,
-						},
-						{
-							label: "Sexo:",
-							value: data.gender || "N/A",
-							isEnum: true,
-						},
 					],
+				},
+				{
+					title: "Regras do evento (Especie, Sexo e Max. de vagas)",
+					content: data?.rules?.length
+						? data.rules.map((rule: IMobileClinicEventRule, index: number) => ({
+								label: `#${index + 1}:`,
+								value: [
+									`Espécie: ${rule.specie?.label ?? "N/A"}`,
+									`Sexo: ${rule.gender?.label ?? "N/A"}`,
+									`Máx. de Vagas: ${rule.max_registrations ?? "N/A"}`,
+								].join(" - "),
+							}))
+						: [{ label: "Nenhuma regra cadastrada.", value: "N/A" }],
 				},
 			] as AboutType[];
 		});
@@ -50,7 +53,7 @@ export default defineComponent({
 		onMounted(async () => {
 			const id = useRoute().params.id as string;
 			await detailsStore.fetchById(id, {
-				"with[]": [],
+				"with[]": ["rules"],
 			});
 		});
 

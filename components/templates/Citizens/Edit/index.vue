@@ -23,7 +23,6 @@ export default defineComponent({
 			}
 
 			const textStart = "Editar informações do cidadão: ";
-			
 
 			return textStart + (citizenDetailsStore.citizens?.name || "");
 		});
@@ -49,13 +48,6 @@ export default defineComponent({
 					},
 				],
 			};
-		});
-
-		onMounted(async () => {
-			const id = useRoute().params.id as string;
-			await citizenDetailsStore.fetchCitizenById(id, {
-				"with[]": ["user"],
-			});
 		});
 
 		return {
