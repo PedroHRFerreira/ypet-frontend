@@ -4,6 +4,7 @@ import { defineComponent, ref, computed } from "vue";
 export default defineComponent({
 	name: "OrganismsLocations",
 	setup() {
+		const isVisible = ref(false);
 		const header = computed(() => ({
 			title: "Todos os locais cadastrados",
 			subtitle: "",
@@ -112,6 +113,10 @@ export default defineComponent({
 			console.log("Página alterada para:", page);
 		};
 
+		const toggleDropdown = () => {
+			isVisible.value = true;
+		};
+
 		return {
 			header,
 			columnsHeader,
@@ -120,6 +125,8 @@ export default defineComponent({
 			dropdownOptions,
 			citizensList,
 			paginationChange,
+			toggleDropdown,
+			isVisible,
 		};
 	},
 });
@@ -164,6 +171,7 @@ export default defineComponent({
 					size="small"
 					icon-left
 					name-icon-left="filter"
+					@onclick="toggleDropdown"
 				/>
 			</div>
 		</div>
@@ -236,6 +244,10 @@ export default defineComponent({
 			/>
 		</div>
 	</section>
+	<OrganismsLocationsFilter
+		:is-visible="isVisible"
+		@close="isVisible = false"
+	/>
 </template>
 <style scoped lang="scss">
 @use "styles.module";
