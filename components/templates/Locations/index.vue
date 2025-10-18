@@ -9,13 +9,7 @@ export default defineComponent({
 			subtitle: "Visualize e gerencie os cadastros de locais.",
 		}));
 
-		const isEmpty = ref(false);
-
-		const onUpdateEmpty = (value: boolean) => {
-			isEmpty.value = value;
-		};
-
-		return { header, isEmpty, onUpdateEmpty };
+		return { header };
 	},
 });
 </script>
@@ -41,7 +35,7 @@ export default defineComponent({
 			</header>
 
 			<main class="main">
-				<div v-if="isEmpty" class="main-empty">
+				<div v-if="false" class="main-empty">
 					<MoleculesEmptyState
 						:is-icon="true"
 						title="Nenhum local cadastrado"
