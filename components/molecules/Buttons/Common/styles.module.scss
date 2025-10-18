@@ -182,14 +182,8 @@
 		border-width: 1.5px;
 
 		&.normal {
-			border-color: var(--neutral-color-light-900);
-			color: var(--brand-color-blue-600);
-
-			&:hover {
-				border-color: var(--brand-color-blue-200);
-				color: var(--brand-color-blue-600);
-				background: var(--brand-color-blue-100);
-			}
+			border-color: var(--Brand-Color-Dark-Blue-100, #ced3dd);
+			color: var(--Brand-Color-Dark-Blue-300, #394e75);
 
 			&:focus {
 				border-color: var(--brand-color-primary-300);

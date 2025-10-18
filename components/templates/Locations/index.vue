@@ -1,42 +1,21 @@
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, computed, ref } from "vue";
 
 export default defineComponent({
 	name: "TemplatesLocations",
 	setup() {
-		const header = computed(() => {
-			return {
-				title: "Cadastro de locais",
-				subtitle: "Visualize e gerencie os cadastros de locais",
-				buttons: [
-					{
-						text: "Novo cadastro",
-						type: "primary",
-						icon: "plus",
-						iconLeft: false,
-						nameIconLeft: "",
-						iconRight: true,
-						nameIconRight: "plus",
-						action: () => {
-							// TODO: Adicionar ação de redirecionamento para criação
-						},
-					},
-				],
-			};
-		});
+		const header = computed(() => ({
+			title: "Locais cadastrados",
+			subtitle: "Visualize e gerencie os cadastros de locais.",
+		}));
 
-		const emptyState = computed(() => {
-			return {
-				isEmpty: true,
-				isIcon: true,
-				title: "",
-				description: "",
-			};
-		});
-		return {
-			header,
-			emptyState,
+		const isEmpty = ref(false);
+
+		const onUpdateEmpty = (value: boolean) => {
+			isEmpty.value = value;
 		};
+
+		return { header, isEmpty, onUpdateEmpty };
 	},
 });
 </script>
@@ -48,49 +27,35 @@ export default defineComponent({
 				<div class="header-content">
 					<AtomsTypography
 						type="title-h7"
-						class="header-content__title"
 						:text="header.title"
 						weight="medium"
 						color="var(--brand-color-dark-blue-900)"
 					/>
 					<AtomsTypography
 						type="text-p4"
-						class="header-content__subtitle"
 						:text="header.subtitle"
 						weight="medium"
 						color="var(--brand-color-dark-blue-300)"
 					/>
 				</div>
-				<div class="header-actions">
-					<MoleculesButtonsCommon
-						v-for="button in header.buttons"
-						:key="button.text"
-						:type="button.type"
-						:text="button.text"
-						:icon-left="button.iconLeft"
-						:icon-right="button.iconRight"
-						:name-icon-left="button.nameIconLeft"
-						:name-icon-right="button.nameIconRight"
-						@onclick="button.action"
-					/>
-				</div>
 			</header>
+
 			<main class="main">
-				<div v-if="emptyState.isEmpty" class="main-empty">
+				<div v-if="isEmpty" class="main-empty">
 					<MoleculesEmptyState
-						:is-icon="emptyState.isIcon"
-						:title="emptyState.title"
-						:description="emptyState.description"
+						:is-icon="true"
+						title="Nenhum local cadastrado"
+						description="Adicione um novo cadastro para começar."
 					/>
 				</div>
+
 				<div v-else class="main-content">
-					<h2>Organismos de lista</h2>
+					<OrganismsLocations />
 				</div>
 			</main>
 		</div>
 	</div>
 </template>
-
 <style scoped lang="scss">
 @use "styles.module";
 </style>
