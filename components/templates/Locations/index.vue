@@ -1,15 +1,21 @@
 <script lang="ts">
-import { defineComponent, computed, ref } from "vue";
+import { defineComponent } from "vue";
+import { useLocationsStore } from "~/stores/locations/useListStore";
 
 export default defineComponent({
 	name: "TemplatesLocations",
 	setup() {
+		const locationsStore = useLocationsStore();
 		const header = computed(() => ({
 			title: "Locais cadastrados",
 			subtitle: "Visualize e gerencie os cadastros de locais.",
 		}));
 
-		return { header };
+		onMounted(() => {
+			locationsStore.fetchLocations();
+		});
+
+		return { header, locationsStore };
 	},
 });
 </script>
@@ -35,16 +41,15 @@ export default defineComponent({
 			</header>
 
 			<main class="main">
-				<div v-if="false" class="main-empty">
+				<div v-if="locationsStore.locations.length > 0" class="main-content">
+					<OrganismsLocations />
+				</div>
+				<div v-else class="main-empty">
 					<MoleculesEmptyState
 						:is-icon="true"
 						title="Nenhum local cadastrado"
 						description="Adicione um novo cadastro para começar."
 					/>
-				</div>
-
-				<div v-else class="main-content">
-					<OrganismsLocations />
 				</div>
 			</main>
 		</div>

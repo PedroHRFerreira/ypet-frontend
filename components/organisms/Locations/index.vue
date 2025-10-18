@@ -1,10 +1,13 @@
 <script lang="ts">
-import { defineComponent, ref, computed } from "vue";
+import { defineComponent } from "vue";
+import { useLocationsStore } from "~/stores/locations/useListStore";
 
 export default defineComponent({
 	name: "OrganismsLocations",
 	setup() {
+		const locationsStore = useLocationsStore();
 		const isVisible = ref(false);
+
 		const header = computed(() => ({
 			title: "Todos os locais cadastrados",
 			subtitle: "",
@@ -18,9 +21,7 @@ export default defineComponent({
 					nameIconRight: "",
 					size: "small",
 					width: "auto",
-					action: () => {
-						console.log("Novo cadastro clicado");
-					},
+					action: () => console.log("Novo cadastro clicado"),
 				},
 			],
 		}));
@@ -68,49 +69,21 @@ export default defineComponent({
 			},
 		]);
 
-		const list = computed(() => [
-			{
-				id: 1,
-				name: "Clínica Animal Vida",
-				type: "Clínica Veterinária",
-				neighborhood: "Centro",
-				phone: "(11) 98888-1234",
-			},
-			{
-				id: 2,
-				name: "PetShop Amigão",
-				type: "Pet Shop",
-				neighborhood: "Jardim das Flores",
-				phone: "(11) 97777-4321",
-			},
-			{
-				id: 3,
-				name: "Abrigo Esperança",
-				type: "Abrigo",
-				neighborhood: "Vila Nova",
-				phone: "(11) 96666-9876",
-			},
-		]);
-
-		const onSelectOptionAction = (event: string, item: any) => {
-			console.log(`Ação '${event}' selecionada para:`, item);
-		};
+		const list = computed(() => locationsStore.locations);
+		const pagination = computed(() => locationsStore.meta);
+		const isLoading = computed(() => locationsStore.isLoading);
 
 		const dropdownOptions = computed(() => [
 			{ label: "Editar", value: "edit" },
 			{ label: "Detalhes", value: "details" },
 		]);
 
-		const citizensList = ref({
-			pagination: {
-				total: 3,
-				current_page: 1,
-				per_page: 10,
-			},
-		});
+		const onSelectOptionAction = (event: string, item: any) => {
+			console.log(`Ação '${event}' selecionada para:`, item);
+		};
 
 		const paginationChange = (page: number) => {
-			console.log("Página alterada para:", page);
+			locationsStore.changePage(page);
 		};
 
 		const toggleDropdown = () => {
@@ -121,9 +94,10 @@ export default defineComponent({
 			header,
 			columnsHeader,
 			list,
-			onSelectOptionAction,
+			pagination,
+			isLoading,
 			dropdownOptions,
-			citizensList,
+			onSelectOptionAction,
 			paginationChange,
 			toggleDropdown,
 			isVisible,
@@ -133,9 +107,9 @@ export default defineComponent({
 </script>
 
 <template>
-	<section class="wrapper-list-card">
+	<section class="wrapper-list-card" :class="{ loading: isLoading }">
 		<div class="wrapper-list-card__header">
-			<div class="wrapper-list-card__header-title">
+			<div class="wrapper-list-card__header-title anim-loading">
 				<AtomsTypography
 					type="title-h7"
 					:text="header.title"
@@ -143,7 +117,7 @@ export default defineComponent({
 					color="var(--brand-color-dark-blue-300)"
 				/>
 			</div>
-			<div class="wrapper-list-card__header-actions">
+			<div class="wrapper-list-card__header-actions anim-loading">
 				<MoleculesButtonsCommon
 					v-for="button in header.buttons"
 					:key="button.text"
@@ -161,10 +135,10 @@ export default defineComponent({
 		</div>
 
 		<div class="wrapper-list-card__search">
-			<div class="wrapper-list-card__search-input">
+			<div class="wrapper-list-card__search-input anim-loading">
 				<MoleculesInputSearch label="Procurar" />
 			</div>
-			<div class="wrapper-list-card__search-filters">
+			<div class="wrapper-list-card__search-filters anim-loading">
 				<MoleculesButtonsCommon
 					type="outline"
 					text="Filtros"
@@ -177,7 +151,12 @@ export default defineComponent({
 		</div>
 
 		<MoleculesListCardItem :data="columnsHeader" padding="24px 32px">
-			<template v-for="(item, key) in columnsHeader" #[item.value] :key="key">
+			<template
+				v-for="(item, key) in columnsHeader"
+				#[item.value]
+				:key="key"
+				class="anim-loading"
+			>
 				<AtomsTypography
 					:type="item.typeTypography"
 					:text="item.text"
@@ -188,15 +167,16 @@ export default defineComponent({
 		</MoleculesListCardItem>
 
 		<MoleculesListCardItem
-			v-for="(item, key) in list"
-			:key="key"
+			v-for="item in list"
+			:key="item.id"
 			:data="columnsHeader"
 			padding="32px"
+			class="anim-loading"
 		>
 			<template #name>
 				<AtomsTypography
 					type="text-p5"
-					:text="item.name"
+					:text="item.location_name"
 					weight="regular"
 					color="var(--brand-color-dark-blue-300)"
 				/>
@@ -204,7 +184,7 @@ export default defineComponent({
 			<template #type>
 				<AtomsTypography
 					type="text-p5"
-					:text="item.type"
+					:text="item.location_type"
 					weight="regular"
 					color="var(--brand-color-dark-blue-300)"
 				/>
@@ -212,7 +192,7 @@ export default defineComponent({
 			<template #neighborhood>
 				<AtomsTypography
 					type="text-p5"
-					:text="item.neighborhood"
+					:text="item.addresses?.neighborhood || '-'"
 					weight="regular"
 					color="var(--brand-color-dark-blue-300)"
 				/>
@@ -236,19 +216,21 @@ export default defineComponent({
 
 		<div class="wrapper-list-card__footer">
 			<MoleculesPaginationControls
-				v-if="citizensList.pagination"
-				:total-items="citizensList.pagination.total"
-				:current-page="citizensList.pagination.current_page"
-				:per-page="citizensList.pagination.per_page"
+				v-if="pagination"
+				:total-items="pagination.total || 0"
+				:current-page="pagination.current_page || 1"
+				:per-page="pagination.per_page || 10"
 				@pageChange="paginationChange($event)"
 			/>
 		</div>
 	</section>
+
 	<OrganismsLocationsFilter
 		:is-visible="isVisible"
 		@close="isVisible = false"
 	/>
 </template>
+
 <style scoped lang="scss">
 @use "styles.module";
 
