@@ -126,7 +126,10 @@ export default defineComponent({
 	<div
 		v-if="isDisplay"
 		class="modal"
-		:class="{ 'show-effect': isShowEffect }"
+		:class="{
+			'show-effect': isShowEffect,
+			'bg-center': typeModal === 'center',
+		}"
 		@click="clickOutsideModal"
 	>
 		<div

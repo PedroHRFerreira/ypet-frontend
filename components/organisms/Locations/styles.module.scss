@@ -1,0 +1,68 @@
+.wrapper-list-card {
+	display: flex;
+	flex-direction: column;
+	gap: 0;
+	width: 100%;
+	box-sizing: border-box;
+	border-radius: 4px;
+	border: 1px solid var(--brand-color-blue-100, #ecf1fe);
+	box-shadow: 0 1px 0 0 rgba(17, 17, 17, 0.08);
+
+	background: var(
+		--black-and-white-white,
+		linear-gradient(
+			0deg,
+			rgba(255, 255, 255, 0.2) 0%,
+			rgba(255, 255, 255, 0.2) 100%
+		),
+		#fff
+	);
+
+	&__header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 24px 32px 24px 32px;
+
+		&-actions {
+			display: flex;
+			gap: 16px;
+		}
+	}
+
+	&__search {
+		width: 100%;
+		display: flex;
+		gap: 16px;
+		align-items: center;
+
+		padding: 16px 32px 24px 32px;
+
+		border-bottom: 1px solid var(--brand-color-blue-100, #ced3dd);
+
+		&-input {
+			max-width: 605px;
+			width: 100%;
+		}
+
+		&-button {
+			max-width: 100px;
+			width: 100%;
+		}
+	}
+
+	&__body {
+		display: flex;
+		flex-direction: column;
+		box-sizing: border-box;
+
+		padding: 0 32px 16px 32px;
+		gap: 8px;
+		overflow-x: auto;
+	}
+
+	&__footer {
+		border-top: 1px solid var(--brand-color-blue-100, #ecf1fe);
+		padding: 0 32px 0 32px;
+	}
+}

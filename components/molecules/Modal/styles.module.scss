@@ -6,7 +6,9 @@
 	right: 0;
 	contain: paint;
 	z-index: 5;
-	background: #0b12128e;
+	.bg-center {
+		background: #0b12128e;
+	}
 	.content-modal {
 		position: fixed;
 		display: flex;
@@ -17,6 +19,7 @@
 		overflow: hidden;
 
 		&.aside {
+			background: var(--background-primary-bg);
 			width: min(50%, 408px);
 			top: 0;
 			z-index: 1;
