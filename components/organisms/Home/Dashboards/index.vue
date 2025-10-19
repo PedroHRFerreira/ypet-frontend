@@ -80,5 +80,4 @@ export default defineComponent({
 		grid-template-columns: 1fr;
 	}
 }
-
 </style>

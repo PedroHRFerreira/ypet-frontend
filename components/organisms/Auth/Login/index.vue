@@ -52,10 +52,10 @@ export default defineComponent({
 			/>
 		</div>
 		<MoleculesInputCommon
-			label="Endereço de e-mail"
-			:value="useAuthLogin.form.email.value"
-			:message-error="useAuthLogin.form.email.errorMessage.toString()"
-			@on-input="useAuthLogin.setEmail"
+			label="E-mail ou CPF"
+			:value="useAuthLogin.maskedLogin"
+			:message-error="useAuthLogin.form.login.errorMessage.toString()"
+			@on-input="useAuthLogin.setLogin"
 		/>
 		<MoleculesInputPassword
 			label="Senha"
