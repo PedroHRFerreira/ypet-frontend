@@ -39,6 +39,23 @@ export default defineComponent({
 				option.id === props.value ? "activated" : option.state || "default",
 		}));
 
+		watch(
+			() => [props.value, props.options],
+			([newValue, newOptions]) => {
+				const selectedValue = Array.isArray(newValue)
+					? (newValue as any[])[0]
+					: (newValue as any);
+				items.value = (newOptions as IOption[]).map((option) => {
+					const isActive = String(option.id) === String(selectedValue);
+					return {
+						...option,
+						state: isActive ? "activated" : option.state || "default",
+					};
+				});
+			},
+			{ deep: true, immediate: true },
+		);
+
 		const handleOptionChange = (selectedOption: IOption) => {
 			emit("changeOption", selectedOption);
 		};
@@ -63,8 +80,8 @@ export default defineComponent({
 		</label>
 		<div :class="['options-container', { 'has-error': isMessageError }]">
 			<AtomsBaseRadio
-				v-for="(option, index) in items"
-				:key="index"
+				v-for="option in items"
+				:key="option.id"
 				:name="name"
 				:option="option"
 				@on-change="handleOptionChange"
