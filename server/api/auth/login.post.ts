@@ -22,6 +22,15 @@ export default defineEventHandler(async (event): Promise<IResponse> => {
 			return error.data as IResponse;
 		}
 
+		if (error?.statusCode === 401) {
+			return {
+				type: "error",
+				status: 401,
+				message: error.message || "Credenciais inválidas",
+				data: error.data || {},
+			} as IResponse;
+		}
+
 		return {
 			type: "error",
 			status: error?.statusCode || 500,
