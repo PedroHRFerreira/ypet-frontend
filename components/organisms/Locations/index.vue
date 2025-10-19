@@ -7,6 +7,7 @@ export default defineComponent({
 	setup() {
 		const locationsStore = useLocationsStore();
 		const isVisible = ref(false);
+		const searchValue = ref("");
 
 		const header = computed(() => ({
 			title: "Todos os locais cadastrados",
@@ -90,6 +91,28 @@ export default defineComponent({
 			isVisible.value = true;
 		};
 
+		const onSearchInput = (value: string) => {
+			searchValue.value = value;
+			if (searchValue.value.trim().length === 0) {
+				locationsStore.filters.name = null;
+				locationsStore.fetchLocations(1);
+			}
+		};
+
+		const onSearchEnter = () => {
+			const trimmed = searchValue.value.trim();
+			if (trimmed.length > 0) {
+				locationsStore.filters.name = trimmed;
+				locationsStore.fetchLocations(1);
+			}
+		};
+
+		const clearSearch = () => {
+			searchValue.value = "";
+			locationsStore.filters.name = null;
+			locationsStore.fetchLocations(1);
+		};
+
 		return {
 			header,
 			columnsHeader,
@@ -101,6 +124,10 @@ export default defineComponent({
 			paginationChange,
 			toggleDropdown,
 			isVisible,
+			onSearchInput,
+			onSearchEnter,
+			clearSearch,
+			searchValue,
 		};
 	},
 });
@@ -136,7 +163,14 @@ export default defineComponent({
 
 		<div class="wrapper-list-card__search">
 			<div class="wrapper-list-card__search-input anim-loading">
-				<MoleculesInputSearch label="Procurar" />
+				<MoleculesInputSearch
+					label="Procurar"
+					:value="searchValue"
+					:close="!!searchValue.trim().length"
+					@onInput="onSearchInput"
+					@clearInput="clearSearch"
+					@keydown.enter.native="onSearchEnter"
+				/>
 			</div>
 			<div class="wrapper-list-card__search-filters anim-loading">
 				<MoleculesButtonsCommon
@@ -224,9 +258,9 @@ export default defineComponent({
 			/>
 		</div>
 	</section>
-
 	<OrganismsLocationsFilter
 		:is-visible="isVisible"
+		@clear-all="clearSearch"
 		@close="isVisible = false"
 	/>
 </template>
