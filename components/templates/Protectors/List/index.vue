@@ -31,7 +31,8 @@ export default defineComponent({
 
 		const emptyState = computed(() => {
 			return {
-				isEmpty: !protectorsList.protectors || protectorsList.protectors.length === 0,
+				isEmpty:
+					!protectorsList.protectors || protectorsList.protectors.length === 0,
 				isIcon: true,
 				title: "Nenhum protetor cadastrado",
 				description:

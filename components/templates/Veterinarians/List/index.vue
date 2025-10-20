@@ -32,7 +32,9 @@ export default defineComponent({
 
 		const emptyState = computed(() => {
 			return {
-				isEmpty: !veterinariansList.veterinarians || veterinariansList.veterinarians.length === 0,
+				isEmpty:
+					!veterinariansList.veterinarians ||
+					veterinariansList.veterinarians.length === 0,
 				isIcon: true,
 				title: "Nenhum veterinário cadastrado",
 				description:

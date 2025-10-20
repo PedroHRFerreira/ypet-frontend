@@ -174,17 +174,22 @@ export default defineComponent({
 		};
 
 		onMounted(async () => {
-			const [speciesData, genderData, animalStatusData, animalSizeData, animalCoatData] =
-				await Promise.all([
-					useAnimalSpeciesEnum.getOptions(),
-					useGenderEnum.getOptions(),
-					useAnimalStatusEnum.getOptions(),
-					useAnimalSizeEnum.getOptions(),
-					useAnimalCoatEnum.getOptions(),
-					animalDetailsStore.fetchAnimalById(id, {
-						"with[]": ["status", "entryData"],
-					}),
-				]);
+			const [
+				speciesData,
+				genderData,
+				animalStatusData,
+				animalSizeData,
+				animalCoatData,
+			] = await Promise.all([
+				useAnimalSpeciesEnum.getOptions(),
+				useGenderEnum.getOptions(),
+				useAnimalStatusEnum.getOptions(),
+				useAnimalSizeEnum.getOptions(),
+				useAnimalCoatEnum.getOptions(),
+				animalDetailsStore.fetchAnimalById(id, {
+					"with[]": ["status", "entryData"],
+				}),
+			]);
 
 			species.value = speciesData;
 			gender.value = genderData;

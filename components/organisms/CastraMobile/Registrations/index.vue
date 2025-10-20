@@ -25,7 +25,9 @@ export default defineComponent({
 			await listStore.fetchList({
 				"with[]": ["user", "animal"],
 				...(selectedDate.value && { "filter[date]": selectedDate.value }),
-				...(selectedSpecies.value && { "filter[species]": selectedSpecies.value }),
+				...(selectedSpecies.value && {
+					"filter[species]": selectedSpecies.value,
+				}),
 				...(selectedStatus.value && { "filter[status]": selectedStatus.value }),
 			});
 		}

@@ -20,7 +20,7 @@ export default defineComponent({
 		const useAuthLogin = useAuthLoginStore();
 
 		if (email) {
-			useAuthLogin.setEmail(email);
+			useAuthLogin.setLogin(email);
 		}
 
 		return {};

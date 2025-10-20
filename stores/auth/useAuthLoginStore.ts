@@ -3,7 +3,7 @@ import { useAuthToken } from "~/composables/useAuthToken";
 export const useAuthLoginStore = defineStore("authLogin", {
 	state: () => {
 		const form = ref({
-			email: {
+			login: {
 				value: "",
 				errorMessage: [] as string | string[],
 			},
@@ -28,6 +28,21 @@ export const useAuthLoginStore = defineStore("authLogin", {
 			form,
 		};
 	},
+	getters: {
+		maskedLogin(): string {
+			const login = this.form.login.value;
+			const cleanLogin = login.replace(/\D/g, "");
+
+			if (
+				cleanLogin.length > 0 &&
+				cleanLogin.length <= 11 &&
+				!login.includes("@")
+			) {
+				return useMaskDocument(cleanLogin);
+			}
+			return login;
+		},
+	},
 	actions: {
 		async login(): Promise<boolean> {
 			if (this.isLoading) {
@@ -43,7 +58,7 @@ export const useAuthLoginStore = defineStore("authLogin", {
 			}
 
 			this.setIsLoading(true);
-			const email = this.$state.form.email.value;
+			const login = this.$state.form.login.value;
 			const password = this.$state.form.password.value;
 			const remember = this.$state.form.rememberMe.value;
 			const { data } = await useFetch("/api/auth/login", {
@@ -63,10 +78,23 @@ export const useAuthLoginStore = defineStore("authLogin", {
 			}
 
 			if (response.status === 422) {
-				this.setErrorEmail(
-					response.data.errors.email || ["Invalid email address."],
-				);
-				this.setErrorPassword(response.data.errors.password || []);
+				const errors = response?.errors || {};
+				this.setErrorLogin(errors.login || ["Login inválido."]);
+				this.setErrorPassword(errors.password || []);
+				this.setIsLoading(false);
+
+				return false;
+			}
+
+			if (response.status === 401) {
+				this.setErrorLogin(["E-mail/CPF ou senha incorretos."]);
+				this.setIsLoading(false);
+
+				return false;
+			}
+
+			if (response.type === "error") {
+				this.setErrorLogin([response.message || "Erro ao realizar login."]);
 				this.setIsLoading(false);
 
 				return false;
@@ -129,15 +157,24 @@ export const useAuthLoginStore = defineStore("authLogin", {
 
 			return !!token;
 		},
-		setErrorEmail(message: string[]) {
-			this.$state.form.email.errorMessage = message;
+		setErrorLogin(message: string[]) {
+			this.$state.form.login.errorMessage = message;
 		},
 		setErrorPassword(message: string[]) {
 			this.$state.form.password.errorMessage = message;
 		},
-		setEmail(value: string) {
-			this.$state.form.email.value = value;
-			this.setErrorEmail([]);
+		setLogin(value: string) {
+			const cleanValue = value.replace(/\D/g, "");
+			if (
+				cleanValue.length > 0 &&
+				cleanValue.length <= 11 &&
+				value === value.replace(/[a-zA-Z@]/g, "")
+			) {
+				this.$state.form.login.value = cleanValue;
+			} else {
+				this.$state.form.login.value = value;
+			}
+			this.setErrorLogin([]);
 		},
 		setPassword(value: string) {
 			this.$state.form.password.value = value;
@@ -154,7 +191,8 @@ export const useAuthLoginStore = defineStore("authLogin", {
 			this.$state.isLoading = value;
 		},
 		resetForm() {
-			this.setErrorEmail([]);
+			this.$state.form.login.value = "";
+			this.setErrorLogin([]);
 			this.setPassword("");
 			this.setErrorPassword([]);
 			this.setIsLoading(false);
@@ -162,22 +200,41 @@ export const useAuthLoginStore = defineStore("authLogin", {
 			this.setErrorRememberMe([]);
 		},
 		validateForm(): boolean {
-			return this.checkEmail() && this.checkPassword();
+			return this.checkLogin() && this.checkPassword();
 		},
-		checkEmail(): boolean {
-			const email = this.$state.form.email.value || "";
-			this.setErrorEmail([]);
+		checkLogin(): boolean {
+			const login = this.$state.form.login.value || "";
+			this.setErrorLogin([]);
 
-			if (!email) {
-				this.setErrorEmail(["Email obrigatório"]);
+			if (!login) {
+				this.setErrorLogin(["E-mail ou CPF obrigatório"]);
 
 				return false;
 			}
 
+			const cleanLogin = login.trim().replace(/\D/g, "");
+
+			if (cleanLogin.length === 11 && !login.includes("@")) {
+				if (!useValidateDocumentPF(cleanLogin)) {
+					this.setErrorLogin(["CPF inválido"]);
+					return false;
+				}
+				return true;
+			}
+
 			if (
-				!/^\w+([\\.-]?\w+)*@\w+([\\.-]?\w+)*(\.\w{2,3})+$/.test(email.trim())
+				cleanLogin.length > 0 &&
+				cleanLogin.length < 11 &&
+				!login.includes("@")
 			) {
-				this.setErrorEmail(["Email inválido"]);
+				this.setErrorLogin(["CPF incompleto"]);
+				return false;
+			}
+
+			if (
+				!/^\w+([\\.-]?\w+)*@\w+([\\.-]?\w+)*(\.\w{2,3})+$/.test(login.trim())
+			) {
+				this.setErrorLogin(["E-mail inválido"]);
 
 				return false;
 			}
@@ -188,7 +245,7 @@ export const useAuthLoginStore = defineStore("authLogin", {
 			const password = this.$state.form.password.value || "";
 			this.setErrorPassword([]);
 
-			if (!this.checkEmail()) {
+			if (!this.checkLogin()) {
 				return false;
 			}
 
