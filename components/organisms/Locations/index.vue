@@ -7,6 +7,8 @@ export default defineComponent({
 	setup() {
 		const locationsStore = useLocationsStore();
 		const isVisible = ref(false);
+		const searchValue = ref("");
+		const router = useRouter();
 
 		const header = computed(() => ({
 			title: "Todos os locais cadastrados",
@@ -21,7 +23,9 @@ export default defineComponent({
 					nameIconRight: "",
 					size: "small",
 					width: "auto",
-					action: () => console.log("Novo cadastro clicado"),
+					action: () => {
+						router.push({ name: "locations-create" });
+					},
 				},
 			],
 		}));
@@ -44,8 +48,8 @@ export default defineComponent({
 				style: { width: "20%" },
 			},
 			{
-				value: "neighborhood",
-				text: "BAIRRO",
+				value: "status",
+				text: "STATUS",
 				typeTypography: "text-p5",
 				weightTypography: "bold",
 				colorTypography: "var(--brand-color-dark-blue-300)",
@@ -65,7 +69,7 @@ export default defineComponent({
 				typeTypography: "text-p5",
 				weightTypography: "bold",
 				colorTypography: "var(--brand-color-dark-blue-300)",
-				style: { width: "10%", justifyContent: "flex-end" },
+				style: { width: "15%", justifyContent: "flex-end" },
 			},
 		]);
 
@@ -78,8 +82,16 @@ export default defineComponent({
 			{ label: "Detalhes", value: "details" },
 		]);
 
-		const onSelectOptionAction = (event: string, item: any) => {
-			console.log(`Ação '${event}' selecionada para:`, item);
+		const onSelectOptionAction = (event: string, item: ICitizens) => {
+			const router = useRouter();
+
+			if (event === "edit") {
+				router.push({ name: "locations-edit", params: { id: item.id } });
+			}
+
+			if (event === "details") {
+				router.push({ name: "locations-details", params: { id: item.id } });
+			}
 		};
 
 		const paginationChange = (page: number) => {
@@ -90,7 +102,53 @@ export default defineComponent({
 			isVisible.value = true;
 		};
 
+		const onSearchInput = (value: string) => {
+			searchValue.value = value;
+			if (searchValue.value.trim().length === 0) {
+				locationsStore.filters.name = null;
+				locationsStore.fetchLocations(1);
+			}
+		};
+
+		const onSearchEnter = () => {
+			const trimmed = searchValue.value.trim();
+			if (trimmed.length > 0) {
+				locationsStore.filters.name = trimmed;
+				locationsStore.fetchLocations(1);
+			}
+		};
+
+		const clearSearch = () => {
+			searchValue.value = "";
+			locationsStore.filters.name = null;
+			locationsStore.fetchLocations(1);
+		};
+
+		const LocationTypeEnum: Record<string, string> = {
+			pet_hotel: "Hotel Pet",
+			temporary_home: "Lar Temporário",
+			municipal_temporary_shelter: "Abrigo Temporário Municipal",
+			partner_clinics: "Clínicas Conveniadas",
+			veterinary_hospital: "Hospital Veterinário",
+			adopt_here: "Adote Aqui",
+			shelter_protector: "Abrigo / Protetor",
+		};
+
+		const LocationStatusEnum: Record<number, string> = {
+			0: "Inativo",
+			1: "Ativo",
+		};
+
+		const getLocationStatusText = (statusId: number) => {
+			return LocationStatusEnum[statusId] || statusId;
+		};
+
+		const getLocationTypeText = (typeId: string) => {
+			return LocationTypeEnum[typeId] || typeId;
+		};
+
 		return {
+			locationsStore,
 			header,
 			columnsHeader,
 			list,
@@ -101,6 +159,12 @@ export default defineComponent({
 			paginationChange,
 			toggleDropdown,
 			isVisible,
+			onSearchInput,
+			onSearchEnter,
+			clearSearch,
+			searchValue,
+			getLocationStatusText,
+			getLocationTypeText,
 		};
 	},
 });
@@ -119,6 +183,7 @@ export default defineComponent({
 			</div>
 			<div class="wrapper-list-card__header-actions anim-loading">
 				<MoleculesButtonsCommon
+					v-if="locationsStore.locations.length > 0"
 					v-for="button in header.buttons"
 					:key="button.text"
 					:type="button.type"
@@ -136,7 +201,14 @@ export default defineComponent({
 
 		<div class="wrapper-list-card__search">
 			<div class="wrapper-list-card__search-input anim-loading">
-				<MoleculesInputSearch label="Procurar" />
+				<MoleculesInputSearch
+					label="Procurar"
+					:value="searchValue"
+					:close="!!searchValue.trim().length"
+					@onInput="onSearchInput"
+					@clearInput="clearSearch"
+					@keydown.enter.native="onSearchEnter"
+				/>
 			</div>
 			<div class="wrapper-list-card__search-filters anim-loading">
 				<MoleculesButtonsCommon
@@ -149,84 +221,92 @@ export default defineComponent({
 				/>
 			</div>
 		</div>
+		<div v-if="locationsStore.locations.length > 0">
+			<MoleculesListCardItem :data="columnsHeader" padding="24px 32px">
+				<template
+					v-for="(item, key) in columnsHeader"
+					#[item.value]
+					:key="key"
+					class="anim-loading"
+				>
+					<AtomsTypography
+						:type="item.typeTypography"
+						:text="item.text"
+						:weight="item.weightTypography"
+						:color="item.colorTypography"
+					/>
+				</template>
+			</MoleculesListCardItem>
 
-		<MoleculesListCardItem :data="columnsHeader" padding="24px 32px">
-			<template
-				v-for="(item, key) in columnsHeader"
-				#[item.value]
-				:key="key"
+			<MoleculesListCardItem
+				v-for="item in list"
+				:key="item.id"
+				:data="columnsHeader"
+				padding="32px"
 				class="anim-loading"
 			>
-				<AtomsTypography
-					:type="item.typeTypography"
-					:text="item.text"
-					:weight="item.weightTypography"
-					:color="item.colorTypography"
-				/>
-			</template>
-		</MoleculesListCardItem>
+				<template #name>
+					<AtomsTypography
+						type="text-p5"
+						:text="item.location_name"
+						weight="regular"
+						color="var(--brand-color-dark-blue-300)"
+					/>
+				</template>
+				<template #type>
+					<AtomsTypography
+						type="text-p5"
+						:text="getLocationTypeText(item.location_type)"
+						weight="regular"
+						color="var(--brand-color-dark-blue-300)"
+					/>
+				</template>
 
-		<MoleculesListCardItem
-			v-for="item in list"
-			:key="item.id"
-			:data="columnsHeader"
-			padding="32px"
-			class="anim-loading"
-		>
-			<template #name>
-				<AtomsTypography
-					type="text-p5"
-					:text="item.location_name"
-					weight="regular"
-					color="var(--brand-color-dark-blue-300)"
-				/>
-			</template>
-			<template #type>
-				<AtomsTypography
-					type="text-p5"
-					:text="item.location_type"
-					weight="regular"
-					color="var(--brand-color-dark-blue-300)"
-				/>
-			</template>
-			<template #neighborhood>
-				<AtomsTypography
-					type="text-p5"
-					:text="item.addresses?.neighborhood || '-'"
-					weight="regular"
-					color="var(--brand-color-dark-blue-300)"
-				/>
-			</template>
-			<template #phone>
-				<AtomsTypography
-					type="text-p5"
-					:text="item.phone"
-					weight="regular"
-					color="var(--brand-color-dark-blue-300)"
-				/>
-			</template>
-			<template #actions>
-				<MoleculesActionDropdown
-					:key="item.id"
-					:actions="dropdownOptions"
-					@change-action="onSelectOptionAction($event, item)"
-				/>
-			</template>
-		</MoleculesListCardItem>
+				<template #status>
+					<AtomsTypography
+						type="text-p5"
+						:text="getLocationStatusText(item.status)"
+						weight="regular"
+						color="var(--brand-color-dark-blue-300)"
+					/>
+				</template>
+				<template #phone>
+					<AtomsTypography
+						type="text-p5"
+						:text="usePhoneFormatter11BR(String(item.phone))"
+						weight="regular"
+						color="var(--brand-color-dark-blue-300)"
+					/>
+				</template>
+				<template #actions>
+					<MoleculesActionDropdown
+						:key="item.id"
+						:actions="dropdownOptions"
+						@change-action="onSelectOptionAction($event, item)"
+					/>
+				</template>
+			</MoleculesListCardItem>
+		</div>
 
+		<MoleculesEmptyState
+			v-else
+			:is-icon="true"
+			title="Nenhum local cadastrado"
+			description="Adicione um novo cadastro para começar."
+		/>
 		<div class="wrapper-list-card__footer">
 			<MoleculesPaginationControls
 				v-if="pagination"
-				:total-items="pagination.total || 0"
-				:current-page="pagination.current_page || 1"
-				:per-page="pagination.per_page || 10"
+				:total-items="pagination?.data.total || 0"
+				:current-page="pagination?.data.current_page || 1"
+				:per-page="pagination?.data.per_page || 10"
 				@pageChange="paginationChange($event)"
 			/>
 		</div>
 	</section>
-
 	<OrganismsLocationsFilter
 		:is-visible="isVisible"
+		@clear-all="clearSearch"
 		@close="isVisible = false"
 	/>
 </template>

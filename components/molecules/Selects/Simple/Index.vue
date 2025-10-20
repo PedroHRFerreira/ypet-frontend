@@ -4,6 +4,10 @@ import { defineComponent, type PropType } from "vue";
 export default defineComponent({
 	name: "MoleculesSelectsSimple",
 	props: {
+		value: {
+			type: [String, Array<string>, Number, Boolean, null],
+			default: null,
+		},
 		state: {
 			type: String,
 			default: "default",
@@ -131,6 +135,23 @@ export default defineComponent({
 		onBeforeUnmount(() => {
 			document.removeEventListener("click", handleClickOutside);
 		});
+
+		watch(
+			() => props.value,
+			(newVal) => {
+				const selected = props.options.find((opt) => opt.id === newVal);
+				if (selected) {
+					option.value = selected;
+					status.value = "filled";
+					isFilled.value = true;
+				} else {
+					option.value = {} as IOption;
+					status.value = "default";
+					isFilled.value = false;
+				}
+			},
+			{ immediate: true },
+		);
 
 		return {
 			handleStateActivated,
