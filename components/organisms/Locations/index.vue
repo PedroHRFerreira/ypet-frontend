@@ -82,8 +82,16 @@ export default defineComponent({
 			{ label: "Detalhes", value: "details" },
 		]);
 
-		const onSelectOptionAction = (event: string, item: any) => {
-			console.log(`Ação '${event}' selecionada para:`, item);
+		const onSelectOptionAction = (event: string, item: ICitizens) => {
+			const router = useRouter();
+
+			if (event === "edit") {
+				router.push({ name: "locations-edit", params: { id: item.id } });
+			}
+
+			if (event === "details") {
+				router.push({ name: "locations-details", params: { id: item.id } });
+			}
 		};
 
 		const paginationChange = (page: number) => {

@@ -48,7 +48,7 @@ export const useAuthLoginStore = defineStore("authLogin", {
 			const remember = this.$state.form.rememberMe.value;
 			const { data } = await useFetch("/api/auth/login", {
 				method: "POST",
-				body: { email, password, remember },
+				body: { login: email, password, remember },
 			});
 
 			const response: IResponse = data.value as IResponse;

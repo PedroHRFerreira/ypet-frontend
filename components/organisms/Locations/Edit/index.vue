@@ -1,14 +1,15 @@
 <script lang="ts">
-import { defineComponent, computed, ref } from "vue";
-import { useRouter } from "vue-router";
-import { useCreateStore } from "~/stores/locations/useCreateStore";
+import { defineComponent, computed, ref, onMounted } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { useEditStore } from "~/stores/locations/useEditStore";
 import type { IOption } from "~/types/global";
 
 export default defineComponent({
-	name: "OrganismsLocationsCreate",
+	name: "OrganismsLocationsEdit",
 	setup() {
-		const store = useCreateStore();
+		const store = useEditStore();
 		const router = useRouter();
+		const route = useRoute();
 
 		const showConfirm = ref(false);
 		const showSuccess = ref(false);
@@ -70,10 +71,11 @@ export default defineComponent({
 			if (formValidate()) showConfirm.value = true;
 		}
 
-		async function confirmCreate() {
+		async function confirmUpdate() {
 			if (store.isLoading) return;
 
-			await store.create();
+			const id = route.params.id as string;
+			await store.update(id);
 
 			showConfirm.value = false;
 
@@ -99,6 +101,11 @@ export default defineComponent({
 			if (!/[0-9]/.test(char)) event.preventDefault();
 		};
 
+		onMounted(async () => {
+			const id = route.params.id as string;
+			await store.fetchLocation(id);
+		});
+
 		return {
 			store,
 			optionsTypeLocation,
@@ -109,7 +116,7 @@ export default defineComponent({
 			showConfirm,
 			showSuccess,
 			openConfirm,
-			confirmCreate,
+			confirmUpdate,
 			continueFeedback,
 		};
 	},
@@ -120,17 +127,18 @@ export default defineComponent({
 	<MoleculesConfirmFeedbackModal
 		v-model:open="showConfirm"
 		variant="confirm"
-		title="Deseja confirmar o cadastro do local?"
-		description="Após confirmação, você irá  visualizá-lo no painel"
+		title="Deseja confirmar a edição do local?"
+		description="Após confirmação, as alterações serão salvas."
 		confirm-text="Confirmar"
 		cancel-text="Cancelar"
-		@confirm="confirmCreate"
+		@confirm="confirmUpdate"
 	/>
+
 	<MoleculesConfirmFeedbackModal
 		v-model:open="showSuccess"
 		variant="success"
-		title="Cadastro realizado com sucesso"
-		description="Visualize os dados na área de locais."
+		title="Edição realizada com sucesso"
+		description="As informações foram atualizadas corretamente."
 		continue-text="Continuar"
 		@continue="continueFeedback"
 	/>
@@ -163,7 +171,7 @@ export default defineComponent({
 				<MoleculesInputCommon
 					label="Telefone"
 					typeInput="text"
-					:value="usePhoneFormatter11BR(store.form.phone.value)"
+					:value="usePhoneFormatter11BR(String(store.form.phone.value))"
 					:message-error="store.form.phone.errorMessages[0]"
 					@on-input="(value) => handleInput('phone', value)"
 					@keypress="onlyNumbers"
@@ -268,9 +276,7 @@ export default defineComponent({
 			<MoleculesButtonsCommon
 				class="save"
 				type="primary"
-				text="Cadastrar"
-				icon-right
-				nameIconRight="plus"
+				text="Salvar"
 				size="medium"
 				:state="store.isLoading ? 'loading' : 'default'"
 				@click="openConfirm"
