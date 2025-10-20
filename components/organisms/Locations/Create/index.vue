@@ -31,6 +31,36 @@ export default defineComponent({
 			{ id: 1, text: "Ativo" },
 		]);
 
+		const optionsState = computed<IOption[]>(() => [
+			{ id: "AC", text: "Acre" },
+			{ id: "AL", text: "Alagoas" },
+			{ id: "AP", text: "Amapá" },
+			{ id: "AM", text: "Amazonas" },
+			{ id: "BA", text: "Bahia" },
+			{ id: "CE", text: "Ceará" },
+			{ id: "DF", text: "Distrito Federal" },
+			{ id: "ES", text: "Espírito Santo" },
+			{ id: "GO", text: "Goiás" },
+			{ id: "MA", text: "Maranhão" },
+			{ id: "MT", text: "Mato Grosso" },
+			{ id: "MS", text: "Mato Grosso do Sul" },
+			{ id: "MG", text: "Minas Gerais" },
+			{ id: "PA", text: "Pará" },
+			{ id: "PB", text: "Paraíba" },
+			{ id: "PR", text: "Paraná" },
+			{ id: "PE", text: "Pernambuco" },
+			{ id: "PI", text: "Piauí" },
+			{ id: "RJ", text: "Rio de Janeiro" },
+			{ id: "RN", text: "Rio Grande do Norte" },
+			{ id: "RS", text: "Rio Grande do Sul" },
+			{ id: "RO", text: "Rondônia" },
+			{ id: "RR", text: "Roraima" },
+			{ id: "SC", text: "Santa Catarina" },
+			{ id: "SP", text: "São Paulo" },
+			{ id: "SE", text: "Sergipe" },
+			{ id: "TO", text: "Tocantins" },
+		]);
+
 		const formValidate = (): boolean => {
 			let valid = true;
 			const requiredFields = [
@@ -111,6 +141,7 @@ export default defineComponent({
 			openConfirm,
 			confirmCreate,
 			continueFeedback,
+			optionsState,
 		};
 	},
 });
@@ -165,7 +196,12 @@ export default defineComponent({
 					typeInput="text"
 					:value="usePhoneFormatter11BR(store.form.phone.value)"
 					:message-error="store.form.phone.errorMessages[0]"
-					@on-input="(value) => handleInput('phone', value)"
+					@on-input="
+						(formattedValue) => {
+							const onlyNumbers = formattedValue.replace(/\D/g, '');
+							handleInput('phone', onlyNumbers);
+						}
+					"
 					@keypress="onlyNumbers"
 				/>
 				<MoleculesInputCommon
@@ -223,11 +259,12 @@ export default defineComponent({
 					:message-error="store.form.address_city.errorMessages[0]"
 					@on-input="(value) => handleAddressInput('city', value)"
 				/>
-				<MoleculesInputCommon
+				<MoleculesSelectsSimple
 					label="Estado"
+					:options="optionsState"
 					:value="store.form.address_state.value"
-					:message-error="store.form.address_state.errorMessages[0]"
-					@on-input="(value) => handleAddressInput('state', value)"
+					:message-error="store.form.location_type.errorMessages[0]"
+					@item-selected="(opt) => handleAddressInput('state', opt.id)"
 				/>
 			</div>
 
