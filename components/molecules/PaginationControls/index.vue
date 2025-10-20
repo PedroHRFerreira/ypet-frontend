@@ -61,9 +61,16 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const selectedPerPage = ref(props.perPage);
 
-		const totalPages = computed(() =>
-			Math.ceil(props.totalItems / selectedPerPage.value),
-		);
+		const totalPages = computed(() => {
+			if (
+				!props.totalItems ||
+				!selectedPerPage.value ||
+				props.totalItems <= 0
+			) {
+				return 0;
+			}
+			return Math.ceil(props.totalItems / selectedPerPage.value);
+		});
 
 		watch(selectedPerPage, (val) => {
 			emit("perPageChange", val);

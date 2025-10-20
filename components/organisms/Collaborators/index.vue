@@ -1,5 +1,5 @@
 <script lang="ts">
-import { computed, defineComponent, ref } from "vue";
+import { computed, defineComponent, onMounted, ref } from "vue";
 import { useListStore } from "~/stores/collaborators/useListStore";
 import MoleculesListCardItem from "~/components/molecules/ListCardItem/index.vue";
 import { useDayjs } from "~/composables/useDayjs";
@@ -125,6 +125,10 @@ export default defineComponent({
 				router.push({ name: "collaborators-edit", params: { id: item.id } });
 			}
 		};
+
+		onMounted(async () => {
+			await listStore.fetchList();
+		});
 
 		return {
 			listStore,
