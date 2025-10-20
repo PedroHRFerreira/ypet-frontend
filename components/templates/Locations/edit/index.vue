@@ -1,36 +1,32 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import { useLocationsStore } from "~/stores/locations/useListStore";
 
 export default defineComponent({
-	name: "TemplatesLocations",
+	name: "TemplatesLocationsEdit",
 	setup() {
-		const locationsStore = useLocationsStore();
-		const router = useRouter();
 		const header = computed(() => ({
-			title: "Locais cadastrados",
-			subtitle: "Visualize e gerencie os cadastros de locais.",
+			title: "Editar local",
+			subtitle: "Editar local cadastrado",
 			buttons: [
 				{
-					text: "Novo cadastro",
-					type: "primary",
-					icon: "plus",
-					iconLeft: false,
-					nameIconLeft: "",
-					iconRight: true,
-					nameIconRight: "plus",
+					text: "Voltar",
+					type: "outline",
+					icon: "arrow-left",
+					iconLeft: true,
+					nameIconLeft: "arrow-left",
+					iconRight: false,
+					nameIconRight: "",
+					size: "small",
+					width: "auto",
 					action: () => {
-						router.push({ name: "locations-create" });
+						const router = useRouter();
+						router.back();
 					},
 				},
 			],
 		}));
 
-		onMounted(() => {
-			locationsStore.fetchLocations();
-		});
-
-		return { header, locationsStore };
+		return { header };
 	},
 });
 </script>
@@ -56,7 +52,6 @@ export default defineComponent({
 				<div class="header-actions">
 					<MoleculesButtonsCommon
 						v-for="button in header.buttons"
-						v-if="locationsStore.locations.length === 0"
 						:key="button.text"
 						:type="button.type"
 						:text="button.text"
@@ -64,19 +59,16 @@ export default defineComponent({
 						:icon-right="button.iconRight"
 						:name-icon-left="button.nameIconLeft"
 						:name-icon-right="button.nameIconRight"
+						:size="button.size"
+						:width="button.width"
 						@onclick="button.action"
 					/>
 				</div>
 			</header>
 
 			<main class="main">
-				<div class="main-content">
-					<OrganismsLocations />
-				</div>
+				<OrganismsLocationsEdit />
 			</main>
 		</div>
 	</div>
 </template>
-<style scoped lang="scss">
-@use "styles.module";
-</style>
