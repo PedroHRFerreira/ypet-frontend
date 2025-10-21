@@ -8,6 +8,7 @@ export const useEditStore = defineStore("animals-edit", {
 		const form = useForm([
 			"name",
 			"species",
+			"picture",
 			"gender",
 			"weight",
 			"castrated",
@@ -17,6 +18,7 @@ export const useEditStore = defineStore("animals-edit", {
 			"entry_date",
 			"status",
 			"characteristics",
+			"picture",
 			"surname",
 			"infirmity",
 			"color",
