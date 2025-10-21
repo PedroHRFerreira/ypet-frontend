@@ -2,35 +2,41 @@
 import { defineComponent, computed } from "vue";
 
 export default defineComponent({
-	name: "TemplatesProducts",
+	name: "TemplatesProductsCreate",
 	setup() {
 		const header = computed(() => {
 			return {
-				title: "Cadastro de produtos e insumos",
-				subtitle: "Visualize e gerencie os cadastros de produtos e insumos",
+				title: "Cadastro de produtos",
+				subtitle: "Adicione um novo produto ao sistema",
+				buttons: [
+					{
+						text: "Voltar",
+						type: "outline",
+						icon: "arrow-left",
+						iconLeft: true,
+						nameIconLeft: "arrow-left",
+						iconRight: false,
+						nameIconRight: "",
+						size: "small",
+						width: "auto",
+						action: () => {
+							const router = useRouter();
+							router.back();
+						},
+					},
+				],
 			};
 		});
 
-		const emptyState = computed(() => {
-			return {
-				isEmpty: false,
-				isIcon: true,
-				title: "",
-				description: "",
-			};
-		});
-		return {
-			header,
-			emptyState,
-		};
+		return { header };
 	},
 });
 </script>
 
 <template>
-	<div class="wrapper-template">
+	<div class="products-create">
 		<div class="content">
-			<header class="header">
+			<div class="header">
 				<div class="header-content">
 					<AtomsTypography
 						type="title-h7"
@@ -57,22 +63,15 @@ export default defineComponent({
 						:icon-right="button.iconRight"
 						:name-icon-left="button.nameIconLeft"
 						:name-icon-right="button.nameIconRight"
+						:size="button.size"
+						:width="button.width"
 						@onclick="button.action"
 					/>
 				</div>
-			</header>
-			<main class="main">
-				<div v-if="emptyState.isEmpty" class="main-empty">
-					<MoleculesEmptyState
-						:is-icon="emptyState.isIcon"
-						:title="emptyState.title"
-						:description="emptyState.description"
-					/>
-				</div>
-				<div v-else class="main-content">
-					<OrganismsProductsManagement />
-				</div>
-			</main>
+			</div>
+			<div class="main">
+				<OrganismsProductsCreate />
+			</div>
 		</div>
 	</div>
 </template>
