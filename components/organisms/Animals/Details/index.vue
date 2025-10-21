@@ -23,6 +23,7 @@ export default defineComponent({
 				{
 					title: "Sobre o pet",
 					content: [
+						{ label: "", value: citizen.image, isImage: true },
 						{ label: "Nome do animal: ", value: animal?.name || "N/A" },
 						{ label: "Tipo de pet:", value: animal?.species, isEnum: true },
 						{ label: "Sexo:", value: animal?.gender, isEnum: true },
@@ -176,17 +177,25 @@ export default defineComponent({
 						color="var(--brand-color-dark-blue-300)"
 					/>
 					<AtomsTypography
-						v-if="!item.isEnum"
+						v-if="!item.isEnum && !item.isImage"
 						type="text-p5"
 						:text="(item.value as string) || 'N/A'"
 						weight="regular"
 						color="var(--brand-color-dark-blue-900)"
 					/>
 					<AtomsBadges
-						v-else
+						v-else-if="item.isEnum"
 						type="text"
 						:text="(item.value as IEnum)?.label || 'N/A'"
 						:color="(item.value as IEnum)?.color || 'gray'"
+					/>
+					<AtomsImageCustom
+						v-else-if="item.isImage"
+						:src="item.value"
+						alt="imagem usuário"
+						width="fit-content"
+						height="150px"
+						object-fit="contain"
 					/>
 				</div>
 			</div>

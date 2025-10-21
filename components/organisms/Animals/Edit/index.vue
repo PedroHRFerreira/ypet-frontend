@@ -206,6 +206,7 @@ export default defineComponent({
 
 			const animal = animalDetailsStore.animal;
 			useAnimalsEdit.setFormField("name", animal.name);
+			useAnimalsEdit.setFormField("picture", animal.picture);
 			useAnimalsEdit.setFormField(
 				"microchip_number",
 				animal.entry_data?.microchip_number,
@@ -219,7 +220,6 @@ export default defineComponent({
 				"registration_number",
 				animal.entry_data?.registration_number,
 			);
-			useAnimalsEdit.setFormField("picture",animal.entry_data?.picture);
 			useAnimalsEdit.setFormField("infirmity", animal.entry_data?.infirmity);
 			useAnimalsEdit.setFormField(
 				"castrated",
