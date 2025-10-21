@@ -119,25 +119,20 @@ export default defineComponent({
 		};
 
 		const optionsStatus: IEnum[] = [
-			{ value: "active", name: "ACTIVE", label: "Ativo", color: "#00b374" },
+			{ value: "active", name: "ACTIVE", label: "Ativo", color: "success" },
 			{
 				value: "inactive",
 				name: "INACTIVE",
 				label: "Inativo",
-				color: "#999999",
+				color: "secondary",
 			},
 			{
 				value: "suspended",
 				name: "SUSPENDED",
 				label: "Suspenso",
-				color: "#e6a832",
+				color: "warning",
 			},
-			{
-				value: "deleted",
-				name: "DELETED",
-				label: "Deletado",
-				color: "#cc3333",
-			},
+			{ value: "deleted", name: "DELETED", label: "Deletado", color: "danger" },
 		];
 
 		const getStatus = (status: string | number) => {
@@ -223,9 +218,7 @@ export default defineComponent({
 				</template>
 				<template #status>
 					<AtomsBadges
-						type="text"
-						:color="getStatus(item.status)?.color"
-						:size="'small'"
+						:color="getStatus(item.status)?.color || 'secondary'"
 						:text="getStatus(item.status)?.label || '---'"
 					/>
 				</template>

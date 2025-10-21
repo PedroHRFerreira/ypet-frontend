@@ -130,12 +130,67 @@ export default defineComponent({
 			await listStore.fetchList();
 		});
 
+		const optionsStatus: IEnum[] = [
+			{ value: "active", name: "ACTIVE", label: "Ativo", color: "success" },
+			{
+				value: "inactive",
+				name: "INACTIVE",
+				label: "Inativo",
+				color: "secondary",
+			},
+			{
+				value: "suspended",
+				name: "SUSPENDED",
+				label: "Suspenso",
+				color: "warning",
+			},
+			{ value: "deleted", name: "DELETED", label: "Deletado", color: "danger" },
+		];
+
+		const optionsRoles: IEnum[] = [
+			{
+				value: "manager_administrator",
+				name: "MANAGER_ADMINISTRATOR",
+				label: "Administrador",
+				color: "success",
+			},
+			{
+				value: "user_agent",
+				name: "USER_AGENT",
+				label: "Agente",
+				color: "information",
+			},
+		];
+		const getRole = (roleValue: string): IEnum => {
+			return (
+				optionsRoles.find((r) => r.value === roleValue) || {
+					value: "",
+					name: "",
+					label: roleValue || "N/A",
+					color: "secondary",
+				}
+			);
+		};
+
+		const getStatus = (status: string | undefined): IEnum => {
+			return (
+				optionsStatus.find((s) => s.value === status) || {
+					value: "",
+					name: "",
+					label: "Sem status",
+					color: "secondary",
+				}
+			);
+		};
+
 		return {
 			listStore,
 			columnsHeader,
 			header,
 			list,
 			onSelectOptionAction,
+			getStatus,
+			getRole,
 		};
 	},
 	methods: {
@@ -206,24 +261,32 @@ export default defineComponent({
 					/>
 				</template>
 				<template #role>
-					<AtomsTypography
-						type="text-p5"
+					<AtomsBadges
 						:text="
-							item.user.roles?.length
-								? item.user.roles.map((role) => role.name).join(', ')
-								: 'N/A'
+							getRole(
+								item.user.roles?.length
+									? item.user.roles.map((role) => role.name).join(', ')
+									: 'N/A',
+							).label
 						"
-						weight="regular"
-						color="var(--brand-color-dark-blue-300)"
+						:color="
+							getRole(
+								item.user.roles?.length
+									? item.user.roles.map((role) => role.name).join(', ')
+									: 'N/A',
+							).color
+						"
 					/>
 				</template>
 				<template #status>
 					<AtomsBadges
 						v-if="item.user.status?.status"
-						type="text"
-						:size="'small'"
-						:color="item.user.status?.status.color"
-						:text="item.user.status?.status.label || 'Sem status'"
+						:text="
+							getStatus(item.user.status.status.value)?.label || 'Sem status'
+						"
+						:color="
+							getStatus(item.user.status.status.value)?.color || 'secondary'
+						"
 					/>
 				</template>
 				<template #created_at>

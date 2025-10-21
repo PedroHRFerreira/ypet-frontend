@@ -308,7 +308,6 @@ export default defineComponent({
 				text="Cadastrar"
 				icon-right
 				nameIconRight="plus"
-				size="medium"
 				:state="store.isLoading ? 'loading' : 'default'"
 				@click="openConfirm"
 			/>

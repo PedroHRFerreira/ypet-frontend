@@ -86,8 +86,62 @@ export default defineComponent({
 			});
 		});
 
+		const optionsStatus: IEnum[] = [
+			{
+				value: "for_adoption",
+				name: "FOR_ADOPTION",
+				label: "Para Adoção",
+				color: "information",
+			},
+			{
+				value: "with_owner",
+				name: "WITH_OWNER",
+				label: "Com Dono",
+				color: "success",
+			},
+			{ value: "lost", name: "LOST", label: "Perdido", color: "warning" },
+			{ value: "stolen", name: "STOLEN", label: "Roubado", color: "danger" },
+			{ value: "deceased", name: "DECEASED", label: "Falecido", color: "dark" },
+			{
+				value: "targeted_adoption",
+				name: "TARGETED_ADOPTION",
+				label: "Adoção Direcionada",
+				color: "primary",
+			},
+			{
+				value: "restricted",
+				name: "RESTRICTED",
+				label: "Restrito",
+				color: "secondary",
+			},
+			{
+				value: "in_transfer",
+				name: "IN_TRANSFER",
+				label: "Em Transferência",
+				color: "tertiary",
+			},
+			{
+				value: "sheltered",
+				name: "SHELTERED",
+				label: "Abrigado",
+				color: "success",
+			},
+		];
+
+		const getStatus = (status: string | undefined): IEnum => {
+			return (
+				optionsStatus.find((s) => s.value === status) || {
+					value: "",
+					name: "",
+					label: "Sem status",
+					color: "secondary",
+				}
+			);
+		};
+
 		return {
 			abouts,
+			getStatus,
 		};
 	},
 });

@@ -314,7 +314,6 @@ export default defineComponent({
 				class="save"
 				type="primary"
 				text="Salvar"
-				size="medium"
 				:state="store.isLoading ? 'loading' : 'default'"
 				@click="openConfirm"
 			/>

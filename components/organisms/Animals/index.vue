@@ -137,12 +137,64 @@ export default defineComponent({
 			}
 		};
 
+		const optionsStatus: IEnum[] = [
+			{
+				value: "for_adoption",
+				name: "FOR_ADOPTION",
+				label: "Para Adoção",
+				color: "information",
+			},
+			{
+				value: "with_owner",
+				name: "WITH_OWNER",
+				label: "Com Dono",
+				color: "success",
+			},
+			{ value: "lost", name: "LOST", label: "Perdido", color: "warning" },
+			{ value: "stolen", name: "STOLEN", label: "Roubado", color: "danger" },
+			{ value: "deceased", name: "DECEASED", label: "Falecido", color: "dark" },
+			{
+				value: "targeted_adoption",
+				name: "TARGETED_ADOPTION",
+				label: "Adoção Direcionada",
+				color: "primary",
+			},
+			{
+				value: "restricted",
+				name: "RESTRICTED",
+				label: "Restrito",
+				color: "secondary",
+			},
+			{
+				value: "in_transfer",
+				name: "IN_TRANSFER",
+				label: "Em Transferência",
+				color: "tertiary",
+			},
+			{
+				value: "sheltered",
+				name: "SHELTERED",
+				label: "Abrigado",
+				color: "success",
+			},
+		];
+
+		const getStatus = (status: string | number) => {
+			return (
+				optionsStatus.find((s) => s.value === status) || {
+					label: "Sem status",
+					color: "secondary",
+				}
+			);
+		};
+
 		return {
 			animalsList,
 			columnsHeader,
 			header,
 			list,
 			onSelectOptionAction,
+			getStatus,
 		};
 	},
 	methods: {
@@ -218,11 +270,8 @@ export default defineComponent({
 				</template>
 				<template #status>
 					<AtomsBadges
-						v-if="item.status?.status"
-						type="text"
-						:size="'small'"
-						:color="item.status?.status.color"
-						:text="item.status?.status.label || 'Sem status'"
+						:color="getStatus(item.status?.status.value)?.color"
+						:text="getStatus(item.status?.status.value)?.label"
 					/>
 				</template>
 				<template #name>

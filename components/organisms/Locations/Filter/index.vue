@@ -125,7 +125,7 @@ export default defineComponent({
 			<section class="wrapper__button">
 				<MoleculesButtonsCommon
 					class="cancel"
-					type="secondary"
+					type="primary"
 					text="Limpar"
 					size="small"
 					mode="destructive"
@@ -134,7 +134,7 @@ export default defineComponent({
 				/>
 				<MoleculesButtonsCommon
 					class="apply"
-					type="secondary"
+					type="primary"
 					text="Aplicar"
 					size="small"
 					:disabled="!hasChanges"
