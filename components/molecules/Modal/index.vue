@@ -69,8 +69,25 @@ export default defineComponent({
 			type: String,
 			default: "default",
 		},
+		width: {
+			type: String,
+			default: "600px",
+		},
+		height: {
+			type: String,
+			default: "480px",
+		},
 	},
 	emits: ["close", "back", "apply", "clear"],
+	setup(props) {
+
+		const cssVars = computed(() => ({
+			"--width": props.width,
+			"--height": props.height,
+		}));
+
+		return {cssVars};
+	},
 	data() {
 		return {
 			isShowEffect: this.showModal,
@@ -131,7 +148,8 @@ export default defineComponent({
 	>
 		<div
 			class="content-modal"
-			:class="[typeModal, { 'modal-auto': modalAuto }]"
+			:class="[typeModal, { 'modal-auto': modalAuto }] "
+			:style="cssVars"
 		>
 			<div class="container-modal">
 				<div :class="['header-modal', { justify: iconRight }]">
