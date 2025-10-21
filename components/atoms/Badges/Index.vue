@@ -6,64 +6,82 @@ export default defineComponent({
 	props: {
 		type: {
 			type: String,
-			default: "number",
-			validator: (value: string) => ["only", "number", "text"].includes(value),
+			default: "counter",
+			validator: (value: string) =>
+				[
+					"only",
+					"solid",
+					"soft",
+					"solid-pill",
+					"soft-pill",
+					"counter",
+					"counter-pill",
+				].includes(value),
 		},
 		color: {
 			type: String,
-			default: "var(--success-colors-500)",
+			default: "primary",
+			validator: (value: string) =>
+				[
+					"primary",
+					"secondary",
+					"tertiary",
+					"success",
+					"warning",
+					"danger",
+					"information",
+					"light",
+					"dark",
+					"custom",
+				].includes(value),
 		},
-		isBorder: {
-			type: Boolean,
-			default: false,
+		size: {
+			type: String,
+			default: "small",
+			validator: (value: string) => ["small", "medium"].includes(value),
 		},
 		text: {
 			type: String,
-			default: "1",
+			default: "",
+		},
+		customColor: {
+			type: String,
+			default: "",
 		},
 	},
-	computed: {
-		isTextOrNumber() {
-			return ["text", "number"].includes(this.type);
-		},
-		background() {
-			return this.withAlpha(this.color, 0.25);
-		},
-	},
-	methods: {
-		withAlpha(hex: string, alpha: number) {
-			let h = hex.replace("#", "");
-			if (h.length === 3)
-				h = h
-					.split("")
-					.map((c) => c + c)
-					.join("");
-			const n = parseInt(h, 16);
-			const r = (n >> 16) & 255;
-			const g = (n >> 8) & 255;
-			const b = n & 255;
+	setup(props) {
+		const hasCustomColor = computed(() => props.color === "custom");
 
-			return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-		},
+		const wrapperClass = computed(() => [
+			"wrapper-tag",
+			props.type,
+			props.color,
+			props.size,
+		]);
+
+		return { wrapperClass, hasCustomColor };
 	},
 });
 </script>
 
 <template>
 	<span
-		:class="[
-			'wrapper-badges',
-			'wrapper-badges__' + type,
-			'wrapper-badges__' + color,
-		]"
+		:class="wrapperClass"
+		:style="
+			hasCustomColor ? { backgroundColor: customColor, color: '#fff' } : {}
+		"
 	>
-		{{ isTextOrNumber ? text : "" }}
+		{{ text }}
 	</span>
 </template>
 
 <style scoped lang="scss">
 @use "styles.module";
-.wrapper-badges {
-	background: v-bind(background);
+
+.wrapper-tag {
+	&.custom {
+		background-color: v-bind(customColor);
+		color: var(--white);
+	}
 }
 </style>

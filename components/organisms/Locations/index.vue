@@ -53,7 +53,7 @@ export default defineComponent({
 				typeTypography: "text-p5",
 				weightTypography: "bold",
 				colorTypography: "var(--brand-color-dark-blue-300)",
-				style: { width: "25%" },
+				style: { width: "10%" },
 			},
 			{
 				value: "phone",
@@ -61,7 +61,7 @@ export default defineComponent({
 				typeTypography: "text-p5",
 				weightTypography: "bold",
 				colorTypography: "var(--brand-color-dark-blue-300)",
-				style: { width: "20%" },
+				style: { width: "25%" },
 			},
 			{
 				value: "actions",
@@ -69,7 +69,7 @@ export default defineComponent({
 				typeTypography: "text-p5",
 				weightTypography: "bold",
 				colorTypography: "var(--brand-color-dark-blue-300)",
-				style: { width: "15%", justifyContent: "flex-end" },
+				style: { width: "20%", justifyContent: "flex-end" },
 			},
 		]);
 
@@ -124,27 +124,74 @@ export default defineComponent({
 			locationsStore.fetchLocations(1);
 		};
 
-		const LocationTypeEnum: Record<string, string> = {
-			pet_hotel: "Hotel Pet",
-			temporary_home: "Lar Temporário",
-			municipal_temporary_shelter: "Abrigo Temporário Municipal",
-			partner_clinics: "Clínicas Conveniadas",
-			veterinary_hospital: "Hospital Veterinário",
-			adopt_here: "Adote Aqui",
-			shelter_protector: "Abrigo / Protetor",
+		const optionsLocationType: IEnum[] = [
+			{
+				value: "pet_hotel",
+				name: "PET_HOTEL",
+				label: "Hotel Pet",
+				color: "information",
+			},
+			{
+				value: "temporary_home",
+				name: "TEMPORARY_HOME",
+				label: "Lar Temporário",
+				color: "warning",
+			},
+			{
+				value: "municipal_temporary_shelter",
+				name: "MUNICIPAL_TEMPORARY_SHELTER",
+				label: "Abrigo Temporário Municipal",
+				color: "secondary",
+			},
+			{
+				value: "partner_clinics",
+				name: "PARTNER_CLINICS",
+				label: "Clínicas Conveniadas",
+				color: "tertiary",
+			},
+			{
+				value: "veterinary_hospital",
+				name: "VETERINARY_HOSPITAL",
+				label: "Hospital Veterinário",
+				color: "success",
+			},
+			{
+				value: "adopt_here",
+				name: "ADOPT_HERE",
+				label: "Adote Aqui",
+				color: "primary",
+			},
+			{
+				value: "shelter_protector",
+				name: "SHELTER_PROTECTOR",
+				label: "Abrigo / Protetor",
+				color: "warning",
+			},
+		];
+
+		const optionsStatus: IEnum[] = [
+			{ value: 1, name: "ACTIVE", label: "Ativo", color: "success" },
+			{
+				value: 0,
+				name: "INACTIVE",
+				label: "Inativo",
+				color: "secondary",
+			},
+			{
+				value: 2,
+				name: "SUSPENDED",
+				label: "Suspenso",
+				color: "warning",
+			},
+			{ value: 3, name: "DELETED", label: "Deletado", color: "danger" },
+		];
+
+		const getStatus = (status: string | number) => {
+			return optionsStatus.find((s) => s.value === status);
 		};
 
-		const LocationStatusEnum: Record<number, string> = {
-			0: "Inativo",
-			1: "Ativo",
-		};
-
-		const getLocationStatusText = (statusId: number) => {
-			return LocationStatusEnum[statusId] || statusId;
-		};
-
-		const getLocationTypeText = (typeId: string) => {
-			return LocationTypeEnum[typeId] || typeId;
+		const getLocationType = (type: string) => {
+			return optionsLocationType.find((t) => t.value === type);
 		};
 
 		return {
@@ -163,8 +210,8 @@ export default defineComponent({
 			onSearchEnter,
 			clearSearch,
 			searchValue,
-			getLocationStatusText,
-			getLocationTypeText,
+			getStatus,
+			getLocationType,
 		};
 	},
 });
@@ -222,7 +269,7 @@ export default defineComponent({
 			</div>
 		</div>
 		<div v-if="locationsStore.locations.length > 0">
-			<MoleculesListCardItem :data="columnsHeader" padding="24px 32px">
+			<MoleculesListCardItem :data="columnsHeader" padding="16px 32px">
 				<template
 					v-for="(item, key) in columnsHeader"
 					#[item.value]
@@ -242,7 +289,7 @@ export default defineComponent({
 				v-for="item in list"
 				:key="item.id"
 				:data="columnsHeader"
-				padding="32px"
+				padding="8px 32px"
 				class="anim-loading"
 			>
 				<template #name>
@@ -254,20 +301,16 @@ export default defineComponent({
 					/>
 				</template>
 				<template #type>
-					<AtomsTypography
-						type="text-p5"
-						:text="getLocationTypeText(item.location_type)"
-						weight="regular"
-						color="var(--brand-color-dark-blue-300)"
+					<AtomsBadges
+						:color="getLocationType(item.location_type)?.color"
+						:text="getLocationType(item.location_type)?.label || 'Sem tipo'"
 					/>
 				</template>
 
 				<template #status>
-					<AtomsTypography
-						type="text-p5"
-						:text="getLocationStatusText(item.status)"
-						weight="regular"
-						color="var(--brand-color-dark-blue-300)"
+					<AtomsBadges
+						:color="getStatus(item.status)?.color"
+						:text="getStatus(item.status)?.label || 'Sem status'"
 					/>
 				</template>
 				<template #phone>

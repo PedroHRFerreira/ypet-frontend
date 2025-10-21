@@ -418,14 +418,12 @@ const onSelectLymphNodes = (option: IOption) => {
 				text="Voltar"
 				icon-left
 				name-icon-left="arrow-left"
-				size="medium"
 				width="auto"
 				@onclick="handleBack"
 			/>
 			<MoleculesButtonsCommon
 				type="primary"
 				text="Salvar Triagem"
-				size="medium"
 				width="auto"
 				@onclick="handleSave"
 			/>

@@ -136,12 +136,34 @@ export default defineComponent({
 			}
 		};
 
+		const optionsStatus: IEnum[] = [
+			{ value: "active", name: "ACTIVE", label: "Ativo", color: "success" },
+			{
+				value: "inactive",
+				name: "INACTIVE",
+				label: "Inativo",
+				color: "secondary",
+			},
+			{
+				value: "suspended",
+				name: "SUSPENDED",
+				label: "Suspenso",
+				color: "warning",
+			},
+			{ value: "deleted", name: "DELETED", label: "Deletado", color: "danger" },
+		];
+
+		const getStatus = (status: string | number) => {
+			return optionsStatus.find((s) => s.value === status);
+		};
+
 		return {
 			veterinariansList,
 			columnsHeader,
 			header,
 			list,
 			onSelectOptionAction,
+			getStatus,
 		};
 	},
 });
@@ -226,11 +248,8 @@ export default defineComponent({
 				</template>
 				<template #status>
 					<AtomsBadges
-						v-if="item.status?.status.value"
-						type="text"
-						:size="'small'"
-						:color="item.status?.status.color"
-						:text="item.status?.status.label || 'Sem status'"
+						:color="getStatus(item.status?.status.value)?.color"
+						:text="getStatus(item.status?.status.value)?.label || 'Sem status'"
 					/>
 				</template>
 				<template #telefone>

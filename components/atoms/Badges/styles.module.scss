@@ -6,39 +6,165 @@ $text-font-weights: (
 	semi-bold: 600,
 );
 
-.wrapper-badges {
-	&__only {
-		width: 10px;
-		height: 10px;
-		flex-shrink: 0;
-		border-radius: 50%;
-	}
+.wrapper-tag {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	font-weight: map-get($text-font-weights, semi-bold);
+	text-align: center;
+	border: none;
+	transition: all 0.2s ease-in-out;
 
-	&__number {
-		display: flex;
-		max-width: 6px;
-		max-height: 6px;
-		padding: 8px;
-		justify-content: center;
-		align-items: center;
-		border-radius: 50%;
-		color: var(--neutral-1100);
-		@extend .text-p7;
-		font-weight: map-get($text-font-weights, semi-bold);
-	}
-
-	&__text {
-		display: inline-flex;
+	&.small {
+		font-size: 12px;
+		line-height: 14.4px;
+		padding: 3px 8px;
 		height: 20px;
-		padding: 1px 4px;
-		justify-content: center;
-		align-items: center;
-		flex-shrink: 0;
-		border-radius: 4px;
+	}
 
-		color: var(--neutral-1100);
-		text-align: center;
-		@extend .text-p7;
+	&.medium {
+		font-size: 16px;
+		line-height: 19.2px;
+		padding: 4px 12px;
+		height: 28px;
+	}
+
+	&.solid {
+		border-radius: 4px;
+		color: var(--white);
+	}
+
+	&.soft {
+		border-radius: 4px;
+		font-weight: map-get($text-font-weights, medium);
+	}
+
+	&.solid-pill {
+		border-radius: 999px;
+		color: var(--white);
+	}
+
+	&.soft-pill {
+		border-radius: 999px;
+		font-weight: map-get($text-font-weights, medium);
+	}
+
+	&.counter {
+		border-radius: 4px;
+		padding: 2px 6px;
 		font-weight: map-get($text-font-weights, semi-bold);
+		min-width: 24px;
+		height: 20px;
+		font-size: 12px;
+		line-height: 14.4px;
+	}
+
+	&.counter-pill {
+		border-radius: 999px;
+		padding: 2px 6px;
+		font-weight: map-get($text-font-weights, semi-bold);
+		min-width: 24px;
+		height: 20px;
+		font-size: 12px;
+		line-height: 14.4px;
+	}
+
+	&.solid,
+	&.solid-pill,
+	&.counter,
+	&.counter-pill {
+		color: var(--white);
+		&.primary {
+			background-color: var(--brand-color-blue-500);
+		}
+
+		&.secondary {
+			color: var(--white);
+			background-color: var(--greys-colors-500);
+		}
+
+		&.tertiary {
+			color: var(--white);
+			background-color: var(--brand-color-tiffany-500);
+		}
+
+		&.success {
+			color: var(--white);
+			background-color: var(--success-colors-500);
+		}
+
+		&.warning {
+			background-color: var(--warning-colors-500);
+			color: var(--white);
+		}
+
+		&.danger {
+			color: var(--white);
+			background-color: var(--danger-colors-500);
+		}
+
+		&.information {
+			color: var(--white);
+			background-color: var(--brand-color-blue-400);
+		}
+
+		&.light {
+			color: var(--white);
+			background-color: var(--greys-colors-200);
+			color: var(--greys-colors-800);
+		}
+
+		&.dark {
+			color: var(--white);
+			background-color: var(--greys-colors-800);
+		}
+	}
+
+	&.soft,
+	&.soft-pill {
+		&.primary {
+			background-color: rgba(60, 118, 241, 0.15);
+			color: var(--brand-color-blue-500);
+		}
+
+		&.secondary {
+			background-color: rgba(150, 150, 150, 0.15);
+			color: var(--greys-colors-600);
+		}
+
+		&.tertiary {
+			background-color: rgba(16, 207, 201, 0.15);
+			color: var(--brand-color-tiffany-700);
+		}
+
+		&.success {
+			background-color: rgba(0, 199, 129, 0.15);
+			color: var(--success-colors-600);
+		}
+
+		&.warning {
+			background-color: rgba(255, 187, 56, 0.15);
+			color: var(--warning-colors-600);
+		}
+
+		&.danger {
+			background-color: rgba(255, 64, 64, 0.15);
+			color: var(--danger-colors-700);
+		}
+
+		&.information {
+			background-color: rgba(99, 145, 244, 0.15);
+			color: var(--brand-color-blue-700);
+		}
+
+		&.light {
+			background-color: var(--greys-colors-100);
+			color: var(--greys-colors-700);
+		}
+
+		&.dark {
+			background-color: rgba(25, 25, 25, 0.15);
+			color: var(--greys-colors-800);
+		}
 	}
 }
