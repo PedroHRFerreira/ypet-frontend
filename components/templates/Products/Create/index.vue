@@ -4,10 +4,13 @@ import { defineComponent, computed } from "vue";
 export default defineComponent({
 	name: "TemplatesProductsCreate",
 	setup() {
+		const headerSubtitle =
+			"Registre vacinas, vermífugos, medicamentos, suplementos ou rações especiais administrados a um animal.";
+
 		const header = computed(() => {
 			return {
 				title: "Cadastro de produtos",
-				subtitle: "Adicione um novo produto ao sistema",
+				subtitle: headerSubtitle,
 				buttons: [
 					{
 						text: "Voltar",
