@@ -53,7 +53,7 @@ export default defineComponent({
 		const columnsHeader = ref([
 			{
 				value: "date",
-				text: "DATA",
+				text: "DATA DE INICIO",
 				typeTypography: "text-p5",
 				weightTypography: "bold",
 				colorTypography: "var(--brand-color-dark-blue-300)",
@@ -237,11 +237,7 @@ export default defineComponent({
 				<template #date>
 					<AtomsTypography
 						type="text-p5"
-						:text="
-							item.start_date && item.end_date
-								? `${item.start_date} - ${item.end_date}`
-								: '---'
-						"
+						:text="$formatDate(item.start_date) || '---'"
 						weight="regular"
 						color="var(--brand-color-dark-blue-300)"
 					/>

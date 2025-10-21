@@ -6,6 +6,7 @@ import { useGenderEnumStore } from "~/stores/Enums/useGenderEnumStore";
 import { useAnimalStatusEnumStore } from "~/stores/Enums/useAnimalStatusEnumStore";
 import { useAnimalSizeEnumStore } from "~/stores/Enums/useAnimalSizeEnumStore";
 import { useAnimalCoatEnumStore } from "~/stores/Enums/useAnimalCoatEnumStore";
+import { useListStore as useCitizensListStore } from "~/stores/citizens/useListStore";
 
 export default defineComponent({
 	name: "OrganismsAnimalsCreate",
@@ -16,6 +17,7 @@ export default defineComponent({
 		const useAnimalStatusEnum = useAnimalStatusEnumStore();
 		const useAnimalSizeEnum = useAnimalSizeEnumStore();
 		const useAnimalCoatEnum = useAnimalCoatEnumStore();
+		const useCitizensList = useCitizensListStore();
 		const { form } = useAnimalsCreate;
 
 		const optionsSpecies = ref<IOption[]>([]);
@@ -23,6 +25,7 @@ export default defineComponent({
 		const optionsAnimalStatus = ref<IOption[]>([]);
 		const optionsAnimalSize = ref<IOption[]>([]);
 		const optionsAnimalCoat = ref<IOption[]>([]);
+		const optionsCitizens = ref<IOption[]>([]);
 
 		const optionsBoolean: IOption[] = [
 			{ id: 1, text: "Sim", state: "default" },
@@ -47,10 +50,25 @@ export default defineComponent({
 			optionsAnimalStatus.value = animalStatus;
 			optionsAnimalSize.value = animalSize;
 			optionsAnimalCoat.value = animalCoat;
+
+			// Carregar lista inicial de cidadãos
+			await loadCitizens();
 		});
 
 		const isCastrated = computed(() => {
 			return form.castrated.value === 1;
+		});
+
+		const showCitizenField = computed(() => {
+			const statusValue = form.status.value;
+			if (
+				statusValue &&
+				typeof statusValue === "object" &&
+				"id" in statusValue
+			) {
+				return (statusValue as IOption).id === "with_owner";
+			}
+			return false;
 		});
 
 		const showConfirm = ref(false);
@@ -83,23 +101,52 @@ export default defineComponent({
 			router.push({ name: "animals-list" });
 		}
 
+		async function loadCitizens(searchQuery = "") {
+			await useCitizensList.fetchList({ search: searchQuery });
+			optionsCitizens.value = useCitizensList.citizens.map(
+				(citizen: ICitizens) => ({
+					id: citizen.user?.id || 0,
+					text: citizen.user?.name || "Sem nome",
+					state: "default",
+				}),
+			);
+		}
+
+		function handleCitizenSearch(query: string) {
+			if (query.length >= 2) {
+				loadCitizens(query);
+			}
+		}
+
+		function handleImageUpload(file: File) {
+			console.log("Arquivo recebido:", file);
+			console.log("Nome do arquivo:", file.name);
+			console.log("Tamanho do arquivo:", file.size);
+			useAnimalsCreate.setFormField("picture", file);
+		}
+
 		return {
 			optionsGender,
 			optionsSpecies,
 			optionsAnimalStatus,
 			optionsAnimalSize,
 			optionsAnimalCoat,
+			optionsCitizens,
 			optionsBoolean,
 			birthDate,
 			entryDate,
 			form,
 			useAnimalsCreate,
+			useCitizensList,
 			isCastrated,
+			showCitizenField,
 			showConfirm,
 			showSuccess,
 			openConfirm,
 			confirmCreate,
 			continueFeedback,
+			loadCitizens,
+			handleCitizenSearch,
 		};
 	},
 	watch: {
@@ -263,6 +310,18 @@ export default defineComponent({
 						:options="optionsAnimalStatus"
 						:message-error="form.status.errorMessages.join(', ')"
 						@item-selected="useAnimalsCreate.setFormField('status', $event)"
+					/>
+					<MoleculesSelectsSearchable
+						v-if="showCitizenField"
+						max-width="30%"
+						label="Tutor"
+						:options="optionsCitizens"
+						:is-loading="useCitizensList.isLoading"
+						:message-error="form.tutor_id.errorMessages.join(', ')"
+						placeholder-text="Selecione o tutor"
+						search-placeholder="Buscar por nome..."
+						@item-selected="useAnimalsCreate.setFormField('tutor_id', $event)"
+						@search="handleCitizenSearch"
 					/>
 					<MoleculesInputOptionGroup
 						name="Castrado"
