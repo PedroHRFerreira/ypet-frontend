@@ -180,7 +180,9 @@ export default defineComponent({
 		},
 		schedulerAt: {
 			handler(newValue) {
-				this.createStore.setFormField("scheduler_at", newValue.id);
+				if (newValue && typeof newValue === "object" && newValue.id) {
+					this.createStore.setFormField("scheduler_at", newValue.id);
+				}
 			},
 			deep: true,
 		},
@@ -200,9 +202,10 @@ export default defineComponent({
 				) {
 					const eventData = (newValue.value as any).data;
 
-					if (eventData && eventData.start_date) {
+					if (eventData && eventData.start_date && eventData.end_date) {
 						const startDate = this.useDayjs(eventData.start_date);
-						const quantityDays = startDate.diff(eventData.end_date, "day");
+						const endDate = this.useDayjs(eventData.end_date);
+						const quantityDays = Math.abs(endDate.diff(startDate, "day"));
 
 						for (let i = 0; i <= quantityDays; i++) {
 							this.optionsSchedulerAt.push({
@@ -268,6 +271,7 @@ export default defineComponent({
 						max-width="30%"
 						label="Data de agendamento"
 						:options="optionsSchedulerAt"
+						:value="schedulerAt"
 						:message-error="form.scheduler_at.errorMessages.join(', ')"
 						@item-selected="schedulerAt = $event"
 					/>
