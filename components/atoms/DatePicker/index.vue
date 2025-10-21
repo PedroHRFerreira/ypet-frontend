@@ -14,14 +14,14 @@ export default defineComponent({
 			type: String,
 			default: "Selecione a data",
 		},
-		inline:{
+		inline: {
 			type: Boolean,
 			default: false,
 		},
 		border: {
 			type: String,
-			default:"1px solid var(--greys-colors-500)"
-		}
+			default: "1px solid var(--greys-colors-500)",
+		},
 	},
 	emits: ["update:modelValue"],
 	setup(props, { emit }) {

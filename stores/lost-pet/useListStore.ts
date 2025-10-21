@@ -27,7 +27,7 @@ export const useListStore = defineStore("lost-pet-list", {
 				method: "GET",
 				params: {
 					...params,
-					"with[]": ["user","citizen", "animal"],
+					"with[]": ["user", "citizen", "animal"],
 				},
 				onResponse: ({ response }) => {
 					const result: IResponse = response._data as IResponse;

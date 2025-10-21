@@ -193,7 +193,7 @@ export default defineComponent({
 					v-model="selectedDate"
 					@change="onFilterDate"
 					class="border border-[var(--brand-color-dark-blue-200)] rounded px-3 py-2 text-sm text-[var(--brand-color-dark-blue-300)] focus:ring-1 focus:ring-[var(--brand-color-dark-blue-300)]"
-					style="height: 36px;"
+					style="height: 36px"
 				/>
 
 				<!-- Botão Novo Dia -->

@@ -20,14 +20,14 @@ export default defineComponent({
 		const showSuccess = ref(false);
 		const typeAction = ref("");
 		const feedbackModal = ref({
-			confirm:{
-				title:"",
-				description:""
+			confirm: {
+				title: "",
+				description: "",
 			},
-			success:{
-				title:"",
-				description:""
-			}
+			success: {
+				title: "",
+				description: "",
+			},
 		});
 		await abuseReportList.fetchList();
 
@@ -40,9 +40,19 @@ export default defineComponent({
 		}
 
 		const optionsStatus: IEnum[] = [
-			{ value: 'pending', name: "PENDING", label: "Perdido", color: "#e6a832" },
-			{ value: 'confirmed', name: "CONFIRMED", label: "Encontrado", color: "#00b374" },
-			{ value: 'completed', name: "COMPLETED", label: "Concluído", color: "#0055ff" },
+			{ value: "pending", name: "PENDING", label: "Perdido", color: "#e6a832" },
+			{
+				value: "confirmed",
+				name: "CONFIRMED",
+				label: "Encontrado",
+				color: "#00b374",
+			},
+			{
+				value: "completed",
+				name: "COMPLETED",
+				label: "Concluído",
+				color: "#0055ff",
+			},
 		];
 
 		const getStatus = (status: string | number) => {
@@ -57,7 +67,6 @@ export default defineComponent({
 			};
 		});
 
-	
 		function openConfirm() {
 			showConfirm.value = true;
 		}
@@ -72,7 +81,7 @@ export default defineComponent({
 			if (abuseReportEditType.successMessage) {
 				onSuccess();
 			}
-			
+
 			await abuseReportList.fetchList();
 			showConfirm.value = false;
 		}
@@ -80,7 +89,6 @@ export default defineComponent({
 		function continueFeedback() {
 			showSuccess.value = false;
 		}
-
 
 		function onSuccess() {
 			showSuccess.value = true;
@@ -156,56 +164,59 @@ export default defineComponent({
 
 		const onSelectOptionAction = (event: string, item: IAdoption) => {
 			const router = useRouter();
-			id.value =  item.id;
+			id.value = item.id;
 			typeAction.value = event;
 
 			if (event === "confirm") {
 				openConfirm();
 				feedbackModal.value = {
-					confirm:{
-						title:"Deseja confirmar a visita de adoção?",
-						description:"Após confirmação, você irá visualizá-lo no painel"
+					confirm: {
+						title: "Deseja confirmar a visita de adoção?",
+						description: "Após confirmação, você irá visualizá-lo no painel",
 					},
-					success:{
-						title:"Visita confirmada com sucesso",
-						description:""
-					}
-				}
+					success: {
+						title: "Visita confirmada com sucesso",
+						description: "",
+					},
+				};
 				return;
 			}
 
 			if (event === "complete") {
 				openConfirm();
 				feedbackModal.value = {
-					confirm:{
-						title:"Deseja concluir visita?",
-						description:"Após confirmação, você irá visualizá-lo no painel"
+					confirm: {
+						title: "Deseja concluir visita?",
+						description: "Após confirmação, você irá visualizá-lo no painel",
 					},
-					success:{
-						title:"Visita concluída com sucesso",
-						description:""
-					}
-				}
+					success: {
+						title: "Visita concluída com sucesso",
+						description: "",
+					},
+				};
 				return;
 			}
 
 			if (event === "cancel") {
 				openConfirm();
 				feedbackModal.value = {
-					confirm:{
-						title:"Deseja cancelar visita?",
-						description:"Após confirmação, você irá visualizá-lo no painel"
+					confirm: {
+						title: "Deseja cancelar visita?",
+						description: "Após confirmação, você irá visualizá-lo no painel",
 					},
-					success:{
-						title:"Visita cancelada om sucesso",
-						description:""
-					}
-				}
+					success: {
+						title: "Visita cancelada om sucesso",
+						description: "",
+					},
+				};
 				return;
 			}
 
 			if (event === "animal") {
-				router.push({ name: "animals-details", params: { id: item.animal.id } });
+				router.push({
+					name: "animals-details",
+					params: { id: item.animal.id },
+				});
 				return;
 			}
 
@@ -214,7 +225,10 @@ export default defineComponent({
 			}
 
 			if (event === "details") {
-				router.push({ name: "occurrences-adoption-details", params: { id: item.id } });
+				router.push({
+					name: "occurrences-adoption-details",
+					params: { id: item.id },
+				});
 				return;
 			}
 		};
@@ -241,7 +255,7 @@ export default defineComponent({
 			onSelectOptionAction,
 			paginationChange,
 		};
-	}
+	},
 });
 </script>
 
@@ -264,7 +278,7 @@ export default defineComponent({
 		@continue="continueFeedback"
 	/>
 
-<section class="wrapper-list-card">
+	<section class="wrapper-list-card">
 		<div class="wrapper-list-card__header">
 			<div class="wrapper-list-card__header-title">
 				<AtomsTypography

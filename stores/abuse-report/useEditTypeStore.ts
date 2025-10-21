@@ -11,8 +11,10 @@ export const useEditTypeStore = defineStore("abuse-report-type-edit", {
 		};
 	},
 	actions: {
-		async update(lostPetId: number | string, typeAction: string): Promise<void> {
-		
+		async update(
+			lostPetId: number | string,
+			typeAction: string,
+		): Promise<void> {
 			if (this.isLoading) {
 				return;
 			}

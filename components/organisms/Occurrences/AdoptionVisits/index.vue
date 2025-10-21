@@ -14,7 +14,7 @@ export default defineComponent({
 		AtomsDatePicker,
 		AtomsTypography,
 		MoleculesListCardItem,
-		MoleculesModal
+		MoleculesModal,
 	},
 	async setup() {
 		const adoptionList = useListStore();
@@ -25,14 +25,14 @@ export default defineComponent({
 		const typeAction = ref("");
 		const showModalReschedule = ref(false);
 		const feedbackModal = ref({
-			confirm:{
-				title:"",
-				description:""
+			confirm: {
+				title: "",
+				description: "",
 			},
-			success:{
-				title:"",
-				description:""
-			}
+			success: {
+				title: "",
+				description: "",
+			},
 		});
 		await adoptionList.fetchList();
 
@@ -45,11 +45,36 @@ export default defineComponent({
 		}
 
 		const optionsStatus: IEnum[] = [
-			{ value: 'pending', name: "PENDING", label: "Pendente", color: "#e6a832" },
-			{ value: 'confirmed', name: "CONFIRMED", label: "Confirmado", color: "#00b374" },
-			{ value: 'rescheduled', name: "RESCHEDULED", label: "Remarcado", color: "#f0a500" },
-			{ value: 'completed', name: "COMPLETED", label: "Concluído", color: "#0055ff" },
-			{ value: 'canceled', name: "CANCELED", label: "Cancelado", color: "#cc3333" },
+			{
+				value: "pending",
+				name: "PENDING",
+				label: "Pendente",
+				color: "#e6a832",
+			},
+			{
+				value: "confirmed",
+				name: "CONFIRMED",
+				label: "Confirmado",
+				color: "#00b374",
+			},
+			{
+				value: "rescheduled",
+				name: "RESCHEDULED",
+				label: "Remarcado",
+				color: "#f0a500",
+			},
+			{
+				value: "completed",
+				name: "COMPLETED",
+				label: "Concluído",
+				color: "#0055ff",
+			},
+			{
+				value: "canceled",
+				name: "CANCELED",
+				label: "Cancelado",
+				color: "#cc3333",
+			},
 		];
 
 		const getStatus = (status: string | number) => {
@@ -64,7 +89,6 @@ export default defineComponent({
 			};
 		});
 
-	
 		function openConfirm() {
 			showConfirm.value = true;
 		}
@@ -79,7 +103,7 @@ export default defineComponent({
 			if (adoptionEditType.successMessage) {
 				onSuccess();
 			}
-			
+
 			await adoptionList.fetchList();
 			showConfirm.value = false;
 		}
@@ -88,13 +112,12 @@ export default defineComponent({
 			showSuccess.value = false;
 		}
 
-
 		function onSuccess() {
 			showSuccess.value = true;
 		}
 
 		function closeModalReschedule() {
-			showModalReschedule.value = false
+			showModalReschedule.value = false;
 		}
 
 		const columnsHeader = ref([
@@ -178,61 +201,64 @@ export default defineComponent({
 
 		const onSelectOptionAction = (event: string, item: IAdoption) => {
 			const router = useRouter();
-			id.value =  item.id;
+			id.value = item.id;
 			typeAction.value = event;
 
 			if (event === "confirm") {
 				openConfirm();
 				feedbackModal.value = {
-					confirm:{
-						title:"Deseja confirmar a visita de adoção?",
-						description:"Após confirmação, você irá visualizá-lo no painel"
+					confirm: {
+						title: "Deseja confirmar a visita de adoção?",
+						description: "Após confirmação, você irá visualizá-lo no painel",
 					},
-					success:{
-						title:"Visita confirmada com sucesso",
-						description:""
-					}
-				}
+					success: {
+						title: "Visita confirmada com sucesso",
+						description: "",
+					},
+				};
 				return;
 			}
 
 			if (event === "reschedule") {
-				showModalReschedule.value = true
+				showModalReschedule.value = true;
 				return;
 			}
 
 			if (event === "complete") {
 				openConfirm();
 				feedbackModal.value = {
-					confirm:{
-						title:"Deseja concluir visita?",
-						description:"Após confirmação, você irá visualizá-lo no painel"
+					confirm: {
+						title: "Deseja concluir visita?",
+						description: "Após confirmação, você irá visualizá-lo no painel",
 					},
-					success:{
-						title:"Visita concluída com sucesso",
-						description:""
-					}
-				}
+					success: {
+						title: "Visita concluída com sucesso",
+						description: "",
+					},
+				};
 				return;
 			}
 
 			if (event === "cancel") {
 				openConfirm();
 				feedbackModal.value = {
-					confirm:{
-						title:"Deseja cancelar visita?",
-						description:"Após confirmação, você irá visualizá-lo no painel"
+					confirm: {
+						title: "Deseja cancelar visita?",
+						description: "Após confirmação, você irá visualizá-lo no painel",
 					},
-					success:{
-						title:"Visita cancelada om sucesso",
-						description:""
-					}
-				}
+					success: {
+						title: "Visita cancelada om sucesso",
+						description: "",
+					},
+				};
 				return;
 			}
 
 			if (event === "animal") {
-				router.push({ name: "animals-details", params: { id: item.animal.id } });
+				router.push({
+					name: "animals-details",
+					params: { id: item.animal.id },
+				});
 				return;
 			}
 
@@ -241,7 +267,10 @@ export default defineComponent({
 			}
 
 			if (event === "details") {
-				router.push({ name: "occurrences-adoption-details", params: { id: item.id } });
+				router.push({
+					name: "occurrences-adoption-details",
+					params: { id: item.id },
+				});
 				return;
 			}
 		};
@@ -273,7 +302,7 @@ export default defineComponent({
 			onSelectOptionAction,
 			paginationChange,
 		};
-	}
+	},
 });
 </script>
 
@@ -303,10 +332,10 @@ export default defineComponent({
 		height=""
 		type-modal="center"
 		description="Selecione uma data e horário para a visita (novo texto)"
-	>	
+	>
 		<section class="wrapper-modal">
 			<div class="wrapper-modal__icon">
-				<AtomsIconsCalendar/>
+				<AtomsIconsCalendar />
 			</div>
 			<div class="wrapper-modal__title">
 				<AtomsTypography
@@ -323,10 +352,7 @@ export default defineComponent({
 				/>
 			</div>
 			<div class="wrapper-calendar">
-				<AtomsDatePicker
-					inline
-					border="none"
-				/>
+				<AtomsDatePicker inline border="none" />
 				<div class="wrapper-calendar__time">
 					<MoleculesInputCommon
 						type-input="time"
@@ -346,7 +372,7 @@ export default defineComponent({
 		</section>
 	</MoleculesModal>
 
-<section class="wrapper-list-card">
+	<section class="wrapper-list-card">
 		<div class="wrapper-list-card__header">
 			<div class="wrapper-list-card__header-title">
 				<AtomsTypography

@@ -80,13 +80,12 @@ export default defineComponent({
 	},
 	emits: ["close", "back", "apply", "clear"],
 	setup(props) {
-
 		const cssVars = computed(() => ({
 			"--width": props.width,
 			"--height": props.height,
 		}));
 
-		return {cssVars};
+		return { cssVars };
 	},
 	data() {
 		return {
@@ -148,7 +147,7 @@ export default defineComponent({
 	>
 		<div
 			class="content-modal"
-			:class="[typeModal, { 'modal-auto': modalAuto }] "
+			:class="[typeModal, { 'modal-auto': modalAuto }]"
 			:style="cssVars"
 		>
 			<div class="container-modal">

@@ -5,7 +5,7 @@ export default defineEventHandler(async (event): Promise<IResponse> => {
 		const id = event.context.params?.id;
 		const type = event.context.params?.type;
 		const path = `/abuse-reports/${id}/${type}`;
-		
+
 		return await apiPost<IResponse>(path, event, {});
 	} catch (err) {
 		const error = err as IError;

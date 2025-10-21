@@ -20,41 +20,50 @@ export default defineComponent({
 			const adoption = adoptionDetailsStore.adoption;
 
 			const gender = {
-				"male": "Macho",
-				"female": "Fêmea",
-				"unknown": "Desconhecido"
+				male: "Macho",
+				female: "Fêmea",
+				unknown: "Desconhecido",
 			};
 
 			const species = {
-				"dog": "Cão",
-				"cat": "Gato"
+				dog: "Cão",
+				cat: "Gato",
 			};
 
 			const optionsStatus = {
-				"pending": "Pendente",
-				'confirmed': "Confirmado",
-				'rescheduled': "Remarcado",
-				'completed': "Concluído",
-				'canceled': "Cancelado",
-			}
+				pending: "Pendente",
+				confirmed: "Confirmado",
+				rescheduled: "Remarcado",
+				completed: "Concluído",
+				canceled: "Cancelado",
+			};
 
 			return [
 				{
 					title: "Sobre o Animal",
 					content: [
-						{ label: "Nome do animal: ", value: adoption.animal?.name || "N/A" },
-						{ label: "Tipo de pet:", value: species[adoption.animal?.species?.value] },
-						{ label: "Sexo:", value: gender[adoption?.animal.gender.value]},
+						{
+							label: "Nome do animal: ",
+							value: adoption.animal?.name || "N/A",
+						},
+						{
+							label: "Tipo de pet:",
+							value: species[adoption.animal?.species?.value],
+						},
+						{ label: "Sexo:", value: gender[adoption?.animal.gender.value] },
 						{
 							label: "Peso:",
-							value: adoption.animal?.weight ? `${adoption.animal?.weight} Kg` : "N/A",
+							value: adoption.animal?.weight
+								? `${adoption.animal?.weight} Kg`
+								: "N/A",
 						},
 						{
 							label: "Data de nascimento:",
-							value: proxy?.$formatDateTime(adoption.animal?.birth_date) || "N/A",
+							value:
+								proxy?.$formatDateTime(adoption.animal?.birth_date) || "N/A",
 						},
 						{ label: "Cor:", value: adoption.animal?.color },
-						{ label: "Pelagem:", value: adoption.animal?.coat?.label},
+						{ label: "Pelagem:", value: adoption.animal?.coat?.label },
 					],
 				},
 				{
@@ -92,7 +101,7 @@ export default defineComponent({
 		onMounted(async () => {
 			const id = useRoute().params.id as string;
 			await adoptionDetailsStore.fetchAdoptionById(id, {
-				"with[]": ["user", "citizen","animal"],
+				"with[]": ["user", "citizen", "animal"],
 			});
 		});
 

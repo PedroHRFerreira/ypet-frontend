@@ -13,7 +13,10 @@ export const useEditStore = defineStore("abuser-report-edit", {
 		};
 	},
 	actions: {
-		async update(adoptionId: number | string, typeAction: string): Promise<void> {
+		async update(
+			adoptionId: number | string,
+			typeAction: string,
+		): Promise<void> {
 			if (this.isLoading) {
 				return;
 			}
