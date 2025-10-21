@@ -26,7 +26,7 @@ export const useProductsCreateStore = defineStore("products-create", {
 			"unit",
 			"has_stock_control",
 			"stock",
-			"minimum_stock",
+			"min_stock",
 			"is_active",
 			"description",
 			// condicionais
@@ -109,8 +109,8 @@ export const useProductsCreateStore = defineStore("products-create", {
 					return false;
 				}
 				if (
-					this.form.minimum_stock.value === null ||
-					this.form.minimum_stock.value === ""
+					this.form.min_stock.value === null ||
+					this.form.min_stock.value === ""
 				) {
 					this.errorMessage = "Informe a quantidade mínima de estoque.";
 					return false;
@@ -124,8 +124,11 @@ export const useProductsCreateStore = defineStore("products-create", {
 					return false;
 				}
 			}
-
-			if (this.category === "medication" || this.category === "food") {
+			if (
+				this.category === "medication" ||
+				this.category === "food" ||
+				this.category === "supplement"
+			) {
 				if (
 					!this.form.standard_quantity.value ||
 					!this.form.reference_weight.value ||
@@ -148,6 +151,7 @@ export const useProductsCreateStore = defineStore("products-create", {
 			return true;
 		},
 		getPayload(): Record<string, any> {
+			const active = this.form.is_active.value === true;
 			const payload: Record<string, any> = {
 				name: this.form.name.value,
 				category: this.form.category.value,
@@ -156,8 +160,9 @@ export const useProductsCreateStore = defineStore("products-create", {
 				unit: this.form.unit.value,
 				has_stock_control: !!this.form.has_stock_control.value,
 				stock: Number(this.form.stock.value || 0),
-				minimum_stock: Number(this.form.minimum_stock.value || 0),
-				is_active: this.form.is_active.value !== false,
+				min_stock: Number(this.form.min_stock.value || 0),
+				is_active: active,
+				status: active,
 				observations: this.form.description.value || undefined,
 			};
 
@@ -165,7 +170,11 @@ export const useProductsCreateStore = defineStore("products-create", {
 				payload.lot_number = this.form.lot.value;
 				payload.expiration_date = this.form.validity.value;
 			}
-			if (this.category === "medication" || this.category === "food") {
+			if (
+				this.category === "medication" ||
+				this.category === "food" ||
+				this.category === "supplement"
+			) {
 				payload.standard_quantity = Number(
 					this.form.standard_quantity.value || 0,
 				);
@@ -187,13 +196,14 @@ export const useProductsCreateStore = defineStore("products-create", {
 			this.isLoading = true;
 			this.errorMessage = "";
 			this.successMessage = "";
-
 			const payload = this.getPayload();
+
 			const { data } = await useFetch(this.pathStoreUrl, {
 				method: "POST",
 				body: payload,
 			});
-			const response: IResponse = (data.value || {}) as IResponse;
+
+			const response: IResponse = data.value as IResponse;
 
 			this.isLoading = false;
 			if (response?.type === "success") {
@@ -201,8 +211,7 @@ export const useProductsCreateStore = defineStore("products-create", {
 					response?.message || "Produto cadastrado com sucesso.";
 				return true;
 			}
-			this.errorMessage =
-				response?.message || "Erro ao cadastrar produto.";
+			this.errorMessage = response?.message || "Erro ao cadastrar produto.";
 			return false;
 		},
 		async update(id: string | number): Promise<boolean> {
@@ -213,13 +222,14 @@ export const useProductsCreateStore = defineStore("products-create", {
 			this.isLoading = true;
 			this.errorMessage = "";
 			this.successMessage = "";
-
 			const payload = this.getPayload();
+
 			const { data } = await useFetch(this.pathUpdateUrl(id), {
 				method: "PUT",
 				body: payload,
 			});
-			const response: IResponse = (data.value || {}) as IResponse;
+
+			const response: IResponse = data.value as IResponse;
 
 			this.isLoading = false;
 			if (response?.type === "success") {
@@ -227,8 +237,7 @@ export const useProductsCreateStore = defineStore("products-create", {
 					response?.message || "Produto atualizado com sucesso.";
 				return true;
 			}
-			this.errorMessage =
-				response?.message || "Erro ao atualizar produto.";
+			this.errorMessage = response?.message || "Erro ao atualizar produto.";
 			return false;
 		},
 		resetForm(): void {

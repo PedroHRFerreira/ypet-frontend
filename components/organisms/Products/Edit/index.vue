@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, ref, onMounted } from "vue";
+import { defineComponent, ref, onMounted, computed } from "vue";
 import { useProductsCreateStore } from "~/stores/products/useCreateStore";
 import type { ProductCategory } from "~/stores/products/useCreateStore";
 import { useAnimalSpeciesEnumStore } from "~/stores/Enums/useAnimalSpeciesEnumStore";
@@ -13,14 +13,36 @@ export default defineComponent({
 		const detailStore = useProductDetailStore();
 		const speciesOptions = ref<IOption[]>([]);
 
-		const categoryOptions = ref<IOption[]>([
-			{ id: "vaccine", text: "Vacinas" },
-			{ id: "vermifuge", text: "Vermífugos" },
-			{ id: "medication", text: "Medicações" },
-			{ id: "food", text: "Rações" },
-			{ id: "supplement", text: "Suplementos" },
-			{ id: "other", text: "Outros" },
-		]);
+		// Mapeamento e opções
+		const categoryTextMap: Record<string, string> = {
+			vaccine: "Vacinas",
+			vermifuge: "Vermífugos",
+			medication: "Medicações",
+			food: "Rações",
+			supplement: "Suplementos",
+			other: "Outros",
+		};
+
+		const isVaccineGroup = computed(() => {
+			return ["vaccine", "vermifuge"].includes(store.category);
+		});
+		const categorySelectState = computed(() => {
+			return isVaccineGroup.value ? "default" : "disabled";
+		});
+		const categorySelectOptions = computed<IOption[]>(() => {
+			if (isVaccineGroup.value) {
+				return [
+					{ id: "vaccine", text: categoryTextMap.vaccine },
+					{ id: "vermifuge", text: categoryTextMap.vermifuge },
+				];
+			}
+			return [
+				{
+					id: store.category as string,
+					text: categoryTextMap[store.category] || "",
+				},
+			];
+		});
 
 		const unitOptions = ref<IOption[]>([
 			{ id: "ml", text: "ml" },
@@ -31,54 +53,94 @@ export default defineComponent({
 			{ id: "dose", text: "dose" },
 		]);
 
-		// Validade: texto exibido e helpers de normalização
-		const validityText = ref<string>("");
-		function normalizeToYMD(value: string | Date | null | undefined): string {
-			if (!value) return "";
-			if (value instanceof Date) {
-				const y = value.getFullYear();
-				const m = String(value.getMonth() + 1).padStart(2, "0");
-				const d = String(value.getDate()).padStart(2, "0");
-				return `${y}-${m}-${d}`;
+		const baseUnitOptions = ref<IOption[]>([
+			{ id: "ml", text: "ml" },
+			{ id: "mg", text: "mg" },
+			{ id: "g", text: "g" },
+			{ id: "kg", text: "kg" },
+			{ id: "unidade", text: "unidade" },
+			{ id: "dose", text: "dose" },
+		]);
+
+		const supplementTypeOptions = ref<IOption[]>([
+			{ id: "vitaminic", text: "Vitamínico" },
+			{ id: "mineral", text: "Mineral" },
+			{ id: "proteic", text: "Proteico" },
+			{ id: "caloric_energetic", text: "Calórico/Energético" },
+			{ id: "immunologic", text: "Imunológico" },
+			{ id: "probiotic_digestive", text: "Probiótico/Digestivo" },
+			{ id: "articular", text: "Articular" },
+			{ id: "dermatologic_capillary", text: "Dermatológico/Capilar" },
+		]);
+
+		// Helpers de data iguais ao cadastro
+		const formatDateToDisplay = (apiDate: string): string => {
+			if (!apiDate) return "";
+			const parts = apiDate.split("-");
+			if (parts.length === 3) {
+				return `${parts[2]}/${parts[1]}/${parts[0]}`;
 			}
-			const s = String(value).trim();
-			if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
-			if (/^\d{4}-\d{2}-\d{2}T/.test(s)) return s.slice(0, 10);
-			if (/^\d{2}\/\d{2}\/\d{4}$/.test(s)) {
-				const [d, m, y] = s.split("/");
-				return `${y}-${m}-${d}`;
+			return apiDate;
+		};
+		const formatDateToAPI = (displayDate: string): string => {
+			if (!displayDate) return "";
+			const numbersOnly = displayDate.replace(/\D/g, "");
+			if (numbersOnly.length === 8) {
+				const day = numbersOnly.substring(0, 2);
+				const month = numbersOnly.substring(2, 4);
+				const year = numbersOnly.substring(4, 8);
+				return `${year}-${month}-${day}`;
 			}
-			const dt = new Date(s);
-			if (!isNaN(dt.getTime())) {
-				const y = dt.getFullYear();
-				const m = String(dt.getMonth() + 1).padStart(2, "0");
-				const d = String(dt.getDate()).padStart(2, "0");
-				return `${y}-${m}-${d}`;
+			return "";
+		};
+		const formatDateInput = (value: string): string => {
+			const numbersOnly = value.replace(/\D/g, "").substring(0, 8);
+			if (numbersOnly.length > 4) {
+				return `${numbersOnly.slice(0, 2)}/${numbersOnly.slice(2, 4)}/${numbersOnly.slice(4)}`;
 			}
-			return s;
-		}
-		function formatToDMY(ymd: string): string {
-			if (!ymd) return "";
-			if (/^\d{4}-\d{2}-\d{2}$/.test(ymd)) {
-				const [y, m, d] = ymd.split("-");
-				return `${d}/${m}/${y}`;
+			if (numbersOnly.length > 2) {
+				return `${numbersOnly.slice(0, 2)}/${numbersOnly.slice(2)}`;
 			}
-			const dt = new Date(ymd);
-			if (!isNaN(dt.getTime())) {
-				const y = dt.getFullYear();
-				const m = String(dt.getMonth() + 1).padStart(2, "0");
-				const d = String(dt.getDate()).padStart(2, "0");
-				return `${d}/${m}/${y}`;
+			return numbersOnly;
+		};
+		const validityRawValue = ref("");
+		const handleValidityInput = (value: string) => {
+			const formatted = formatDateInput(value);
+			validityRawValue.value = formatted;
+			const apiDate = formatDateToAPI(formatted);
+			store.setFormField("validity", apiDate);
+		};
+
+		// Abas superiores de categoria
+		const tabs = computed<ITab[]>(() => [
+			{
+				id: "vaccine",
+				name: "Vacina/Vermífugo",
+				active: ["vaccine", "vermifuge"].includes(store.category),
+			},
+			{
+				id: "medication",
+				name: "Medicamentos",
+				active: store.category === "medication",
+			},
+			{
+				id: "food",
+				name: "Rações",
+				active: store.category === "food",
+			},
+			{
+				id: "supplement",
+				name: "Suplementos",
+				active: store.category === "supplement",
+			},
+		]);
+		const handleTabChange = (tab: ITab) => {
+			if (tab.id === "vaccine") {
+				store.setCategory("vaccine");
+			} else {
+				store.setCategory(tab.id as any);
 			}
-			return ymd;
-		}
-		function onInputValidity(val: string) {
-			const ymd = normalizeToYMD(val);
-			validityText.value = formatToDMY(ymd);
-			if (/^\d{4}-\d{2}-\d{2}$/.test(ymd)) {
-				store.setFormField("validity", ymd);
-			}
-		}
+		};
 
 		const router = useRouter();
 		const route = useRoute();
@@ -86,13 +148,11 @@ export default defineComponent({
 			await speciesStore.fetchAnimalSpeciesEnum();
 			speciesOptions.value = await speciesStore.getOptions();
 
-			// Buscar por ID e hidratar sempre ao abrir edição
 			const id = route.params.id as string | number | undefined;
 			if (id) {
 				await detailStore.fetchById(id);
 				const p = detailStore.product as any;
 
-				// Hidratar campos com mapeamento dos nomes da API
 				store.setFormField("name", p?.name ?? store.form.name.value);
 				store.setFormField(
 					"manufacturer",
@@ -104,7 +164,9 @@ export default defineComponent({
 				);
 				store.setFormField(
 					"target_species",
-					p?.target_species?.value ?? p?.target_species ?? store.form.target_species.value,
+					p?.target_species?.value ??
+						p?.target_species ??
+						store.form.target_species.value,
 				);
 				store.setFormField(
 					"has_stock_control",
@@ -112,22 +174,27 @@ export default defineComponent({
 				);
 				store.setFormField("stock", p?.stock ?? store.form.stock.value);
 				store.setFormField(
-					"minimum_stock",
-					p?.min_stock ?? p?.minimum_stock ?? store.form.minimum_stock.value,
+					"min_stock",
+					p?.min_stock ?? p?.min_stock ?? store.form.min_stock.value,
 				);
 				store.setFormField(
 					"is_active",
-					p?.status !== undefined ? !!p.status : store.form.is_active.value,
+					p?.is_active !== undefined
+						? !!p.is_active
+						: p?.status !== undefined
+							? !!p.status
+							: store.form.is_active.value,
 				);
 				store.setFormField(
 					"description",
 					p?.observations ?? p?.description ?? store.form.description.value,
 				);
-				// Validade: normalizar para YYYY-MM-DD e exibir como DD/MM/YYYY
-				const validityRaw = p?.expiration_date ?? p?.validity ?? store.form.validity.value;
-				const validityYMD = normalizeToYMD(validityRaw);
+
+				const validityRaw =
+					p?.expiration_date ?? p?.validity ?? store.form.validity.value;
+				const validityYMD = typeof validityRaw === "string" ? validityRaw : "";
+				validityRawValue.value = formatDateToDisplay(validityYMD);
 				store.setFormField("validity", validityYMD);
-				validityText.value = formatToDMY(validityYMD);
 				store.setFormField(
 					"lot",
 					p?.lot_number ?? p?.lot ?? store.form.lot.value,
@@ -146,28 +213,37 @@ export default defineComponent({
 				);
 				store.setFormField(
 					"base_unit",
-					p?.base_unit ?? store.form.base_unit.value,
+					p?.base_unit?.value ?? p?.base_unit ?? store.form.base_unit.value,
+				);
+				store.setFormField(
+					"supplement_type",
+					p?.supplement_type?.value ??
+						p?.supplement_type ??
+						store.form.supplement_type.value,
 				);
 
-				// Categoria como objeto: usar p.category.value
-				const catVal = (
-					p?.category?.value ??
-					(typeof p?.category === "string" ? p.category : store.category)
-				) as ProductCategory;
+				const catVal = (p?.category?.value ??
+					(typeof p?.category === "string"
+						? p.category
+						: store.category)) as ProductCategory;
 				store.setCategory(catVal);
 
-				// Marcar seleção inicial nos selects (unit e target_species)
 				const selectedUnit = String(store.form.unit.value || "");
 				unitOptions.value = unitOptions.value.map((opt) => ({
 					...opt,
 					state: String(opt.id) === selectedUnit ? "activated" : "default",
 				}));
 
+				const selectedBaseUnit = String(store.form.base_unit.value || "");
+				baseUnitOptions.value = baseUnitOptions.value.map((opt) => ({
+					...opt,
+					state: String(opt.id) === selectedBaseUnit ? "activated" : "default",
+				}));
+
 				const selectedSpecies = String(store.form.target_species.value || "");
 				speciesOptions.value = speciesOptions.value.map((opt) => ({
 					...opt,
-					state:
-						String(opt.id) === selectedSpecies ? "activated" : "default",
+					state: String(opt.id) === selectedSpecies ? "activated" : "default",
 				}));
 			}
 		});
@@ -184,10 +260,15 @@ export default defineComponent({
 			store,
 			speciesOptions,
 			unitOptions,
-			categoryOptions,
+			baseUnitOptions,
+			supplementTypeOptions,
+			tabs,
+			handleTabChange,
+			categorySelectOptions,
+			categorySelectState,
+			validityRawValue,
+			handleValidityInput,
 			handleUpdate,
-			validityText,
-			onInputValidity,
 		};
 	},
 });
@@ -195,150 +276,222 @@ export default defineComponent({
 
 <template>
 	<div class="product-form">
-		<div class="product-form__group">
-			<MoleculesInputCommon
-				label="Nome do produto"
-				max-width="50%"
-				:value="store.form.name.value as string"
-				@on-input="store.setFormField('name', $event)"
-			/>
-			<MoleculesInputOptionGroup
-				label="Categoria"
-				name="form-category"
-				max-width="50%"
-				:options="categoryOptions"
-				:value="store.form.category.value as string"
-				@changeOption="store.setCategory($event.id)"
-			/>
-		</div>
-		<div class="product-form__group">
-			<MoleculesInputCommon
-				label="Fabricante"
-				max-width="33%"
-				:value="store.form.manufacturer.value as string"
-				@on-input="store.setFormField('manufacturer', $event)"
-			/>
-			<MoleculesSelectsSimple
-				label="Espécie alvo"
-				max-width="33%"
-				:options="speciesOptions"
-				@item-selected="store.setFormField('target_species', $event.id)"
-			/>
-			<MoleculesSelectsSimple
-				label="Unidade de medida"
-				max-width="33%"
-				:options="unitOptions"
-				@item-selected="store.setFormField('unit', $event.id)"
-			/>
-		</div>
-		<div class="product-form__group">
-			<MoleculesInputOptionGroup
-				label="Controle de estoque"
-				name="stock-control"
-				max-width="33%"
-				:options="[
-					{ id: 1, text: 'Sim' },
-					{ id: 0, text: 'Não' },
-				]"
-				:value="store.form.has_stock_control.value ? 1 : 0"
-				@changeOption="store.setFormField('has_stock_control', !!$event.id)"
-			/>
-			<MoleculesInputCommon
-				v-if="store.form.has_stock_control.value"
-				label="Quantidade atual"
-				max-width="33%"
-				:value="String(store.form.stock.value || '')"
-				@on-input="store.setFormField('stock', $event)"
-			/>
-			<MoleculesInputCommon
-				v-if="store.form.has_stock_control.value"
-				label="Quantidade mínima"
-				max-width="33%"
-				:value="String(store.form.minimum_stock.value || '')"
-				@on-input="store.setFormField('minimum_stock', $event)"
-			/>
-		</div>
-		<div class="product-form__group">
-			<MoleculesInputOptionGroup
-				label="Status"
-				name="status"
-				max-width="33%"
-				:options="[
-					{ id: 1, text: 'Ativo' },
-					{ id: 0, text: 'Inativo' },
-				]"
-				:value="store.form.is_active.value ? 1 : 0"
-				@changeOption="store.setFormField('is_active', !!$event.id)"
-			/>
-			<MoleculesInputCommon
-				label="Observações"
-				max-width="66%"
-				:value="store.form.description.value as string"
-				@on-input="store.setFormField('description', $event)"
-			/>
+		<!-- Abas principais -->
+		<div class="product-form__tabs">
+			<MoleculesTabs :tabs="tabs" @changeTab="handleTabChange" />
 		</div>
 
-		<!-- Vaccines/Dewormers -->
+		<!-- Identificação -->
+		<div class="section-card">
+			<AtomsTypography
+				type="text-p3"
+				text="Identificação"
+				weight="medium"
+				color="var(--brand-color-dark-blue-300)"
+			/>
+			<div class="product-form__group">
+				<MoleculesInputCommon
+					label="Nome do produto"
+					max-width="50%"
+					:value="store.form.name.value as string"
+					@on-input="store.setFormField('name', $event)"
+				/>
+				<MoleculesSelectsSimple
+					label="Categoria"
+					:state="categorySelectState"
+					max-width="50%"
+					:options="categorySelectOptions"
+					:value="store.form.category.value as string"
+					@item-selected="store.setCategory($event.id)"
+				/>
+			</div>
+			<div class="product-form__group">
+				<MoleculesInputCommon
+					label="Fabricante"
+					max-width="50%"
+					:value="store.form.manufacturer.value as string"
+					@on-input="store.setFormField('manufacturer', $event)"
+				/>
+				<MoleculesSelectsSimple
+					label="Espécie alvo"
+					max-width="50%"
+					:options="speciesOptions"
+					@item-selected="store.setFormField('target_species', $event.id)"
+				/>
+			</div>
+		</div>
+
+		<!-- Estoque e status -->
+		<div class="section-card">
+			<AtomsTypography
+				type="text-p3"
+				text="Estoque e status"
+				weight="medium"
+				color="var(--brand-color-dark-blue-300)"
+			/>
+			<div class="product-form__group">
+				<MoleculesSelectsSimple
+					label="Unidade de medida"
+					max-width="25%"
+					:options="unitOptions"
+					@item-selected="store.setFormField('unit', $event.id)"
+				/>
+				<MoleculesSelectsSimple
+					label="Controle de estoque"
+					max-width="25%"
+					:options="[
+						{ id: 'true', text: 'Sim' },
+						{ id: 'false', text: 'Não' },
+					]"
+					:value="store.form.has_stock_control.value ? 'true' : 'false'"
+					@item-selected="
+						store.setFormField('has_stock_control', $event.id === 'true')
+					"
+				/>
+				<MoleculesInputCommon
+					v-if="store.form.has_stock_control.value"
+					label="Quantidade atual"
+					max-width="25%"
+					:value="String(store.form.stock.value || '')"
+					@on-input="store.setFormField('stock', $event)"
+				/>
+				<MoleculesSelectsSimple
+					label="Status"
+					max-width="25%"
+					:options="[
+						{ id: 'true', text: 'Ativo' },
+						{ id: 'false', text: 'Inativo' },
+					]"
+					:value="store.form.is_active.value ? 'true' : 'false'"
+					@item-selected="store.setFormField('is_active', $event.id === 'true')"
+				/>
+			</div>
+			<div
+				class="product-form__group"
+				v-if="store.form.has_stock_control.value"
+			>
+				<MoleculesInputCommon
+					label="Quantidade mínima"
+					max-width="25%"
+					:value="String(store.form.min_stock.value || '')"
+					@on-input="store.setFormField('min_stock', $event)"
+				/>
+			</div>
+		</div>
+
+		<!-- Rastreamento e validade -->
 		<div
 			v-if="['vaccine', 'vermifuge'].includes(store.category)"
-			class="product-form__group"
+			class="section-card"
 		>
-			<MoleculesInputCommon
-				label="Lote"
-				max-width="50%"
-				:value="store.form.lot.value as string"
-				@on-input="store.setFormField('lot', $event)"
+			<AtomsTypography
+				type="text-p3"
+				text="Rastreamento e validade"
+				weight="medium"
+				color="var(--brand-color-dark-blue-300)"
 			/>
-			<MoleculesInputCommon
-				label="Validade"
-				max-width="50%"
-				:value="validityText"
-				@on-input="onInputValidity"
-			/>
+			<div class="product-form__group">
+				<MoleculesInputCommon
+					label="Lote"
+					max-width="50%"
+					:value="store.form.lot.value as string"
+					@on-input="store.setFormField('lot', $event)"
+				/>
+				<MoleculesInputCommon
+					label="Validade"
+					placeholder="dd/mm/yyyy"
+					max-width="50%"
+					:maxlength="10"
+					:value="validityRawValue"
+					@on-input="handleValidityInput"
+				/>
+			</div>
+			<div class="product-form__group">
+				<MoleculesInputCommon
+					label="Observações"
+					max-width="100%"
+					:value="store.form.description.value as string"
+					@on-input="store.setFormField('description', $event)"
+				/>
+			</div>
 		</div>
 
-		<!-- Medications/Feeding -->
+		<!-- Medicações/Rações/Suplementos -->
 		<div
-			v-if="['medication', 'food'].includes(store.category)"
-			class="product-form__group"
+			v-if="['medication', 'food', 'supplement'].includes(store.category)"
+			class="section-card"
 		>
-			<MoleculesInputCommon
-				label="Quantidade padrão"
-				max-width="25%"
-				:value="String(store.form.standard_quantity.value || '')"
-				@on-input="store.setFormField('standard_quantity', $event)"
+			<AtomsTypography
+				type="text-p3"
+				:text="
+					['medication', 'food', 'supplement'].includes(store.category)
+						? 'Cálculo de suprimento padrão'
+						: 'Dosagem e referência'
+				"
+				weight="medium"
+				color="var(--brand-color-dark-blue-300)"
 			/>
-			<MoleculesInputCommon
-				label="Peso de referência (kg)"
-				max-width="25%"
-				:value="String(store.form.reference_weight.value || '')"
-				@on-input="store.setFormField('reference_weight', $event)"
-			/>
-			<MoleculesInputCommon
-				label="Dias de suprimento"
-				max-width="25%"
-				:value="String(store.form.standard_days.value || '')"
-				@on-input="store.setFormField('standard_days', $event)"
-			/>
-			<MoleculesSelectsSimple
-				label="Unidade base"
-				max-width="25%"
-				:options="unitOptions"
-				@item-selected="store.setFormField('base_unit', $event.id)"
-			/>
+			<div class="product-form__group">
+				<MoleculesSelectsSimple
+					v-if="store.category === 'supplement'"
+					label="Tipo de suplemento"
+					max-width="25%"
+					:options="supplementTypeOptions"
+					:value="store.form.supplement_type.value as string"
+					@item-selected="store.setFormField('supplement_type', $event.id)"
+				/>
+				<MoleculesInputCommon
+					label="Quantidade padrão"
+					max-width="25%"
+					:value="String(store.form.standard_quantity.value || '')"
+					@on-input="store.setFormField('standard_quantity', $event)"
+				/>
+				<MoleculesInputCommon
+					label="Peso de referência (kg)"
+					max-width="25%"
+					:value="String(store.form.reference_weight.value || '')"
+					@on-input="store.setFormField('reference_weight', $event)"
+				/>
+				<MoleculesInputCommon
+					label="Dias de suprimento"
+					max-width="25%"
+					:value="String(store.form.standard_days.value || '')"
+					@on-input="store.setFormField('standard_days', $event)"
+				/>
+				<MoleculesSelectsSimple
+					label="Unidade base"
+					max-width="25%"
+					:options="baseUnitOptions"
+					:value="store.form.base_unit.value as string"
+					@item-selected="store.setFormField('base_unit', $event.id)"
+				/>
+			</div>
+			<div class="product-form__group">
+				<MoleculesInputCommon
+					label="Observações"
+					max-width="100%"
+					:value="store.form.description.value as string"
+					@on-input="store.setFormField('description', $event)"
+				/>
+			</div>
 		</div>
 
-		<!-- Supplements/Others -->
-		<div
-			v-if="['supplement', 'other'].includes(store.category)"
-			class="product-form__group"
-		>
-			<MoleculesInputCommon
-				label="Tipo de suplemento"
-				max-width="50%"
-				:value="store.form.supplement_type.value as string"
-				@on-input="store.setFormField('supplement_type', $event)"
+		<!-- Outros -->
+		<div v-if="store.category === 'other'" class="section-card">
+			<AtomsTypography
+				type="text-p3"
+				text="Informações complementares"
+				weight="medium"
+				color="var(--brand-color-dark-blue-300)"
 			/>
+			<div class="product-form__group">
+				<MoleculesInputCommon
+					label="Tipo de suplemento"
+					max-width="50%"
+					:value="store.form.supplement_type.value as string"
+					@on-input="store.setFormField('supplement_type', $event)"
+				/>
+			</div>
 		</div>
 
 		<div class="product-form__group">
@@ -350,7 +503,7 @@ export default defineComponent({
 			/>
 		</div>
 
-		<div class="product-form__group">
+		<div class="product-form__group actions">
 			<MoleculesButtonsCommon
 				type="primary"
 				text="Salvar"

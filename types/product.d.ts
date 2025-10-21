@@ -12,7 +12,7 @@ declare global {
     standard_days?: number; // dias padrão para consumo
     has_stock_control?: boolean; // controle de estoque (sim/não)
     stock?: number; // estoque atual do produto
-    minimum_stock?: number; // estoque mínimo
+    min_stock?: number; // estoque mínimo
     is_active?: boolean; // produto ativo
     lot?: string; // lote (vacinas/vermífugos)
     validity?: string; // data de validade ISO (YYYY-MM-DD)
