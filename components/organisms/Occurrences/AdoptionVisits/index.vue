@@ -330,13 +330,8 @@ export default defineComponent({
 				<div class="wrapper-calendar__time">
 					<MoleculesInputCommon
 						type-input="time"
-						label="Início da visita"
-						max-width="50%"
-					/>
-					<MoleculesInputCommon
-						type-input="time"
-						label="Fim da visita"
-						max-width="50%"
+						label="Horário da visita"
+						max-width="100%"
 					/>
 				</div>
 			</div>
