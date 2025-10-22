@@ -54,7 +54,7 @@ export const useCreateStore = defineStore("animals-create", {
 						continue;
 					}
 
-					if (typeof value === "object" && !(value instanceof File) ) {
+					if (typeof value === "object" && !(value instanceof File)) {
 						if (Object.prototype.hasOwnProperty.call(value, "id")) {
 							formData.set(key, String(value.id));
 

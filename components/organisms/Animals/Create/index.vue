@@ -206,7 +206,7 @@ export default defineComponent({
 					/>
 					<div class="animal__input-data__content">
 						<div class="animal__input-data__content--group">
-						<MoleculesInputCommon
+							<MoleculesInputCommon
 								label="Nome do animal"
 								max-width="25%"
 								:value="form.name.value as string"
@@ -218,7 +218,9 @@ export default defineComponent({
 								label="Tipo de Pet"
 								:options="optionsSpecies"
 								:message-error="form.species.errorMessages.join(', ')"
-								@item-selected="useAnimalsCreate.setFormField('species', $event)"
+								@item-selected="
+									useAnimalsCreate.setFormField('species', $event)
+								"
 							/>
 							<MoleculesSelectsSimple
 								max-width="25%"
@@ -272,7 +274,7 @@ export default defineComponent({
 								@on-input="useAnimalsCreate.setFormField('color', $event)"
 							/>
 						</div>
-					</div>	
+					</div>
 				</div>
 				<div class="animal__about-pet__content--group">
 					<MoleculesInputCommon

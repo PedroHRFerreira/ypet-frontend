@@ -101,7 +101,8 @@ export const useListStore = defineStore("products-list", {
 						return {
 							...p,
 							validity,
-							is_active: typeof p.is_active !== "undefined" ? p.is_active : p.status,
+							is_active:
+								typeof p.is_active !== "undefined" ? p.is_active : p.status,
 						} as IProduct;
 					});
 					this.isLoading = false;
@@ -112,7 +113,6 @@ export const useListStore = defineStore("products-list", {
 					this.errorMessage = _data?.message || "Erro ao buscar produtos.";
 				},
 			});
-
 		},
 	},
 });

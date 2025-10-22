@@ -18,7 +18,7 @@ export default defineComponent({
 			default: "image/*",
 		},
 		value: {
-			type: [String, Number, null, Boolean, Array<any>],
+			type: [String, Number, null, Boolean, Array<any>, File],
 			default: "",
 		},
 		maxSize: {

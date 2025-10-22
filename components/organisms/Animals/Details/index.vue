@@ -23,7 +23,7 @@ export default defineComponent({
 				{
 					title: "Sobre o pet",
 					content: [
-						{ label: "", value: citizen.image, isImage: true },
+						{ label: "", value: animal.picture, isImage: true },
 						{ label: "Nome do animal: ", value: animal?.name || "N/A" },
 						{ label: "Tipo de pet:", value: animal?.species, isEnum: true },
 						{ label: "Sexo:", value: animal?.gender, isEnum: true },

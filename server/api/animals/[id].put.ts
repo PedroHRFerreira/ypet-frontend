@@ -1,4 +1,4 @@
-import { apiPut } from "~/utils/api";
+import { IResponse, IError } from "~/types";
 
 export default defineEventHandler(async (event): Promise<IResponse> => {
 	try {
@@ -6,23 +6,24 @@ export default defineEventHandler(async (event): Promise<IResponse> => {
 		const apiBaseUrl = useRuntimeConfig().public.apiBaseUrl;
 		const url = `${apiBaseUrl}/animals/${id}`;
 		const formData = await readFormData(event);
+		formData.append("_method", "PUT");
 
 		const response = await $fetch(url, {
-			method: "PUT",
+			method: "POST",
 			headers: {
-			  Accept: "application/json",
-			  "X-Client-Type": "web",
-			  Authorization: `${getCookie(event, "auth._token.laravelSanctum")}`,
+				Accept: "application/json",
+				"X-Client-Type": "web",
+				Authorization: `${getCookie(event, "auth._token.laravelSanctum")}`,
 			},
 			body: formData,
-		  });
-	  
-		  return {
+		});
+
+		return {
 			status: "success",
 			statusCode: 200,
 			message: "Atualizado com sucesso",
 			data: response,
-		  } as IResponse;
+		} as IResponse;
 	} catch (err) {
 		const error = err as IError;
 

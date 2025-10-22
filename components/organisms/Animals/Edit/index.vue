@@ -376,7 +376,6 @@ export default defineComponent({
 								@on-input="useAnimalsEdit.setFormField('color', $event)"
 							/>
 						</div>
-
 					</div>
 				</div>
 				<div class="animal__about-pet__content--group">

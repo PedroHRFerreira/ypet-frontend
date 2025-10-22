@@ -106,7 +106,7 @@ const columnsHeader = ref<ColumnHeader[]>([
 ]);
 
 const columnsData = computed(() =>
-	columnsHeader.value.map((c) => ({ value: c.value, style: c.style }))
+	columnsHeader.value.map((c) => ({ value: c.value, style: c.style })),
 );
 // List proxy
 const list = computed((): IProduct[] => productsList.products);
@@ -144,7 +144,8 @@ const optionsStatus = [
 	{ value: false, label: "Inativo", color: "#999999" },
 ];
 const getStatus = (status: boolean | number | string) => {
-	if (typeof status === "string") return optionsStatus.find((s) => String(s.value) === status);
+	if (typeof status === "string")
+		return optionsStatus.find((s) => String(s.value) === status);
 	return optionsStatus.find((s) => s.value === !!status);
 };
 
