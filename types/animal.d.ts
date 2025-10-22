@@ -16,6 +16,7 @@ declare global {
 		animal_id?: number;
 		registration_number: number;
 		microchip_number: number;
+		picture?: string;
 		entry_date: string;
 		castrated: boolean;
 		castration_at?: string;

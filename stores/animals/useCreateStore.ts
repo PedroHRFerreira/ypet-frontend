@@ -13,6 +13,7 @@ export const useCreateStore = defineStore("animals-create", {
 			"weight",
 			"castrated",
 			"dewormed",
+			"picture",
 			"size",
 			"birth_date",
 			"entry_date",
@@ -52,12 +53,18 @@ export const useCreateStore = defineStore("animals-create", {
 					if (value === null || value === undefined) {
 						continue;
 					}
-					if (typeof value === "object") {
+
+					if (typeof value === "object" && !(value instanceof File)) {
 						if (Object.prototype.hasOwnProperty.call(value, "id")) {
 							formData.set(key, String(value.id));
 
 							continue;
 						}
+					}
+
+					if (value instanceof File) {
+						formData.append(key, value);
+						continue;
 					}
 
 					formData.set(key, String(value));
@@ -100,6 +107,7 @@ export const useCreateStore = defineStore("animals-create", {
 			this.successMessage = "";
 
 			const formData = this.getFormData();
+			console.log(formData);
 			await useFetch("/api/animals/store", {
 				method: "POST",
 				body: formData,
