@@ -1,4 +1,3 @@
-\
 <script lang="ts">
 import { defineComponent, ref, computed } from "vue";
 import type { IOption } from "~/types/global";
