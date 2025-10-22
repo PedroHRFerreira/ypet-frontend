@@ -31,3 +31,4 @@ export { default as AtomsIconsExport } from "./Export.vue";
 export { default as AtomsIconsEdit } from "./Edit.vue";
 export { default as AtomsIconsSave } from "./Save.vue";
 export { default as AtomsIconsFilter } from "./Filter.vue";
+export { default as AtomsIconsProcedures } from "./Procedures.vue";

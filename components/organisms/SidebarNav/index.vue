@@ -31,16 +31,16 @@ export default defineComponent({
 				route: "occurrences",
 			},
 			{
-				text: "Samupet",
-				icon: "health",
-				active: "samupet",
-				route: "samupet",
-			},
-			{
-				text: "Aplicações e Procedimentos",
+				text: "Aplicações",
 				icon: "vaccine",
 				active: "vaccine",
 				route: "vaccine",
+			},
+			{
+				text: "Procedimentos",
+				icon: "procedures",
+				active: "procedures",
+				route: "procedures",
 			},
 			{
 				text: "Colaboradores",
