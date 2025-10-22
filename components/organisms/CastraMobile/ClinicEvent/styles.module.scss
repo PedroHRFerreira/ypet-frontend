@@ -54,6 +54,13 @@
 		}
 	}
 
+	&__search-input {
+		width: 100%;
+		display: flex;
+		justify-content: flex-end;
+		padding: 0px 32px 12px 32px;
+	}
+
 	&__body {
 		display: flex;
 		flex-direction: column;
