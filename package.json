@@ -19,6 +19,7 @@
 		"@nuxt/image": "^1.7.0",
 		"@nuxtjs/google-fonts": "^3.2.0",
 		"@pinia/nuxt": "^0.5.1",
+		"@vuepic/vue-datepicker": "^11.0.3",
 		"chart.js": "^4.5.0",
 		"dayjs": "^1.11.11",
 		"nuxt": "^3.11.2",

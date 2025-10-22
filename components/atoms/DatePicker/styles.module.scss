@@ -1,0 +1,66 @@
+.datepicker-wrapper {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 4px;
+}
+
+.customDatepickerInput {
+	height: 56px;
+	border-radius: 4px;
+	border: var(--greys-colors-300) 1px solid;
+	background: var(--white);
+	font-size: 14px;
+	font-family: "Montserrat", sans-serif;
+	&::placeholder {
+		color: var(--greys-colors-600);
+		opacity: 1;
+	}
+	&:hover:not(.dp__input_focus) {
+		border-color: var(--brand-color-blue-900);
+	}
+	&:focus {
+		border: 1px solid var(--brand-color-blue-600) !important;
+		transition: border 0.2s ease-in-out;
+		caret-color: var(--brand-color-blue-900);
+	}
+}
+
+.dp__range_end,
+.dp__range_start,
+.dp__active_date {
+	background-color: var(--brand-color-blue-900);
+}
+
+.dp__menu {
+	background-color: var(--white);
+	border: var(--border);
+	border-radius: 4px;
+	color: var(--brand-color-blue-900);
+}
+
+.dp__calendar_header {
+	color: var(--brand-color-blue-900);
+}
+
+.dp__btn {
+	color: var(--brand-color-blue-900);
+}
+
+.dp__range_between {
+	background-color: var(--brand-color-blue-900);
+	color: var(--brand-color-blue-900);
+	border: none;
+}
+
+.dp__today {
+	border: 1px solid var(--brand-color-blue-900);
+}
+
+.dp__overlay_cell_active {
+	background-color: var(--brand-color-blue-900);
+}
+
+.dp__calendar_item {
+	color: var(--black-color);
+}
