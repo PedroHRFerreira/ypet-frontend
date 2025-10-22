@@ -13,26 +13,8 @@ export default defineComponent({
 	},
 	setup() {
 		const listStore = useListStore();
-		const dayjs = useDayjs();
+		const isVisible = ref(false);
 
-		// ✅ Filtros
-		const selectedDate = ref<string>(dayjs.format("YYYY-MM-DD"));
-		const selectedSpecies = ref<string>("");
-		const selectedStatus = ref<string>("");
-
-		// ✅ Aplicar filtros (front ou back)
-		async function applyFilters() {
-			await listStore.fetchList({
-				"with[]": ["user", "animal"],
-				...(selectedDate.value && { "filter[date]": selectedDate.value }),
-				...(selectedSpecies.value && {
-					"filter[species]": selectedSpecies.value,
-				}),
-				...(selectedStatus.value && { "filter[status]": selectedStatus.value }),
-			});
-		}
-
-		// ✅ Header
 		const header = computed(() => {
 			return {
 				title: "Agenda do dia",
@@ -128,7 +110,6 @@ export default defineComponent({
 			},
 		]);
 
-		// ✅ Ações da listagem
 		const onSelectOptionAction = (event: string, item: IRegistration) => {
 			const router = useRouter();
 
@@ -151,11 +132,12 @@ export default defineComponent({
 		};
 
 		onMounted(async () => {
-			await listStore.fetchList({
-				"with[]": ["user", "animal"],
-				"filter[date]": useDayjs().format("YYYY-MM-DD"),
-			});
+			await listStore.fetchList();
 		});
+
+		const toggleDropdown = () => {
+			isVisible.value = true;
+		};
 
 		return {
 			listStore,
@@ -163,10 +145,8 @@ export default defineComponent({
 			header,
 			list,
 			onSelectOptionAction,
-			selectedDate,
-			selectedSpecies,
-			selectedStatus,
-			applyFilters,
+			toggleDropdown,
+			isVisible,
 		};
 	},
 	methods: {
@@ -186,54 +166,18 @@ export default defineComponent({
 					color="var(--brand-color-dark-blue-300)"
 				/>
 			</div>
-
-			<!-- ✅ Filtros -->
-			<div class="wrapper-list-card__header-actions">
-				<input
-					type="date"
-					v-model="selectedDate"
-					@change="applyFilters"
-					class="filter-input"
-				/>
-
-				<select
-					v-model="selectedSpecies"
-					@change="applyFilters"
-					class="filter-select"
-				>
-					<option value="">Todas as espécies</option>
-					<option value="dog">Cães</option>
-					<option value="cat">Gatos</option>
-				</select>
-
-				<select
-					v-model="selectedStatus"
-					@change="applyFilters"
-					class="filter-select"
-				>
-					<option value="">Todos os status</option>
-					<option value="scheduled">Agendado</option>
-					<option value="done">Concluído</option>
-					<option value="absent">Faltou</option>
-				</select>
-
+			<div class="wrapper-list-card__search-input anim-loading">
 				<MoleculesButtonsCommon
-					v-for="button in header.buttons"
-					:key="button.text"
-					:type="button.type"
-					:text="button.text"
-					:icon-left="button.iconLeft"
-					:icon-right="button.iconRight"
-					:name-icon-left="button.nameIconLeft"
-					:name-icon-right="button.nameIconRight"
-					:size="button.size"
-					:width="button.width"
-					@onclick="button.action"
+					type="outline"
+					text="Filtros"
+					size="small"
+					icon-left
+					name-icon-left="filter"
+					@onclick="toggleDropdown"
 				/>
 			</div>
 		</div>
-
-		<div class="wrapper-list-card__body">
+		<div v-if="list.length > 0" class="wrapper-list-card__body">
 			<MoleculesListCardItem :data="columnsHeader" padding="16px 0">
 				<template v-for="(item, key) in columnsHeader" #[item.value] :key="key">
 					<AtomsTypography
@@ -328,14 +272,26 @@ export default defineComponent({
 			</MoleculesListCardItem>
 		</div>
 
+		<MoleculesEmptyState
+			v-else
+			:is-icon="true"
+			title="Nenhum agendamento encontrado"
+			description="Adicione um novo agendamento para começar."
+		/>
+
 		<div class="wrapper-list-card__footer">
 			<MoleculesPaginationControls
 				v-if="listStore.pagination"
-				:total-items="listStore.pagination.total"
-				:current-page="listStore.pagination.current_page"
-				:per-page="listStore.pagination.per_page"
+				:total-items="listStore.pagination.total || 0"
+				:current-page="listStore.pagination.current_page || 1"
+				:per-page="listStore.pagination.per_page || 10"
 			/>
 		</div>
+
+		<OrganismsCastraMobileRegistrationsFilter
+			:is-visible="isVisible"
+			@close="isVisible = false"
+		/>
 	</section>
 </template>
 
