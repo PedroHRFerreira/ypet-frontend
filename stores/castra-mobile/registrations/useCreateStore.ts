@@ -84,6 +84,13 @@ export const useCreateStore = defineStore("registrations-create", {
 			}
 
 			if (response.status === 422) {
+				if (!response.errors) {
+					this.errorMessage =
+						response.message || "Erro ao processar a solicitação.";
+
+					return;
+				}
+
 				for (const field in response.errors) {
 					if (Object.prototype.hasOwnProperty.call(response.errors, field)) {
 						this.setFormError(field, response.errors[field]);
