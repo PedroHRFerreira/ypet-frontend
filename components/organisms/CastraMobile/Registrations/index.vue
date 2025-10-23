@@ -1,5 +1,6 @@
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref } from "vue";
+import { useRouter } from "vue-router";
 import MoleculesListCardItem from "~/components/molecules/ListCardItem/index.vue";
 import { useDayjs } from "~/composables/useDayjs";
 import AtomsTypography from "~/components/atoms/Typography/index.vue";
@@ -14,6 +15,11 @@ export default defineComponent({
 	setup() {
 		const listStore = useListStore();
 		const isVisible = ref(false);
+		const router = useRouter();
+
+		const navigateToCreate = () => {
+			router.push({ name: "castra-mobile.registrations.create" });
+		};
 
 		const header = computed(() => {
 			return {
@@ -30,10 +36,7 @@ export default defineComponent({
 						nameIconRight: "",
 						size: "small",
 						width: "auto",
-						action: () => {
-							const router = useRouter();
-							router.push({ name: "castra-mobile.registrations.create" });
-						},
+						action: navigateToCreate,
 					},
 				],
 			};
@@ -131,10 +134,41 @@ export default defineComponent({
 			}
 		};
 
+		const getStatus = (status: string | undefined): IEnum => {
+			return (
+				optionsStatus.find((s) => s.value === status) || {
+					value: "",
+					name: "",
+					label: "Sem status",
+					color: "secondary",
+				}
+			);
+		};
+
 		onMounted(async () => {
 			await listStore.fetchList();
 		});
 
+		const optionsStatus: IEnum[] = [
+			{
+				value: "approved",
+				name: "APPROVED",
+				label: "Aprovado",
+				color: "success",
+			},
+			{
+				value: "pending",
+				name: "PENDING",
+				label: "Pendente",
+				color: "warning",
+			},
+			{
+				value: "rejected",
+				name: "REJECTED",
+				label: "Rejeitado",
+				color: "danger",
+			},
+		];
 		const toggleDropdown = () => {
 			isVisible.value = true;
 		};
@@ -145,6 +179,7 @@ export default defineComponent({
 			header,
 			list,
 			onSelectOptionAction,
+			getStatus,
 			toggleDropdown,
 			isVisible,
 		};
@@ -166,8 +201,22 @@ export default defineComponent({
 					color="var(--brand-color-dark-blue-300)"
 				/>
 			</div>
-			<div class="wrapper-list-card__search-input anim-loading">
+			<div class="wrapper-list-card__header-actions">
 				<MoleculesButtonsCommon
+					v-for="button in header.buttons"
+					:key="button.text"
+					:type="button.type"
+					:text="button.text"
+					:icon-left="button.iconLeft"
+					:icon-right="button.iconRight"
+					:name-icon-left="button.nameIconLeft"
+					:name-icon-right="button.nameIconRight"
+					:size="button.size"
+					:width="button.width"
+					@onclick="button.action"
+				/>
+				<MoleculesButtonsCommon
+					width="120px"
 					type="outline"
 					text="Filtros"
 					size="small"
@@ -177,6 +226,7 @@ export default defineComponent({
 				/>
 			</div>
 		</div>
+
 		<div v-if="list.length > 0" class="wrapper-list-card__body">
 			<MoleculesListCardItem :data="columnsHeader" padding="16px 0">
 				<template v-for="(item, key) in columnsHeader" #[item.value] :key="key">
@@ -207,7 +257,7 @@ export default defineComponent({
 				<template #hour>
 					<AtomsTypography
 						type="text-p5"
-						:text="useDayjs(item.scheduler_at).format('DD/MM/YYYY - HH:mm')"
+						:text="useDayjs(item.created_at).format('DD/MM/YYYY - HH:mm')"
 						weight="regular"
 						color="var(--brand-color-dark-blue-300)"
 					/>
@@ -250,14 +300,12 @@ export default defineComponent({
 				</template>
 
 				<template #status>
-					<AtomsTypography
-						type="text-p5"
-						:text="item.status.label"
-						weight="regular"
-						color="var(--brand-color-dark-blue-300)"
+					<AtomsBadges
+						v-if="item.status"
+						:text="getStatus(item.status.value)?.label || 'Sem status'"
+						:color="getStatus(item.status.value)?.color || 'secondary'"
 					/>
 				</template>
-
 				<template #actions>
 					<MoleculesActionDropdown
 						:key="item.id"

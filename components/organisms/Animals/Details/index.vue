@@ -33,7 +33,7 @@ export default defineComponent({
 						},
 						{
 							label: "Data de nascimento:",
-							value: proxy?.$formatDateTime(animal?.birth_date) || "N/A",
+							value: proxy?.$formatDateOnly(animal?.birth_date) || "N/A",
 						},
 						{ label: "Porte:", value: animal?.size, isEnum: true },
 						{ label: "Cor:", value: animal?.color },
