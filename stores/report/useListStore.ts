@@ -1,3 +1,5 @@
+import { defineStore } from "pinia";
+import { ref, reactive } from "vue";
 import type { IPagination } from "~/types/global";
 
 export const useListStore = defineStore("abuse-report-list", {
@@ -7,26 +9,34 @@ export const useListStore = defineStore("abuse-report-list", {
 		const errorMessage = ref("");
 		const pagination = ref<IPagination>({} as IPagination);
 
+		const filters = reactive({
+			name: null as string | null,
+			status: null as number | null,
+			date: null as string | null,
+		});
+
 		return {
 			lostPet,
 			isLoading,
 			errorMessage,
 			pagination,
+			filters,
 		};
 	},
 	actions: {
-		async fetchList(params = {}): Promise<void> {
-			if (this.isLoading) {
-				return;
-			}
+		async fetchList(page = 1): Promise<void> {
+			if (this.isLoading) return;
 
 			this.isLoading = true;
 			this.errorMessage = "";
 
-			await useFetch("/api/lost-pet", {
+			await useFetch("/api/report", {
 				method: "GET",
 				params: {
-					...params,
+					page,
+					name: this.filters.name || undefined,
+					status: this.filters.status || undefined,
+					date: this.filters.date || undefined,
 					"with[]": ["user", "citizen", "animal"],
 				},
 				onResponse: ({ response }) => {
