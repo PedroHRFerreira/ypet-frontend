@@ -91,7 +91,7 @@ export default defineComponent({
 			error: {
 				show: false,
 				title: "Erro ao criar registro",
-        description: errorMessage.value,
+				description: errorMessage.value,
 				continueText: "Fechar",
 				action: () => {
 					createStore.showErrorModal = false;
@@ -260,13 +260,14 @@ export default defineComponent({
 	<MoleculesConfirmFeedbackModal
 		v-if="modalFeedback"
 		key="errorCreateRegistration"
-		v-model:open="showError"
+		:open="showError"
+		@update:open="(value) => (createStore.showErrorModal = value)"
 		variant="confirm"
 		:title="modalFeedback.error.title"
 		:description="modalFeedback.error.description"
 		:confirm-text="modalFeedback.error.continueText"
 		@confirm="modalFeedback.error.action()"
-    />
+	/>
 	<div class="settings-create">
 		<section class="settings-create__about-pet">
 			<div class="settings-create__about-pet__header">

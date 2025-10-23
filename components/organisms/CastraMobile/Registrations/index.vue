@@ -1,5 +1,6 @@
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref } from "vue";
+import { useRouter } from "vue-router";
 import MoleculesListCardItem from "~/components/molecules/ListCardItem/index.vue";
 import { useDayjs } from "~/composables/useDayjs";
 import AtomsTypography from "~/components/atoms/Typography/index.vue";
@@ -14,6 +15,11 @@ export default defineComponent({
 	setup() {
 		const listStore = useListStore();
 		const isVisible = ref(false);
+		const router = useRouter();
+
+		const navigateToCreate = () => {
+			router.push({ name: "castra-mobile.registrations.create" });
+		};
 
 		const header = computed(() => {
 			return {
@@ -30,10 +36,7 @@ export default defineComponent({
 						nameIconRight: "",
 						size: "small",
 						width: "auto",
-						action: () => {
-							const router = useRouter();
-							router.push({ name: "castra-mobile.registrations.create" });
-						},
+						action: navigateToCreate,
 					},
 				],
 			};
@@ -198,39 +201,22 @@ export default defineComponent({
 					color="var(--brand-color-dark-blue-300)"
 				/>
 			</div>
-
-			<!-- ✅ Filtros -->
 			<div class="wrapper-list-card__header-actions">
-				<!-- <input
-					type="date"
-					v-model="selectedDate"
-					@change="applyFilters"
-					class="filter-input"
-				/>
-
-				<select
-					v-model="selectedSpecies"
-					@change="applyFilters"
-					class="filter-select"
-				>
-					<option value="">Todas as espécies</option>
-					<option value="dog">Cães</option>
-					<option value="cat">Gatos</option>
-				</select>
-
-				<select
-					v-model="selectedStatus"
-					@change="applyFilters"
-					class="filter-select"
-				>
-					<option value="">Todos os status</option>
-					<option value="scheduled">Agendado</option>
-					<option value="done">Concluído</option>
-					<option value="absent">Faltou</option>
-				</select> -->
-
-			<div class="wrapper-list-card__search-input anim-loading">
 				<MoleculesButtonsCommon
+					v-for="button in header.buttons"
+					:key="button.text"
+					:type="button.type"
+					:text="button.text"
+					:icon-left="button.iconLeft"
+					:icon-right="button.iconRight"
+					:name-icon-left="button.nameIconLeft"
+					:name-icon-right="button.nameIconRight"
+					:size="button.size"
+					:width="button.width"
+					@onclick="button.action"
+				/>
+				<MoleculesButtonsCommon
+					width="120px"
 					type="outline"
 					text="Filtros"
 					size="small"
@@ -240,6 +226,7 @@ export default defineComponent({
 				/>
 			</div>
 		</div>
+
 		<div v-if="list.length > 0" class="wrapper-list-card__body">
 			<MoleculesListCardItem :data="columnsHeader" padding="16px 0">
 				<template v-for="(item, key) in columnsHeader" #[item.value] :key="key">
