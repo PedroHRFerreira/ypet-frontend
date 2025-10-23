@@ -150,12 +150,44 @@ export default defineComponent({
 			}
 		};
 
+		const getStatus = (status: string | undefined): IEnum => {
+			return (
+				optionsStatus.find((s) => s.value === status) || {
+					value: "",
+					name: "",
+					label: "Sem status",
+					color: "secondary",
+				}
+			);
+		};
+
 		onMounted(async () => {
 			await listStore.fetchList({
 				"with[]": ["user", "animal"],
 				"filter[date]": useDayjs().format("YYYY-MM-DD"),
 			});
 		});
+
+		const optionsStatus: IEnum[] = [
+			{
+				value: "approved",
+				name: "APPROVED",
+				label: "Aprovado",
+				color: "success",
+			},
+			{
+				value: "pending",
+				name: "PENDING",
+				label: "Pendente",
+				color: "warning",
+			},
+			{
+				value: "rejected",
+				name: "REJECTED",
+				label: "Rejeitado",
+				color: "danger",
+			},
+		];
 
 		return {
 			listStore,
@@ -167,6 +199,7 @@ export default defineComponent({
 			selectedSpecies,
 			selectedStatus,
 			applyFilters,
+			getStatus,
 		};
 	},
 	methods: {
@@ -189,7 +222,7 @@ export default defineComponent({
 
 			<!-- ✅ Filtros -->
 			<div class="wrapper-list-card__header-actions">
-				<input
+				<!-- <input
 					type="date"
 					v-model="selectedDate"
 					@change="applyFilters"
@@ -215,7 +248,7 @@ export default defineComponent({
 					<option value="scheduled">Agendado</option>
 					<option value="done">Concluído</option>
 					<option value="absent">Faltou</option>
-				</select>
+				</select> -->
 
 				<MoleculesButtonsCommon
 					v-for="button in header.buttons"
@@ -263,7 +296,7 @@ export default defineComponent({
 				<template #hour>
 					<AtomsTypography
 						type="text-p5"
-						:text="useDayjs(item.scheduler_at).format('DD/MM/YYYY - HH:mm')"
+						:text="useDayjs(item.created_at).format('DD/MM/YYYY - HH:mm')"
 						weight="regular"
 						color="var(--brand-color-dark-blue-300)"
 					/>
@@ -306,14 +339,12 @@ export default defineComponent({
 				</template>
 
 				<template #status>
-					<AtomsTypography
-						type="text-p5"
-						:text="item.status.label"
-						weight="regular"
-						color="var(--brand-color-dark-blue-300)"
+					<AtomsBadges
+						v-if="item.status"
+						:text="getStatus(item.status.value)?.label || 'Sem status'"
+						:color="getStatus(item.status.value)?.color || 'secondary'"
 					/>
 				</template>
-
 				<template #actions>
 					<MoleculesActionDropdown
 						:key="item.id"

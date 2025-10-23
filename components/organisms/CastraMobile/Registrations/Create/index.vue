@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent } from "vue";
+import { computed, defineComponent, onMounted, ref } from "vue";
 import { useAnimalSpeciesEnumStore } from "~/stores/Enums/useAnimalSpeciesEnumStore";
 import { useGenderEnumStore } from "~/stores/Enums/useGenderEnumStore";
 import { useCreateStore } from "~/stores/castra-mobile/registrations/useCreateStore";
@@ -10,24 +10,25 @@ import { useListStore } from "~/stores/castra-mobile/clinic-events/useListStore"
 
 export default defineComponent({
 	name: "OrganismsCastraMobileRegistrationsCreate",
-	async setup() {
+	setup() {
 		const createStore = useCreateStore();
 		const { form } = createStore;
 
-		const [
-			optionsSpecies,
-			optionsGender,
-			optionsSize,
-			optionsAnimalStatus,
-			optionsUF,
-		] = await Promise.all([
-			useAnimalSpeciesEnumStore().getOptions(),
-			useGenderEnumStore().getOptions(),
-			useAnimalSizeEnumStore().getOptions(),
-			useAnimalStatusEnumStore().getOptions(),
-			useUFEnumStore().getOptions(),
-			useListStore().fetchListWithoutPagination(),
-		]);
+		const optionsSpecies = ref<IOption[]>([]);
+		const optionsGender = ref<IOption[]>([]);
+		const optionsSize = ref<IOption[]>([]);
+		const optionsUF = ref<IOption[]>([]);
+
+		onMounted(async () => {
+			[optionsSpecies.value, optionsGender.value, optionsSize.value, optionsUF.value] =
+				await Promise.all([
+					useAnimalSpeciesEnumStore().getOptions(),
+					useGenderEnumStore().getOptions(),
+					useAnimalSizeEnumStore().getOptions(),
+					useUFEnumStore().getOptions(),
+				]);
+			await useListStore().fetchListWithoutPagination();
+		});
 
 		const optionsClinicEvents = computed(() => {
 			return useListStore().list.map((event) => {
@@ -49,6 +50,8 @@ export default defineComponent({
 
 		const showConfirm = ref(false);
 		const showSuccess = ref(false);
+		const showError = computed(() => createStore.showErrorModal);
+		const errorMessage = computed(() => createStore.errorMessage);
 
 		const modalFeedback = ref({
 			confirm: {
@@ -83,6 +86,15 @@ export default defineComponent({
 				action: () => {
 					showSuccess.value = false;
 					createStore.resetForm();
+				},
+			},
+			error: {
+				show: false,
+				title: "Erro ao criar registro",
+        description: errorMessage.value,
+				continueText: "Fechar",
+				action: () => {
+					createStore.showErrorModal = false;
 				},
 			},
 		});
@@ -155,7 +167,6 @@ export default defineComponent({
 			optionsGender,
 			optionsSpecies,
 			optionsSize,
-			optionsAnimalStatus,
 			optionsUF,
 			optionsClinicEvents,
 			optionsSchedulerAt,
@@ -167,6 +178,8 @@ export default defineComponent({
 			modalFeedback,
 			showConfirm,
 			showSuccess,
+			showError,
+			errorMessage,
 			birthDate,
 			tutorEmail,
 		};
@@ -244,6 +257,16 @@ export default defineComponent({
 		:continue-text="modalFeedback.success.continueText"
 		@continue="modalFeedback.success.action()"
 	/>
+	<MoleculesConfirmFeedbackModal
+		v-if="modalFeedback"
+		key="errorCreateRegistration"
+		v-model:open="showError"
+		variant="confirm"
+		:title="modalFeedback.error.title"
+		:description="modalFeedback.error.description"
+		:confirm-text="modalFeedback.error.continueText"
+		@confirm="modalFeedback.error.action()"
+    />
 	<div class="settings-create">
 		<section class="settings-create__about-pet">
 			<div class="settings-create__about-pet__header">
@@ -459,13 +482,6 @@ export default defineComponent({
 						:options="optionsSize"
 						:message-error="form.animal_size.errorMessages.join(', ')"
 						@item-selected="createStore.setFormField('animal_size', $event)"
-					/>
-					<MoleculesSelectsSimple
-						max-width="25%"
-						label="Status do animal"
-						:options="optionsAnimalStatus"
-						:message-error="form.animal_status.errorMessages.join(', ')"
-						@item-selected="createStore.setFormField('animal_status', $event)"
 					/>
 				</div>
 			</div>

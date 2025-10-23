@@ -14,9 +14,11 @@ export default defineEventHandler(async (event): Promise<IResponse> => {
 		const error = err as IError;
 
 		if (error?.statusCode === 422) {
+			setResponseStatus(event, 422);
 			return error.data as IResponse;
 		}
 
+		setResponseStatus(event, error?.statusCode || 500);
 		return {
 			type: "error",
 			status: error?.statusCode || 500,

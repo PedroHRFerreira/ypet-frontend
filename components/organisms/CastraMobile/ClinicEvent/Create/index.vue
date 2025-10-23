@@ -63,7 +63,7 @@ export default defineComponent({
 				color: "var(--brand-color-dark-blue-900)",
 			},
 			titleSecond: {
-				label: "Regras do evento (Especie, Sexo e Max. de vagas)",
+				label: "Regras do evento",
 				type: "text-p2",
 				weight: "medium",
 				color: "var(--brand-color-dark-blue-900)",
@@ -105,69 +105,38 @@ export default defineComponent({
 		};
 		const clinicEventRules = ref([
 			{
-				specie: {
-					label: "Cão",
-					value: "dog",
-				},
-				gender: {
-					label: "Fêmea",
-					value: "female",
-				},
-				max_registrations: {
-					label: "Max. de vagas",
-					value: 0,
-				},
+				specie: "dog",
+				gender: "male",
+				label: "Cão Macho",
+				max_registrations: 0,
 			},
 			{
-				specie: {
-					label: "Gato",
-					value: "cat",
-				},
-				gender: {
-					label: "Fêmea",
-					value: "female",
-				},
-				max_registrations: {
-					label: "Max. de vagas",
-					value: 0,
-				},
+				specie: "dog",
+				gender: "female",
+				label: "Cão Fêmea",
+				max_registrations: 0,
 			},
 			{
-				specie: {
-					label: "Cão",
-					value: "dog",
-				},
-				gender: {
-					label: "Macho",
-					value: "male",
-				},
-				max_registrations: {
-					label: "Max. de vagas",
-					value: 0,
-				},
+				specie: "cat",
+				gender: "male",
+				label: "Gato Macho",
+				max_registrations: 0,
 			},
 			{
-				specie: {
-					label: "Gato",
-					value: "cat",
-				},
-				gender: {
-					label: "Macho",
-					value: "male",
-				},
-				max_registrations: {
-					label: "Max. de vagas",
-					value: 0,
-				},
+				specie: "cat",
+				gender: "female",
+				label: "Gato Fêmea",
+				max_registrations: 0,
 			},
 		]);
 
-		const changeMaxRegistrations = (index: number, value: number) => {
-			clinicEventRules.value[index].max_registrations.value = value;
+		const changeMaxRegistrations = (index: number, value: string) => {
+			const numValue = parseInt(value) || 0;
+			clinicEventRules.value[index].max_registrations = numValue;
 			const rules = clinicEventRules.value.map((rule) => ({
-				specie: rule.specie.value,
-				gender: rule.gender.value,
-				max_registrations: rule.max_registrations.value,
+				specie: rule.specie,
+				gender: rule.gender,
+				max_registrations: rule.max_registrations,
 			}));
 			createStore.setFormField("rules", rules);
 		};
@@ -242,14 +211,14 @@ export default defineComponent({
 					<MoleculesInputCommon
 						label="Nome"
 						max-width="35%"
-						:value="form.name.value as string"
+						:value="form.name.value"
 						:message-error="form.name.errorMessages.join(', ')"
 						@on-input="createStore.setFormField('name', $event)"
 					/>
 					<MoleculesInputCommon
 						label="Descrição"
 						max-width="65%"
-						:value="form.description.value as string"
+						:value="form.description.value"
 						:message-error="form.description.errorMessages.join(', ')"
 						@on-input="createStore.setFormField('description', $event)"
 					/>
@@ -287,7 +256,7 @@ export default defineComponent({
 					<MoleculesInputCommon
 						label="Local do evento"
 						max-width="100%"
-						:value="form.location.value as string"
+						:value="form.location.value"
 						:message-error="form.location.errorMessages.join(', ')"
 						@on-input="createStore.setFormField('location', $event)"
 					/>
@@ -305,39 +274,43 @@ export default defineComponent({
 				/>
 			</div>
 			<div class="settings-create__about-pet__content">
-				<div
-					v-for="(rule, index) in clinicEventRules"
-					class="settings-create__about-pet__content--group"
-				>
-					<MoleculesSelectsSimple
-						max-width="35%"
-						label="Tipo de Pet"
-						:options="[
-							{
-								id: rule.specie.value,
-								text: rule.specie.label,
-								state: 'activated',
-							},
-						]"
-					/>
-					<MoleculesSelectsSimple
-						max-width="35%"
-						label="Sexo"
-						:options="[
-							{
-								id: rule.gender.value,
-								text: rule.gender.label,
-								state: 'activated',
-							},
-						]"
+				<!-- Bloco de Cães -->
+				<div class="settings-create__about-pet__content--group">
+					<MoleculesInputCommon
+						label="Cão Macho"
+						type-input="number"
+						max-width="50%"
+						placeholder="Número máximo de vagas"
+						:value="String(clinicEventRules[0].max_registrations)"
+						@on-input="changeMaxRegistrations(0, $event)"
 					/>
 					<MoleculesInputCommon
-						label="Max. de vagas"
+						label="Cão Fêmea"
 						type-input="number"
-						max-width="30%"
-						:maxlength="2"
-						:value="rule.max_registrations.value"
-						@on-input="changeMaxRegistrations(index, $event)"
+						max-width="50%"
+						placeholder="Número máximo de vagas"
+						:value="String(clinicEventRules[1].max_registrations)"
+						@on-input="changeMaxRegistrations(1, $event)"
+					/>
+				</div>
+
+				<!-- Bloco de Gatos -->
+				<div class="settings-create__about-pet__content--group">
+					<MoleculesInputCommon
+						label="Gato Macho"
+						type-input="number"
+						max-width="50%"
+						placeholder="Número máximo de vagas"
+						:value="String(clinicEventRules[2].max_registrations)"
+						@on-input="changeMaxRegistrations(2, $event)"
+					/>
+					<MoleculesInputCommon
+						label="Gato Fêmea"
+						type-input="number"
+						max-width="50%"
+						placeholder="Número máximo de vagas"
+						:value="String(clinicEventRules[3].max_registrations)"
+						@on-input="changeMaxRegistrations(3, $event)"
 					/>
 				</div>
 
