@@ -23,10 +23,10 @@ export default defineComponent({
 		);
 
 		const optionsStatus = computed<IOption[]>(() => [
-			{ id: 1, text: "Em revisão" },
-			{ id: 2, text: "Encaminhados" },
-			{ id: 3, text: "Concluídos" },
-			{ id: 4, text: "Arquivados" },
+			{ id: "in_review", text: "Em revisão" },
+			{ id: "forward", text: "Encaminhados" },
+			{ id: "complete", text: "Concluídos" },
+			{ id: "archive", text: "Arquivados" },
 		]);
 
 		const onStatusSelected = (option: IOption) => {
