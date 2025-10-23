@@ -1,29 +1,26 @@
 <script lang="ts">
 import { computed, defineComponent, ref } from "vue";
-import { useListStore } from "~/stores/adoption/useListStore";
-import { useEditTypeStore } from "~/stores/adoption/useEditTypeStore";
+import { useListStore } from "~/stores/evaluation-pet/useListStore";
+import { useEditTypeStore } from "~/stores/evaluation-pet/useEditTypeStore";
 import MoleculesListCardItem from "~/components/molecules/ListCardItem/index.vue";
 import AtomsTypography from "~/components/atoms/Typography/index.vue";
 import AtomsBadges from "~/components/atoms/Badges/Index.vue";
-import AtomsDatePicker from "~/components/atoms/DatePicker/Index.vue";
-import MoleculesModal from "~/components/molecules/Modal/index.vue";
 export default defineComponent({
-	name: "OrganismsOccurrencesAdoptionVisits",
+	name: "OrganismsOccurrencesEvaluationPet",
 	components: {
 		AtomsBadges,
-		AtomsDatePicker,
 		AtomsTypography,
 		MoleculesListCardItem,
-		MoleculesModal,
 	},
 	async setup() {
-		const adoptionList = useListStore();
-		const adoptionEditType = useEditTypeStore();
+		const evaluationPetList = useListStore();
+		const evaluationPetEditType = useEditTypeStore();
 		const id = ref(0);
 		const showConfirm = ref(false);
 		const showSuccess = ref(false);
+		const isVisible = ref(false);
+		const searchValue = ref("");
 		const typeAction = ref("");
-		const showModalReschedule = ref(false);
 		const feedbackModal = ref({
 			confirm: {
 				title: "",
@@ -34,14 +31,14 @@ export default defineComponent({
 				description: "",
 			},
 		});
-		await adoptionList.fetchList();
+		await evaluationPetList.fetchList();
 
-		const list = computed((): IAdoption[] => {
-			return adoptionList.adoption;
+		const list = computed((): IEvaluationPet[] => {
+			return evaluationPetList.evaluationPet;
 		});
 
 		async function paginationChange(value: number) {
-			await adoptionList.fetchList({ page: value });
+			await evaluationPetList.fetchList({ page: value });
 		}
 
 		const optionsStatus: IEnum[] = [
@@ -49,31 +46,19 @@ export default defineComponent({
 				value: "pending",
 				name: "PENDING",
 				label: "Pendente",
-				color: "#e6a832",
+				color: "warning",
 			},
 			{
-				value: "confirmed",
-				name: "CONFIRMED",
-				label: "Confirmado",
-				color: "#00b374",
+				value: "approved",
+				name: "APPROVED",
+				label: "Aprovado",
+				color: "success",
 			},
 			{
-				value: "rescheduled",
-				name: "RESCHEDULED",
-				label: "Remarcado",
-				color: "#f0a500",
-			},
-			{
-				value: "completed",
-				name: "COMPLETED",
-				label: "Concluído",
-				color: "#0055ff",
-			},
-			{
-				value: "canceled",
-				name: "CANCELED",
-				label: "Cancelado",
-				color: "#cc3333",
+				value: "refused",
+				name: "REFUSED",
+				label: "Reprovado",
+				color: "danger",
 			},
 		];
 
@@ -83,7 +68,7 @@ export default defineComponent({
 
 		const header = computed(() => {
 			return {
-				title: "Lista de visitas de adoção",
+				title: "Lista de aprovação para adoção",
 				subtitle: "",
 				buttons: [],
 			};
@@ -94,17 +79,17 @@ export default defineComponent({
 		}
 
 		async function confirmUpdate() {
-			if (adoptionEditType.isLoading) {
+			if (evaluationPetEditType.isLoading) {
 				return;
 			}
 
-			await adoptionEditType.update(id.value, typeAction.value);
+			await evaluationPetEditType.update(id.value, typeAction.value);
 
-			if (adoptionEditType.successMessage) {
+			if (evaluationPetEditType.successMessage) {
 				onSuccess();
 			}
 
-			await adoptionList.fetchList();
+			await evaluationPetList.fetchList();
 			showConfirm.value = false;
 		}
 
@@ -116,14 +101,10 @@ export default defineComponent({
 			showSuccess.value = true;
 		}
 
-		function closeModalReschedule() {
-			showModalReschedule.value = false;
-		}
-
 		const columnsHeader = ref([
 			{
 				value: "nameUser",
-				text: "CIDADÃO",
+				text: "PROTETOR",
 				typeTypography: "text-p5",
 				weightTypography: "bold",
 				colorTypography: "var(--brand-color-dark-blue-300)",
@@ -135,7 +116,7 @@ export default defineComponent({
 			},
 			{
 				value: "nameAnimal",
-				text: "ANIMAL",
+				text: "PET",
 				typeTypography: "text-p5",
 				weightTypography: "bold",
 				colorTypography: "var(--brand-color-dark-blue-300)",
@@ -144,8 +125,8 @@ export default defineComponent({
 				},
 			},
 			{
-				value: "dateVisit",
-				text: "DATA VISITA",
+				value: "species",
+				text: "ESPECIE",
 				typeTypography: "text-p5",
 				weightTypography: "bold",
 				colorTypography: "var(--brand-color-dark-blue-300)",
@@ -154,19 +135,8 @@ export default defineComponent({
 				},
 			},
 			{
-				value: "timeVisit",
-				text: "HORA VISITA",
-				typeTypography: "text-p5",
-				weightTypography: "bold",
-				colorTypography: "var(--brand-color-dark-blue-300)",
-				style: {
-					width: "20%",
-					justifyContent: "flex-end",
-				},
-			},
-			{
-				value: "telephone",
-				text: "CONTATO",
+				value: "date",
+				text: "DATA DE ENVIO",
 				typeTypography: "text-p5",
 				weightTypography: "bold",
 				colorTypography: "var(--brand-color-dark-blue-300)",
@@ -199,55 +169,35 @@ export default defineComponent({
 			},
 		]);
 
-		const onSelectOptionAction = (event: string, item: IAdoption) => {
+		const onSelectOptionAction = (event: string, item: IEvalu) => {
 			const router = useRouter();
 			id.value = item.id;
 			typeAction.value = event;
 
-			if (event === "confirm") {
+			if (event === "approved") {
 				openConfirm();
 				feedbackModal.value = {
 					confirm: {
-						title: "Deseja confirmar a visita de adoção?",
-						description: "Após confirmação, você irá visualizá-lo no painel",
+						title: "Deseja confirmar a aprovação para adoção?",
+						description: "Após confirmação, você irá visualizá-lo na vitrine",
 					},
 					success: {
-						title: "Visita confirmada com sucesso",
+						title: "Aprovado com sucesso",
 						description: "",
 					},
 				};
 				return;
 			}
 
-			if (event === "reschedule") {
-				showModalReschedule.value = true;
-				return;
-			}
-
-			if (event === "complete") {
+			if (event === "refused") {
 				openConfirm();
 				feedbackModal.value = {
 					confirm: {
-						title: "Deseja concluir visita?",
-						description: "Após confirmação, você irá visualizá-lo no painel",
+						title: "Deseja reprovar para adoção?",
+						description: "Após confirmação, o pet não pode ser adotado",
 					},
 					success: {
-						title: "Visita concluída com sucesso",
-						description: "",
-					},
-				};
-				return;
-			}
-
-			if (event === "cancel") {
-				openConfirm();
-				feedbackModal.value = {
-					confirm: {
-						title: "Deseja cancelar visita?",
-						description: "Após confirmação, você irá visualizá-lo no painel",
-					},
-					success: {
-						title: "Visita cancelada om sucesso",
+						title: "Reprovado com sucesso",
 						description: "",
 					},
 				};
@@ -262,31 +212,49 @@ export default defineComponent({
 				return;
 			}
 
-			if (event === "citizen") {
-				router.push({ name: "citizens-edit", params: { id: item.citizen.id } });
-			}
-
-			if (event === "details") {
+			if (event === "protector") {
 				router.push({
-					name: "occurrences-adoption-details",
-					params: { id: item.id },
+					name: "protectors-details",
+					params: { id: item.tutor.id },
 				});
-				return;
 			}
 		};
 
 		const optionsActions = [
-			{ value: "confirm", label: "Confirmar visita", icon: "check" },
-			{ value: "reschedule", label: "Remarcar", icon: "calendar" },
-			{ value: "complete", label: "Concluir", icon: "flag" },
-			{ value: "cancel", label: "Cancelar", icon: "x" },
-			{ value: "animal", label: "Ver animal", icon: "paw" },
-			{ value: "citizen", label: "Ver cidadão", icon: "user" },
-			{ value: "details", label: "Ver detalhes", icon: "paw" },
+			{ value: "protector", label: "Ver Protetor", icon: "check" },
+			{ value: "animal", label: "Ver Pet", icon: "calendar" },
+			{ value: "approved", label: "Aprovar", icon: "flag" },
+			{ value: "refused", label: "Reprovar", icon: "x" },
 		];
 
+		const toggleDropdown = () => {
+			isVisible.value = true;
+		};
+
+		const onSearchInput = (value: string) => {
+			searchValue.value = value;
+			if (searchValue.value.trim().length === 0) {
+				evaluationPetList.filters.status = null;
+				evaluationPetList.fetchList(1);
+			}
+		};
+
+		const onSearchEnter = () => {
+			const trimmed = searchValue.value.trim();
+			if (trimmed.length > 0) {
+				evaluationPetList.filters.status = trimmed;
+				evaluationPetList.fetchList(1);
+			}
+		};
+
+		const clearSearch = () => {
+			searchValue.value = "";
+			evaluationPetList.filters.status = null;
+			evaluationPetList.fetchList(1);
+		};
+
 		return {
-			adoptionList,
+			evaluationPetList,
 			columnsHeader,
 			header,
 			list,
@@ -294,9 +262,13 @@ export default defineComponent({
 			showConfirm,
 			showSuccess,
 			feedbackModal,
-			showModalReschedule,
+			isVisible,
+			searchValue,
+			onSearchInput,
+			onSearchEnter,
+			clearSearch,
+			toggleDropdown,
 			confirmUpdate,
-			closeModalReschedule,
 			continueFeedback,
 			getStatus,
 			onSelectOptionAction,
@@ -324,54 +296,6 @@ export default defineComponent({
 		continue-text="Continuar"
 		@continue="continueFeedback"
 	/>
-
-	<MoleculesModal
-		:showModal="showModalReschedule"
-		@close="closeModalReschedule"
-		width="559px"
-		height=""
-		type-modal="center"
-		description="Selecione uma data e horário para a visita (novo texto)"
-	>
-		<section class="wrapper-modal">
-			<div class="wrapper-modal__icon">
-				<AtomsIconsCalendar />
-			</div>
-			<div class="wrapper-modal__title">
-				<AtomsTypography
-					type="text-p1"
-					text="Escolha uma nova data e horário"
-					weight="bold"
-					color="var(--brand-color-dark-blue-300)"
-				/>
-				<AtomsTypography
-					type="text-p3"
-					text="Selecione uma data e horário para a visita"
-					weight="regular"
-					color="var(--brand-color-dark-blue-300)"
-				/>
-			</div>
-			<div class="wrapper-calendar">
-				<AtomsDatePicker inline border="none" />
-				<div class="wrapper-calendar__time">
-					<MoleculesInputCommon
-						type-input="time"
-						label="Horário da visita"
-						max-width="100%"
-					/>
-				</div>
-			</div>
-			<div class="confirm-button">
-				<MoleculesButtonsCommon
-					text="Atualizar data e horário"
-					type="primary"
-					size="small"
-					width="200px"
-				/>
-			</div>
-		</section>
-	</MoleculesModal>
-
 	<section class="wrapper-list-card">
 		<div class="wrapper-list-card__header">
 			<div class="wrapper-list-card__header-title">
@@ -383,8 +307,29 @@ export default defineComponent({
 				/>
 			</div>
 		</div>
-		<div class="wrapper-list-card__search"></div>
-		<div class="wrapper-list-card__body">
+		<div class="wrapper-list-card__search">
+			<div class="wrapper-list-card__search-input anim-loading">
+				<MoleculesInputSearch
+					label="Procurar"
+					:value="searchValue"
+					:close="!!searchValue.trim().length"
+					@onInput="onSearchInput"
+					@clearInput="clearSearch"
+					@keydown.enter.native="onSearchEnter"
+				/>
+			</div>
+			<div class="wrapper-list-card__search-filters anim-loading">
+				<MoleculesButtonsCommon
+					type="outline"
+					text="Filtros"
+					size="small"
+					icon-left
+					name-icon-left="filter"
+					@onclick="toggleDropdown"
+				/>
+			</div>
+		</div>
+		<div v-if="list.length" class="wrapper-list-card__body">
 			<MoleculesListCardItem :data="columnsHeader" padding="16px 0">
 				<template v-for="(item, key) in columnsHeader" #[item.value] :key="key">
 					<AtomsTypography
@@ -404,7 +349,7 @@ export default defineComponent({
 				<template #nameUser>
 					<AtomsTypography
 						type="text-p5"
-						:text="item.user.name"
+						:text="item.tutor.name"
 						weight="regular"
 						color="var(--brand-color-dark-blue-300)"
 					/>
@@ -417,35 +362,25 @@ export default defineComponent({
 						color="var(--brand-color-dark-blue-300)"
 					/>
 				</template>
-				<template #dateVisit>
+				<template #species>
 					<AtomsTypography
 						type="text-p5"
-						:text="item.start_date"
+						:text="item.animal.species.label"
 						weight="regular"
 						color="var(--brand-color-dark-blue-300)"
 					/>
 				</template>
-				<template #timeVisit>
+				<template #date>
 					<AtomsTypography
 						type="text-p5"
-						:text="item.visit_time"
-						weight="regular"
-						color="var(--brand-color-dark-blue-300)"
-					/>
-				</template>
-				<template #telephone>
-					<AtomsTypography
-						type="text-p5"
-						:text="usePhoneFormatter11BR(item.user.telephone)"
+						:text="useDayjs(item.created_at).format('DD/MM/YYYY')"
 						weight="regular"
 						color="var(--brand-color-dark-blue-300)"
 					/>
 				</template>
 				<template #status>
 					<AtomsBadges
-						type="text"
 						:color="getStatus(item.status)?.color"
-						:size="'small'"
 						:text="getStatus(item.status)?.label || '---'"
 					/>
 				</template>
@@ -458,15 +393,26 @@ export default defineComponent({
 				</template>
 			</MoleculesListCardItem>
 		</div>
+		<MoleculesEmptyState
+			v-else
+			:is-icon="true"
+			title="Nenhum animal para avaliação cadastrado"
+			description="Aguarde até um animal ser cadastrado"
+		/>
 		<div class="wrapper-list-card__footer">
 			<MoleculesPaginationControls
-				v-if="adoptionList.pagination"
-				:total-items="adoptionList.pagination.total"
-				:current-page="adoptionList.pagination.current_page"
-				:per-page="adoptionList.pagination.per_page"
+				v-if="evaluationPetList.pagination"
+				:total-items="evaluationPetList.pagination.total"
+				:current-page="evaluationPetList.pagination.current_page"
+				:per-page="evaluationPetList.pagination.per_page"
 				@pageChange="paginationChange($event)"
 			/>
 		</div>
+		<OrganismsOccurrencesEvaluationPetFilter
+			:is-visible="isVisible"
+			@clear-all="clearSearch"
+			@close="isVisible = false"
+		/>
 	</section>
 </template>
 

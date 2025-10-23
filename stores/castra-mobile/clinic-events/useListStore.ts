@@ -10,30 +10,40 @@ export const useListStore = defineStore("clinic-events-list", {
 		const pagination = ref<IPagination>({} as IPagination);
 		const pathUrl = "/api/clinic-events";
 
+		const filters = ref({
+			date: null as string | null,
+			status: null as number | null,
+		});
+
 		return {
 			list,
 			isLoading,
 			errorMessage,
 			pagination,
 			pathUrl,
+			filters,
 		};
 	},
 	actions: {
 		async fetchListWithoutPagination(params = {}): Promise<void> {
-			if (this.isLoading) {
-				return;
-			}
+			if (this.isLoading) return;
+
 			this.isLoading = true;
 			this.errorMessage = "";
+
+			const queryParams: Record<string, any> = {
+				...params,
+				without_pagination: true,
+			};
+
+			if (this.filters.date) queryParams.date = this.filters.date;
+			if (this.filters.status) queryParams.status = this.filters.status;
+
 			await useFetch(this.pathUrl, {
 				method: "GET",
-				params: {
-					...params,
-					without_pagination: true,
-				},
+				params: queryParams,
 				onResponse: ({ response }) => {
 					const result: IResponse = response._data as IResponse;
-
 					this.list = (result.data as IMobileClinicEvent[]) || [];
 					this.isLoading = false;
 				},
@@ -44,20 +54,23 @@ export const useListStore = defineStore("clinic-events-list", {
 			});
 		},
 		async fetchList(params = {}): Promise<void> {
-			if (this.isLoading) {
-				return;
-			}
+			if (this.isLoading) return;
 
 			this.isLoading = true;
 			this.errorMessage = "";
+
+			const queryParams: Record<string, any> = {
+				...params,
+			};
+
+			if (this.filters.date) queryParams.date = this.filters.date;
+			if (this.filters.status) queryParams.status = this.filters.status;
+
 			await useFetch(this.pathUrl, {
 				method: "GET",
-				params: {
-					...params,
-				},
+				params: queryParams,
 				onResponse: ({ response }) => {
 					const result: IResponse = response._data as IResponse;
-
 					this.pagination = (result.data as IPagination) || ({} as IPagination);
 					this.list = (this.pagination?.data as IMobileClinicEvent[]) || [];
 					this.isLoading = false;

@@ -1,16 +1,24 @@
-import type { IPagination } from "~/types/global";
 import { defineStore } from "pinia";
 import { ref } from "vue";
+import type { IPagination, IOption } from "~/types/global";
 
 export const useListStore = defineStore("list-registrations", {
 	state: () => {
 		const list = ref([] as IRegistration[]);
+		const tutors = ref<IOption[]>([]);
 		const isLoading = ref(false);
 		const isDownloading = ref(false);
 		const errorDownloadingMessage = ref("");
 		const errorMessage = ref("");
 		const pagination = ref<IPagination>({} as IPagination);
 		const pathUrl = "/api/registrations";
+
+		const filters = ref({
+			date: null as string | null,
+			species: "" as string,
+			status: "" as string,
+			tutor: "" as string,
+		});
 
 		return {
 			list,
@@ -20,21 +28,27 @@ export const useListStore = defineStore("list-registrations", {
 			errorDownloadingMessage,
 			pagination,
 			pathUrl,
+			tutors,
+			filters,
 		};
 	},
+
 	actions: {
-		async fetchList(params = {}): Promise<void> {
-			if (this.isLoading) {
-				return;
-			}
+		async fetchList(page: number = 1): Promise<void> {
+			if (this.isLoading) return;
 
 			this.isLoading = true;
 			this.errorMessage = "";
+
+			const activeFilters = Object.fromEntries(
+				Object.entries(this.filters).filter(
+					([, value]) => value !== null && value !== "",
+				),
+			);
+
 			await useFetch(this.pathUrl, {
 				method: "GET",
-				params: {
-					...params,
-				},
+				params: { page, ...activeFilters, "with[]": ["user", "animal"] },
 				onResponse: ({ response }) => {
 					const result: IResponse = response._data as IResponse;
 
@@ -44,17 +58,58 @@ export const useListStore = defineStore("list-registrations", {
 				},
 				onResponseError: ({ response }) => {
 					this.isLoading = false;
-					this.errorMessage = response._data?.message;
+					this.errorMessage =
+						response._data?.message || "Erro ao buscar os registros.";
 				},
 			});
 		},
+
+		// 🔹 Nova função para buscar tutores
+		async fetchTutors(): Promise<void> {
+			if (this.isLoading) return;
+
+			this.isLoading = true;
+			this.errorMessage = "";
+
+			await useFetch(this.pathUrl, {
+				method: "GET",
+				params: {
+					page: 1,
+					"with[]": ["user"], // só precisamos do user
+				},
+				onResponse: ({ response }) => {
+					const result: IResponse = response._data as IResponse;
+					const registrations = (result.data as IPagination)?.data || [];
+
+					const uniqueTutors = registrations
+						.map((item: any) => item.user)
+						.filter(Boolean)
+						.map((user: any) => ({
+							id: String(user.id),
+							text: user.name,
+						}))
+						.filter(
+							(value: IOption, index: number, self: IOption[]) =>
+								index === self.findIndex((t) => t.id === value.id),
+						);
+
+					this.tutors = uniqueTutors;
+					this.isLoading = false;
+				},
+				onResponseError: ({ response }) => {
+					this.isLoading = false;
+					this.errorMessage =
+						response._data?.message || "Erro ao buscar tutores.";
+				},
+			});
+		},
+
 		async downloadTerm(id: string | number | undefined): Promise<void> {
-			if (this.isDownloading || !id) {
-				return;
-			}
+			if (this.isDownloading || !id) return;
 
 			this.isDownloading = true;
 			this.errorDownloadingMessage = "";
+
 			await useFetch(`${this.pathUrl}/${id}/term`, {
 				method: "GET",
 				responseType: "blob",
@@ -72,9 +127,22 @@ export const useListStore = defineStore("list-registrations", {
 				},
 				onResponseError: ({ response }) => {
 					this.isDownloading = false;
-					this.errorDownloadingMessage = response._data?.message;
+					this.errorDownloadingMessage =
+						response._data?.message || "Erro ao baixar o termo.";
 				},
 			});
+		},
+
+		changePage(page: number) {
+			this.pagination.current_page = page;
+			this.fetchList(page);
+		},
+		clearFilters() {
+			this.filters.date = null;
+			this.filters.species = "";
+			this.filters.status = "";
+			this.filters.tutor = "";
+			this.fetchList(1);
 		},
 	},
 });

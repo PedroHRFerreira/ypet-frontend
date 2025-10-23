@@ -1,6 +1,6 @@
-import type { IPagination } from "~/types/global";
 import { defineStore } from "pinia";
 import { ref } from "vue";
+import type { IPagination } from "~/types/global";
 
 export const useListStore = defineStore("animals-list", {
 	state: () => {
@@ -10,12 +10,19 @@ export const useListStore = defineStore("animals-list", {
 		const pagination = ref<IPagination>({} as IPagination);
 		const pathUrl = "/api/animals";
 
+		const filters = ref({
+			name: null as string | null,
+			type: null as string | null,
+			registration: null as string | null,
+		});
+
 		return {
 			animals,
 			isLoading,
 			errorMessage,
 			pagination,
 			pathUrl,
+			filters,
 		};
 	},
 	actions: {
@@ -26,15 +33,27 @@ export const useListStore = defineStore("animals-list", {
 
 			this.isLoading = true;
 			this.errorMessage = "";
+
+			const queryParams: Record<string, any> = {
+				...params,
+				"with[]": ["status", "entryData"],
+			};
+
+			if (this.filters.name !== null) {
+				queryParams.name = this.filters.name;
+			}
+			if (this.filters.type !== null) {
+				queryParams.type = this.filters.type;
+			}
+			if (this.filters.registration !== null) {
+				queryParams.registration = this.filters.registration;
+			}
+
 			await useFetch(this.pathUrl, {
 				method: "GET",
-				params: {
-					...params,
-					"with[]": ["status", "entryData"],
-				},
+				params: queryParams,
 				onResponse: ({ response }) => {
 					const result: IResponse = response._data as IResponse;
-
 					this.pagination = (result.data as IPagination) || ({} as IPagination);
 					this.animals = (this.pagination?.data as IAnimal[]) || [];
 					this.isLoading = false;
