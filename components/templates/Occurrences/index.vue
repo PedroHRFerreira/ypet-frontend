@@ -15,6 +15,9 @@ export default defineComponent({
 			"OrganismsOccurrencesCastramovelRequests",
 		);
 		const samupetComponent = resolveComponent("OrganismsOccurrencesSamupet");
+		const evaluationPetComponent = resolveComponent(
+			"OrganismsOccurrencesEvaluationPet",
+		);
 
 		const componentsMap: Record<string, ConcreteComponent> = {
 			adoptionVisits: adoptionVisitsComponent,
@@ -22,6 +25,7 @@ export default defineComponent({
 			abuseReports: abuseReportsComponent,
 			castramovelRequests: castramovelRequestsComponent,
 			samupet: samupetComponent,
+			evaluationPet: evaluationPetComponent,
 		};
 		const tabs = ref([
 			{
@@ -36,7 +40,7 @@ export default defineComponent({
 			},
 			{
 				id: "abuseReports",
-				name: "Denúncias de maus tratos",
+				name: "Denúncias",
 				active: false,
 			},
 			{
@@ -47,6 +51,11 @@ export default defineComponent({
 			{
 				id: "samuPet",
 				name: "Samupet",
+				active: false,
+			},
+			{
+				id: "evaluationPet",
+				name: "Avaliação de pet",
 				active: false,
 			},
 		] as ITab[]);
@@ -74,20 +83,7 @@ export default defineComponent({
 				title: "Ocorrências",
 				subtitle:
 					"Visualize e gerencie todas as ocorrências registradas no App Cidadão",
-				buttons: [
-					{
-						text: "Nova ocorrência",
-						type: "primary",
-						icon: "plus",
-						iconLeft: false,
-						nameIconLeft: "",
-						iconRight: true,
-						nameIconRight: "plus",
-						action: () => {
-							// TODO: Adicionar ação de redirecionamento para criação
-						},
-					},
-				],
+				buttons: [],
 			};
 		});
 
