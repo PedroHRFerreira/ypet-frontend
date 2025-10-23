@@ -5,7 +5,7 @@ import { useEditTypeStore } from "~/stores/adoption/useEditTypeStore";
 import MoleculesListCardItem from "~/components/molecules/ListCardItem/index.vue";
 import AtomsTypography from "~/components/atoms/Typography/index.vue";
 import AtomsBadges from "~/components/atoms/Badges/Index.vue";
-import AtomsDatePicker from "~/components/atoms/DatePicker/index.vue";
+import AtomsDatePicker from "~/components/atoms/DatePicker/Index.vue";
 import MoleculesModal from "~/components/molecules/Modal/index.vue";
 export default defineComponent({
 	name: "OrganismsOccurrencesAdoptionVisits",
