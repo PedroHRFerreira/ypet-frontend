@@ -49,7 +49,7 @@ export default defineComponent({
 				active: false,
 			},
 			{
-				id: "samuPet",
+				id: "samupet",
 				name: "Samupet",
 				active: false,
 			},
