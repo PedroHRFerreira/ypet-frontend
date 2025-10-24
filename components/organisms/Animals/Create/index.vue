@@ -118,10 +118,7 @@ export default defineComponent({
 			}
 		}
 
-		function handleImageUpload(file: File) {
-			console.log("Arquivo recebido:", file);
-			console.log("Nome do arquivo:", file.name);
-			console.log("Tamanho do arquivo:", file.size);
+		function handleImageUpload(file: File | null) {
 			useAnimalsCreate.setFormField("picture", file);
 		}
 
@@ -147,6 +144,7 @@ export default defineComponent({
 			continueFeedback,
 			loadCitizens,
 			handleCitizenSearch,
+			handleImageUpload,
 		};
 	},
 	watch: {
@@ -196,71 +194,87 @@ export default defineComponent({
 			</div>
 			<div class="animal__about-pet__content">
 				<div class="animal__about-pet__content--group">
-					<MoleculesInputCommon
-						label="Nome do animal"
-						max-width="25%"
-						:value="form.name.value as string"
-						:message-error="form.name.errorMessages.join(', ')"
-						@on-input="useAnimalsCreate.setFormField('name', $event)"
+					<MoleculesUploadField
+						label="Selecione um arquivo para enviar"
+						description="Arquivo até 2mb"
+						maxWidth="40%"
+						:accept="'image/*'"
+						:maxSize="2 * 1024 * 1024"
+						:maxHeight="188"
+						:preview="true"
+						@input="handleImageUpload($event)"
 					/>
-					<MoleculesSelectsSimple
-						max-width="25%"
-						label="Tipo de Pet"
-						:options="optionsSpecies"
-						:message-error="form.species.errorMessages.join(', ')"
-						@item-selected="useAnimalsCreate.setFormField('species', $event)"
-					/>
-					<MoleculesSelectsSimple
-						max-width="25%"
-						label="Sexo"
-						:options="optionsGender"
-						:message-error="form.gender.errorMessages.join(', ')"
-						@item-selected="useAnimalsCreate.setFormField('gender', $event)"
-					/>
-					<MoleculesSelectsSimple
-						max-width="25%"
-						label="Porte"
-						:options="optionsAnimalSize"
-						:message-error="form.size.errorMessages.join(', ')"
-						@item-selected="useAnimalsCreate.setFormField('size', $event)"
-					/>
-				</div>
-				<div class="animal__about-pet__content--group">
-					<MoleculesInputCommon
-						label="Peso"
-						type-input="number"
-						max-width="25%"
-						:maxlength="2"
-						:value="form.weight.value as string"
-						:message-error="form.weight.errorMessages.join(', ')"
-						@on-input="useAnimalsCreate.setFormField('weight', $event)"
-					/>
-					<MoleculesInputDate
-						v-model="birthDate"
-						label="Data de nascimento"
-						name="birth_date"
-						placeholder="YYYY-MM-DD"
-						min="1900-01-01"
-						max="2025-12-31"
-						width="25%"
-						:required="true"
-						:error-messages="form.birth_date.errorMessages"
-					/>
-					<MoleculesSelectsSimple
-						max-width="25%"
-						label="Pelagem"
-						:options="optionsAnimalCoat"
-						:message-error="form.coat.errorMessages.join(', ')"
-						@item-selected="useAnimalsCreate.setFormField('coat', $event)"
-					/>
-					<MoleculesInputCommon
-						label="Cor"
-						type-input="text"
-						max-width="25%"
-						:value="form.color.value as string"
-						:message-error="form.color.errorMessages.join(', ')"
-						@on-input="useAnimalsCreate.setFormField('color', $event)"
-					/>
+					<div class="animal__input-data__content">
+						<div class="animal__input-data__content--group">
+							<MoleculesInputCommon
+								label="Nome do animal"
+								max-width="25%"
+								:value="form.name.value as string"
+								:message-error="form.name.errorMessages.join(', ')"
+								@on-input="useAnimalsCreate.setFormField('name', $event)"
+							/>
+							<MoleculesSelectsSimple
+								max-width="25%"
+								label="Tipo de Pet"
+								:options="optionsSpecies"
+								:message-error="form.species.errorMessages.join(', ')"
+								@item-selected="
+									useAnimalsCreate.setFormField('species', $event)
+								"
+							/>
+							<MoleculesSelectsSimple
+								max-width="25%"
+								label="Sexo"
+								:options="optionsGender"
+								:message-error="form.gender.errorMessages.join(', ')"
+								@item-selected="useAnimalsCreate.setFormField('gender', $event)"
+							/>
+							<MoleculesSelectsSimple
+								max-width="25%"
+								label="Porte"
+								:options="optionsAnimalSize"
+								:message-error="form.size.errorMessages.join(', ')"
+								@item-selected="useAnimalsCreate.setFormField('size', $event)"
+							/>
+						</div>
+						<div class="animal__input-data__content--group">
+							<MoleculesInputCommon
+								label="Peso"
+								type-input="number"
+								max-width="25%"
+								:maxlength="2"
+								:value="form.weight.value as string"
+								:message-error="form.weight.errorMessages.join(', ')"
+								@on-input="useAnimalsCreate.setFormField('weight', $event)"
+							/>
+							<MoleculesInputDate
+								v-model="birthDate"
+								label="Data de nascimento"
+								name="birth_date"
+								placeholder="YYYY-MM-DD"
+								min="1900-01-01"
+								max="2025-12-31"
+								width="25%"
+								:required="true"
+								:error-messages="form.birth_date.errorMessages"
+							/>
+							<MoleculesSelectsSimple
+								max-width="25%"
+								label="Pelagem"
+								:options="optionsAnimalCoat"
+								:message-error="form.coat.errorMessages.join(', ')"
+								@item-selected="useAnimalsCreate.setFormField('coat', $event)"
+							/>
+							<MoleculesInputCommon
+								label="Cor"
+								type-input="text"
+								max-width="25%"
+								:value="form.color.value as string"
+								:message-error="form.color.errorMessages.join(', ')"
+								@on-input="useAnimalsCreate.setFormField('color', $event)"
+							/>
+						</div>
+					</div>
 				</div>
 				<div class="animal__about-pet__content--group">
 					<MoleculesInputCommon

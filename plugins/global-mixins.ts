@@ -15,6 +15,17 @@ export default defineNuxtPlugin((nuxtApp) => {
 
 				return d.format(template);
 			},
+			$formatDateOnly(
+				date: string | number | Date | undefined,
+				template = "DD/MM/YYYY",
+			): string {
+				if (!date) return "N/A";
+
+				// Usa UTC para evitar conversão de timezone em datas sem horário
+				const d = useDayjs(date).utc();
+
+				return d.format(template);
+			},
 			$formatDateTime(
 				date: string | number | Date | undefined,
 				template = "DD/MM/YYYY [às] HH:mm",

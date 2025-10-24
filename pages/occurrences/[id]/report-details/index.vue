@@ -2,7 +2,7 @@
 import { definePageMeta } from "#imports";
 
 useHead({
-	title: "Samupet",
+	title: "Ocorrências",
 	titleTemplate: (titleChunk) => {
 		return titleChunk ? `${titleChunk} | YPet` : "YPet";
 	},
@@ -14,9 +14,9 @@ definePageMeta({
 });
 
 defineComponent({
-	name: "PagesSamuPet",
+	name: "PagesOccurrencesReportDetails",
 });
 </script>
 <template>
-	<TemplatesSamuPet />
+	<TemplatesOccurrencesReportDetails />
 </template>

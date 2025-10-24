@@ -1,26 +1,12 @@
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref } from "vue";
-import MoleculesListCardItem from "~/components/molecules/ListCardItem/index.vue";
-import { useDayjs } from "~/composables/useDayjs";
-import AtomsTypography from "~/components/atoms/Typography/index.vue";
 import { useListStore } from "~/stores/castra-mobile/clinic-events/useListStore";
 
 export default defineComponent({
 	name: "OrganismsCastraMobileClinicEvent",
-	components: {
-		AtomsTypography,
-		MoleculesListCardItem,
-	},
 	setup() {
 		const listStore = useListStore();
-
-		// ✅ Filtro de data
-		const selectedDate = ref<string>("");
-
-		async function onFilterDate() {
-			console.log("Filtro acionado:", selectedDate.value);
-			await listStore.fetchList({ date: selectedDate.value });
-		}
+		const isVisible = ref(false);
 
 		const header = computed(() => {
 			return {
@@ -161,18 +147,19 @@ export default defineComponent({
 			await listStore.fetchList();
 		});
 
+		const toggleDropdown = () => {
+			isVisible.value = true;
+		};
+
 		return {
 			listStore,
 			columnsHeader,
 			header,
 			list,
 			onSelectOptionAction,
-			selectedDate,
-			onFilterDate,
+			isVisible,
+			toggleDropdown,
 		};
-	},
-	methods: {
-		useDayjs,
 	},
 });
 </script>
@@ -188,18 +175,7 @@ export default defineComponent({
 					color="var(--brand-color-dark-blue-300)"
 				/>
 			</div>
-
 			<div class="wrapper-list-card__header-actions">
-				<!-- ✅ Filtro de Data -->
-				<input
-					type="date"
-					v-model="selectedDate"
-					@change="onFilterDate"
-					class="border border-[var(--brand-color-dark-blue-200)] rounded px-3 py-2 text-sm text-[var(--brand-color-dark-blue-300)] focus:ring-1 focus:ring-[var(--brand-color-dark-blue-300)]"
-					style="height: 36px"
-				/>
-
-				<!-- Botão Novo Dia -->
 				<MoleculesButtonsCommon
 					v-for="button in header.buttons"
 					:key="button.text"
@@ -216,7 +192,19 @@ export default defineComponent({
 			</div>
 		</div>
 
-		<div class="wrapper-list-card__body">
+		<div class="wrapper-list-card__search-input anim-loading">
+			<MoleculesButtonsCommon
+				width="120px"
+				type="outline"
+				text="Filtros"
+				size="small"
+				icon-left
+				name-icon-left="filter"
+				@onclick="toggleDropdown"
+			/>
+		</div>
+
+		<div v-if="list.length > 0" class="wrapper-list-card__body">
 			<MoleculesListCardItem :data="columnsHeader" padding="16px 0">
 				<template v-for="(item, key) in columnsHeader" #[item.value] :key="key">
 					<AtomsTypography
@@ -303,6 +291,13 @@ export default defineComponent({
 			</MoleculesListCardItem>
 		</div>
 
+		<MoleculesEmptyState
+			v-else
+			:is-icon="true"
+			title="Nenhum evento cadastrado"
+			description="Aqui voce pode visualizar e gerenciar os eventos cadastrados"
+		/>
+
 		<div class="wrapper-list-card__footer">
 			<MoleculesPaginationControls
 				v-if="listStore.pagination"
@@ -311,6 +306,10 @@ export default defineComponent({
 				:per-page="listStore.pagination.per_page"
 			/>
 		</div>
+		<OrganismsCastraMobileClinicEventFilter
+			:is-visible="isVisible"
+			@close="isVisible = false"
+		/>
 	</section>
 </template>
 

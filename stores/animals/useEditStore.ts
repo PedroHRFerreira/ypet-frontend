@@ -8,6 +8,7 @@ export const useEditStore = defineStore("animals-edit", {
 		const form = useForm([
 			"name",
 			"species",
+			"picture",
 			"gender",
 			"weight",
 			"castrated",
@@ -17,6 +18,7 @@ export const useEditStore = defineStore("animals-edit", {
 			"entry_date",
 			"status",
 			"characteristics",
+			"picture",
 			"surname",
 			"infirmity",
 			"color",
@@ -82,12 +84,22 @@ export const useEditStore = defineStore("animals-edit", {
 						continue;
 					}
 
-					if (typeof value === "object") {
+					if (typeof value === "object" && !(value instanceof File)) {
+						console.log(value instanceof File);
 						if (Object.prototype.hasOwnProperty.call(value, "id")) {
 							formData.set(key, String(value.id));
 
 							continue;
 						}
+					}
+
+					if (value === "picture" && typeof value === "string") {
+						continue;
+					}
+
+					if (value instanceof File) {
+						formData.append(key, value);
+						continue;
 					}
 
 					formData.set(key, String(value));

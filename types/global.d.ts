@@ -46,6 +46,7 @@ declare global {
 	interface IError extends Error {
 		statusCode?: number;
 		data?: any;
+    status?: number;
 	}
 
 	interface IEnum {

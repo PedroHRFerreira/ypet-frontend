@@ -29,23 +29,12 @@ export default defineComponent({
 			};
 		});
 
-		const emptyState = computed(() => {
-			return {
-				isEmpty: !animalsList.animals || animalsList.animals.length === 0,
-				isIcon: true,
-				title: "Nenhum animal cadastrado",
-				description:
-					"Você ainda não possui nenhum animal cadastrado.Clique no botão 'Novo cadastro' para adicionar um.",
-			};
-		});
-
 		onMounted(async () => {
 			await animalsList.fetchAnimals();
 		});
 
 		return {
 			header,
-			emptyState,
 			animalsList,
 		};
 	},
@@ -72,7 +61,7 @@ export default defineComponent({
 						color="var(--brand-color-dark-blue-300)"
 					/>
 				</div>
-				<div v-if="emptyState.isEmpty" class="header-actions">
+				<div v-if="animalsList.animals.length === 0" class="header-actions">
 					<MoleculesButtonsCommon
 						v-for="button in header.buttons"
 						:key="button.text"
@@ -87,14 +76,7 @@ export default defineComponent({
 				</div>
 			</header>
 			<main class="main">
-				<div v-if="emptyState.isEmpty" class="main-empty">
-					<MoleculesEmptyState
-						:is-icon="emptyState.isIcon"
-						:title="emptyState.title"
-						:description="emptyState.description"
-					/>
-				</div>
-				<div v-else class="main-content">
+				<div class="main-content">
 					<OrganismsAnimals />
 				</div>
 			</main>

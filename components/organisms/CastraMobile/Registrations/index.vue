@@ -1,5 +1,6 @@
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref } from "vue";
+import { useRouter } from "vue-router";
 import MoleculesListCardItem from "~/components/molecules/ListCardItem/index.vue";
 import { useDayjs } from "~/composables/useDayjs";
 import AtomsTypography from "~/components/atoms/Typography/index.vue";
@@ -13,26 +14,13 @@ export default defineComponent({
 	},
 	setup() {
 		const listStore = useListStore();
-		const dayjs = useDayjs();
+		const isVisible = ref(false);
+		const router = useRouter();
 
-		// ✅ Filtros
-		const selectedDate = ref<string>(dayjs.format("YYYY-MM-DD"));
-		const selectedSpecies = ref<string>("");
-		const selectedStatus = ref<string>("");
+		const navigateToCreate = () => {
+			router.push({ name: "castra-mobile.registrations.create" });
+		};
 
-		// ✅ Aplicar filtros (front ou back)
-		async function applyFilters() {
-			await listStore.fetchList({
-				"with[]": ["user", "animal"],
-				...(selectedDate.value && { "filter[date]": selectedDate.value }),
-				...(selectedSpecies.value && {
-					"filter[species]": selectedSpecies.value,
-				}),
-				...(selectedStatus.value && { "filter[status]": selectedStatus.value }),
-			});
-		}
-
-		// ✅ Header
 		const header = computed(() => {
 			return {
 				title: "Agenda do dia",
@@ -48,10 +36,7 @@ export default defineComponent({
 						nameIconRight: "",
 						size: "small",
 						width: "auto",
-						action: () => {
-							const router = useRouter();
-							router.push({ name: "castra-mobile.registrations.create" });
-						},
+						action: navigateToCreate,
 					},
 				],
 			};
@@ -128,7 +113,6 @@ export default defineComponent({
 			},
 		]);
 
-		// ✅ Ações da listagem
 		const onSelectOptionAction = (event: string, item: IRegistration) => {
 			const router = useRouter();
 
@@ -150,12 +134,44 @@ export default defineComponent({
 			}
 		};
 
+		const getStatus = (status: string | undefined): IEnum => {
+			return (
+				optionsStatus.find((s) => s.value === status) || {
+					value: "",
+					name: "",
+					label: "Sem status",
+					color: "secondary",
+				}
+			);
+		};
+
 		onMounted(async () => {
-			await listStore.fetchList({
-				"with[]": ["user", "animal"],
-				"filter[date]": useDayjs().format("YYYY-MM-DD"),
-			});
+			await listStore.fetchList();
 		});
+
+		const optionsStatus: IEnum[] = [
+			{
+				value: "approved",
+				name: "APPROVED",
+				label: "Aprovado",
+				color: "success",
+			},
+			{
+				value: "pending",
+				name: "PENDING",
+				label: "Pendente",
+				color: "warning",
+			},
+			{
+				value: "rejected",
+				name: "REJECTED",
+				label: "Rejeitado",
+				color: "danger",
+			},
+		];
+		const toggleDropdown = () => {
+			isVisible.value = true;
+		};
 
 		return {
 			listStore,
@@ -163,10 +179,9 @@ export default defineComponent({
 			header,
 			list,
 			onSelectOptionAction,
-			selectedDate,
-			selectedSpecies,
-			selectedStatus,
-			applyFilters,
+			getStatus,
+			toggleDropdown,
+			isVisible,
 		};
 	},
 	methods: {
@@ -186,37 +201,7 @@ export default defineComponent({
 					color="var(--brand-color-dark-blue-300)"
 				/>
 			</div>
-
-			<!-- ✅ Filtros -->
 			<div class="wrapper-list-card__header-actions">
-				<input
-					type="date"
-					v-model="selectedDate"
-					@change="applyFilters"
-					class="filter-input"
-				/>
-
-				<select
-					v-model="selectedSpecies"
-					@change="applyFilters"
-					class="filter-select"
-				>
-					<option value="">Todas as espécies</option>
-					<option value="dog">Cães</option>
-					<option value="cat">Gatos</option>
-				</select>
-
-				<select
-					v-model="selectedStatus"
-					@change="applyFilters"
-					class="filter-select"
-				>
-					<option value="">Todos os status</option>
-					<option value="scheduled">Agendado</option>
-					<option value="done">Concluído</option>
-					<option value="absent">Faltou</option>
-				</select>
-
 				<MoleculesButtonsCommon
 					v-for="button in header.buttons"
 					:key="button.text"
@@ -230,10 +215,19 @@ export default defineComponent({
 					:width="button.width"
 					@onclick="button.action"
 				/>
+				<MoleculesButtonsCommon
+					width="120px"
+					type="outline"
+					text="Filtros"
+					size="small"
+					icon-left
+					name-icon-left="filter"
+					@onclick="toggleDropdown"
+				/>
 			</div>
 		</div>
 
-		<div class="wrapper-list-card__body">
+		<div v-if="list.length > 0" class="wrapper-list-card__body">
 			<MoleculesListCardItem :data="columnsHeader" padding="16px 0">
 				<template v-for="(item, key) in columnsHeader" #[item.value] :key="key">
 					<AtomsTypography
@@ -263,7 +257,7 @@ export default defineComponent({
 				<template #hour>
 					<AtomsTypography
 						type="text-p5"
-						:text="useDayjs(item.scheduler_at).format('DD/MM/YYYY - HH:mm')"
+						:text="useDayjs(item.created_at).format('DD/MM/YYYY - HH:mm')"
 						weight="regular"
 						color="var(--brand-color-dark-blue-300)"
 					/>
@@ -306,14 +300,12 @@ export default defineComponent({
 				</template>
 
 				<template #status>
-					<AtomsTypography
-						type="text-p5"
-						:text="item.status.label"
-						weight="regular"
-						color="var(--brand-color-dark-blue-300)"
+					<AtomsBadges
+						v-if="item.status"
+						:text="getStatus(item.status.value)?.label || 'Sem status'"
+						:color="getStatus(item.status.value)?.color || 'secondary'"
 					/>
 				</template>
-
 				<template #actions>
 					<MoleculesActionDropdown
 						:key="item.id"
@@ -328,14 +320,26 @@ export default defineComponent({
 			</MoleculesListCardItem>
 		</div>
 
+		<MoleculesEmptyState
+			v-else
+			:is-icon="true"
+			title="Nenhum agendamento encontrado"
+			description="Adicione um novo agendamento para começar."
+		/>
+
 		<div class="wrapper-list-card__footer">
 			<MoleculesPaginationControls
 				v-if="listStore.pagination"
-				:total-items="listStore.pagination.total"
-				:current-page="listStore.pagination.current_page"
-				:per-page="listStore.pagination.per_page"
+				:total-items="listStore.pagination.total || 0"
+				:current-page="listStore.pagination.current_page || 1"
+				:per-page="listStore.pagination.per_page || 10"
 			/>
 		</div>
+
+		<OrganismsCastraMobileRegistrationsFilter
+			:is-visible="isVisible"
+			@close="isVisible = false"
+		/>
 	</section>
 </template>
 

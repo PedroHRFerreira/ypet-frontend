@@ -17,6 +17,10 @@ export default defineComponent({
 			type: String,
 			default: "image/*",
 		},
+		value: {
+			type: [String, Number, null, Boolean, Array<any>, File],
+			default: "",
+		},
 		maxSize: {
 			type: Number,
 			default: 5 * 1024 * 1024,
@@ -45,7 +49,7 @@ export default defineComponent({
 	data() {
 		return {
 			fileName: "",
-			filePreview: "",
+			filePreview: "" ?? this.value,
 			errorMessage: "",
 		};
 	},
@@ -80,6 +84,7 @@ export default defineComponent({
 			this.filePreview = "";
 			this.errorMessage = "";
 			(this.$refs.inputUpload as HTMLInputElement).value = "";
+			this.$emit("input", null);
 		},
 	},
 

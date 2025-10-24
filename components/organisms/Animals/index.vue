@@ -15,6 +15,8 @@ export default defineComponent({
 	},
 	setup() {
 		const animalsList = useListStore();
+		const isVisible = ref(false);
+		const searchValue = ref("");
 
 		const header = computed(() => {
 			return {
@@ -85,7 +87,6 @@ export default defineComponent({
 				colorTypography: "var(--brand-color-dark-blue-300)",
 				style: {
 					width: "20%",
-					justifyContent: "flex-end",
 				},
 			},
 			{
@@ -96,7 +97,6 @@ export default defineComponent({
 				colorTypography: "var(--brand-color-dark-blue-300)",
 				style: {
 					width: "10%",
-					justifyContent: "flex-end",
 				},
 			},
 			{
@@ -107,7 +107,6 @@ export default defineComponent({
 				colorTypography: "var(--brand-color-dark-blue-300)",
 				style: {
 					width: "10%",
-					justifyContent: "flex-end",
 				},
 			},
 			{
@@ -188,6 +187,32 @@ export default defineComponent({
 			);
 		};
 
+		const toggleDropdown = () => {
+			isVisible.value = true;
+		};
+
+		const onSearchInput = (value: string) => {
+			searchValue.value = value;
+			if (searchValue.value.trim().length === 0) {
+				animalsList.filters.name = null;
+				animalsList.fetchAnimals();
+			}
+		};
+
+		const onSearchEnter = () => {
+			const trimmed = searchValue.value.trim();
+			if (trimmed.length > 0) {
+				animalsList.filters.name = trimmed;
+				animalsList.fetchAnimals();
+			}
+		};
+
+		const clearSearch = () => {
+			searchValue.value = "";
+			animalsList.filters.name = null;
+			animalsList.fetchAnimals(1);
+		};
+
 		return {
 			animalsList,
 			columnsHeader,
@@ -195,6 +220,12 @@ export default defineComponent({
 			list,
 			onSelectOptionAction,
 			getStatus,
+			isVisible,
+			toggleDropdown,
+			onSearchInput,
+			onSearchEnter,
+			clearSearch,
+			searchValue,
 		};
 	},
 	methods: {
@@ -216,6 +247,7 @@ export default defineComponent({
 			</div>
 			<div class="wrapper-list-card__header-actions">
 				<MoleculesButtonsCommon
+					v-if="animalsList.animals.length > 0"
 					v-for="button in header.buttons"
 					:key="button.text"
 					:type="button.type"
@@ -230,8 +262,29 @@ export default defineComponent({
 				/>
 			</div>
 		</div>
-		<div class="wrapper-list-card__search"></div>
-		<div class="wrapper-list-card__body">
+		<div class="wrapper-list-card__search">
+			<div class="wrapper-list-card__search-input anim-loading">
+				<MoleculesInputSearch
+					label="Nome"
+					:value="searchValue"
+					:close="!!searchValue.trim().length"
+					@on-input="onSearchInput"
+					@clear-input="clearSearch"
+					@keydown.enter.native="onSearchEnter"
+				/>
+			</div>
+			<div class="wrapper-list-card__search-filters anim-loading">
+				<MoleculesButtonsCommon
+					type="outline"
+					text="Filtros"
+					size="small"
+					icon-left
+					name-icon-left="filter"
+					@onclick="toggleDropdown"
+				/>
+			</div>
+		</div>
+		<div v-if="list.length > 0" class="wrapper-list-card__body">
 			<MoleculesListCardItem :data="columnsHeader" padding="16px 0">
 				<template v-for="(item, key) in columnsHeader" #[item.value] :key="key">
 					<AtomsTypography
@@ -306,6 +359,12 @@ export default defineComponent({
 				</template>
 			</MoleculesListCardItem>
 		</div>
+		<MoleculesEmptyState
+			v-else
+			:is-icon="true"
+			title="Nenhum animal cadastrado"
+			description="Você ainda não possui nenhum animal cadastrado.Clique no botão 'Novo cadastro' para adicionar um."
+		/>
 		<div class="wrapper-list-card__footer">
 			<MoleculesPaginationControls
 				v-if="animalsList.pagination"
@@ -314,6 +373,11 @@ export default defineComponent({
 				:per-page="animalsList.pagination.per_page"
 			/>
 		</div>
+		<OrganismsAnimalsFilter
+			:is-visible="isVisible"
+			@close="isVisible = false"
+			@clear-all="clearSearch"
+		/>
 	</section>
 </template>
 

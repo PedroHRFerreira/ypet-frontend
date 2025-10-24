@@ -1,15 +1,27 @@
-import { apiPost } from "~/utils/api";
+import { IResponse, IError } from "~/types";
 
 export default defineEventHandler(async (event): Promise<IResponse> => {
 	try {
-		const path = "/animals";
+		const apiBaseUrl = useRuntimeConfig().public.apiBaseUrl;
+		const url = `${apiBaseUrl}/animals`;
 		const formData = await readFormData(event);
-		const payload: Record<string, any> = {};
-		formData.forEach((value, key) => {
-			payload[key] = value;
+
+		const response = await $fetch(url, {
+			method: "POST",
+			headers: {
+				Accept: "application/json",
+				"X-Client-Type": "web",
+				Authorization: `${getCookie(event, "auth._token.laravelSanctum")}`,
+			},
+			body: formData,
 		});
 
-		return await apiPost<IResponse>(path, event, payload);
+		return {
+			status: "success",
+			statusCode: 200,
+			message: "Cadastro realizado com sucesso",
+			data: response,
+		} as IResponse;
 	} catch (err) {
 		const error = err as IError;
 

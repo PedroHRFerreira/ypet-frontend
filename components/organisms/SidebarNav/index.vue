@@ -43,6 +43,12 @@ export default defineComponent({
 				route: "applications",
 			},
 			{
+				text: "Procedimentos",
+				icon: "procedures",
+				active: "procedures",
+				route: "procedures",
+			},
+			{
 				text: "Colaboradores",
 				icon: "user-plus",
 				active: "collaborators",

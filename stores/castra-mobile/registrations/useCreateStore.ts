@@ -5,6 +5,7 @@ export const useCreateStore = defineStore("registrations-create", {
 		const isLoading = ref(false);
 		const errorMessage = ref("");
 		const successMessage = ref("");
+		const showErrorModal = ref(false);
 		const form = useForm([
 			"scheduler_at",
 			"mobile_clinic_event_id",
@@ -23,7 +24,6 @@ export const useCreateStore = defineStore("registrations-create", {
 			"animal_specie",
 			"animal_gender",
 			"animal_size",
-			"animal_status",
 			"animal_color",
 			"animal_birth_date",
 			"animal_weight",
@@ -33,6 +33,7 @@ export const useCreateStore = defineStore("registrations-create", {
 			isLoading,
 			errorMessage,
 			successMessage,
+			showErrorModal,
 			form,
 		};
 	},
@@ -83,6 +84,13 @@ export const useCreateStore = defineStore("registrations-create", {
 			}
 
 			if (response.status === 422) {
+				if (!response.errors) {
+					this.errorMessage =
+						response.message || "Erro ao processar a solicitação.";
+
+					return;
+				}
+
 				for (const field in response.errors) {
 					if (Object.prototype.hasOwnProperty.call(response.errors, field)) {
 						this.setFormError(field, response.errors[field]);
@@ -90,6 +98,7 @@ export const useCreateStore = defineStore("registrations-create", {
 				}
 			}
 
+			this.showErrorModal = true;
 			this.isLoading = false;
 		},
 		async store(): Promise<void> {
@@ -122,6 +131,10 @@ export const useCreateStore = defineStore("registrations-create", {
 						query: { tab: "schedule" },
 					});
 				},
+				onResponseError: ({ response }) => {
+					const responseData = response._data || ({} as IResponse);
+					this.handleResponseError(responseData);
+				},
 			});
 		},
 		resetForm() {
@@ -133,6 +146,7 @@ export const useCreateStore = defineStore("registrations-create", {
 			}
 			this.errorMessage = "";
 			this.successMessage = "";
+			this.showErrorModal = false;
 		},
 	},
 });

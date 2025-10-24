@@ -125,10 +125,10 @@ export default defineComponent({
 			<section class="wrapper__button">
 				<MoleculesButtonsCommon
 					class="cancel"
-					type="primary"
+					type="secondary"
 					text="Limpar"
 					size="small"
-					mode="destructive"
+					mode="normal"
 					:disabled="!hasChanges"
 					@onclick="clearFilters"
 				/>
