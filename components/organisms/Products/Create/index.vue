@@ -186,7 +186,7 @@ export default defineComponent({
 				weight="medium"
 				color="var(--brand-color-dark-blue-300)"
 			/>
-			<div class="product-form__group">
+			<div class="product-form__group-row">
 				<MoleculesInputCommon
 					label="Nome do produto"
 					max-width="50%"
@@ -201,8 +201,7 @@ export default defineComponent({
 					:value="store.form.category.value as string"
 					@item-selected="store.setCategory($event.id)"
 				/>
-			</div>
-			<div class="product-form__group">
+
 				<MoleculesInputCommon
 					label="Fabricante"
 					max-width="50%"
@@ -226,7 +225,7 @@ export default defineComponent({
 				weight="medium"
 				color="var(--brand-color-dark-blue-300)"
 			/>
-			<div class="product-form__group">
+			<div class="product-form__group-row">
 				<MoleculesSelectsSimple
 					label="Unidade de medida"
 					max-width="25%"
@@ -331,7 +330,7 @@ export default defineComponent({
 				weight="medium"
 				color="var(--brand-color-dark-blue-300)"
 			/>
-			<div class="product-form__group">
+			<div class="product-form__group-row">
 				<MoleculesSelectsSimple
 					v-if="store.category === 'supplement'"
 					label="Tipo de suplemento"
@@ -365,17 +364,30 @@ export default defineComponent({
 					@item-selected="store.setFormField('base_unit', $event.id)"
 				/>
 			</div>
-			<div class="product-form__group">
-				<MoleculesInputCommon
-					label="Observações"
-					max-width="100%"
-					:value="store.form.description.value as string"
-					@on-input="store.setFormField('description', $event)"
+			<MoleculesInputCommon
+				class="area"
+				label="Observações"
+				max-width="100%"
+				typeInput="textarea"
+				:value="store.form.description.value as string"
+				@on-input="store.setFormField('description', $event)"
+			/>
+			<div
+				v-if="store.category !== 'other'"
+				class="product-form__group actions"
+			>
+				<MoleculesButtonsCommon
+					type="primary"
+					text="Cadastrar"
+					icon-right
+					nameIconRight="plus"
+					size="medium"
+					width="auto"
+					@onclick="handleCreate"
 				/>
 			</div>
 		</div>
 
-		<!-- Outros -->
 		<div v-if="store.category === 'other'" class="section-card">
 			<AtomsTypography
 				type="text-p3"
@@ -401,12 +413,13 @@ export default defineComponent({
 				color="var(--brand-color-dark-blue-300)"
 			/>
 		</div>
-
-		<div class="product-form__group actions">
+		<div v-if="store.category === 'other'" class="product-form__group actions">
 			<MoleculesButtonsCommon
 				type="primary"
 				text="Cadastrar"
-				size="small"
+				icon-right
+				nameIconRight="plus"
+				size="medium"
 				width="auto"
 				@onclick="handleCreate"
 			/>

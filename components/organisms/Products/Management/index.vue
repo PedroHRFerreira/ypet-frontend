@@ -45,7 +45,7 @@ const columnsHeader = ref<ColumnHeader[]>([
 		typeTypography: "text-p5",
 		weightTypography: "bold",
 		colorTypography: "var(--brand-color-dark-blue-300)",
-		style: { width: "22%", gap: "16px", wordBreak: "break-all" },
+		style: { width: "20%", gap: "16px", wordBreak: "break-all" },
 	},
 	{
 		value: "category",
@@ -53,7 +53,7 @@ const columnsHeader = ref<ColumnHeader[]>([
 		typeTypography: "text-p5",
 		weightTypography: "bold",
 		colorTypography: "var(--brand-color-dark-blue-300)",
-		style: { width: "12%" },
+		style: { width: "20%" },
 	},
 	{
 		value: "manufacturer",
@@ -61,7 +61,7 @@ const columnsHeader = ref<ColumnHeader[]>([
 		typeTypography: "text-p5",
 		weightTypography: "bold",
 		colorTypography: "var(--brand-color-dark-blue-300)",
-		style: { width: "12%" },
+		style: { width: "20%" },
 	},
 	{
 		value: "unit",
@@ -69,7 +69,7 @@ const columnsHeader = ref<ColumnHeader[]>([
 		typeTypography: "text-p5",
 		weightTypography: "bold",
 		colorTypography: "var(--brand-color-dark-blue-300)",
-		style: { width: "8%" },
+		style: { width: "20%" },
 	},
 	{
 		value: "stock",
@@ -77,7 +77,7 @@ const columnsHeader = ref<ColumnHeader[]>([
 		typeTypography: "text-p5",
 		weightTypography: "bold",
 		colorTypography: "var(--brand-color-dark-blue-300)",
-		style: { width: "8%" },
+		style: { width: "20%" },
 	},
 	{
 		value: "validity",
@@ -85,7 +85,7 @@ const columnsHeader = ref<ColumnHeader[]>([
 		typeTypography: "text-p5",
 		weightTypography: "bold",
 		colorTypography: "var(--brand-color-dark-blue-300)",
-		style: { width: "12%" },
+		style: { width: "20%" },
 	},
 	{
 		value: "is_active",
@@ -93,7 +93,7 @@ const columnsHeader = ref<ColumnHeader[]>([
 		typeTypography: "text-p5",
 		weightTypography: "bold",
 		colorTypography: "var(--brand-color-dark-blue-300)",
-		style: { width: "8%" },
+		style: { width: "20%" },
 	},
 	{
 		value: "actions",
@@ -101,7 +101,7 @@ const columnsHeader = ref<ColumnHeader[]>([
 		typeTypography: "text-p5",
 		weightTypography: "bold",
 		colorTypography: "var(--brand-color-dark-blue-300)",
-		style: { width: "18%" },
+		style: { width: "20%" },
 	},
 ]);
 
