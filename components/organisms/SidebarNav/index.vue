@@ -33,8 +33,8 @@ export default defineComponent({
 			{
 				text: "Aplicações",
 				icon: "vaccine",
-				active: "vaccine",
-				route: "vaccine",
+				active: "applications",
+				route: "applications",
 			},
 			{
 				text: "Procedimentos",

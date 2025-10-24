@@ -1,5 +1,5 @@
-import { defineStore } from "pinia";
 import { ref } from "vue";
+import { defineStore } from "pinia";
 import type { IPagination } from "~/types/global";
 
 export const useListStore = defineStore("animals-list", {
@@ -54,8 +54,13 @@ export const useListStore = defineStore("animals-list", {
 				params: queryParams,
 				onResponse: ({ response }) => {
 					const result: IResponse = response._data as IResponse;
-					this.pagination = (result.data as IPagination) || ({} as IPagination);
-					this.animals = (this.pagination?.data as IAnimal[]) || [];
+					if (result.data?.current_page) {
+						this.pagination =
+							(result.data as IPagination) || ({} as IPagination);
+						this.animals = (this.pagination?.data as IAnimal[]) || [];
+					} else {
+						this.animals = (result.data as IAnimal[]) || [];
+					}
 					this.isLoading = false;
 				},
 				onResponseError: ({ response }) => {
