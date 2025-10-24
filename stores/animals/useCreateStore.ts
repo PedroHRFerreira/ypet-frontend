@@ -19,6 +19,7 @@ export const useCreateStore = defineStore("animals-create", {
 			"entry_date",
 			"status",
 			"tutor_id",
+			"location_id",
 			"characteristics",
 			"suname",
 			"infirmity",

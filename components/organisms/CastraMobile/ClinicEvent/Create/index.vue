@@ -1,21 +1,39 @@
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, onMounted } from "vue";
 import { useAnimalSpeciesEnumStore } from "~/stores/Enums/useAnimalSpeciesEnumStore";
 import { useGenderEnumStore } from "~/stores/Enums/useGenderEnumStore";
 import { useCreateStore } from "~/stores/castra-mobile/clinic-events/useCreateStore";
 import { useMobileEventStatusEnumStore } from "~/stores/Enums/useMobileEventStatusEnumStore";
+import { useLocationsStore } from "~/stores/locations/useListStore";
 
 export default defineComponent({
 	name: "OrganismsClinicEventCreate",
-	async setup() {
+	setup() {
 		const createStore = useCreateStore();
 		const { form } = createStore;
+		const locationsStore = useLocationsStore();
 
-		const [optionsSpecies, optionsGender, optionsStatus] = await Promise.all([
-			useAnimalSpeciesEnumStore().getOptions(),
-			useGenderEnumStore().getOptions(),
-			useMobileEventStatusEnumStore().getOptions(),
-		]);
+		const optionsSpecies = ref<IOption[]>([]);
+		const optionsGender = ref<IOption[]>([]);
+		const optionsStatus = ref<IOption[]>([]);
+		const optionsLocations = computed(() => {
+			return locationsStore.locations.map((location) => ({
+				id: location.id,
+				text: location.location_name,
+				state: "default" as "default" | "activated" | "disabled",
+			}));
+		});
+
+		onMounted(async () => {
+			[optionsSpecies.value, optionsGender.value, optionsStatus.value] =
+				await Promise.all([
+					useAnimalSpeciesEnumStore().getOptions(),
+					useGenderEnumStore().getOptions(),
+					useMobileEventStatusEnumStore().getOptions(),
+				]);
+
+			await locationsStore.fetchLocations();
+		});
 
 		const endDate = ref("");
 		const startDate = ref("");
@@ -146,6 +164,7 @@ export default defineComponent({
 			optionsGender,
 			optionsSpecies,
 			optionsStatus,
+			optionsLocations,
 			endDate,
 			startDate,
 			form,
@@ -253,12 +272,12 @@ export default defineComponent({
 					/>
 				</div>
 				<div class="settings-create__about-pet__content--group">
-					<MoleculesInputCommon
-						label="Local do evento"
+					<MoleculesSelectsSimple
 						max-width="100%"
-						:value="form.location.value"
-						:message-error="form.location.errorMessages.join(', ')"
-						@on-input="createStore.setFormField('location', $event)"
+						label="Local do evento"
+						:options="optionsLocations"
+						:message-error="form.location_id.errorMessages.join(', ')"
+						@item-selected="createStore.setFormField('location_id', $event)"
 					/>
 				</div>
 			</div>

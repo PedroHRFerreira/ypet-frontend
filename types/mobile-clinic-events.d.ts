@@ -8,11 +8,27 @@ declare global {
 		created_at?: string;
 		updated_at?: string;
 	}
+  interface ILocation {
+		id?: number | string;
+		uuid?: string;
+		location_name?: string;
+		location_type?: string;
+		responsible_name?: string;
+		phone?: number;
+		email?: string;
+		cnpj?: string;
+		bank_account_or_pix?: string;
+		status?: number;
+		notes?: string;
+		created_at?: string;
+		updated_at?: string;
+	}
 	interface IMobileClinicEvent {
 		id?: number | string;
 		name: string;
 		description: string;
-		location: string;
+		location: ILocation;
+		location_id?: number;
 		start_date: string;
 		end_date: string;
 		status: IEnum;

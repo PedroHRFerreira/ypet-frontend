@@ -8,7 +8,7 @@ export const useCreateStore = defineStore("clinic-events-create", {
 		const form = useForm([
 			"name",
 			"description",
-			"location",
+			"location_id",
 			"start_date",
 			"end_date",
 			"status",

@@ -45,6 +45,10 @@ export default defineComponent({
 						{ label: "Apelido:", value: animal?.surname || "N/A" },
 						{ label: "Protetor:", value: "Tem que definir" },
 						{ label: "Status:", value: animal?.status?.status, isEnum: true },
+						{
+							label: "Local:",
+							value: animal?.location?.location_name || "N/A",
+						},
 					],
 				},
 				{

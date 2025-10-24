@@ -7,6 +7,7 @@ import { useAnimalSizeEnumStore } from "~/stores/Enums/useAnimalSizeEnumStore";
 import { useAnimalCoatEnumStore } from "~/stores/Enums/useAnimalCoatEnumStore";
 import { useEditStore } from "~/stores/animals/useEditStore";
 import { useDetailStore } from "~/stores/animals/useDetailStore";
+import { useLocationsStore } from "~/stores/locations/useListStore";
 
 export default defineComponent({
 	name: "OrganismsAnimalsEdit",
@@ -18,6 +19,7 @@ export default defineComponent({
 		const useAnimalStatusEnum = useAnimalStatusEnumStore();
 		const useAnimalSizeEnum = useAnimalSizeEnumStore();
 		const useAnimalCoatEnum = useAnimalCoatEnumStore();
+		const locationsStore = useLocationsStore();
 		const { form } = useAnimalsEdit;
 		const id = useRoute().params.id as string;
 
@@ -100,6 +102,24 @@ export default defineComponent({
 				{ id: 1, text: "Sim", state: "default" },
 				{ id: 0, text: "Não", state: "default" },
 			];
+		});
+
+		const optionsLocations = computed(() => {
+			const animal = animalDetailsStore.animal;
+
+			return locationsStore.locations.map((location) => {
+				const option: IOption = {
+					id: location.id,
+					text: location.location_name,
+					state: "default" as "default" | "activated" | "disabled",
+				};
+
+				if (location.id === animal.location_id) {
+					option.state = "activated";
+				}
+
+				return option;
+			});
 		});
 
 		const showConfirm = ref(false);
@@ -191,8 +211,9 @@ export default defineComponent({
 				useAnimalSizeEnum.getOptions(),
 				useAnimalCoatEnum.getOptions(),
 				animalDetailsStore.fetchAnimalById(id, {
-					"with[]": ["status", "entryData"],
+					"with[]": ["status", "entryData", "location"],
 				}),
+				locationsStore.fetchLocations(),
 			]);
 
 			species.value = speciesData;
@@ -229,6 +250,7 @@ export default defineComponent({
 				"dewormed",
 				animal.entry_data?.dewormed ? 1 : 0,
 			);
+			useAnimalsEdit.setFormField("location_id", animal.location_id);
 		});
 
 		return {
@@ -237,6 +259,7 @@ export default defineComponent({
 			optionsAnimalStatus,
 			optionsAnimalSize,
 			optionsAnimalCoat,
+			optionsLocations,
 			optionsBoolean,
 			birthDate,
 			entryDate,
@@ -394,6 +417,17 @@ export default defineComponent({
 						:value="form.surname.value as string"
 						:message-error="form.surname.errorMessages.join(', ')"
 						@on-input="useAnimalsEdit.setFormField('surname', $event)"
+					/>
+				</div>
+				<div class="animal__about-pet__content--group">
+					<MoleculesSelectsSimple
+						max-width="100%"
+						label="Local"
+						:options="optionsLocations"
+						:value="form.location_id.value"
+						:message-error="form.location_id.errorMessages.join(', ')"
+						placeholder-text="Selecione um local (opcional)"
+						@item-selected="useAnimalsEdit.setFormField('location_id', $event)"
 					/>
 				</div>
 			</div>
