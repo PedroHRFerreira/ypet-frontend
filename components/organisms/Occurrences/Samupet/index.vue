@@ -1,7 +1,7 @@
 <script lang="ts">
 import { computed, defineComponent, ref } from "vue";
-import { useListStore } from "~/stores/samupet/useListStore";
-import { useEditTypeStore } from "~/stores/samupet/useEditTypeStore";
+import { useListStore } from "~/stores/animal-ambulance/useListStore";
+import { useEditTypeStore } from "~/stores/animal-ambulance/useEditTypeStore";
 
 export default defineComponent({
 	name: "OrganismsOccurrencesSamupet",
@@ -169,7 +169,7 @@ export default defineComponent({
 
 			if (event === "details") {
 				router.push({
-					name: "occurrences-id-report-details",
+					name: "occurrences-id-samupet-details",
 					params: { id: item.id },
 				});
 			}

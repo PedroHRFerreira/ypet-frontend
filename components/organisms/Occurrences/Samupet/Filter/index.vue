@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent, ref, computed } from "vue";
-import { useListStore } from "~/stores/samupet/useListStore";
+import { useListStore } from "~/stores/animal-ambulance/useListStore";
 import type { IOption } from "~/types/global";
 
 export default defineComponent({
