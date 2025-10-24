@@ -31,12 +31,6 @@ export default defineComponent({
 				route: "occurrences",
 			},
 			{
-				text: "Samupet",
-				icon: "health",
-				active: "samupet",
-				route: "samupet",
-			},
-			{
 				text: "Aplicações",
 				icon: "vaccine",
 				active: "applications",

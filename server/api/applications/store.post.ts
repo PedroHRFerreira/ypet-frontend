@@ -4,7 +4,6 @@ export default defineEventHandler(async (event): Promise<IResponse> => {
 	try {
 		const path = "/applications";
 
-		// Segue padrão do cadastro de locais: usar FormData
 		const formData = await readFormData(event);
 		const payload: Record<string, any> = {};
 		for (const [key, value] of formData.entries()) {
