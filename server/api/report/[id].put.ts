@@ -1,12 +1,21 @@
-import { apiPost } from "~/utils/api";
+import { apiPut } from "~/utils/api";
 
 export default defineEventHandler(async (event): Promise<IResponse> => {
 	try {
 		const id = event.context.params?.id;
-		const type = event.context.params?.type;
-		const path = `/abuse-reports/${id}/${type}`;
+		const path = `/report/${id}`;
 
-		return await apiPost<IResponse>(path, event, {});
+		const formData = await readFormData(event);
+		const payload: Record<string, any> = {};
+		for (const [key, value] of formData.entries()) {
+			if (key === "address" && typeof value === "string") {
+				payload[key] = JSON.parse(value);
+			} else {
+				payload[key] = value;
+			}
+		}
+
+		return await apiPut<IResponse>(path, event, payload);
 	} catch (err) {
 		const error = err as IError;
 

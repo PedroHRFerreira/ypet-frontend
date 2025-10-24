@@ -75,7 +75,7 @@ export default defineComponent({
 			const loc = location.value;
 			if (!loc) return [];
 
-			const addr = loc.addresses;
+			const addr = loc.addresses[0];
 
 			return [
 				{
