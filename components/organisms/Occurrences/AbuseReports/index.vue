@@ -1,23 +1,17 @@
 <script lang="ts">
 import { computed, defineComponent, ref } from "vue";
-import { useListStore } from "~/stores/abuse-report/useListStore";
-import { useEditTypeStore } from "~/stores/abuse-report/useEditTypeStore";
-import MoleculesListCardItem from "~/components/molecules/ListCardItem/index.vue";
-import AtomsTypography from "~/components/atoms/Typography/index.vue";
-import AtomsBadges from "~/components/atoms/Badges/Index.vue";
+import { useListStore } from "~/stores/report/useListStore";
+import { useEditTypeStore } from "~/stores/report/useEditTypeStore";
 export default defineComponent({
 	name: "OrganismsOccurrencesAbuseReports",
-	components: {
-		AtomsBadges,
-		AtomsTypography,
-		MoleculesListCardItem,
-	},
 	async setup() {
 		const abuseReportList = useListStore();
 		const abuseReportEditType = useEditTypeStore();
 		const id = ref(0);
 		const showConfirm = ref(false);
 		const showSuccess = ref(false);
+		const isVisible = ref(false);
+		const searchValue = ref("");
 		const typeAction = ref("");
 		const feedbackModal = ref({
 			confirm: {
@@ -40,18 +34,29 @@ export default defineComponent({
 		}
 
 		const optionsStatus: IEnum[] = [
-			{ value: "pending", name: "PENDING", label: "Perdido", color: "#e6a832" },
 			{
-				value: "confirmed",
-				name: "CONFIRMED",
-				label: "Encontrado",
-				color: "#00b374",
+				value: "in_review",
+				name: "in_review",
+				label: "Em revisão",
+				color: "success",
 			},
 			{
-				value: "completed",
-				name: "COMPLETED",
-				label: "Concluído",
-				color: "#0055ff",
+				value: "forward",
+				name: "forward",
+				label: "Encaminhados",
+				color: "secondary",
+			},
+			{
+				value: "complete",
+				name: "complete",
+				label: "Concluídos",
+				color: "warning",
+			},
+			{
+				value: "archive",
+				name: "archive",
+				label: "Arquivados",
+				color: "danger",
 			},
 		];
 
@@ -96,8 +101,8 @@ export default defineComponent({
 
 		const columnsHeader = ref([
 			{
-				value: "nameUser",
-				text: "TUTOR",
+				value: "code",
+				text: "Código",
 				typeTypography: "text-p5",
 				weightTypography: "bold",
 				colorTypography: "var(--brand-color-dark-blue-300)",
@@ -108,8 +113,8 @@ export default defineComponent({
 				},
 			},
 			{
-				value: "nameAnimal",
-				text: "PET",
+				value: "whistleblower",
+				text: "Denunciante",
 				typeTypography: "text-p5",
 				weightTypography: "bold",
 				colorTypography: "var(--brand-color-dark-blue-300)",
@@ -118,35 +123,23 @@ export default defineComponent({
 				},
 			},
 			{
-				value: "locationLoss",
-				text: "LOCAL DA PERDA",
-				typeTypography: "text-p5",
-				weightTypography: "bold",
-				colorTypography: "var(--brand-color-dark-blue-300)",
-				style: {
-					width: "15%",
-				},
-			},
-			{
-				value: "dateLoss",
-				text: "DATA DA PERDA",
+				value: "date",
+				text: "Data e hora do envio",
 				typeTypography: "text-p5",
 				weightTypography: "bold",
 				colorTypography: "var(--brand-color-dark-blue-300)",
 				style: {
 					width: "20%",
-					justifyContent: "flex-end",
 				},
 			},
 			{
 				value: "status",
-				text: "STATUS",
+				text: "Status",
 				typeTypography: "text-p5",
 				weightTypography: "bold",
 				colorTypography: "var(--brand-color-dark-blue-300)",
 				style: {
 					width: "20%",
-					justifyContent: "flex-end",
 				},
 			},
 			{
@@ -162,83 +155,87 @@ export default defineComponent({
 			},
 		]);
 
-		const onSelectOptionAction = (event: string, item: IAdoption) => {
+		const onSelectOptionAction = (event: string, item: any) => {
 			const router = useRouter();
-			id.value = item.id;
+			id.value = item.uuid;
 			typeAction.value = event;
 
-			if (event === "confirm") {
+			if (["receive", "forward", "complete"].includes(event)) {
 				openConfirm();
-				feedbackModal.value = {
-					confirm: {
-						title: "Deseja confirmar a visita de adoção?",
-						description: "Após confirmação, você irá visualizá-lo no painel",
+
+				const actionMap = {
+					receive: {
+						title: "Deseja marcar como recebido?",
+						description:
+							"O denunciante será notificado, e o status permanecerá como 'Em análise'.",
+						successTitle: "Denúncia marcada como recebida com sucesso!",
 					},
-					success: {
-						title: "Visita confirmada com sucesso",
-						description: "",
+					forward: {
+						title: "Deseja marcar como encaminhada?",
+						description:
+							"O status da denúncia será alterado para 'Encaminhada'.",
+						successTitle: "Denúncia encaminhada com sucesso!",
+					},
+					complete: {
+						title: "Deseja marcar como concluída?",
+						description:
+							"O denunciante será notificado, e o status será alterado para 'Concluída'.",
+						successTitle: "Denúncia concluída com sucesso!",
 					},
 				};
-				return;
-			}
 
-			if (event === "complete") {
-				openConfirm();
+				const { title, description, successTitle } = actionMap[event];
 				feedbackModal.value = {
-					confirm: {
-						title: "Deseja concluir visita?",
-						description: "Após confirmação, você irá visualizá-lo no painel",
-					},
-					success: {
-						title: "Visita concluída com sucesso",
-						description: "",
-					},
+					confirm: { title, description },
+					success: { title: successTitle, description: "" },
 				};
 				return;
-			}
-
-			if (event === "cancel") {
-				openConfirm();
-				feedbackModal.value = {
-					confirm: {
-						title: "Deseja cancelar visita?",
-						description: "Após confirmação, você irá visualizá-lo no painel",
-					},
-					success: {
-						title: "Visita cancelada om sucesso",
-						description: "",
-					},
-				};
-				return;
-			}
-
-			if (event === "animal") {
-				router.push({
-					name: "animals-details",
-					params: { id: item.animal.id },
-				});
-				return;
-			}
-
-			if (event === "citizen") {
-				router.push({ name: "citizens-edit", params: { id: item.citizen.id } });
 			}
 
 			if (event === "details") {
 				router.push({
-					name: "occurrences-adoption-details",
-					params: { id: item.id },
+					name: "occurrences-id-report-details",
+					params: { id: item.uuid },
 				});
-				return;
 			}
 		};
 
 		const optionsActions = [
-			{ value: "confirm", label: "Marcar como encontrado", icon: "check" },
-			{ value: "complete", label: "Marcar como concluído", icon: "flag" },
-			{ value: "details", label: "Ver detalhes", icon: "paw" },
-			{ value: "details", label: "Ver último local", icon: "paw" },
+			{ value: "receive", label: "Marcar como recebido", icon: "check" },
+			{
+				value: "forward",
+				label: "Marcar como encaminhada",
+				icon: "arrow-right",
+			},
+			{ value: "complete", label: "Marcar como concluída", icon: "flag" },
+			{ value: "details", label: "Visualizar detalhes", icon: "paw" },
 		];
+
+		const toggleDropdown = () => {
+			isVisible.value = true;
+		};
+
+		const onSearchInput = (value: string) => {
+			searchValue.value = value;
+			if (searchValue.value.trim().length === 0) {
+				abuseReportList.filters.name = null;
+				abuseReportList.fetchList(1);
+			}
+		};
+
+		const onSearchEnter = () => {
+			const trimmed = searchValue.value.trim();
+			if (trimmed.length > 0) {
+				abuseReportList.filters.name = trimmed;
+				abuseReportList.fetchList(1);
+			}
+		};
+
+		const clearSearch = () => {
+			searchValue.value = "";
+			abuseReportList.filters.name = null;
+			abuseReportList.fetchList(1);
+		};
 
 		return {
 			abuseReportList,
@@ -254,6 +251,12 @@ export default defineComponent({
 			getStatus,
 			onSelectOptionAction,
 			paginationChange,
+			isVisible,
+			searchValue,
+			onSearchInput,
+			onSearchEnter,
+			clearSearch,
+			toggleDropdown,
 		};
 	},
 });
@@ -289,8 +292,29 @@ export default defineComponent({
 				/>
 			</div>
 		</div>
-		<div class="wrapper-list-card__search"></div>
-		<div class="wrapper-list-card__body">
+		<div class="wrapper-list-card__search">
+			<div class="wrapper-list-card__search-input anim-loading">
+				<MoleculesInputSearch
+					label="Procurar"
+					:value="searchValue"
+					:close="!!searchValue.trim().length"
+					@on-input="onSearchInput"
+					@clear-input="clearSearch"
+					@keydown.enter.native="onSearchEnter"
+				/>
+			</div>
+			<div class="wrapper-list-card__search-filters anim-loading">
+				<MoleculesButtonsCommon
+					type="outline"
+					text="Filtros"
+					size="small"
+					icon-left
+					name-icon-left="filter"
+					@onclick="toggleDropdown"
+				/>
+			</div>
+		</div>
+		<div v-if="list.length > 0" class="wrapper-list-card__body">
 			<MoleculesListCardItem :data="columnsHeader" padding="16px 0">
 				<template v-for="(item, key) in columnsHeader" #[item.value] :key="key">
 					<AtomsTypography
@@ -307,34 +331,26 @@ export default defineComponent({
 				:data="columnsHeader"
 				padding="0"
 			>
-				<template #nameUser>
+				<template #code>
 					<AtomsTypography
 						type="text-p5"
-						:text="item.user.name"
+						:text="item.user.code"
 						weight="regular"
 						color="var(--brand-color-dark-blue-300)"
 					/>
 				</template>
-				<template #nameAnimal>
+				<template #whistleblower>
 					<AtomsTypography
 						type="text-p5"
-						:text="item.animal.name"
+						:text="item.animal.whistleblower"
 						weight="regular"
 						color="var(--brand-color-dark-blue-300)"
 					/>
 				</template>
-				<template #locationLoss>
+				<template #date>
 					<AtomsTypography
 						type="text-p5"
-						:text="item.start_date"
-						weight="regular"
-						color="var(--brand-color-dark-blue-300)"
-					/>
-				</template>
-				<template #dateLoss>
-					<AtomsTypography
-						type="text-p5"
-						:text="item.visit_time"
+						:text="item.date"
 						weight="regular"
 						color="var(--brand-color-dark-blue-300)"
 					/>
@@ -356,6 +372,12 @@ export default defineComponent({
 				</template>
 			</MoleculesListCardItem>
 		</div>
+		<MoleculesEmptyState
+			v-else
+			:is-icon="true"
+			title="Nenhuma denúncia encontrada"
+			description="Tente ajustar seus filtros ou realize uma nova busca"
+		/>
 		<div class="wrapper-list-card__footer">
 			<MoleculesPaginationControls
 				v-if="abuseReportList.pagination"
@@ -365,6 +387,11 @@ export default defineComponent({
 				@pageChange="paginationChange($event)"
 			/>
 		</div>
+		<OrganismsOccurrencesAbuseReportsFilter
+			:is-visible="isVisible"
+			@close="isVisible = false"
+			@clear-all="clearSearch"
+		/>
 	</section>
 </template>
 
