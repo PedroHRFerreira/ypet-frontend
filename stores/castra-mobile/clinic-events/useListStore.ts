@@ -61,6 +61,7 @@ export const useListStore = defineStore("clinic-events-list", {
 
 			const queryParams: Record<string, any> = {
 				...params,
+				"with[]": ["location"],
 			};
 
 			if (this.filters.date) queryParams.date = this.filters.date;

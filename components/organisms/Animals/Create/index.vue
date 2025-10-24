@@ -7,6 +7,7 @@ import { useAnimalStatusEnumStore } from "~/stores/Enums/useAnimalStatusEnumStor
 import { useAnimalSizeEnumStore } from "~/stores/Enums/useAnimalSizeEnumStore";
 import { useAnimalCoatEnumStore } from "~/stores/Enums/useAnimalCoatEnumStore";
 import { useListStore as useCitizensListStore } from "~/stores/citizens/useListStore";
+import { useLocationsStore } from "~/stores/locations/useListStore";
 
 export default defineComponent({
 	name: "OrganismsAnimalsCreate",
@@ -18,6 +19,7 @@ export default defineComponent({
 		const useAnimalSizeEnum = useAnimalSizeEnumStore();
 		const useAnimalCoatEnum = useAnimalCoatEnumStore();
 		const useCitizensList = useCitizensListStore();
+		const locationsStore = useLocationsStore();
 		const { form } = useAnimalsCreate;
 
 		const optionsSpecies = ref<IOption[]>([]);
@@ -26,6 +28,14 @@ export default defineComponent({
 		const optionsAnimalSize = ref<IOption[]>([]);
 		const optionsAnimalCoat = ref<IOption[]>([]);
 		const optionsCitizens = ref<IOption[]>([]);
+
+		const optionsLocations = computed(() => {
+			return locationsStore.locations.map((location) => ({
+				id: location.id,
+				text: location.location_name,
+				state: "default" as "default" | "activated" | "disabled",
+			}));
+		});
 
 		const optionsBoolean: IOption[] = [
 			{ id: 1, text: "Sim", state: "default" },
@@ -51,8 +61,8 @@ export default defineComponent({
 			optionsAnimalSize.value = animalSize;
 			optionsAnimalCoat.value = animalCoat;
 
-			// Carregar lista inicial de cidadãos
-			await loadCitizens();
+			// Carregar lista inicial de cidadãos e locais
+			await Promise.all([loadCitizens(), locationsStore.fetchLocations()]);
 		});
 
 		const isCastrated = computed(() => {
@@ -129,6 +139,7 @@ export default defineComponent({
 			optionsAnimalSize,
 			optionsAnimalCoat,
 			optionsCitizens,
+			optionsLocations,
 			optionsBoolean,
 			birthDate,
 			entryDate,
@@ -292,6 +303,18 @@ export default defineComponent({
 						:value="form.suname.value as string"
 						:message-error="form.suname.errorMessages.join(', ')"
 						@on-input="useAnimalsCreate.setFormField('suname', $event)"
+					/>
+				</div>
+				<div class="animal__about-pet__content--group">
+					<MoleculesSelectsSimple
+						max-width="100%"
+						label="Local"
+						:options="optionsLocations"
+						:message-error="form.location_id.errorMessages.join(', ')"
+						placeholder-text="Selecione um local (opcional)"
+						@item-selected="
+							useAnimalsCreate.setFormField('location_id', $event)
+						"
 					/>
 				</div>
 			</div>

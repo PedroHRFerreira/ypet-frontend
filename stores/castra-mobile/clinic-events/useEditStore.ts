@@ -8,7 +8,7 @@ export const useEditStore = defineStore("clinic-event-edit", {
 		const form = useForm([
 			"name",
 			"description",
-			"location",
+			"location_id",
 			"start_date",
 			"end_date",
 			"status",

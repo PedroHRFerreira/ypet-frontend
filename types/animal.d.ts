@@ -35,6 +35,7 @@ declare global {
 		tenant_id?: number;
 		company_id?: number;
 		tutor_id?: number;
+		location_id?: number;
 		name: string;
 		species: IEnum;
 		gender: IEnum;
