@@ -2,53 +2,47 @@ import { ref } from "vue";
 import { defineStore } from "pinia";
 import type { IPagination } from "~/types/global";
 
-export const useListStore = defineStore("animals-list", {
+export const useListStore = defineStore("applications-list", {
 	state: () => {
-		const animals = ref([] as IAnimal[]);
+		const applications = ref([] as IApplication[]);
 		const isLoading = ref(false);
 		const errorMessage = ref("");
 		const pagination = ref<IPagination>({} as IPagination);
-		const pathUrl = "/api/animals";
 
 		return {
-			animals,
+			applications,
 			isLoading,
 			errorMessage,
 			pagination,
-			pathUrl,
 		};
 	},
 	actions: {
-		async fetchAnimals(params = {}): Promise<void> {
+		async fetchList(params = {}): Promise<void> {
 			if (this.isLoading) {
 				return;
 			}
 
 			this.isLoading = true;
 			this.errorMessage = "";
-			await useFetch(this.pathUrl, {
+
+			await useFetch("/api/applications", {
 				method: "GET",
 				params: {
 					...params,
-					"with[]": ["status", "entryData"],
 				},
 				onResponse: ({ response }) => {
 					const result: IResponse = response._data as IResponse;
-					if (result.data?.current_page) {
-						this.pagination =
-							(result.data as IPagination) || ({} as IPagination);
-						this.animals = (this.pagination?.data as IAnimal[]) || [];
-					} else {
-						this.animals = (result.data as IAnimal[]) || [];
-					}
+
+					this.pagination = (result.data as IPagination) || ({} as IPagination);
+					this.applications = (this.pagination?.data as IApplication[]) || [];
 					this.isLoading = false;
 				},
 				onResponseError: ({ response }) => {
 					this.isLoading = false;
-					this.errorMessage =
-						response._data?.message || "Erro ao buscar animais.";
+					this.errorMessage = (response as any)?._data?.message || "Erro ao buscar.";
 				},
 			});
+
 		},
 	},
 });

@@ -37,10 +37,10 @@ export default defineComponent({
 				route: "samupet",
 			},
 			{
-				text: "Aplicações e Procedimentos",
+				text: "Aplicações",
 				icon: "vaccine",
-				active: "vaccine",
-				route: "vaccine",
+				active: "applications",
+				route: "applications",
 			},
 			{
 				text: "Colaboradores",
