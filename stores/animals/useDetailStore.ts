@@ -18,7 +18,10 @@ export const useDetailStore = defineStore("animals-detail", {
 
 			await useFetch(`/api/animals/${id}`, {
 				method: "GET",
-				params,
+				params: {
+					...params,
+					"with[]": ["location"],
+				},
 				onResponse: ({ response }) => {
 					const result = response._data as IResponse;
 					this.animal = result.data || ({} as IAnimal);

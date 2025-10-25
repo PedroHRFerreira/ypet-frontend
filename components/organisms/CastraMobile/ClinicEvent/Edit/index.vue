@@ -1,40 +1,50 @@
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, onMounted } from "vue";
 import { useAnimalSpeciesEnumStore } from "~/stores/Enums/useAnimalSpeciesEnumStore";
 import { useGenderEnumStore } from "~/stores/Enums/useGenderEnumStore";
 import { useMobileEventStatusEnumStore } from "~/stores/Enums/useMobileEventStatusEnumStore";
 import { useEditStore } from "~/stores/castra-mobile/clinic-events/useEditStore";
 import { useDetailStore } from "~/stores/castra-mobile/clinic-events/useDetailStore";
+import { useLocationsStore } from "~/stores/locations/useListStore";
 
 export default defineComponent({
 	name: "OrganismsClinicEventEdit",
-	async setup() {
+	setup() {
 		const editStore = useEditStore();
 		const detailsStore = useDetailStore();
+		const locationsStore = useLocationsStore();
 		const { form } = editStore;
 		const id = useRoute().params.id as string;
 
-		const [species, gender, status] = await Promise.all([
-			useAnimalSpeciesEnumStore().getOptions(),
-			useGenderEnumStore().getOptions(),
-			useMobileEventStatusEnumStore().getOptions(),
-			detailsStore.fetchById(id, { "with[]": [] }),
-		]);
+		const species = ref<IOption[]>([]);
+		const gender = ref<IOption[]>([]);
+		const status = ref<IOption[]>([]);
 
-		editStore.setFormField("name", detailsStore.data.name);
-		editStore.setFormField("description", detailsStore.data.description);
-		editStore.setFormField("start_date", detailsStore.data.start_date);
-		editStore.setFormField("end_date", detailsStore.data.end_date);
-		editStore.setFormField("location", detailsStore.data.location);
-		editStore.setFormField(
-			"max_registrations",
-			detailsStore.data.max_registrations,
-		);
+		onMounted(async () => {
+			[species.value, gender.value, status.value] = await Promise.all([
+				useAnimalSpeciesEnumStore().getOptions(),
+				useGenderEnumStore().getOptions(),
+				useMobileEventStatusEnumStore().getOptions(),
+			]);
+
+			await detailsStore.fetchById(id, { "with[]": [] });
+			await locationsStore.fetchLocations();
+
+			editStore.setFormField("name", detailsStore.data.name);
+			editStore.setFormField("description", detailsStore.data.description);
+			editStore.setFormField("start_date", detailsStore.data.start_date);
+			editStore.setFormField("end_date", detailsStore.data.end_date);
+			editStore.setFormField("location_id", detailsStore.data.location_id);
+			editStore.setFormField(
+				"max_registrations",
+				detailsStore.data.max_registrations,
+			);
+		});
 
 		const optionsSpecies = computed(() => {
 			const data = detailsStore.data;
 
-			return species.map((item) => {
+			return species.value.map((item) => {
 				if (item.id === data.species?.value) {
 					item.state = "activated";
 					editStore.setFormField("species", item.id);
@@ -47,7 +57,7 @@ export default defineComponent({
 		const optionsGender = computed(() => {
 			const data = detailsStore.data;
 
-			return gender.map((item) => {
+			return gender.value.map((item) => {
 				if (item.id === data.gender?.value) {
 					item.state = "activated";
 					editStore.setFormField("gender", item.id);
@@ -60,13 +70,31 @@ export default defineComponent({
 		const optionsStatus = computed(() => {
 			const data = detailsStore.data;
 
-			return status.map((item) => {
+			return status.value.map((item) => {
 				if (item.id === data.status?.value) {
 					item.state = "activated";
 					editStore.setFormField("status", item.id);
 				}
 
 				return item;
+			});
+		});
+
+		const optionsLocations = computed(() => {
+			const data = detailsStore.data;
+
+			return locationsStore.locations.map((location) => {
+				const option: IOption = {
+					id: location.id,
+					text: location.location_name,
+					state: "default" as "default" | "activated" | "disabled",
+				};
+
+				if (location.id === data.location_id) {
+					option.state = "activated";
+				}
+
+				return option;
 			});
 		});
 
@@ -155,6 +183,7 @@ export default defineComponent({
 			optionsGender,
 			optionsSpecies,
 			optionsStatus,
+			optionsLocations,
 			endDate,
 			startDate,
 			form,
@@ -260,12 +289,13 @@ export default defineComponent({
 					/>
 				</div>
 				<div class="settings-create__about-pet__content--group">
-					<MoleculesInputCommon
-						label="Local do evento"
+					<MoleculesSelectsSimple
 						max-width="100%"
-						:value="form.location.value as string"
-						:message-error="form.location.errorMessages.join(', ')"
-						@on-input="editStore.setFormField('location', $event)"
+						label="Local do evento"
+						:options="optionsLocations"
+						:value="form.location_id.value"
+						:message-error="form.location_id.errorMessages.join(', ')"
+						@item-selected="editStore.setFormField('location_id', $event)"
 					/>
 				</div>
 

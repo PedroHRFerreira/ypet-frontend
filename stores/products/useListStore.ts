@@ -92,19 +92,25 @@ export const useListStore = defineStore("products-list", {
 				},
 				onResponse: ({ response }) => {
 					const result: IResponse = response._data as IResponse;
-
-					this.pagination = (result.data as IPagination) || ({} as IPagination);
-					const rawProducts = (this.pagination?.data as any[]) || [];
-					this.products = rawProducts.map((p: any) => {
-						const exp = p?.expiration_date || p?.validity || null;
-						const validity = exp ? useDayjs(exp).tz().format("DD/MM/YYYY") : "";
-						return {
-							...p,
-							validity,
-							is_active:
-								typeof p.is_active !== "undefined" ? p.is_active : p.status,
-						} as IProduct;
-					});
+					if (result.data?.current_page) {
+						this.pagination =
+							(result.data as IPagination) || ({} as IPagination);
+						const rawProducts = (this.pagination?.data as any[]) || [];
+						this.products = rawProducts.map((p: any) => {
+							const exp = p?.expiration_date || p?.validity || null;
+							const validity = exp
+								? useDayjs(exp).tz().format("DD/MM/YYYY")
+								: "";
+							return {
+								...p,
+								validity,
+								is_active:
+									typeof p.is_active !== "undefined" ? p.is_active : p.status,
+							} as IProduct;
+						});
+					} else {
+						this.products = (result.data as IProduct[]) || [];
+					}
 					this.isLoading = false;
 				},
 				onResponseError: ({ response }) => {

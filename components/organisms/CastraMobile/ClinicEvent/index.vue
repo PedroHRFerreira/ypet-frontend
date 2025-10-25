@@ -80,28 +80,6 @@ export default defineComponent({
 				},
 			},
 			{
-				value: "species",
-				text: "ESPÉCIES",
-				typeTypography: "text-p5",
-				weightTypography: "bold",
-				colorTypography: "var(--brand-color-dark-blue-300)",
-				style: {
-					width: "10%",
-					justifyContent: "flex-end",
-				},
-			},
-			{
-				value: "gender",
-				text: "SEXO",
-				typeTypography: "text-p5",
-				weightTypography: "bold",
-				colorTypography: "var(--brand-color-dark-blue-300)",
-				style: {
-					width: "10%",
-					justifyContent: "flex-end",
-				},
-			},
-			{
 				value: "situation",
 				text: "SITUAÇÃO",
 				typeTypography: "text-p5",
@@ -233,7 +211,7 @@ export default defineComponent({
 				<template #location>
 					<AtomsTypography
 						type="text-p5"
-						:text="item.location"
+						:text="item.location?.location_name || '---'"
 						weight="regular"
 						color="var(--brand-color-dark-blue-300)"
 					/>

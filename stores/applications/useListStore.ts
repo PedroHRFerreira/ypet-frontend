@@ -1,14 +1,16 @@
+import { ref } from "vue";
+import { defineStore } from "pinia";
 import type { IPagination } from "~/types/global";
 
-export const useListStore = defineStore("abuse-report-list", {
+export const useListStore = defineStore("applications-list", {
 	state: () => {
-		const lostPet = ref([] as ILostPet[]);
+		const applications = ref([] as IApplication[]);
 		const isLoading = ref(false);
 		const errorMessage = ref("");
 		const pagination = ref<IPagination>({} as IPagination);
 
 		return {
-			lostPet,
+			applications,
 			isLoading,
 			errorMessage,
 			pagination,
@@ -23,24 +25,24 @@ export const useListStore = defineStore("abuse-report-list", {
 			this.isLoading = true;
 			this.errorMessage = "";
 
-			await useFetch("/api/lost-pet", {
+			await useFetch("/api/applications", {
 				method: "GET",
 				params: {
 					...params,
-					"with[]": ["user", "citizen", "animal"],
 				},
 				onResponse: ({ response }) => {
 					const result: IResponse = response._data as IResponse;
 
 					this.pagination = (result.data as IPagination) || ({} as IPagination);
-					this.lostPet = (this.pagination?.data as ILostPet[]) || [];
+					this.applications = (this.pagination?.data as IApplication[]) || [];
 					this.isLoading = false;
 				},
 				onResponseError: ({ response }) => {
 					this.isLoading = false;
-					this.errorMessage = response._data?.message || "Erro ao buscar.";
+					this.errorMessage = (response as any)?._data?.message || "Erro ao buscar.";
 				},
 			});
+
 		},
 	},
 });
