@@ -1,0 +1,31 @@
+.wrapper {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+
+	&__filter {
+		display: flex;
+		flex-direction: column;
+		flex: 1;
+		padding: 24px;
+		gap: 24px;
+	}
+
+	&__button {
+		margin-top: auto;
+		width: 100%;
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		padding: 30px;
+		border-top: 1px solid var(--greys-colors-200);
+
+		.apply {
+			width: 60%;
+		}
+
+		.cancel {
+			width: 40%;
+		}
+	}
+}
