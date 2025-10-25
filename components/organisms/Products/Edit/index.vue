@@ -289,7 +289,7 @@ export default defineComponent({
 				weight="medium"
 				color="var(--brand-color-dark-blue-300)"
 			/>
-			<div class="product-form__group">
+			<div class="product-form__group-row">
 				<MoleculesInputCommon
 					label="Nome do produto"
 					max-width="50%"
@@ -304,8 +304,6 @@ export default defineComponent({
 					:value="store.form.category.value as string"
 					@item-selected="store.setCategory($event.id)"
 				/>
-			</div>
-			<div class="product-form__group">
 				<MoleculesInputCommon
 					label="Fabricante"
 					max-width="50%"
@@ -329,7 +327,7 @@ export default defineComponent({
 				weight="medium"
 				color="var(--brand-color-dark-blue-300)"
 			/>
-			<div class="product-form__group">
+			<div class="product-form__group-row">
 				<MoleculesSelectsSimple
 					label="Unidade de medida"
 					max-width="25%"
@@ -390,7 +388,7 @@ export default defineComponent({
 				weight="medium"
 				color="var(--brand-color-dark-blue-300)"
 			/>
-			<div class="product-form__group">
+			<div class="product-form__group-row">
 				<MoleculesInputCommon
 					label="Lote"
 					max-width="50%"
@@ -431,7 +429,7 @@ export default defineComponent({
 				weight="medium"
 				color="var(--brand-color-dark-blue-300)"
 			/>
-			<div class="product-form__group">
+			<div class="product-form__group-row">
 				<MoleculesSelectsSimple
 					v-if="store.category === 'supplement'"
 					label="Tipo de suplemento"
@@ -473,6 +471,20 @@ export default defineComponent({
 					:value="store.form.description.value as string"
 					@on-input="store.setFormField('description', $event)"
 				/>
+				<div
+					v-if="store.category !== 'other'"
+					class="product-form__group actions"
+				>
+					<MoleculesButtonsCommon
+						type="primary"
+						text="Cadastrar"
+						icon-right
+						nameIconRight="plus"
+						size="medium"
+						width="auto"
+						@onclick="handleUpdate"
+					/>
+				</div>
 			</div>
 		</div>
 
@@ -503,11 +515,13 @@ export default defineComponent({
 			/>
 		</div>
 
-		<div class="product-form__group actions">
+		<div v-if="store.category === 'other'" class="product-form__group actions">
 			<MoleculesButtonsCommon
 				type="primary"
-				text="Salvar"
-				size="small"
+				text="Cadastrar"
+				icon-right
+				nameIconRight="plus"
+				size="medium"
 				width="auto"
 				@onclick="handleUpdate"
 			/>
