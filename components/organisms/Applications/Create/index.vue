@@ -425,16 +425,17 @@ export default defineComponent({
 				:value="store.form.observations.value as string"
 				@on-input="store.setFormField('observations', $event)"
 			/>
-		</div>
-
-		<div class="applications-form__actions">
-			<MoleculesButtonsCommon
-				type="primary"
-				text="Salvar"
-				icon-right
-				name-icon-right="plus"
-				@onclick="openConfirm"
-			/>
+			<div class="applications-form__actions">
+				<MoleculesButtonsCommon
+					type="primary"
+					text="Cadastrar"
+					icon-right
+					name-icon-right="plus"
+					size="medium"
+					width="auto"
+					@onclick="openConfirm"
+				/>
+			</div>
 		</div>
 	</div>
 </template>
@@ -444,17 +445,19 @@ export default defineComponent({
 	margin-bottom: 16px;
 }
 .section-card {
-	background: var(--brand-color-dark-blue-0);
+	background-color: var(--white);
 	border-radius: 12px;
-	padding: 16px;
+	padding: 24px;
 	margin-bottom: 16px;
 }
 .applications-form__group {
 	display: flex;
 	gap: 16px;
-	flex-wrap: wrap;
+	padding: 16px 0;
 }
 .applications-form__actions {
+	margin-top: 24px;
+	width: 100%;
 	display: flex;
 	justify-content: flex-end;
 }
