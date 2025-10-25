@@ -6,8 +6,12 @@ export const useListStore = defineStore("lost-pet-list", {
 		const isLoading = ref(false);
 		const errorMessage = ref("");
 		const pagination = ref<IPagination>({} as IPagination);
+		const filters = {
+			status: null as string | null,
+		};
 
 		return {
+			filters,
 			lostPet,
 			isLoading,
 			errorMessage,
@@ -20,6 +24,10 @@ export const useListStore = defineStore("lost-pet-list", {
 				return;
 			}
 
+			const activeFilters = Object.fromEntries(
+				Object.entries(this.filters).filter(([_, value]) => value !== null),
+			);
+
 			this.isLoading = true;
 			this.errorMessage = "";
 
@@ -27,7 +35,8 @@ export const useListStore = defineStore("lost-pet-list", {
 				method: "GET",
 				params: {
 					...params,
-					"with[]": ["user", "citizen", "animal"],
+					...activeFilters,
+					"with[]": ["user", "address", "animal", "status"],
 				},
 				onResponse: ({ response }) => {
 					const result: IResponse = response._data as IResponse;

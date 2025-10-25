@@ -5,12 +5,14 @@ import { useEditTypeStore } from "~/stores/lost-pet/useEditTypeStore";
 import MoleculesListCardItem from "~/components/molecules/ListCardItem/index.vue";
 import AtomsTypography from "~/components/atoms/Typography/index.vue";
 import AtomsBadges from "~/components/atoms/Badges/Index.vue";
+import MoleculesModal from "~/components/molecules/Modal/index.vue";
 export default defineComponent({
 	name: "OrganismsOccurrencesLostPet",
 	components: {
 		AtomsBadges,
 		AtomsTypography,
 		MoleculesListCardItem,
+		MoleculesModal,
 	},
 	async setup() {
 		const lostPetList = useListStore();
@@ -18,6 +20,10 @@ export default defineComponent({
 		const id = ref(0);
 		const showConfirm = ref(false);
 		const showSuccess = ref(false);
+		const showModalLostAninamLocation = ref(false);
+		const isVisible = ref(false);
+		const searchValue = ref("");
+		const address = ref("");
 		const typeAction = ref("");
 		const feedbackModal = ref({
 			confirm: {
@@ -40,9 +46,15 @@ export default defineComponent({
 		}
 
 		const optionsStatus: IEnum[] = [
-			{ value: "lost", name: "LOST", label: "Perdido", color: "#e6a832" },
-			{ value: "found", name: "FOUND", label: "Encontrado", color: "#00b374" },
-			{ value: "deceased", name: "DECEASED", label: "Óbito", color: "#cc3333" },
+			{ value: "lost", name: "LOST", label: "Perdido", color: "warning" },
+			{ value: "found", name: "FOUND", label: "Encontrado", color: "success" },
+			{ value: "deceased", name: "DECEASED", label: "Óbito", color: "danger" },
+			{
+				value: "conclude",
+				name: "CONCLUDE",
+				label: "Concluído",
+				color: "information",
+			},
 		];
 
 		const getStatus = (status: string | number) => {
@@ -51,10 +63,15 @@ export default defineComponent({
 
 		const header = computed(() => {
 			return {
-				title: "Ocorrência de animais perdidos",
+				title: "Lista de animais perdidos",
 				subtitle: "",
 				buttons: [],
 			};
+		});
+
+		const mapUrl = computed(() => {
+			if (!address.value) return "";
+			return `https://www.google.com/maps?q=${encodeURIComponent(address.value)}&hl=pt&z=15&output=embed`;
 		});
 
 		function openConfirm() {
@@ -82,6 +99,10 @@ export default defineComponent({
 
 		function onSuccess() {
 			showSuccess.value = true;
+		}
+
+		function closeModalLostAnimalLocation() {
+			showModalLostAninamLocation.value = false;
 		}
 
 		const columnsHeader = ref([
@@ -135,7 +156,7 @@ export default defineComponent({
 				weightTypography: "bold",
 				colorTypography: "var(--brand-color-dark-blue-300)",
 				style: {
-					width: "20%",
+					width: "10%",
 					justifyContent: "flex-end",
 				},
 			},
@@ -152,83 +173,87 @@ export default defineComponent({
 			},
 		]);
 
-		const onSelectOptionAction = (event: string, item: IAdoption) => {
+		const onSelectOptionAction = (event: string, item: ILostPet) => {
 			const router = useRouter();
 			id.value = item.id;
 			typeAction.value = event;
 
-			if (event === "confirm") {
+			if (event === "found") {
 				openConfirm();
 				feedbackModal.value = {
 					confirm: {
-						title: "Deseja confirmar a visita de adoção?",
-						description: "Após confirmação, você irá visualizá-lo no painel",
+						title: "Deseja confirmar como encontrado?",
+						description: "",
 					},
 					success: {
-						title: "Visita confirmada com sucesso",
+						title: "Alteração realizada com sucesso",
 						description: "",
 					},
 				};
 				return;
 			}
 
-			if (event === "complete") {
+			if (event === "conclude") {
 				openConfirm();
 				feedbackModal.value = {
 					confirm: {
-						title: "Deseja concluir visita?",
-						description: "Após confirmação, você irá visualizá-lo no painel",
+						title: "Deseja concluir?",
+						description: "",
 					},
 					success: {
-						title: "Visita concluída com sucesso",
+						title: "Concluído com sucesso",
 						description: "",
 					},
 				};
 				return;
 			}
 
-			if (event === "cancel") {
-				openConfirm();
-				feedbackModal.value = {
-					confirm: {
-						title: "Deseja cancelar visita?",
-						description: "Após confirmação, você irá visualizá-lo no painel",
-					},
-					success: {
-						title: "Visita cancelada om sucesso",
-						description: "",
-					},
-				};
-				return;
-			}
-
-			if (event === "animal") {
-				router.push({
-					name: "animals-details",
-					params: { id: item.animal.id },
-				});
-				return;
-			}
-
-			if (event === "citizen") {
-				router.push({ name: "citizens-edit", params: { id: item.citizen.id } });
+			if (event === "location" && item.address) {
+				const addr = item.address;
+				address.value = `${addr.street}, ${addr.number}${addr.complement ? ", " + addr.complement : ""}, ${addr.district}, ${addr.city}, ${addr.state}, ${addr.country}`;
+				showModalLostAninamLocation.value = true;
 			}
 
 			if (event === "details") {
 				router.push({
-					name: "occurrences-adoption-details",
+					name: "occurrences-lost-pet-details",
 					params: { id: item.id },
 				});
-				return;
 			}
 		};
 
 		const optionsActions = [
-			{ value: "confirm", label: "Marcar como encontrado", icon: "check" },
-			{ value: "complete", label: "Marcar como concluído", icon: "flag" },
-			{ value: "details", label: "Ver detalhes", icon: "paw" },
-			{ value: "details", label: "Ver último local", icon: "paw" },
+			{ value: "found", label: "Marcar como encontrado", icon: "check" },
+			{ value: "conclude", label: "Marcar como concluído", icon: "flag" },
+			{ value: "details", label: "Ver detalhes", icon: "flag" },
+			{ value: "location", label: "Ver último local", icon: "paw" },
 		];
+
+		const toggleDropdown = () => {
+			isVisible.value = true;
+		};
+
+		const onSearchInput = (value: string) => {
+			searchValue.value = value;
+			if (searchValue.value.trim().length === 0) {
+				lostPetList.filters.status = null;
+				lostPetList.fetchList(1);
+			}
+		};
+
+		const onSearchEnter = () => {
+			const trimmed = searchValue.value.trim();
+			if (trimmed.length > 0) {
+				lostPetList.filters.status = trimmed;
+				lostPetList.fetchList(1);
+			}
+		};
+
+		const clearSearch = () => {
+			searchValue.value = "";
+			lostPetList.filters.status = null;
+			lostPetList.fetchList(1);
+		};
 
 		return {
 			lostPetList,
@@ -239,6 +264,15 @@ export default defineComponent({
 			showConfirm,
 			showSuccess,
 			feedbackModal,
+			isVisible,
+			searchValue,
+			showModalLostAninamLocation,
+			mapUrl,
+			closeModalLostAnimalLocation,
+			onSearchInput,
+			onSearchEnter,
+			clearSearch,
+			toggleDropdown,
 			confirmUpdate,
 			continueFeedback,
 			getStatus,
@@ -267,6 +301,28 @@ export default defineComponent({
 		continue-text="Continuar"
 		@continue="continueFeedback"
 	/>
+	<MoleculesModal
+		:showModal="showModalLostAninamLocation"
+		@close="closeModalLostAnimalLocation"
+		width="559px"
+		height=""
+		type-modal="center"
+		description="Última localização"
+		title="Última localização do animal informado"
+	>
+		<section class="wrapper-modal">
+			<iframe
+				:src="mapUrl"
+				width="100%"
+				height="400"
+				style="border: 0"
+				allowfullscreen=""
+				loading="lazy"
+				referrerpolicy="no-referrer-when-downgrade"
+			>
+			</iframe>
+		</section>
+	</MoleculesModal>
 
 	<section class="wrapper-list-card">
 		<div class="wrapper-list-card__header">
@@ -279,8 +335,29 @@ export default defineComponent({
 				/>
 			</div>
 		</div>
-		<div class="wrapper-list-card__search"></div>
-		<div class="wrapper-list-card__body">
+		<div class="wrapper-list-card__search">
+			<div class="wrapper-list-card__search-input anim-loading">
+				<MoleculesInputSearch
+					label="Procurar"
+					:value="searchValue"
+					:close="!!searchValue.trim().length"
+					@onInput="onSearchInput"
+					@clearInput="clearSearch"
+					@keydown.enter.native="onSearchEnter"
+				/>
+			</div>
+			<div class="wrapper-list-card__search-filters anim-loading">
+				<MoleculesButtonsCommon
+					type="outline"
+					text="Filtros"
+					size="small"
+					icon-left
+					name-icon-left="filter"
+					@onclick="toggleDropdown"
+				/>
+			</div>
+		</div>
+		<div v-if="list.length" class="wrapper-list-card__body">
 			<MoleculesListCardItem :data="columnsHeader" padding="16px 0">
 				<template v-for="(item, key) in columnsHeader" #[item.value] :key="key">
 					<AtomsTypography
@@ -316,7 +393,7 @@ export default defineComponent({
 				<template #locationLoss>
 					<AtomsTypography
 						type="text-p5"
-						:text="item.start_date"
+						:text="item.address.city"
 						weight="regular"
 						color="var(--brand-color-dark-blue-300)"
 					/>
@@ -324,17 +401,15 @@ export default defineComponent({
 				<template #dateLoss>
 					<AtomsTypography
 						type="text-p5"
-						:text="item.visit_time"
+						:text="useDayjs(item.lost_at).format('DD/MM/YYYY')"
 						weight="regular"
 						color="var(--brand-color-dark-blue-300)"
 					/>
 				</template>
 				<template #status>
 					<AtomsBadges
-						type="text"
-						:color="getStatus(item.status)?.color"
-						:size="'small'"
-						:text="getStatus(item.status)?.label || '---'"
+						:color="getStatus(item.status.status)?.color"
+						:text="getStatus(item.status.status)?.label || '---'"
 					/>
 				</template>
 				<template #actions>
@@ -346,6 +421,12 @@ export default defineComponent({
 				</template>
 			</MoleculesListCardItem>
 		</div>
+		<MoleculesEmptyState
+			v-else
+			:is-icon="true"
+			title="Nenhum animal perdido"
+			description="Aguarde até um animal ser cadastrado"
+		/>
 		<div class="wrapper-list-card__footer">
 			<MoleculesPaginationControls
 				v-if="lostPetList.pagination"
@@ -355,6 +436,11 @@ export default defineComponent({
 				@pageChange="paginationChange($event)"
 			/>
 		</div>
+		<OrganismsOccurrencesLostPetFilter
+			:is-visible="isVisible"
+			@clear-all="clearSearch"
+			@close="isVisible = false"
+		/>
 	</section>
 </template>
 

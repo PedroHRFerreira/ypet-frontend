@@ -13,6 +13,7 @@ declare global {
 		date_end?: string;
 		status?: string;
 		actions?: string;
+		address?: IAddress;
 		visit_time?: String;
 		created_at?: string;
 		updated_at?: string;

@@ -86,7 +86,6 @@ export const useEditStore = defineStore("animals-edit", {
 					}
 
 					if (typeof value === "object" && !(value instanceof File)) {
-						console.log(value instanceof File);
 						if (Object.prototype.hasOwnProperty.call(value, "id")) {
 							formData.set(key, String(value.id));
 
