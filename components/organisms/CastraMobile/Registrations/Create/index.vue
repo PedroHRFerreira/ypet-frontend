@@ -20,13 +20,17 @@ export default defineComponent({
 		const optionsUF = ref<IOption[]>([]);
 
 		onMounted(async () => {
-			[optionsSpecies.value, optionsGender.value, optionsSize.value, optionsUF.value] =
-				await Promise.all([
-					useAnimalSpeciesEnumStore().getOptions(),
-					useGenderEnumStore().getOptions(),
-					useAnimalSizeEnumStore().getOptions(),
-					useUFEnumStore().getOptions(),
-				]);
+			[
+				optionsSpecies.value,
+				optionsGender.value,
+				optionsSize.value,
+				optionsUF.value,
+			] = await Promise.all([
+				useAnimalSpeciesEnumStore().getOptions(),
+				useGenderEnumStore().getOptions(),
+				useAnimalSizeEnumStore().getOptions(),
+				useUFEnumStore().getOptions(),
+			]);
 			await useListStore().fetchListWithoutPagination();
 		});
 

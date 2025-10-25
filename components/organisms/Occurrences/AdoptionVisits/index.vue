@@ -55,25 +55,25 @@ export default defineComponent({
 				value: "confirmed",
 				name: "CONFIRMED",
 				label: "Confirmado",
-				color: "#00b374",
+				color: "success",
 			},
 			{
 				value: "rescheduled",
 				name: "RESCHEDULED",
 				label: "Remarcado",
-				color: "#f0a500",
+				color: "warning",
 			},
 			{
 				value: "completed",
 				name: "COMPLETED",
 				label: "Concluído",
-				color: "#0055ff",
+				color: "information",
 			},
 			{
 				value: "canceled",
 				name: "CANCELED",
 				label: "Cancelado",
-				color: "#cc3333",
+				color: "danger",
 			},
 		];
 
@@ -443,11 +443,15 @@ export default defineComponent({
 				</template>
 				<template #status>
 					<AtomsBadges
+						:color="getStatus(item.status)?.color"
+						:text="getStatus(item.status)?.label || '---'"
+					/>
+					<!-- <AtomsBadges
 						type="text"
 						:color="getStatus(item.status)?.color"
 						:size="'small'"
 						:text="getStatus(item.status)?.label || '---'"
-					/>
+					/> -->
 				</template>
 				<template #actions>
 					<MoleculesActionDropdown

@@ -1,17 +1,17 @@
 export const useDetailStore = defineStore("lost-pet-detail", {
 	state: () => {
-		const adoption = ref({} as IAdoption);
+		const lostPet = ref({} as ILostPet);
 		const isLoading = ref(false);
 		const errorMessage = ref("");
 
 		return {
-			adoption,
+			lostPet,
 			isLoading,
 			errorMessage,
 		};
 	},
 	actions: {
-		async fetchAdoptionById(id: string, params = {}): Promise<void> {
+		async fetchLostPetById(id: string, params = {}): Promise<void> {
 			if (!id) {
 				return;
 			}
@@ -21,7 +21,7 @@ export const useDetailStore = defineStore("lost-pet-detail", {
 				params,
 				onResponse: ({ response }) => {
 					const result = response._data as IResponse;
-					this.adoption = result.data || ({} as IAdoption);
+					this.lostPet = result.data || ({} as ILostPet);
 					this.errorMessage = "";
 					this.isLoading = false;
 				},

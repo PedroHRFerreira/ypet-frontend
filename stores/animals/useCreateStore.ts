@@ -107,7 +107,7 @@ export const useCreateStore = defineStore("animals-create", {
 			this.successMessage = "";
 
 			const formData = this.getFormData();
-			console.log(formData);
+
 			await useFetch("/api/animals/store", {
 				method: "POST",
 				body: formData,
