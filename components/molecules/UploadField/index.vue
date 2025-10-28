@@ -49,18 +49,12 @@ export default defineComponent({
 	data() {
 		return {
 			fileName: "",
-			filePreview: (this.value as any) || "",
+			filePreview: "" ?? this.value,
 			errorMessage: "",
 		};
 	},
 
 	methods: {
-		triggerInputClick() {
-			const input = this.$refs.inputUpload as HTMLInputElement | undefined;
-			if (input) {
-				input.click();
-			}
-		},
 		handleFile(event: Event) {
 			const input = event.target as HTMLInputElement;
 			const file = input.files ? input.files[0] : null;
@@ -91,36 +85,6 @@ export default defineComponent({
 			this.errorMessage = "";
 			(this.$refs.inputUpload as HTMLInputElement).value = "";
 			this.$emit("input", null);
-		},
-	},
-
-	watch: {
-		value: {
-			immediate: true,
-			deep: false,
-			handler(newVal: any) {
-				if (!newVal) {
-					this.filePreview = "";
-					this.fileName = "";
-					return;
-				}
-
-				// If a URL/string is provided (e.g., from API), use it directly
-				if (typeof newVal === "string") {
-					this.filePreview = newVal;
-					return;
-				}
-
-				// If a File object is provided programmatically, render it
-				if (newVal instanceof File) {
-					const reader = new FileReader();
-					reader.onload = () => {
-						this.filePreview = reader.result as string;
-						this.fileName = newVal.name || "";
-					};
-					reader.readAsDataURL(newVal);
-				}
-			},
 		},
 	},
 
@@ -159,7 +123,7 @@ export default defineComponent({
 			:disabled="state === 'disabled'"
 		/>
 
-		<div class="upload-box" @click="triggerInputClick">
+		<div class="upload-box" @click="$refs.inputUpload.click()">
 			<div v-if="!filePreview" class="upload-placeholder">
 				<AtomsTypography
 					type="text-p5"
