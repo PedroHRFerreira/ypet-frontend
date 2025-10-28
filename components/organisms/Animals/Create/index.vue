@@ -300,9 +300,9 @@ export default defineComponent({
 						label="Apelido"
 						type-input="text"
 						max-width="50%"
-						:value="form.suname.value as string"
-						:message-error="form.suname.errorMessages.join(', ')"
-						@on-input="useAnimalsCreate.setFormField('suname', $event)"
+						:value="form.surname.value as string"
+						:message-error="form.surname.errorMessages.join(', ')"
+						@on-input="useAnimalsCreate.setFormField('surname', $event)"
 					/>
 				</div>
 				<div class="animal__about-pet__content--group">
