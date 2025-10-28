@@ -14,7 +14,7 @@ export const useListStore = defineStore("list-registrations", {
 		const pathUrl = "/api/registrations";
 
 		const filters = ref({
-			date: null as string | null,
+			start_date: null as string | null,
 			species: "" as string,
 			status: "" as string,
 			tutor: "" as string,
@@ -45,6 +45,11 @@ export const useListStore = defineStore("list-registrations", {
 					([, value]) => value !== null && value !== "",
 				),
 			);
+
+			if (activeFilters.date) {
+				activeFilters.start_date = activeFilters.date;
+				delete activeFilters.date;
+			}
 
 			await useFetch(this.pathUrl, {
 				method: "GET",
@@ -138,7 +143,7 @@ export const useListStore = defineStore("list-registrations", {
 			this.fetchList(page);
 		},
 		clearFilters() {
-			this.filters.date = null;
+			this.filters.start_date = null;
 			this.filters.species = "";
 			this.filters.status = "";
 			this.filters.tutor = "";
