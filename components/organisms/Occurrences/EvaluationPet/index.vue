@@ -131,7 +131,7 @@ export default defineComponent({
 				weightTypography: "bold",
 				colorTypography: "var(--brand-color-dark-blue-300)",
 				style: {
-					width: "15%",
+					width: "5%",
 				},
 			},
 			{
@@ -152,7 +152,7 @@ export default defineComponent({
 				weightTypography: "bold",
 				colorTypography: "var(--brand-color-dark-blue-300)",
 				style: {
-					width: "20%",
+					width: "15%",
 					justifyContent: "flex-end",
 				},
 			},
@@ -163,7 +163,7 @@ export default defineComponent({
 				weightTypography: "bold",
 				colorTypography: "var(--brand-color-dark-blue-300)",
 				style: {
-					width: "10%",
+					width: "15%",
 					justifyContent: "flex-end",
 				},
 			},

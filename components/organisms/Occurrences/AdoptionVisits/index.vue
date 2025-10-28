@@ -160,7 +160,7 @@ export default defineComponent({
 				weightTypography: "bold",
 				colorTypography: "var(--brand-color-dark-blue-300)",
 				style: {
-					width: "20%",
+					width: "15%",
 					justifyContent: "flex-end",
 				},
 			},
@@ -171,7 +171,7 @@ export default defineComponent({
 				weightTypography: "bold",
 				colorTypography: "var(--brand-color-dark-blue-300)",
 				style: {
-					width: "20%",
+					width: "15%",
 					justifyContent: "flex-end",
 				},
 			},
@@ -182,7 +182,7 @@ export default defineComponent({
 				weightTypography: "bold",
 				colorTypography: "var(--brand-color-dark-blue-300)",
 				style: {
-					width: "20%",
+					width: "15%",
 					justifyContent: "flex-end",
 				},
 			},
@@ -193,7 +193,7 @@ export default defineComponent({
 				weightTypography: "bold",
 				colorTypography: "var(--brand-color-dark-blue-300)",
 				style: {
-					width: "10%",
+					width: "15%",
 					justifyContent: "flex-end",
 				},
 			},
@@ -384,7 +384,7 @@ export default defineComponent({
 			</div>
 		</div>
 		<div class="wrapper-list-card__search"></div>
-		<div class="wrapper-list-card__body">
+		<div v-if="list.length" class="wrapper-list-card__body">
 			<MoleculesListCardItem :data="columnsHeader" padding="16px 0">
 				<template v-for="(item, key) in columnsHeader" #[item.value] :key="key">
 					<AtomsTypography
@@ -446,12 +446,6 @@ export default defineComponent({
 						:color="getStatus(item.status)?.color"
 						:text="getStatus(item.status)?.label || '---'"
 					/>
-					<!-- <AtomsBadges
-						type="text"
-						:color="getStatus(item.status)?.color"
-						:size="'small'"
-						:text="getStatus(item.status)?.label || '---'"
-					/> -->
 				</template>
 				<template #actions>
 					<MoleculesActionDropdown
@@ -462,6 +456,12 @@ export default defineComponent({
 				</template>
 			</MoleculesListCardItem>
 		</div>
+		<MoleculesEmptyState
+			v-else
+			:is-icon="true"
+			title="Nenhum visita de adoção"
+			description="Aguarde até um visita ser cadastrada"
+		/>
 		<div class="wrapper-list-card__footer">
 			<MoleculesPaginationControls
 				v-if="adoptionList.pagination"

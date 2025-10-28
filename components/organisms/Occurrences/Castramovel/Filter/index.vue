@@ -1,10 +1,10 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import { useListStore } from "~/stores/lost-pet/useListStore";
+import { useListStore } from "~/stores/castramovel/useListStore";
 import type { IOption } from "~/types/global";
 
 export default defineComponent({
-	name: "OrganismsOccurrencesCatramovelFilter",
+	name: "OrganismsOccurrencesCastramovelFilter",
 	props: {
 		isVisible: {
 			type: Boolean,
@@ -13,7 +13,7 @@ export default defineComponent({
 	},
 	emits: ["close", "clear-all"],
 	setup(_, { emit }) {
-		const lostPetList = useListStore();
+		const castramovelList = useListStore();
 
 		const optionsStatus = computed<IOption[]>(() => [
 			{ id: "found", text: "Encontrado" },
@@ -22,7 +22,7 @@ export default defineComponent({
 		]);
 
 		const selectedStatus = ref<number | null>(
-			lostPetList.filters.status ?? null,
+			castramovelList.filters.status ?? null,
 		);
 
 		const onStatusSelected = (option: IOption) => {
@@ -30,28 +30,28 @@ export default defineComponent({
 		};
 
 		const hasChanges = computed(() => {
-			const statusChanged = lostPetList.filters.status !== selectedStatus.value;
+			const statusChanged = castramovelList.filters.status !== selectedStatus.value;
 			return statusChanged;
 		});
 
 		const applyFilters = () => {
 			if (!hasChanges.value) return;
 
-			lostPetList.filters.status = selectedStatus.value;
+			castramovelList.filters.status = selectedStatus.value;
 
-			lostPetList.fetchList(1);
+			castramovelList.fetchList(1);
 			emit("close");
 		};
 
 		const clearFilters = () => {
 			const hasAnyFilter =
-				selectedStatus.value !== null || lostPetList.filters.status !== null;
+				selectedStatus.value !== null || castramovelList.filters.status !== null;
 			if (!hasAnyFilter) return;
 
 			selectedStatus.value = null;
-			lostPetList.filters.status = null;
+			castramovelList.filters.status = null;
 
-			lostPetList.fetchList(1);
+			castramovelList.fetchList(1);
 			emit("clear-all");
 			emit("close");
 		};

@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import { useDetailStore } from "~/stores/lost-pet/useDetailStore";
+import { useDetailStore } from "~/stores/castramovel/useDetailStore";
 
 type AboutType = {
 	title: string;
@@ -12,11 +12,11 @@ type AboutType = {
 };
 
 export default defineComponent({
-	name: "OrganismsOccurrencesLostPetDetails",
+	name: "OrganismsOccurrencesCastramovelDetails",
 	setup() {
 		const detailsStore = useDetailStore();
-		const lostPet = detailsStore.lostPet;
-		const address = `${lostPet.address?.street}, ${lostPet.address?.number}${lostPet.address?.complement ? ", " + lostPet.address?.complement : ""}, ${lostPet.address?.district}, ${lostPet.address?.city}, ${lostPet.address?.state}, ${lostPet.address?.country}`;
+		const castramovel = detailsStore.report;
+		const address = `${castramovel.address?.street}, ${lostPet.address?.number}${lostPet.address?.complement ? ", " + lostPet.address?.complement : ""}, ${lostPet.address?.district}, ${lostPet.address?.city}, ${lostPet.address?.state}, ${lostPet.address?.country}`;
 
 		const { proxy } = getCurrentInstance()!;
 		const abouts = computed<AboutType[]>(() => {
@@ -44,31 +44,31 @@ export default defineComponent({
 					content: [
 						{
 							label: "",
-							value: lostPet.animal.picture ?? "---",
+							value: castramovel.animal.picture ?? "---",
 							isImage: true,
 						},
 						{
 							label: "Nome do animal: ",
-							value: lostPet.animal?.name || "N/A",
+							value: castramovel.animal?.name || "N/A",
 						},
 						{
 							label: "Tipo de pet:",
-							value: species[lostPet.animal?.species?.value],
+							value: species[castramovel.animal?.species?.value],
 						},
-						{ label: "Sexo:", value: gender[lostPet?.animal.gender.value] },
+						{ label: "Sexo:", value: gender[castramovel?.animal.gender.value] },
 						{
 							label: "Peso:",
-							value: lostPet.animal?.weight
-								? `${lostPet.animal?.weight} Kg`
+							value: castramovel.animal?.weight
+								? `${castramovel.animal?.weight} Kg`
 								: "N/A",
 						},
 						{
 							label: "Data de nascimento:",
 							value:
-								proxy?.$formatDateTime(lostPet.animal?.birth_date) || "N/A",
+								proxy?.$formatDateTime(castramovel.animal?.birth_date) || "N/A",
 						},
-						{ label: "Cor:", value: lostPet.animal?.color },
-						{ label: "Pelagem:", value: lostPet.animal?.coat?.label },
+						{ label: "Cor:", value: castramovel.animal?.color },
+						{ label: "Pelagem:", value: castramovel.animal?.coat?.label },
 					],
 				},
 				{
@@ -76,15 +76,15 @@ export default defineComponent({
 					content: [
 						{
 							label: "Data da perca:",
-							value: useDayjs(lostPet.lost_at).format("DD/MM/YYYY"),
+							value: useDayjs(castramovel.lost_at).format("DD/MM/YYYY"),
 						},
 						{
 							label: "Hora da perca:",
-							value: lostPet.lost_time ?? "---",
+							value: castramovel.lost_time ?? "---",
 						},
 						{
 							label: "Status:",
-							value: optionsStatus[lostPet?.status.status] ?? "---",
+							value: optionsStatus[castramovel?.status.status] ?? "---",
 						},
 					],
 				},
@@ -92,13 +92,13 @@ export default defineComponent({
 		});
 
 		const mapUrl = computed(() => {
-			if (!lostPet.address) return "";
+			if (!castramovel.address) return "";
 			return `https://www.google.com/maps?q=${encodeURIComponent(address)}&hl=pt&z=15&output=embed`;
 		});
 
 		onMounted(async () => {
 			const id = useRoute().params.id as string;
-			await detailsStore.fetchLostPetById(id, {
+			await detailsStore.fetchCastramovelById(id, {
 				"with[]": ["user", "address", "animal", "status"],
 			});
 		});

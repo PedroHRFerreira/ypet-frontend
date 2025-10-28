@@ -1,7 +1,7 @@
 <script lang="ts">
 import { computed, defineComponent, ref } from "vue";
-import { useListStore } from "~/stores/evaluation-pet/useListStore";
-import { useEditTypeStore } from "~/stores/evaluation-pet/useEditTypeStore";
+import { useListStore } from "~/stores/castramovel/useListStore";
+import { useEditTypeStore } from "~/stores/castramovel/useEditTypeStore";
 import MoleculesListCardItem from "~/components/molecules/ListCardItem/index.vue";
 import AtomsTypography from "~/components/atoms/Typography/index.vue";
 import AtomsBadges from "~/components/atoms/Badges/Index.vue";
@@ -13,8 +13,8 @@ export default defineComponent({
 		MoleculesListCardItem,
 	},
 	async setup() {
-		const evaluationPetList = useListStore();
-		const evaluationPetEditType = useEditTypeStore();
+		const castramovelList = useListStore();
+		const castramovelEditType = useEditTypeStore();
 		const id = ref(0);
 		const showConfirm = ref(false);
 		const showSuccess = ref(false);
@@ -31,14 +31,14 @@ export default defineComponent({
 				description: "",
 			},
 		});
-		await evaluationPetList.fetchList();
+		await castramovelList.fetchList();
 
 		const list = computed((): IEvaluationPet[] => {
-			return evaluationPetList.evaluationPet;
+			return castramovelList.report;
 		});
 
 		async function paginationChange(value: number) {
-			await evaluationPetList.fetchList({ page: value });
+			await castramovelList.fetchList({ page: value });
 		}
 
 		const optionsStatus: IEnum[] = [
@@ -46,7 +46,7 @@ export default defineComponent({
 				value: "pending",
 				name: "PENDING",
 				label: "Pendente",
-				color: "warning",
+				color: "information",
 			},
 			{
 				value: "approved",
@@ -60,7 +60,18 @@ export default defineComponent({
 				label: "Reprovado",
 				color: "danger",
 			},
+			{
+				value: "in_analysis",
+				name: "IN_ANALYSIS",
+				label: "Para análise",
+				color: "warning",
+			},
 		];
+
+		const speciesType =  {
+			dog: "Cão",
+			cat: "Gato"
+		}
 
 		const getStatus = (status: string | number) => {
 			return optionsStatus.find((s) => s.value === status);
@@ -79,17 +90,17 @@ export default defineComponent({
 		}
 
 		async function confirmUpdate() {
-			if (evaluationPetEditType.isLoading) {
+			if (castramovelEditType.isLoading) {
 				return;
 			}
 
-			await evaluationPetEditType.update(id.value, typeAction.value);
+			await castramovelEditType.update(id.value, typeAction.value);
 
-			if (evaluationPetEditType.successMessage) {
+			if (castramovelEditType.successMessage) {
 				onSuccess();
 			}
 
-			await evaluationPetList.fetchList();
+			await castramovelList.fetchList();
 			showConfirm.value = false;
 		}
 
@@ -115,7 +126,7 @@ export default defineComponent({
 				},
 			},
 			{
-				value: "nameAnimal",
+				value: "species",
 				text: "PET",
 				typeTypography: "text-p5",
 				weightTypography: "bold",
@@ -126,7 +137,7 @@ export default defineComponent({
 			},
 			{
 				value: "date",
-				text: "DATA DE ENVIO",
+				text: "DATA AGENDA",
 				typeTypography: "text-p5",
 				weightTypography: "bold",
 				colorTypography: "var(--brand-color-dark-blue-300)",
@@ -174,12 +185,12 @@ export default defineComponent({
 			id.value = item.id;
 			typeAction.value = event;
 
-			if (event === "approved") {
+			if (event === "confirm") {
 				openConfirm();
 				feedbackModal.value = {
 					confirm: {
-						title: "Deseja confirmar a aprovação para adoção?",
-						description: "Após confirmação, você irá visualizá-lo na vitrine",
+						title: "Deseja confirmar o agendamento?",
+						description: "Após confirmação, você irá visualizá-lo agenda do dia",
 					},
 					success: {
 						title: "Aprovado com sucesso",
@@ -189,42 +200,34 @@ export default defineComponent({
 				return;
 			}
 
-			if (event === "refused") {
+			if (event === "cancel") {
 				openConfirm();
 				feedbackModal.value = {
 					confirm: {
-						title: "Deseja reprovar para adoção?",
-						description: "Após confirmação, o pet não pode ser adotado",
+						title: "Deseja cancelar o agendamento?",
+						description: "Após confirmação, o agendamento e cancelado",
 					},
 					success: {
-						title: "Reprovado com sucesso",
+						title: "Cancelado com sucesso",
 						description: "",
 					},
 				};
 				return;
 			}
 
-			if (event === "animal") {
+			if (event === "details") {
 				router.push({
-					name: "animals-details",
-					params: { id: item.animal.id },
+					name: "occurrences-castramovel-details",
+					params: { id: item.id },
 				});
 				return;
-			}
-
-			if (event === "protector") {
-				router.push({
-					name: "protectors-details",
-					params: { id: item.tutor.id },
-				});
 			}
 		};
 
 		const optionsActions = [
-			{ value: "protector", label: "Ver Protetor", icon: "check" },
-			{ value: "animal", label: "Ver Pet", icon: "calendar" },
-			{ value: "approved", label: "Aprovar", icon: "flag" },
-			{ value: "refused", label: "Reprovar", icon: "x" },
+			{ value: "confirm", label: "Confirmar agendamento", icon: "check" },
+			{ value: "cancel", label: "Cancelar agendamento", icon: "calendar" },
+			{ value: "details", label: "Visualizar detalhes", icon: "flag" }
 		];
 
 		const toggleDropdown = () => {
@@ -234,27 +237,28 @@ export default defineComponent({
 		const onSearchInput = (value: string) => {
 			searchValue.value = value;
 			if (searchValue.value.trim().length === 0) {
-				evaluationPetList.filters.status = null;
-				evaluationPetList.fetchList(1);
+				castramovelList.filters.status = null;
+				castramovelList.fetchList(1);
 			}
 		};
 
 		const onSearchEnter = () => {
 			const trimmed = searchValue.value.trim();
 			if (trimmed.length > 0) {
-				evaluationPetList.filters.status = trimmed;
-				evaluationPetList.fetchList(1);
+				castramovelList.filters.status = trimmed;
+				castramovelList.fetchList(1);
 			}
 		};
 
 		const clearSearch = () => {
 			searchValue.value = "";
-			evaluationPetList.filters.status = null;
-			evaluationPetList.fetchList(1);
+			castramovelList.filters.status = null;
+			castramovelList.fetchList(1);
 		};
 
 		return {
-			evaluationPetList,
+			speciesType,
+			castramovelList,
 			columnsHeader,
 			header,
 			list,
@@ -349,15 +353,7 @@ export default defineComponent({
 				<template #nameUser>
 					<AtomsTypography
 						type="text-p5"
-						:text="item.tutor.name"
-						weight="regular"
-						color="var(--brand-color-dark-blue-300)"
-					/>
-				</template>
-				<template #nameAnimal>
-					<AtomsTypography
-						type="text-p5"
-						:text="item.animal.name"
+						:text="item.user.name"
 						weight="regular"
 						color="var(--brand-color-dark-blue-300)"
 					/>
@@ -365,7 +361,7 @@ export default defineComponent({
 				<template #species>
 					<AtomsTypography
 						type="text-p5"
-						:text="item.animal.species.label"
+						:text="speciesType[item.animal.species.value]"
 						weight="regular"
 						color="var(--brand-color-dark-blue-300)"
 					/>
@@ -373,15 +369,23 @@ export default defineComponent({
 				<template #date>
 					<AtomsTypography
 						type="text-p5"
-						:text="useDayjs(item.created_at).format('DD/MM/YYYY')"
+						:text="useDayjs(item.mobile_clinic_event.start_date).format('DD/MM/YYYY')"
+						weight="regular"
+						color="var(--brand-color-dark-blue-300)"
+					/>
+				</template>
+				<template #localUnit>
+					<AtomsTypography
+						type="text-p5"
+						:text="item.mobile_clinic_event.location_id ?? '---'"
 						weight="regular"
 						color="var(--brand-color-dark-blue-300)"
 					/>
 				</template>
 				<template #status>
 					<AtomsBadges
-						:color="getStatus(item.status)?.color"
-						:text="getStatus(item.status)?.label || '---'"
+						:color="getStatus(item.status.value)?.color"
+						:text="getStatus(item.status.value)?.label || '---'"
 					/>
 				</template>
 				<template #actions>
@@ -401,10 +405,10 @@ export default defineComponent({
 		/>
 		<div class="wrapper-list-card__footer">
 			<MoleculesPaginationControls
-				v-if="evaluationPetList.pagination"
-				:total-items="evaluationPetList.pagination.total"
-				:current-page="evaluationPetList.pagination.current_page"
-				:per-page="evaluationPetList.pagination.per_page"
+				v-if="castramovelList.pagination"
+				:total-items="castramovelList.pagination.total"
+				:current-page="castramovelList.pagination.current_page"
+				:per-page="castramovelList.pagination.per_page"
 				@pageChange="paginationChange($event)"
 			/>
 		</div>
