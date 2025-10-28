@@ -93,7 +93,7 @@ export const useEditStore = defineStore("animals-edit", {
 						}
 					}
 
-					if (value === "picture" && typeof value === "string") {
+					if (key === "picture" && typeof value === "string") {
 						continue;
 					}
 
