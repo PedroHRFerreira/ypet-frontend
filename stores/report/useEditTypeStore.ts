@@ -18,7 +18,7 @@ export const useEditTypeStore = defineStore("abuse-report-type-edit", {
 			this.errorMessage = "";
 			this.successMessage = "";
 
-			await useFetch(`/api/reports/${reportUuid}/${action}`, {
+			await useFetch(`/api/report/${reportUuid}/${action}`, {
 				method: "POST",
 				onResponse: ({ response }) => {
 					const result = response._data as IResponse;

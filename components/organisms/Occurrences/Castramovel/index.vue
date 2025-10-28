@@ -1,12 +1,20 @@
 <script lang="ts">
 import { computed, defineComponent, ref } from "vue";
-import { useListStore } from "~/stores/report/useListStore";
-import { useEditTypeStore } from "~/stores/report/useEditTypeStore";
+import { useListStore } from "~/stores/evaluation-pet/useListStore";
+import { useEditTypeStore } from "~/stores/evaluation-pet/useEditTypeStore";
+import MoleculesListCardItem from "~/components/molecules/ListCardItem/index.vue";
+import AtomsTypography from "~/components/atoms/Typography/index.vue";
+import AtomsBadges from "~/components/atoms/Badges/Index.vue";
 export default defineComponent({
-	name: "OrganismsOccurrencesAbuseReports",
+	name: "OrganismsOccurrencesCastramovel",
+	components: {
+		AtomsBadges,
+		AtomsTypography,
+		MoleculesListCardItem,
+	},
 	async setup() {
-		const abuseReportList = useListStore();
-		const abuseReportEditType = useEditTypeStore();
+		const evaluationPetList = useListStore();
+		const evaluationPetEditType = useEditTypeStore();
 		const id = ref(0);
 		const showConfirm = ref(false);
 		const showSuccess = ref(false);
@@ -23,14 +31,14 @@ export default defineComponent({
 				description: "",
 			},
 		});
-		await abuseReportList.fetchList();
+		await evaluationPetList.fetchList();
 
-		const list = computed((): IReport[] => {
-			return abuseReportList.report;
+		const list = computed((): IEvaluationPet[] => {
+			return evaluationPetList.evaluationPet;
 		});
 
 		async function paginationChange(value: number) {
-			await abuseReportList.fetchList({ page: value });
+			await evaluationPetList.fetchList({ page: value });
 		}
 
 		const optionsStatus: IEnum[] = [
@@ -52,18 +60,6 @@ export default defineComponent({
 				label: "Reprovado",
 				color: "danger",
 			},
-			{
-				value: "in_review",
-				name: "IN_REVIEW",
-				label: "Em análise",
-				color: "warning",
-			},
-			{
-				value: "forward",
-				name: "IN_REVIEW",
-				label: "Encaminhada",
-				color: "information",
-			},
 		];
 
 		const getStatus = (status: string | number) => {
@@ -72,7 +68,7 @@ export default defineComponent({
 
 		const header = computed(() => {
 			return {
-				title: "Ocorrência de maus tratos",
+				title: "Lista de solicitação castramóvel",
 				subtitle: "",
 				buttons: [],
 			};
@@ -83,17 +79,17 @@ export default defineComponent({
 		}
 
 		async function confirmUpdate() {
-			if (abuseReportEditType.isLoading) {
+			if (evaluationPetEditType.isLoading) {
 				return;
 			}
 
-			await abuseReportEditType.update(id.value, typeAction.value);
+			await evaluationPetEditType.update(id.value, typeAction.value);
 
-			if (abuseReportEditType.successMessage) {
+			if (evaluationPetEditType.successMessage) {
 				onSuccess();
 			}
 
-			await abuseReportList.fetchList();
+			await evaluationPetList.fetchList();
 			showConfirm.value = false;
 		}
 
@@ -107,55 +103,57 @@ export default defineComponent({
 
 		const columnsHeader = ref([
 			{
-				value: "code",
-				text: "CÓDIGO",
-				typeTypography: "text-p5",
-				weightTypography: "bold",
-				colorTypography: "var(--brand-color-dark-blue-300)",
-				style: {
-					width: "10%",
-					gap: "16px",
-					wordBreak: "break-all",
-				},
-			},
-			{
-				value: "report",
-				text: "DENUNCIANTE",
-				typeTypography: "text-p5",
-				weightTypography: "bold",
-				colorTypography: "var(--brand-color-dark-blue-300)",
-				style: {
-					width: "20%",
-				},
-			},
-			{
-				value: "date",
-				text: "DATA",
-				typeTypography: "text-p5",
-				weightTypography: "bold",
-				colorTypography: "var(--brand-color-dark-blue-300)",
-				style: {
-					width: "20%",
-				},
-			},
-			{
-				value: "time",
-				text: "HORÁRIO",
+				value: "nameUser",
+				text: "TUTOR",
 				typeTypography: "text-p5",
 				weightTypography: "bold",
 				colorTypography: "var(--brand-color-dark-blue-300)",
 				style: {
 					width: "15%",
+					gap: "16px",
+					wordBreak: "break-all",
 				},
 			},
 			{
-				value: "status",
-				text: "Status",
+				value: "nameAnimal",
+				text: "PET",
+				typeTypography: "text-p5",
+				weightTypography: "bold",
+				colorTypography: "var(--brand-color-dark-blue-300)",
+				style: {
+					width: "5%",
+				},
+			},
+			{
+				value: "date",
+				text: "DATA DE ENVIO",
+				typeTypography: "text-p5",
+				weightTypography: "bold",
+				colorTypography: "var(--brand-color-dark-blue-300)",
+				style: {
+					width: "15%",
+					justifyContent: "flex-end",
+				},
+			},
+			{
+				value: "localUnit",
+				text: "LOCAL DA UNIDADE",
 				typeTypography: "text-p5",
 				weightTypography: "bold",
 				colorTypography: "var(--brand-color-dark-blue-300)",
 				style: {
 					width: "20%",
+				},
+			},
+			{
+				value: "status",
+				text: "STATUS",
+				typeTypography: "text-p5",
+				weightTypography: "bold",
+				colorTypography: "var(--brand-color-dark-blue-300)",
+				style: {
+					width: "10%",
+					justifyContent: "flex-end",
 				},
 			},
 			{
@@ -165,61 +163,68 @@ export default defineComponent({
 				weightTypography: "bold",
 				colorTypography: "var(--brand-color-dark-blue-300)",
 				style: {
-					width: "10%",
+					width: "20%",
 					justifyContent: "flex-end",
 				},
 			},
 		]);
 
-		const onSelectOptionAction = (event: string, item: any) => {
+		const onSelectOptionAction = (event: string, item: IEvalu) => {
 			const router = useRouter();
 			id.value = item.id;
 			typeAction.value = event;
 
-			if (["receive", "forward"].includes(event)) {
+			if (event === "approved") {
 				openConfirm();
-
-				const actionMap = {
-					receive: {
-						title: "Deseja marcar como recebido?",
-						description:
-							"O denunciante será notificado, e o status permanecerá como 'Em análise'.",
-						successTitle: "Denúncia marcada como recebida com sucesso!",
-					},
-					forward: {
-						title: "Deseja marcar como encaminhada?",
-						description:
-							"O status da denúncia será alterado para 'Encaminhada'.",
-						successTitle: "Denúncia encaminhada com sucesso!",
-					},
-					complete: {
-						title: "Deseja marcar como concluída?",
-						description:
-							"O denunciante será notificado, e o status será alterado para 'Concluída'.",
-						successTitle: "Denúncia concluída com sucesso!",
-					},
-				};
-
-				const { title, description, successTitle } = actionMap[event];
 				feedbackModal.value = {
-					confirm: { title, description },
-					success: { title: successTitle, description: "" },
+					confirm: {
+						title: "Deseja confirmar a aprovação para adoção?",
+						description: "Após confirmação, você irá visualizá-lo na vitrine",
+					},
+					success: {
+						title: "Aprovado com sucesso",
+						description: "",
+					},
 				};
 				return;
 			}
 
-			if (event === "details") {
+			if (event === "refused") {
+				openConfirm();
+				feedbackModal.value = {
+					confirm: {
+						title: "Deseja reprovar para adoção?",
+						description: "Após confirmação, o pet não pode ser adotado",
+					},
+					success: {
+						title: "Reprovado com sucesso",
+						description: "",
+					},
+				};
+				return;
+			}
+
+			if (event === "animal") {
 				router.push({
-					name: "occurrences-id-report-details",
-					params: { id: item.id },
+					name: "animals-details",
+					params: { id: item.animal.id },
+				});
+				return;
+			}
+
+			if (event === "protector") {
+				router.push({
+					name: "protectors-details",
+					params: { id: item.tutor.id },
 				});
 			}
 		};
 
 		const optionsActions = [
-			{ value: "receive", label: "Marcar como recebido", icon: "check" },
-			{ value: "forward", label: "Marcar como encaminhada", icon: "arrow-right"},
-			{ value: "details", label: "Visualizar detalhes", icon: "paw" },
+			{ value: "protector", label: "Ver Protetor", icon: "check" },
+			{ value: "animal", label: "Ver Pet", icon: "calendar" },
+			{ value: "approved", label: "Aprovar", icon: "flag" },
+			{ value: "refused", label: "Reprovar", icon: "x" },
 		];
 
 		const toggleDropdown = () => {
@@ -229,27 +234,27 @@ export default defineComponent({
 		const onSearchInput = (value: string) => {
 			searchValue.value = value;
 			if (searchValue.value.trim().length === 0) {
-				abuseReportList.filters.name = null;
-				abuseReportList.fetchList(1);
+				evaluationPetList.filters.status = null;
+				evaluationPetList.fetchList(1);
 			}
 		};
 
 		const onSearchEnter = () => {
 			const trimmed = searchValue.value.trim();
 			if (trimmed.length > 0) {
-				abuseReportList.filters.name = trimmed;
-				abuseReportList.fetchList(1);
+				evaluationPetList.filters.status = trimmed;
+				evaluationPetList.fetchList(1);
 			}
 		};
 
 		const clearSearch = () => {
 			searchValue.value = "";
-			abuseReportList.filters.name = null;
-			abuseReportList.fetchList(1);
+			evaluationPetList.filters.status = null;
+			evaluationPetList.fetchList(1);
 		};
 
 		return {
-			abuseReportList,
+			evaluationPetList,
 			columnsHeader,
 			header,
 			list,
@@ -257,17 +262,17 @@ export default defineComponent({
 			showConfirm,
 			showSuccess,
 			feedbackModal,
-			confirmUpdate,
-			continueFeedback,
-			getStatus,
-			onSelectOptionAction,
-			paginationChange,
 			isVisible,
 			searchValue,
 			onSearchInput,
 			onSearchEnter,
 			clearSearch,
 			toggleDropdown,
+			confirmUpdate,
+			continueFeedback,
+			getStatus,
+			onSelectOptionAction,
+			paginationChange,
 		};
 	},
 });
@@ -291,7 +296,6 @@ export default defineComponent({
 		continue-text="Continuar"
 		@continue="continueFeedback"
 	/>
-
 	<section class="wrapper-list-card">
 		<div class="wrapper-list-card__header">
 			<div class="wrapper-list-card__header-title">
@@ -309,8 +313,8 @@ export default defineComponent({
 					label="Procurar"
 					:value="searchValue"
 					:close="!!searchValue.trim().length"
-					@on-input="onSearchInput"
-					@clear-input="clearSearch"
+					@onInput="onSearchInput"
+					@clearInput="clearSearch"
 					@keydown.enter.native="onSearchEnter"
 				/>
 			</div>
@@ -325,7 +329,7 @@ export default defineComponent({
 				/>
 			</div>
 		</div>
-		<div v-if="list.length > 0" class="wrapper-list-card__body">
+		<div v-if="list.length" class="wrapper-list-card__body">
 			<MoleculesListCardItem :data="columnsHeader" padding="16px 0">
 				<template v-for="(item, key) in columnsHeader" #[item.value] :key="key">
 					<AtomsTypography
@@ -342,18 +346,26 @@ export default defineComponent({
 				:data="columnsHeader"
 				padding="0"
 			>
-				<template #code>
+				<template #nameUser>
 					<AtomsTypography
 						type="text-p5"
-						:text="item.id"
+						:text="item.tutor.name"
 						weight="regular"
 						color="var(--brand-color-dark-blue-300)"
 					/>
 				</template>
-				<template #report>
+				<template #nameAnimal>
 					<AtomsTypography
 						type="text-p5"
-						:text="item.reporter.name"
+						:text="item.animal.name"
+						weight="regular"
+						color="var(--brand-color-dark-blue-300)"
+					/>
+				</template>
+				<template #species>
+					<AtomsTypography
+						type="text-p5"
+						:text="item.animal.species.label"
 						weight="regular"
 						color="var(--brand-color-dark-blue-300)"
 					/>
@@ -361,15 +373,7 @@ export default defineComponent({
 				<template #date>
 					<AtomsTypography
 						type="text-p5"
-						:text="useDayjs(item?.created_at).format('DD/MM/YYYY')"
-						weight="regular"
-						color="var(--brand-color-dark-blue-300)"
-					/>
-				</template>
-				<template #time>
-					<AtomsTypography
-						type="text-p5"
-						:text="useDayjs(item.created_at).format('HH:mm')"
+						:text="useDayjs(item.created_at).format('DD/MM/YYYY')"
 						weight="regular"
 						color="var(--brand-color-dark-blue-300)"
 					/>
@@ -392,22 +396,22 @@ export default defineComponent({
 		<MoleculesEmptyState
 			v-else
 			:is-icon="true"
-			title="Nenhuma denúncia encontrada"
-			description="Tente ajustar seus filtros ou realize uma nova busca"
+			title="Nenhum animal para castramóvel"
+			description="Aguarde até um animal ser cadastrado"
 		/>
 		<div class="wrapper-list-card__footer">
 			<MoleculesPaginationControls
-				v-if="abuseReportList.pagination"
-				:total-items="abuseReportList.pagination.total"
-				:current-page="abuseReportList.pagination.current_page"
-				:per-page="abuseReportList.pagination.per_page"
+				v-if="evaluationPetList.pagination"
+				:total-items="evaluationPetList.pagination.total"
+				:current-page="evaluationPetList.pagination.current_page"
+				:per-page="evaluationPetList.pagination.per_page"
 				@pageChange="paginationChange($event)"
 			/>
 		</div>
-		<OrganismsOccurrencesAbuseReportsFilter
+		<OrganismsOccurrencesEvaluationPetFilter
 			:is-visible="isVisible"
-			@close="isVisible = false"
 			@clear-all="clearSearch"
+			@close="isVisible = false"
 		/>
 	</section>
 </template>

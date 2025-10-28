@@ -20,12 +20,12 @@ export default defineComponent({
 		const { proxy } = getCurrentInstance()!;
 
 		const abouts = computed<AboutType[]>(() => {
-			const report = detailStore.adoption;
-
+			const report = detailStore.report;
+			console.log(report);
 			const optionsStatus = {
-				in_review: "Em análise",
-				forward: "Encaminhada",
-				complete: "Concluída",
+				pending: "Pendente",
+				approved: "Aprovado",
+				refused: "Reprovado",
 				archive: "Arquivada",
 			};
 
@@ -35,20 +35,19 @@ export default defineComponent({
 					content: [
 						{
 							label: "Tipo de denúncia:",
-							value: report?.type?.label || "N/A",
-							isEnum: true,
+							value: report?.type || "---",
 						},
 						{
 							label: "Data e hora do envio:",
-							value: proxy?.$formatDateTime(report?.created_at) || "N/A",
+							value: proxy?.$formatDateTime(report?.created_at) || "---",
 						},
 						{
 							label: "Localização:",
-							value: `${report?.location?.address || "N/A"} (${report?.location?.latitude || "N/A"}, ${report?.location?.longitude || "N/A"})`,
+							value: `${report?.address?.street || "N/A"} (${report?.address?.city || "N/A"}, ${report?.address?.state || "N/A"})`,
 						},
 						{
 							label: "Denunciante:",
-							value: `${report?.user?.name || "N/A"} - ${report?.user?.contact || "N/A"}`,
+							value: `${report?.reporter?.name || "N/A"} - ${report?.reporter?.cellphone || "N/A"} - ${report?.reporter?.email || "N/A"}`,
 						},
 						{
 							label: "Status atual:",
@@ -56,7 +55,7 @@ export default defineComponent({
 						},
 						{
 							label: "Mídia capturada:",
-							value: report?.media?.url || "",
+							value: report?.picture || "",
 							isImage: true,
 						},
 					],
@@ -66,8 +65,8 @@ export default defineComponent({
 
 		onMounted(async () => {
 			const id = route.params.id as string;
-			await detailStore.fetchAdoptionById(id, {
-				"with[]": ["user", "location", "media", "type"],
+			await detailStore.fetchReportById(id, {
+				"with[]": ["reporter", "address"],
 			});
 		});
 

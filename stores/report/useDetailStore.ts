@@ -1,27 +1,27 @@
 export const useDetailStore = defineStore("abuse-report-detail", {
 	state: () => {
-		const adoption = ref({} as IAdoption);
+		const report = ref({} as IReport);
 		const isLoading = ref(false);
 		const errorMessage = ref("");
 
 		return {
-			adoption,
+			report,
 			isLoading,
 			errorMessage,
 		};
 	},
 	actions: {
-		async fetchAdoptionById(id: string, params = {}): Promise<void> {
+		async fetchReportById(id: string, params = {}): Promise<void> {
 			if (!id) {
 				return;
 			}
 
-			await useFetch(`/api/abuse-report/${id}`, {
+			await useFetch(`/api/report/${id}`, {
 				method: "GET",
 				params,
 				onResponse: ({ response }) => {
 					const result = response._data as IResponse;
-					this.adoption = result.data || ({} as IAdoption);
+					this.report = result.data || ({} as IReport);
 					this.errorMessage = "";
 					this.isLoading = false;
 				},
