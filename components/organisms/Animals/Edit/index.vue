@@ -227,8 +227,7 @@ export default defineComponent({
 
 			const animal = animalDetailsStore.animal;
 			useAnimalsEdit.setFormField("name", animal.name);
-			const pictureUrl = animal.entry_data?.picture || animal.picture;
-			useAnimalsEdit.setFormField("picture", pictureUrl);
+			useAnimalsEdit.setFormField("picture", animal.picture);
 			useAnimalsEdit.setFormField(
 				"microchip_number",
 				animal.entry_data?.microchip_number,
@@ -366,10 +365,10 @@ export default defineComponent({
 						<div class="animal__about-pet__content--group">
 							<MoleculesInputCommon
 								label="Peso"
-								type-input="text"
+								type-input="number"
 								max-width="25%"
 								:maxlength="2"
-								:value="form.weight.value"
+								:value="form.weight.value as string"
 								:message-error="form.weight.errorMessages.join(', ')"
 								@on-input="useAnimalsEdit.setFormField('weight', $event)"
 							/>
