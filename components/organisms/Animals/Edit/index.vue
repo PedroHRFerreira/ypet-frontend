@@ -227,7 +227,8 @@ export default defineComponent({
 
 			const animal = animalDetailsStore.animal;
 			useAnimalsEdit.setFormField("name", animal.name);
-			useAnimalsEdit.setFormField("picture", animal.picture);
+			const pictureUrl = animal.entry_data?.picture || animal.picture;
+			useAnimalsEdit.setFormField("picture", pictureUrl);
 			useAnimalsEdit.setFormField(
 				"microchip_number",
 				animal.entry_data?.microchip_number,
