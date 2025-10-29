@@ -28,8 +28,8 @@ export default defineComponent({
 				{
 					title: "Sobre o cidadão",
 					content: [
-						{ label: "", value: citizen.image, isImage: true },
-						{ label: "Nome completo: ", value: citizen.user?.name || "---" },
+						{ label: "", value: citizen.picture, isImage: true },
+						{ label: "Nome completo: ", value: citizen.user?.name || "N/A" },
 						{ label: "CPF:", value: citizen?.document },
 						{ label: "Gênero:", value: gender[citizen?.gender] || "---" },
 						{

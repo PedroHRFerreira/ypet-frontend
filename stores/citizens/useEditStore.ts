@@ -6,6 +6,7 @@ export const useEditStore = defineStore("citizens-edit", {
 		const errorMessage = ref("");
 		const successMessage = ref("");
 		const form = useForm([
+			"picture",
 			"name",
 			"document",
 			"email",
@@ -46,21 +47,20 @@ export const useEditStore = defineStore("citizens-edit", {
 				method: "PUT",
 				body: formData,
 				onResponse: ({ response }) => {
-					const result = response._data as IResponse;
-					this.successMessage =
-						result.message || "Cidadão atualizado com sucesso.";
+					const result = response?._data as IResponse;
+					this.successMessage = result?.message || "Cidadão atualizado com sucesso.";
 					this.isLoading = false;
 				},
 				onResponseError: ({ response }) => {
 					this.isLoading = false;
+					const result = response?._data as IResponse;
 
-					if (response.status === 422) {
-						this.errorMessage = response._data.message || "Erro de validação.";
+					if (response?.status === 422) {
+						this.errorMessage = result?.message || "Erro de validação.";
 						return;
 					}
 
-					this.errorMessage =
-						response._data.message || "Erro ao atualizar cidadão.";
+					this.errorMessage = result?.message || "Erro ao atualizar cidadão.";
 				},
 			});
 		},
@@ -84,16 +84,16 @@ export const useEditStore = defineStore("citizens-edit", {
 				"state",
 			];
 
-			const addressObj: Record<string, any> = {};
+			// Envia campos de endereço separados com prefixo address_
 			for (const key of addressFields) {
 				const value = this.form[key]?.value;
-				if (value !== null && value !== undefined && value !== "") {
-					addressObj[key] =
-						typeof value === "object" && "id" in value ? value.id : value;
-				}
+				if (value === null || value === undefined || value === "") continue;
+				const normalized =
+					typeof value === "object" && "id" in value
+						? String(value.id)
+						: String(value);
+				formData.append(`address_${key}`, normalized);
 			}
-
-			formData.append("address", JSON.stringify([addressObj]));
 
 			for (const key in this.form) {
 				if (!Object.prototype.hasOwnProperty.call(this.form, key)) continue;
@@ -101,6 +101,15 @@ export const useEditStore = defineStore("citizens-edit", {
 
 				const value = this.form[key]?.value;
 				if (value === null || value === undefined || value === "") continue;
+
+				if (key === "picture" && typeof value === "string") {
+					continue;
+				}
+
+				if (value instanceof File) {
+					formData.append(key, value);
+					continue;
+				}
 
 				formData.append(
 					key,
