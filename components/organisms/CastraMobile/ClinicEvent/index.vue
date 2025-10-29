@@ -38,13 +38,25 @@ export default defineComponent({
 
 		const columnsHeader = ref([
 			{
+				value: "name",
+				text: "NOME",
+				typeTypography: "text-p5",
+				weightTypography: "bold",
+				colorTypography: "var(--brand-color-dark-blue-300)",
+				style: {
+					width: "10%",
+					gap: "16px",
+					wordBreak: "break-all",
+				},
+			},
+			{
 				value: "date",
 				text: "DATA DE INICIO",
 				typeTypography: "text-p5",
 				weightTypography: "bold",
 				colorTypography: "var(--brand-color-dark-blue-300)",
 				style: {
-					width: "20%",
+					width: "15%",
 					gap: "16px",
 					wordBreak: "break-all",
 				},
@@ -200,6 +212,14 @@ export default defineComponent({
 				:data="columnsHeader"
 				padding="0"
 			>
+				<template #name>
+					<AtomsTypography
+						type="text-p5"
+						:text="item.name || '---'"
+						weight="regular"
+						color="var(--brand-color-dark-blue-300)"
+					/>
+				</template>
 				<template #date>
 					<AtomsTypography
 						type="text-p5"
