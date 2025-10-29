@@ -16,7 +16,7 @@ export const useListStore = defineStore("list-registrations", {
 		const filters = ref({
 			date: null as string | null,
 			species: "" as string,
-			status: "" as string,
+			status: 'pending' as string,
 			tutor: "" as string,
 		});
 
@@ -45,6 +45,7 @@ export const useListStore = defineStore("list-registrations", {
 					([, value]) => value !== null && value !== "",
 				),
 			);
+
 
 			await useFetch(this.pathUrl, {
 				method: "GET",
