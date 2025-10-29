@@ -35,13 +35,19 @@ export const useLocationsStore = defineStore("locations-store", {
 			this.isLoading = true;
 			this.errorMessage = "";
 
+			const { name, ...otherFilters } = this.filters;
 			const activeFilters = Object.fromEntries(
-				Object.entries(this.filters).filter(([_, value]) => value !== null),
+				Object.entries(otherFilters).filter(([_, value]) => value !== null),
 			);
+			const params = {
+				page,
+				...activeFilters,
+				...(name !== null ? { location_name: name } : {}),
+			};
 
 			await useFetch("/api/location", {
 				method: "GET",
-				params: { page, ...activeFilters },
+				params,
 				onResponse: ({ response }) => {
 					const data: IPagination = response._data;
 					this.meta = data || ({} as IPagination);

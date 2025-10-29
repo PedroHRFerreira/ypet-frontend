@@ -8,7 +8,7 @@ export const useCreateStore = defineStore("citizens-create", {
 		const successMessage = ref("");
 
 		const form = useForm([
-			"image",
+			"picture",
 			"name",
 			"document",
 			"password",
@@ -52,16 +52,16 @@ export const useCreateStore = defineStore("citizens-create", {
 				"state",
 			];
 
-			const addressObj: Record<string, any> = {};
+			// Envia campos de endereço separados com prefixo address_
 			for (const key of addressFields) {
 				const value = this.form[key]?.value;
-				if (value !== null && value !== undefined && value !== "") {
-					addressObj[key] =
-						typeof value === "object" && "id" in value ? value.id : value;
-				}
+				if (value === null || value === undefined || value === "") continue;
+				const normalized =
+					typeof value === "object" && "id" in value
+						? String(value.id)
+						: String(value);
+				formData.append(`address_${key}`, normalized);
 			}
-
-			formData.append("address", JSON.stringify([addressObj]));
 
 			for (const key in this.form) {
 				if (!Object.prototype.hasOwnProperty.call(this.form, key)) continue;
@@ -70,10 +70,16 @@ export const useCreateStore = defineStore("citizens-create", {
 				const value = this.form[key]?.value;
 				if (value === null || value === undefined || value === "") continue;
 
+				// Anexar arquivos corretamente sem converter para string
+				if (value instanceof File) {
+					formData.append(key, value);
+					continue;
+				}
+
 				formData.append(
 					key,
-					typeof value === "object" && "id" in value
-						? String(value.id)
+					typeof value === "object" && "id" in (value as any)
+						? String((value as any).id)
 						: String(value),
 				);
 			}
@@ -116,13 +122,14 @@ export const useCreateStore = defineStore("citizens-create", {
 				method: "POST",
 				body: formData,
 				onResponse: ({ response }) => {
-					const responseData = response._data || ({} as IResponse);
+					const responseData = (response._data ?? {}) as IResponse;
 
-					if (responseData.type === "error")
+					if (responseData.type === "error") {
 						return this.handleResponseError(responseData);
+					}
 
 					this.successMessage = responseData.message || "Criado com sucesso!";
-					this.citizens = responseData.data || ({} as ICitizens);
+					this.citizens = (responseData.data || {}) as ICitizens;
 					this.isLoading = false;
 
 					const router = useRouter();

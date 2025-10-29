@@ -172,8 +172,8 @@ export default defineComponent({
 						<AtomsIcon
 							filled
 							class="icon-right"
-							name="system/other/close"
-							current-color="var(--neutral-color-dark-600)"
+							name="close"
+							current-color="var(--brand-color-blue-400)"
 						/>
 					</div>
 				</div>

@@ -428,7 +428,7 @@ export default defineComponent({
 						:value="form.location_id.value"
 						:message-error="form.location_id.errorMessages.join(', ')"
 						placeholder-text="Selecione um local (opcional)"
-						@item-selected="useAnimalsEdit.setFormField('location_id', $event)"
+						@item-selected="useAnimalsEdit.setFormField('location_id', $event.id)"
 					/>
 				</div>
 			</div>
