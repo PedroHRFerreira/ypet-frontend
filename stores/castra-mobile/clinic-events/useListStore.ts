@@ -36,7 +36,7 @@ export const useListStore = defineStore("clinic-events-list", {
 				without_pagination: true,
 			};
 
-			if (this.filters.date) queryParams.date = this.filters.date;
+			if (this.filters.date) queryParams.start_date = this.filters.date;
 			if (this.filters.status) queryParams.status = this.filters.status;
 
 			await useFetch(this.pathUrl, {
@@ -64,7 +64,7 @@ export const useListStore = defineStore("clinic-events-list", {
 				"with[]": ["location"],
 			};
 
-			if (this.filters.date) queryParams.date = this.filters.date;
+			if (this.filters.date) queryParams.start_date = this.filters.date;
 			if (this.filters.status) queryParams.status = this.filters.status;
 
 			await useFetch(this.pathUrl, {

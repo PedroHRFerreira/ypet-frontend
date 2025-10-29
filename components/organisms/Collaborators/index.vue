@@ -69,7 +69,7 @@ export default defineComponent({
 			},
 			{
 				value: "role",
-				text: "CARGO",
+				text: "FUNÇÃO",
 				typeTypography: "text-p5",
 				weightTypography: "bold",
 				colorTypography: "var(--brand-color-dark-blue-300)",
