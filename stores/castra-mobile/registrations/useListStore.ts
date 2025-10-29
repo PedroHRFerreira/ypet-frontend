@@ -40,15 +40,26 @@ export const useListStore = defineStore("list-registrations", {
 			this.isLoading = true;
 			this.errorMessage = "";
 
+			const { tutor, ...otherFilters } = this.filters;
 			const activeFilters = Object.fromEntries(
-				Object.entries(this.filters).filter(
+				Object.entries(otherFilters).filter(
 					([, value]) => value !== null && value !== "",
 				),
 			);
+			const tutorName = tutor
+				? this.tutors.find((t) => t.id === String(tutor))?.text || String(tutor)
+				: undefined;
+
+			const params = {
+				page,
+				...activeFilters,
+				...(tutorName ? { tutor_name: tutorName } : {}),
+				"with[]": ["user", "animal"],
+			};
 
 			await useFetch(this.pathUrl, {
 				method: "GET",
-				params: { page, ...activeFilters, "with[]": ["user", "animal"] },
+				params,
 				onResponse: ({ response }) => {
 					const result: IResponse = response._data as IResponse;
 
