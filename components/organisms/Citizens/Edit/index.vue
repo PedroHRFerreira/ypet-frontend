@@ -45,7 +45,7 @@ export default defineComponent({
 		const optionsGender = computed(() => {
 			const citizen = useCitizenDetailsStore.citizens;
 			return gender.map((item) => {
-				if (item.id === citizen?.gender) {
+				if (item.id === Number(citizen?.gender)) {
 					item.state = "activated";
 					useCitizenEdit.setFormField("gender", item.id);
 				}
