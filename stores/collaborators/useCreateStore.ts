@@ -16,6 +16,14 @@ export const useCreateStore = defineStore("create", {
 			"user_password",
 			"user_password_confirmation",
 			"user_status",
+			"cpf_cnpj",
+			"account_type",
+			"pix_key",
+			"bank_account_type",
+			"bank",
+			"agency",
+			"account_number",
+			"account_holder",
 		]);
 		const pathUrl = "/api/collaborators/store";
 

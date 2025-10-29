@@ -27,8 +27,6 @@ export default defineComponent({
 				useMobileEventStatusEnumStore().getOptions(),
 			]);
 
-			
-
 			await detailsStore.fetchById(id, { "with[]": ["rules"] });
 			await locationsStore.fetchLocations();
 
@@ -37,14 +35,17 @@ export default defineComponent({
 			editStore.setFormField("start_date", detailsStore.data.start_date);
 			editStore.setFormField("end_date", detailsStore.data.end_date);
 			editStore.setFormField("location_id", detailsStore.data.location_id);
-			editStore.setFormField("max_registrations",detailsStore.data.max_registrations);
+			editStore.setFormField(
+				"max_registrations",
+				detailsStore.data.max_registrations,
+			);
 			if (!editStore.rules?.value || editStore.rules.value.length === 0) {
 				editStore.setFormField(
 					"rules",
-					detailsStore.data.rules.map(rule => ({
+					detailsStore.data.rules.map((rule) => ({
 						id: rule.id,
 						max_registrations: rule.max_registrations,
-					}))
+					})),
 				);
 			}
 		});
@@ -193,12 +194,12 @@ export default defineComponent({
 		};
 
 		const changeMaxRegistrations = (ruleId: number, newValue: number) => {
-			const currentRules = form.rules.value
-	
-			const updatedRules = currentRules.map(rule =>
+			const currentRules = form.rules.value;
+
+			const updatedRules = currentRules.map((rule) =>
 				rule.id === ruleId
 					? { ...rule, max_registrations: Number(newValue) }
-					: rule
+					: rule,
 			);
 
 			editStore.setFormField("rules", updatedRules);
@@ -220,7 +221,7 @@ export default defineComponent({
 			header,
 			showSuccess,
 			showConfirm,
-			changeMaxRegistrations
+			changeMaxRegistrations,
 		};
 	},
 	watch: {
@@ -269,7 +270,6 @@ export default defineComponent({
 					:weight="header.title.weight"
 					:color="header.title.color"
 				/>
-
 			</div>
 			<div class="settings-create__about-pet__content">
 				<div class="settings-create__about-pet__content--group">
@@ -327,7 +327,6 @@ export default defineComponent({
 						@item-selected="editStore.setFormField('location_id', $event)"
 					/>
 				</div>
-				
 			</div>
 		</section>
 

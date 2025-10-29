@@ -372,7 +372,9 @@ export default defineComponent({
 					<AtomsTypography
 						type="text-p5"
 						:text="
-							useDayjs(item?.mobile_clinic_event?.start_date).format('DD/MM/YYYY') || '---'
+							useDayjs(item?.mobile_clinic_event?.start_date).format(
+								'DD/MM/YYYY',
+							) || '---'
 						"
 						weight="regular"
 						color="var(--brand-color-dark-blue-300)"

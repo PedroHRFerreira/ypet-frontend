@@ -4,8 +4,8 @@ import { useUserProfile } from "~/composables/useUserProfile";
 
 export default defineComponent({
 	name: "OrganismsHeader",
-	emits: ["notifications", "profile", "menu"],
-	setup(_, { emit }) {
+	emits: ["notifications", "menu"],
+	setup() {
 		const useAuthLogin = useAuthLoginStore();
 		const userProfile = useUserProfile();
 		const dropdownRef = ref<HTMLElement | null>(null);
@@ -25,8 +25,13 @@ export default defineComponent({
 			isOpenDropdown.value = !isOpenDropdown.value;
 		};
 
+		const router = useRouter();
+
 		const actions: Record<string, () => Promise<void> | void> = {
-			profile: () => emit("profile"),
+			profile: () => {
+				router.push({ path: "/settings" });
+				isOpenDropdown.value = false;
+			},
 			logout: async () => {
 				await useAuthLogin.logout();
 			},
@@ -102,7 +107,6 @@ export default defineComponent({
 							type="text-p5"
 							:text="userName"
 							color="var(--brand-color-blue-900)"
-							@click="$emit('profile')"
 						/>
 						<MoleculesAvatarIcon :name-user="userName" />
 					</div>

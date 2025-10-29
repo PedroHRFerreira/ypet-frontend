@@ -87,6 +87,8 @@ export default defineComponent({
 			usePhoneFormatter11BR(citizen?.user?.telephone || ""),
 		);
 		const zipCode = ref(useMaskZipCode(mainAddress?.zip_code || ""));
+		const cpfCnpj = ref("");
+		const selectedAccountType = ref<string | null>(null);
 
 		const showConfirm = ref(false);
 		const showSuccess = ref(false);
@@ -136,6 +138,24 @@ export default defineComponent({
 			router.push({ name: "citizens-list" });
 		}
 
+		function handleCpfCnpjInput(value: string) {
+			cpfCnpj.value = value;
+			useCitizenEdit.setFormField("cpf_cnpj", value);
+
+			if (value.length === 11 || value.length === 14) {
+				const isValid = useValidateCpfCnpj(value);
+				if (!isValid) {
+					const docType = value.length === 11 ? "CPF" : "CNPJ";
+					useCitizenEdit.setFormError("cpf_cnpj", [`${docType} inválido`]);
+				}
+			}
+		}
+
+		function handleAccountTypeSelect(value: string) {
+			selectedAccountType.value = value;
+			useCitizenEdit.setFormField("account_type", value);
+		}
+
 		const footer = {
 			buttons: [
 				{
@@ -182,6 +202,8 @@ export default defineComponent({
 			document,
 			zipCode,
 			telephone,
+			cpfCnpj,
+			selectedAccountType,
 			form,
 			footer,
 			openConfirm,
@@ -191,6 +213,8 @@ export default defineComponent({
 			onInputDocument,
 			onInputTelephone,
 			onInputZipCode,
+			handleCpfCnpjInput,
+			handleAccountTypeSelect,
 		};
 	},
 	watch: {
@@ -417,6 +441,38 @@ export default defineComponent({
 					/>
 				</div>
 			</div>
+		</section>
+
+		<!-- Dados bancários -->
+		<MoleculesFormsBankingData
+			:show-cpf-cnpj="false"
+			:cpf-cnpj-value="cpfCnpj"
+			:account-type-value="selectedAccountType"
+			:pix-key-value="''"
+			:bank-account-type-value="''"
+			:bank-value="''"
+			:agency-value="''"
+			:account-number-value="''"
+			:account-holder-value="''"
+			:cpf-cnpj-error="''"
+			:account-type-error="''"
+			:pix-key-error="''"
+			:bank-account-type-error="''"
+			:bank-error="''"
+			:agency-error="''"
+			:account-number-error="''"
+			:account-holder-error="''"
+			@update:cpf-cnpj="handleCpfCnpjInput"
+			@update:account-type="handleAccountTypeSelect"
+			@update:pix-key="() => {}"
+			@update:bank-account-type="() => {}"
+			@update:bank="() => {}"
+			@update:agency="() => {}"
+			@update:account-number="() => {}"
+			@update:account-holder="() => {}"
+		/>
+
+		<section class="citizens__input-data">
 			<div class="citizens__input-data__footer">
 				<MoleculesButtonsCommon
 					v-for="button in footer.buttons"
