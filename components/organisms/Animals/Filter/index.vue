@@ -34,7 +34,8 @@ export default defineComponent({
 		const hasChanges = computed(() => {
 			return (
 				locationsStore.filters.species !== selectedType.value ||
-				locationsStore.filters.registration_number !== registrationInput.value ||
+				locationsStore.filters.registration_number !==
+					registrationInput.value ||
 				locationsStore.filters.name !== null
 			);
 		});
@@ -43,7 +44,8 @@ export default defineComponent({
 			if (!hasChanges.value) return;
 
 			locationsStore.filters.species = selectedType.value;
-			locationsStore.filters.registration_number = registrationInput.value || null;
+			locationsStore.filters.registration_number =
+				registrationInput.value || null;
 
 			locationsStore.fetchAnimals();
 			emit("close");

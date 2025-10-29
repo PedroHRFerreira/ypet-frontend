@@ -13,9 +13,7 @@ onMounted(() => {
 	settingsStore.fetchUserData();
 });
 
-async function handlePasswordChange(event: Event) {
-	event.preventDefault();
-
+async function handlePasswordChange() {
 	if (settingsStore.isLoadingPassword) {
 		return;
 	}
@@ -24,11 +22,6 @@ async function handlePasswordChange(event: Event) {
 
 	if (success) {
 		alert("✅ Senha alterada com sucesso!");
-		return;
-	}
-
-	if (settingsStore.hasPasswordErrors) {
-		alert("❌ Erro ao alterar senha. Verifique os campos e tente novamente.");
 	}
 }
 </script>
@@ -69,51 +62,43 @@ async function handlePasswordChange(event: Event) {
 				color="var(--brand-color-dark-blue-900)"
 			/>
 
-			<form @submit="handlePasswordChange">
-				<div :class="$style.formGroup">
-					<MoleculesInputCommon
-						label="Senha atual"
-						type-input="password"
-						:value="settingsStore.passwordForm.current_password"
-						:message-error="
-							settingsStore.passwordErrors.current_password.join(', ')
-						"
-						@on-input="
-							settingsStore.setPasswordField('current_password', $event)
-						"
-					/>
-					<MoleculesInputCommon
-						label="Nova senha"
-						type-input="password"
-						:value="settingsStore.passwordForm.new_password"
-						:message-error="
-							settingsStore.passwordErrors.new_password.join(', ')
-						"
-						@on-input="settingsStore.setPasswordField('new_password', $event)"
-					/>
-
-					<MoleculesInputCommon
-						label="Confirmar nova senha"
-						type-input="password"
-						:value="settingsStore.passwordForm.confirm_password"
-						:message-error="
-							settingsStore.passwordErrors.confirm_password.join(', ')
-						"
-						@on-input="
-							settingsStore.setPasswordField('confirm_password', $event)
-						"
-					/>
-				</div>
-
-				<MoleculesButtonsCommon
-					text="Salvar nova senha"
-					type="primary"
-					width="200px"
-					:state="settingsStore.isLoadingPassword ? 'loading' : 'normal'"
-					:disabled="settingsStore.isLoadingPassword"
-					@onclick="handlePasswordChange"
+			<div :class="$style.formGroup">
+				<MoleculesInputCommon
+					label="Senha atual"
+					type-input="password"
+					:value="settingsStore.passwordForm.current_password"
+					:message-error="
+						settingsStore.passwordErrors.current_password.join(', ')
+					"
+					@on-input="settingsStore.setPasswordField('current_password', $event)"
 				/>
-			</form>
+				<MoleculesInputCommon
+					label="Nova senha"
+					type-input="password"
+					:value="settingsStore.passwordForm.new_password"
+					:message-error="settingsStore.passwordErrors.new_password.join(', ')"
+					@on-input="settingsStore.setPasswordField('new_password', $event)"
+				/>
+
+				<MoleculesInputCommon
+					label="Confirmar nova senha"
+					type-input="password"
+					:value="settingsStore.passwordForm.confirm_password"
+					:message-error="
+						settingsStore.passwordErrors.confirm_password.join(', ')
+					"
+					@on-input="settingsStore.setPasswordField('confirm_password', $event)"
+				/>
+			</div>
+
+			<MoleculesButtonsCommon
+				text="Salvar nova senha"
+				type="primary"
+				width="200px"
+				:state="settingsStore.isLoadingPassword ? 'loading' : 'default'"
+				:disabled="settingsStore.isLoadingPassword"
+				@onclick="handlePasswordChange"
+			/>
 		</section>
 	</div>
 </template>

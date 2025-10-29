@@ -26,7 +26,7 @@ export default defineEventHandler(async (event): Promise<IResponse> => {
 			return {
 				type: "error",
 				status: 422,
-				message: "Erro de validação",
+				message: error.data?.message || "Erro de validação",
 				errors: error.data?.errors || {},
 			} as IResponse;
 		}
@@ -35,16 +35,16 @@ export default defineEventHandler(async (event): Promise<IResponse> => {
 			return {
 				type: "error",
 				status: 401,
-				message: "Não autorizado",
-				errors: {},
+				message: error.data?.message || "Não autorizado",
+				errors: error.data?.errors || {},
 			} as IResponse;
 		}
 
 		return {
 			type: "error",
 			status: error.status || 500,
-			message: error.message || "Erro ao alterar senha",
-			errors: {},
+			message: error.data?.message || error.message || "Erro ao alterar senha",
+			errors: error.data?.errors || {},
 		} as IResponse;
 	}
 });

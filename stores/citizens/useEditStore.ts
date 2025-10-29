@@ -48,7 +48,8 @@ export const useEditStore = defineStore("citizens-edit", {
 				body: formData,
 				onResponse: ({ response }) => {
 					const result = response?._data as IResponse;
-					this.successMessage = result?.message || "Cidadão atualizado com sucesso.";
+					this.successMessage =
+						result?.message || "Cidadão atualizado com sucesso.";
 					this.isLoading = false;
 				},
 				onResponseError: ({ response }) => {

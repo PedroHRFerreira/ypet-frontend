@@ -124,6 +124,8 @@ export default defineComponent({
 
 		const showConfirm = ref(false);
 		const showSuccess = ref(false);
+		const cpfCnpj = ref("");
+		const selectedAccountType = ref<string | null>(null);
 
 		// Computed para exibir CPF com máscara
 		const maskedDocument = computed(() => {
@@ -136,6 +138,17 @@ export default defineComponent({
 			const unmaskedValue = useUnmaskDocument(value);
 			useVeterinariansEdit.setFormField("document", unmaskedValue);
 		};
+
+		function handleCpfCnpjInput(value: string) {
+			cpfCnpj.value = value;
+			useVeterinariansEdit.setFormField("cpf_cnpj", value);
+		}
+
+		function handleAccountTypeSelect(value: string) {
+			selectedAccountType.value = value;
+			useVeterinariansEdit.setFormField("account_type", value);
+		}
+
 		const modalFeedback = {
 			confirm: {
 				title: "Deseja confirmar a atualização?",
@@ -221,6 +234,10 @@ export default defineComponent({
 			footer,
 			maskedDocument,
 			handleDocumentInput,
+			cpfCnpj,
+			selectedAccountType,
+			handleCpfCnpjInput,
+			handleAccountTypeSelect,
 		};
 	},
 });
@@ -339,6 +356,35 @@ export default defineComponent({
 				</div>
 			</div>
 		</section>
+
+		<!-- Dados bancários -->
+		<MoleculesFormsBankingData
+			:show-cpf-cnpj="false"
+			:account-type-value="selectedAccountType"
+			:pix-key-value="''"
+			:bank-account-type-value="''"
+			:bank-value="''"
+			:agency-value="''"
+			:account-number-value="''"
+			:account-holder-value="''"
+			:cpf-cnpj-error="''"
+			:account-type-error="''"
+			:pix-key-error="''"
+			:bank-account-type-error="''"
+			:bank-error="''"
+			:agency-error="''"
+			:account-number-error="''"
+			:account-holder-error="''"
+			@update:cpf-cnpj="handleCpfCnpjInput"
+			@update:account-type="handleAccountTypeSelect"
+			@update:pix-key="() => {}"
+			@update:bank-account-type="() => {}"
+			@update:bank="() => {}"
+			@update:agency="() => {}"
+			@update:account-number="() => {}"
+			@update:account-holder="() => {}"
+		/>
+
 		<section class="animal__input-data">
 			<div class="animal__input-data-header">
 				<AtomsTypography

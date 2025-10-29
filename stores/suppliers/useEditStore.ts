@@ -12,6 +12,15 @@ export const useEditStore = defineStore("suppliers-edit", {
 			"municipal_registration",
 			"state_registration",
 			"representative",
+			// Dados Bancários
+			"cpf_cnpj",
+			"account_type",
+			"pix_key",
+			"bank_account_type",
+			"bank",
+			"agency",
+			"account_number",
+			"account_holder",
 		]);
 
 		return {
