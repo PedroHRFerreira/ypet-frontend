@@ -17,6 +17,7 @@ export const useEditStore = defineStore("animals-edit", {
 			"birth_date",
 			"entry_date",
 			"status",
+			"tutor_id",
 			"location_id",
 			"characteristics",
 			"picture",

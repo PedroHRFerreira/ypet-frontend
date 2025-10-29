@@ -20,7 +20,7 @@ export const useDetailStore = defineStore("animals-detail", {
 				method: "GET",
 				params: {
 					...params,
-					"with[]": ["location", "entryData", "status"],
+					"with[]": ["location", "entryData", "status", "tutor"],
 				},
 				onResponse: ({ response }) => {
 					const result = response._data as IResponse;

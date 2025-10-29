@@ -36,7 +36,7 @@ export const useListStore = defineStore("animals-list", {
 
 			const queryParams: Record<string, any> = {
 				...params,
-				"with[]": ["status", "entryData"],
+				"with[]": ["status", "entryData", "tutor"],
 			};
 
 			if (this.filters.name !== null) {

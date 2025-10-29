@@ -33,7 +33,7 @@ export default defineComponent({
 		onMounted(async () => {
 			const id = useRoute().params.id as string;
 			await animalDetailsStore.fetchAnimalById(id, {
-				"with[]": ["status", "entryData"],
+				"with[]": ["status", "entryData", "tutor"],
 			});
 		});
 
