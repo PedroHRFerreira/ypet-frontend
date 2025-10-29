@@ -363,7 +363,7 @@ export default defineComponent({
 				<template #species>
 					<AtomsTypography
 						type="text-p5"
-						:text="speciesType[item.animal.species.value]"
+						:text="speciesType[item.animal?.species?.value] || '---'"
 						weight="regular"
 						color="var(--brand-color-dark-blue-300)"
 					/>
@@ -372,7 +372,7 @@ export default defineComponent({
 					<AtomsTypography
 						type="text-p5"
 						:text="
-							useDayjs(item.mobile_clinic_event.start_date).format('DD/MM/YYYY')
+							useDayjs(item?.mobile_clinic_event?.start_date).format('DD/MM/YYYY') || '---'
 						"
 						weight="regular"
 						color="var(--brand-color-dark-blue-300)"
@@ -381,7 +381,7 @@ export default defineComponent({
 				<template #localUnit>
 					<AtomsTypography
 						type="text-p5"
-						:text="item.mobile_clinic_event.location.location_name ?? '---'"
+						:text="item?.mobile_clinic_event?.location?.location_name ?? '---'"
 						weight="regular"
 						color="var(--brand-color-dark-blue-300)"
 					/>
