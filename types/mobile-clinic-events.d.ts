@@ -8,7 +8,7 @@ declare global {
 		created_at?: string;
 		updated_at?: string;
 	}
-  interface ILocation {
+	interface ILocation {
 		id?: number | string;
 		uuid?: string;
 		location_name?: string;
