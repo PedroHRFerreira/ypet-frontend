@@ -74,6 +74,7 @@ export default defineComponent({
 	<MoleculesModal
 		title="Filtros"
 		:showModal="isVisible"
+		icon-right
 		is-filter
 		@close="$emit('close')"
 	>

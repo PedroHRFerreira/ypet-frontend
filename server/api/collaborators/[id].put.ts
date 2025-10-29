@@ -4,8 +4,6 @@ export default defineEventHandler(async (event): Promise<IResponse> => {
 	try {
 		const id = event.context.params?.id;
 		const path = `/collaborators/${id}`;
-
-		// Detecta o tipo de conteúdo e monta payload adequadamente
 		const contentType = getRequestHeader(event, "content-type") || "";
 		let payload: Record<string, any> = {};
 
