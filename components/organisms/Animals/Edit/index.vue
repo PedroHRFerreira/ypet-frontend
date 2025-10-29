@@ -8,6 +8,7 @@ import { useAnimalCoatEnumStore } from "~/stores/Enums/useAnimalCoatEnumStore";
 import { useEditStore } from "~/stores/animals/useEditStore";
 import { useDetailStore } from "~/stores/animals/useDetailStore";
 import { useLocationsStore } from "~/stores/locations/useListStore";
+import { useListStore as useCitizensListStore } from "~/stores/citizens/useListStore";
 
 export default defineComponent({
 	name: "OrganismsAnimalsEdit",
@@ -20,6 +21,7 @@ export default defineComponent({
 		const useAnimalSizeEnum = useAnimalSizeEnumStore();
 		const useAnimalCoatEnum = useAnimalCoatEnumStore();
 		const locationsStore = useLocationsStore();
+		const useCitizensList = useCitizensListStore();
 		const { form } = useAnimalsEdit;
 		const id = useRoute().params.id as string;
 
@@ -28,6 +30,7 @@ export default defineComponent({
 		const animalStatus = ref<IOption[]>([]);
 		const animalSize = ref<IOption[]>([]);
 		const animalCoat = ref<IOption[]>([]);
+		const optionsCitizens = ref<IOption[]>([]);
 
 		const birthDate = ref("");
 		const entryDate = ref("");
@@ -122,6 +125,26 @@ export default defineComponent({
 			});
 		});
 
+		const currentStatusId = computed<string>(() => {
+			const statusValue = form.status.value as unknown;
+			if (typeof statusValue === "string") {
+				return statusValue;
+			}
+			if (
+				statusValue &&
+				typeof statusValue === "object" &&
+				"id" in (statusValue as Record<string, unknown>) &&
+				typeof (statusValue as any).id === "string"
+			) {
+				return (statusValue as any).id as string;
+			}
+			return "";
+		});
+
+		const showCitizenField = computed(
+			() => currentStatusId.value === "with_owner",
+		);
+
 		const showConfirm = ref(false);
 		const showSuccess = ref(false);
 
@@ -197,6 +220,23 @@ export default defineComponent({
 			useAnimalsEdit.setFormField("picture", file);
 		}
 
+		async function loadCitizens(searchQuery = "") {
+			await useCitizensList.fetchList({ search: searchQuery });
+			optionsCitizens.value = useCitizensList.citizens.map(
+				(citizen: ICitizens) => ({
+					id: citizen.user?.id || 0,
+					text: citizen.user?.name || "Sem nome",
+					state: "default" as const,
+				}),
+			);
+		}
+
+		function handleCitizenSearch(query: string) {
+			if (query.length >= 2) {
+				loadCitizens(query);
+			}
+		}
+
 		onMounted(async () => {
 			const [
 				speciesData,
@@ -211,9 +251,10 @@ export default defineComponent({
 				useAnimalSizeEnum.getOptions(),
 				useAnimalCoatEnum.getOptions(),
 				animalDetailsStore.fetchAnimalById(id, {
-					"with[]": ["status", "entryData", "location"],
+					"with[]": ["status", "entryData", "location", "tutor"],
 				}),
 				locationsStore.fetchLocations(),
+				loadCitizens(),
 			]);
 
 			species.value = speciesData;
@@ -252,6 +293,23 @@ export default defineComponent({
 				animal.entry_data?.dewormed ? 1 : 0,
 			);
 			useAnimalsEdit.setFormField("location_id", animal.location_id);
+			// Define o status inicial de acordo com o retorno da API
+			useAnimalsEdit.setFormField("status", animal.status?.status?.value);
+			const a = animal as any;
+			const tutorOption: IOption | null = animal.tutor_id
+				? {
+						id: a?.tutor?.id || animal.tutor_id,
+						text: a?.tutor?.name || "Sem nome",
+						state: "activated" as const,
+					}
+				: null;
+			if (tutorOption) {
+				useAnimalsEdit.setFormField("tutor_id", tutorOption);
+				optionsCitizens.value = [
+					tutorOption,
+					...optionsCitizens.value.filter((opt) => opt.id !== tutorOption.id),
+				];
+			}
 		});
 
 		return {
@@ -261,17 +319,22 @@ export default defineComponent({
 			optionsAnimalSize,
 			optionsAnimalCoat,
 			optionsLocations,
+			optionsCitizens,
 			optionsBoolean,
 			birthDate,
 			entryDate,
 			form,
 			useAnimalsEdit,
+			useCitizensList,
 			showConfirm,
 			showSuccess,
 			animalDetailsStore,
 			footer,
 			modalFeedback,
 			handleImageUpload,
+			showCitizenField,
+			loadCitizens,
+			handleCitizenSearch,
 		};
 	},
 	watch: {
@@ -428,7 +491,7 @@ export default defineComponent({
 						:value="form.location_id.value"
 						:message-error="form.location_id.errorMessages.join(', ')"
 						placeholder-text="Selecione um local (opcional)"
-						@item-selected="useAnimalsEdit.setFormField('location_id', $event.id)"
+						@item-selected="useAnimalsEdit.setFormField('location_id', $event)"
 					/>
 				</div>
 			</div>
@@ -461,6 +524,18 @@ export default defineComponent({
 						:options="optionsAnimalStatus"
 						:message-error="form.status.errorMessages.join(', ')"
 						@item-selected="useAnimalsEdit.setFormField('status', $event)"
+					/>
+					<MoleculesSelectsSearchable
+						v-if="showCitizenField"
+						max-width="30%"
+						label="Tutor"
+						:options="optionsCitizens"
+						:is-loading="useCitizensList.isLoading"
+						:message-error="form.tutor_id.errorMessages.join(', ')"
+						placeholder-text="Selecione o tutor"
+						search-placeholder="Buscar por nome..."
+						@item-selected="useAnimalsEdit.setFormField('tutor_id', $event)"
+						@search="handleCitizenSearch"
 					/>
 					<MoleculesInputOptionGroup
 						name="Castrado"
