@@ -97,7 +97,7 @@ export const useEditStore = defineStore("citizens-edit", {
 
 			for (const key in this.form) {
 				if (!Object.prototype.hasOwnProperty.call(this.form, key)) continue;
-				if (addressFields.includes(key)) continue; // já foi adicionado no endereço
+				if (addressFields.includes(key)) continue;
 
 				const value = this.form[key]?.value;
 				if (value === null || value === undefined || value === "") continue;

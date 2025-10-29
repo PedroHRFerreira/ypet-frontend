@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import { useDetailStore } from "~/stores/report/useDetailStore";
+import { useDetailStore } from "~/stores/castramovel/useDetailStore";
 
 type AboutType = {
 	title: string;
@@ -13,50 +13,96 @@ type AboutType = {
 };
 
 export default defineComponent({
-	name: "OrganismsOccurrencesAbuseReportsDetails",
+	name: "OrganismsOccurrencesCastramovelDetails",
 	setup() {
 		const detailStore = useDetailStore();
 		const route = useRoute();
 		const { proxy } = getCurrentInstance()!;
 
 		const abouts = computed<AboutType[]>(() => {
-			const report = detailStore.report;
+			const castramovel = detailStore.castramovel;
 
 			const optionsStatus = {
 				pending: "Pendente",
 				approved: "Aprovado",
-				refused: "Reprovado",
-				archive: "Arquivada",
+				refused: "Recusada",
+				in_analysis: "Para analise",
 			};
 
 			return [
 				{
-					title: "Informações da denúncia",
+					title: "Informações do animal",
 					content: [
 						{
-							label: "Tipo de denúncia:",
-							value: report?.type || "---",
+							label: "Nome do tutor:",
+							value: castramovel?.user?.name || "---",
 						},
 						{
-							label: "Data e hora do envio:",
-							value: proxy?.$formatDateTime(report?.created_at) || "---",
+							label: "Contato do tutor:",
+							value: `${usePhoneFormatter11BR(castramovel?.user?.cellphone)} - ${usePhoneFormatter11BR(castramovel?.user?.telephone)} `,
 						},
 						{
-							label: "Localização:",
-							value: `${report?.address?.street || "N/A"} (${report?.address?.city || "N/A"}, ${report?.address?.state || "N/A"})`,
+							label: "Contato de email:",
+							value: castramovel?.user?.email,
 						},
 						{
-							label: "Denunciante:",
-							value: `${report?.reporter?.name || "N/A"} - ${report?.reporter?.cellphone || "N/A"} - ${report?.reporter?.email || "N/A"}`,
+							label: "Nome do animal:",
+							value: castramovel?.animal?.characteristics || "---",
 						},
 						{
-							label: "Status atual:",
-							value: optionsStatus[report?.status] || "N/A",
+							label: "Pelo:",
+							value: castramovel?.animal?.coat?.label || "---",
 						},
 						{
-							label: "Mídia capturada:",
-							value: report?.picture || "",
-							isImage: true,
+							label: "Peso:",
+							value: `${castramovel?.animal?.weight}Kg` || "---",
+						},
+						{
+							label: "Gênero:",
+							value: castramovel?.animal?.gender?.label || " --- ",
+						},
+						{
+							label: "Tamanho:",
+							value: castramovel?.animal?.size?.label || " --- ",
+						},
+						{
+							label: "Espécie:",
+							value: castramovel?.animal?.species?.label || " --- ",
+						},
+						{
+							label: "Característica:",
+							value: castramovel?.animal?.species?.label || " --- ",
+						},
+					],
+				},
+				{
+					title: "Informações da solicitação",
+					content: [
+						{
+							label: "Status:",
+							value: castramovel?.status?.label || "---",
+						},
+						{
+							label: "Local da unidade:",
+							value:
+								castramovel?.mobile_clinic_event?.location?.location_name ||
+								"---",
+						},
+						{
+							label: "Data da solicitação:",
+							value: castramovel?.mobile_clinic_event?.start_date || "---",
+						},
+						{
+							label: "Gênero:",
+							value: castramovel?.animal?.gender?.label || " --- ",
+						},
+						{
+							label: "Tamanho:",
+							value: castramovel?.animal?.size?.label || " --- ",
+						},
+						{
+							label: "Espécie:",
+							value: castramovel?.animal?.species?.label || " --- ",
 						},
 					],
 				},
@@ -65,8 +111,8 @@ export default defineComponent({
 
 		onMounted(async () => {
 			const id = route.params.id as string;
-			await detailStore.fetchReportById(id, {
-				"with[]": ["reporter", "address"],
+			await detailStore.fetchCastramovelById(id, {
+				"with[]": ["user", "animal", "mobileClinicEvent"],
 			});
 		});
 

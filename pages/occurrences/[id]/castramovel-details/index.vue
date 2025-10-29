@@ -2,7 +2,7 @@
 import { definePageMeta } from "#imports";
 
 useHead({
-	title: "Editar Colaborador",
+	title: "Detalhes da solicitação",
 	titleTemplate: (titleChunk) => {
 		return titleChunk ? `${titleChunk} | YPet` : "YPet";
 	},
@@ -11,14 +11,14 @@ useHead({
 definePageMeta({
 	layout: "default",
 	middleware: ["auth"],
-	name: "collaborators-edit",
+	name: "occurrences-castramovel-details",
 });
 
 defineComponent({
-	name: "PagesCollaboratorsEdit",
+	name: "PagesOccurrencesCastramovelDetails",
 });
 </script>
 
 <template>
-	<TemplatesCollaboratorsEdit />
+	<TemplatesOccurrencesCastramovelDetails />
 </template>

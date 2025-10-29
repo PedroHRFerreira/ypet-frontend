@@ -77,7 +77,7 @@ export default defineComponent({
 				typeTypography: "text-p5",
 				weightTypography: "bold",
 				colorTypography: "var(--brand-color-dark-blue-300)",
-				style: { width: "15%" },
+				style: { width: "5%" },
 			},
 			{
 				value: "species",
@@ -85,7 +85,7 @@ export default defineComponent({
 				typeTypography: "text-p5",
 				weightTypography: "bold",
 				colorTypography: "var(--brand-color-dark-blue-300)",
-				style: { width: "20%", justifyContent: "flex-end" },
+				style: { width: "10%", justifyContent: "flex-end" },
 			},
 			{
 				value: "weight",
@@ -114,8 +114,6 @@ export default defineComponent({
 		]);
 
 		const onSelectOptionAction = (event: string, item: IRegistration) => {
-			const router = useRouter();
-
 			if (event === "details") {
 				router.push({
 					name: "castra-mobile.registrations.details",

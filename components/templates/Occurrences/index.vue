@@ -12,7 +12,7 @@ export default defineComponent({
 			"OrganismsOccurrencesAbuseReports",
 		);
 		const castramovelRequestsComponent = resolveComponent(
-			"OrganismsOccurrencesCastramovelRequests",
+			"OrganismsOccurrencesCastramovel",
 		);
 		const samupetComponent = resolveComponent("OrganismsOccurrencesSamupet");
 		const evaluationPetComponent = resolveComponent(

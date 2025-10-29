@@ -1,27 +1,27 @@
-export const useDetailStore = defineStore("abuse-report-detail", {
+export const useDetailStore = defineStore("castramovel-detail", {
 	state: () => {
-		const report = ref({} as IReport);
+		const castramovel = ref({} as ICastraMovel);
 		const isLoading = ref(false);
 		const errorMessage = ref("");
 
 		return {
-			report,
+			castramovel,
 			isLoading,
 			errorMessage,
 		};
 	},
 	actions: {
-		async fetchReportById(id: string, params = {}): Promise<void> {
+		async fetchCastramovelById(id: string, params = {}): Promise<void> {
 			if (!id) {
 				return;
 			}
 
-			await useFetch(`/api/report/${id}`, {
+			await useFetch(`/api/castramovel/${id}`, {
 				method: "GET",
 				params,
 				onResponse: ({ response }) => {
 					const result = response._data as IResponse;
-					this.report = result.data || ({} as IReport);
+					this.castramovel = result.data || ({} as ICastraMovel);
 					this.errorMessage = "";
 					this.isLoading = false;
 				},

@@ -16,7 +16,7 @@ export const useListStore = defineStore("list-registrations", {
 		const filters = ref({
 			start_date: null as string | null,
 			species: "" as string,
-			status: "" as string,
+			status: "pending" as string,
 			tutor: "" as string,
 		});
 
