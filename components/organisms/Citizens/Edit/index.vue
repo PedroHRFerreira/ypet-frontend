@@ -27,8 +27,11 @@ export default defineComponent({
 
 		const optionsUFEnum = computed(() => {
 			const citizen = useCitizenDetailsStore.citizens;
+			const targetState = (citizen?.addresses?.[0]?.state ??
+				citizen?.state) as any;
 			return UFEnum.value.map((item) => {
-				if (item.value === citizen?.state) {
+				const isMatch = String(item.value) === String(targetState ?? "");
+				if (isMatch) {
 					item.state = "activated";
 					useCitizenEdit.setFormField("state", item.id);
 				}
@@ -63,8 +66,11 @@ export default defineComponent({
 
 		const optionsUserStatus = computed(() => {
 			const citizen = useCitizenDetailsStore.citizens;
+			const targetStatus =
+				(citizen?.status as any)?.value ?? (citizen?.status as any);
 			return userStatus.value.map((item) => {
-				if (item.id === citizen?.status) {
+				const isMatch = String(item.id) === String(targetStatus ?? "");
+				if (isMatch) {
 					item.state = "activated";
 					useCitizenEdit.setFormField("status", item.id);
 				}
@@ -148,20 +154,29 @@ export default defineComponent({
 			router.push({ name: "citizens-list" });
 		}
 
-		function handleInput(file: File) {
-			// Handle file input
-			console.log("File selected:", file);
+		function handleImageUpload(file: File | null) {
+			// Define arquivo selecionado no campo 'picture'
+			useCitizenEdit.setFormField("picture", file);
 		}
 
 		function handleChange(file: File) {
-			// Handle file change
-			console.log("File changed:", file);
+			// Atualiza arquivo no campo 'picture'
+			useCitizenEdit.setFormField("picture", file);
 		}
 
 		function handleError(error: string) {
-			// Handle file upload error
-			console.error("Upload error:", error);
+			// Limpa arquivo e registra erro no campo 'picture'
+			useCitizenEdit.setFormField("picture", null);
+			useCitizenEdit.setFormError("picture", [error]);
 		}
+
+		// Valor inicial da imagem (URL da API ou arquivo selecionado)
+		const initialPicture = computed(() => {
+			const current = form.picture.value as any;
+			if (current) return current;
+			const citizen = useCitizenDetailsStore.citizens as any;
+			return citizen?.picture || "";
+		});
 
 		const footer = {
 			buttons: [
@@ -210,6 +225,7 @@ export default defineComponent({
 			zipCode,
 			telephone,
 			form,
+			initialPicture,
 			footer,
 			openConfirm,
 			onSuccess,
@@ -218,7 +234,7 @@ export default defineComponent({
 			onInputDocument,
 			onInputTelephone,
 			onInputZipCode,
-			handleInput,
+			handleImageUpload,
 			handleChange,
 			handleError,
 		};
@@ -266,12 +282,12 @@ export default defineComponent({
 					<MoleculesUploadField
 						label="Selecione um arquivo para enviar"
 						description="Arquivo até 2mb"
+						maxWidth="40%"
+						:value="initialPicture"
 						:accept="'image/*'"
 						:maxSize="2 * 1024 * 1024"
-						maxWidth="40%"
 						:maxHeight="180"
-						:preview="true"
-						@input="handleInput"
+						@input="handleImageUpload($event)"
 						@change="handleChange"
 						@error="handleError"
 					/>

@@ -1,25 +1,23 @@
 <script lang="ts">
-import { computed, defineComponent, onMounted, onUnmounted, ref } from "vue";
+import { defineComponent, onMounted, onUnmounted, ref } from "vue";
 import { useCreateStore } from "~/stores/citizens/useCreateStore";
-import MoleculesUploadField from "~/components/molecules/ListCardItem/index.vue";
+import MoleculesUploadField from "~/components/molecules/UploadField/index.vue";
 
 import { useUserStatusEnumStore } from "~/stores/Enums/useUserStatusEnumStore";
 import { useUFEnumStore } from "~/stores/Enums/useUFEnumStore";
 import { useBooleanEnumStore } from "~/stores/Enums/useBooleanEnumStore";
-import { useGenderEnumStore } from "~/stores/Enums/useGenderEnumStore";
 
 export default defineComponent({
 	name: "OrganismsCitizensCreate",
 	components: {
 		MoleculesUploadField,
 	},
-	async setup() {
+	setup() {
 		const useCitizensCreate = useCreateStore();
 		const { form } = useCitizensCreate;
 		const useUFEnum = useUFEnumStore();
 		const useBooleanEnum = useBooleanEnumStore();
 		const useUserStatusEnum = useUserStatusEnumStore();
-		const useGenderEnum = useGenderEnumStore();
 		useCitizensCreate.setFormField("can_mobile_castration", 0);
 		useCitizensCreate.setFormField("can_report_abuse", 0);
 
@@ -105,17 +103,25 @@ export default defineComponent({
 		function handleInput(payload: string | File) {
 			if (payload instanceof File) {
 				file.value = payload;
+				useCitizensCreate.setFormField("picture", payload);
 			} else {
-				console.log("Base64 recebido:", payload.slice(0, 30) + "...");
+				// Para criar, sempre enviamos File; ignorar strings/base64
+				console.log("Upload retornou string/base64, ignorado no create.");
 			}
 		}
 
 		function handleChange(selectedFile: File) {
-			console.log("Arquivo trocado:", selectedFile);
+			// Alinhar ao comportamento da edição: sempre atualizar o campo 'picture'
+			file.value = selectedFile;
+			useCitizensCreate.setFormField("picture", selectedFile);
 		}
 
 		function handleError(message: string) {
 			errorMessage.value = message;
+			// Limpa arquivo e registra erro no campo 'picture' (igual edição)
+			file.value = null;
+			useCitizensCreate.setFormField("picture", null);
+			useCitizensCreate.setFormError("picture", [message]);
 		}
 
 		return {
@@ -188,11 +194,11 @@ export default defineComponent({
 					<MoleculesUploadField
 						label="Selecione um arquivo para enviar"
 						description="Arquivo até 2mb"
+						maxWidth="40%"
 						:accept="'image/*'"
 						:maxSize="2 * 1024 * 1024"
-						maxWidth="40%"
-						:maxHeight="188"
-						:preview="true"
+						:maxHeight="180"
+						:value="form.picture.value as any"
 						@input="handleInput"
 						@change="handleChange"
 						@error="handleError"
