@@ -83,6 +83,7 @@ export default defineComponent({
 	<MoleculesModal
 		title="Filtros"
 		:show-modal="isVisible"
+		icon-right
 		is-filter
 		@close="$emit('close')"
 	>
