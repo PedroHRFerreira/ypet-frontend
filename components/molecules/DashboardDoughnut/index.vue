@@ -11,11 +11,11 @@ export default defineComponent({
 		Doughnut,
 	},
 	setup() {
-		const total = ref(590);
-		const title = ref("Animais cadastrados");
+		const total = ref(10);
+		const title = ref("Situação dos animais cadastrados");
 
 		const chartData = ref({
-			labels: ["Abrigados", "Abandonos"],
+			labels: ["Com dono", "Para adoção"],
 			datasets: [
 				{
 					data: [70, 30],
@@ -41,13 +41,13 @@ export default defineComponent({
 
 		const legendItems = ref([
 			{
-				label: "Abandonos",
+				label: "Com dono",
 				bulletClass: "bullet-abandono",
 				trend: "↓ 40%",
 				trendClass: "down",
 			},
 			{
-				label: "Abrigados",
+				label: "Para adoção",
 				bulletClass: "bullet-abrigado",
 				trend: "↑ 30%",
 				trendClass: "up",
