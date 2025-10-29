@@ -19,7 +19,7 @@ export const useAuthToken = () => {
 			maxAge: token.expires_in,
 			watch: "shallow",
 		});
-		cookieUser.value = JSON.stringify(token.user);
+		cookieUser.value = token.user;
 		cookie.value = `${token.token_type} ${token.access_token}`;
 	}
 
@@ -33,10 +33,19 @@ export const useAuthToken = () => {
 
 	function getUserCookie(): IUser | null {
 		const cookie: CookieRef<any> = useCookie("auth.user");
-		if (cookie.value) {
-			return JSON.parse(cookie.value) as IUser;
+		if (!cookie.value) {
+			return null;
 		}
-		return null;
+
+		if (typeof cookie.value === "object") {
+			return cookie.value as IUser;
+		}
+
+		try {
+			return JSON.parse(cookie.value) as IUser;
+		} catch {
+			return null;
+		}
 	}
 
 	function removeTokenCookie(): void {
