@@ -8,104 +8,116 @@ type AboutType = {
 		label: string;
 		value: string | IEnum | undefined;
 		isEnum?: boolean;
+		isImage?: boolean;
 	}[];
 };
 
 export default defineComponent({
 	name: "OrganismsOccurrencesCastramovelDetails",
 	setup() {
-		const detailsStore = useDetailStore();
-		const castramovel = detailsStore.report;
-		const address = `${castramovel.address?.street}, ${lostPet.address?.number}${lostPet.address?.complement ? ", " + lostPet.address?.complement : ""}, ${lostPet.address?.district}, ${lostPet.address?.city}, ${lostPet.address?.state}, ${lostPet.address?.country}`;
-
+		const detailStore = useDetailStore();
+		const route = useRoute();
 		const { proxy } = getCurrentInstance()!;
-		const abouts = computed<AboutType[]>(() => {
-			const gender = {
-				male: "Macho",
-				female: "Fêmea",
-				unknown: "Desconhecido",
-			};
 
-			const species = {
-				dog: "Cão",
-				cat: "Gato",
-			};
+		const abouts = computed<AboutType[]>(() => {
+			const castramovel = detailStore.castramovel;
 
 			const optionsStatus = {
-				lost: "Perdido",
-				found: "Encontrado",
-				deceased: "Óbito",
-				conclude: "Concluído",
+				pending: "Pendente",
+				approved: "Aprovado",
+				refused: "Recusada",
+				in_analysis: "Para analise",
 			};
 
 			return [
 				{
-					title: "Sobre o Animal",
+					title: "Informações do animal",
 					content: [
 						{
-							label: "",
-							value: castramovel.animal.picture ?? "---",
-							isImage: true,
+							label: "Nome do tutor:",
+							value: castramovel?.user?.name || "---",
 						},
 						{
-							label: "Nome do animal: ",
-							value: castramovel.animal?.name || "N/A",
+							label: "Contato do tutor:",
+							value: `${usePhoneFormatter11BR(castramovel?.user?.cellphone)} - ${usePhoneFormatter11BR(castramovel?.user?.telephone)} `,
 						},
 						{
-							label: "Tipo de pet:",
-							value: species[castramovel.animal?.species?.value],
+							label: "Contato de email:",
+							value: castramovel?.user?.email,
 						},
-						{ label: "Sexo:", value: gender[castramovel?.animal.gender.value] },
+						{
+							label: "Nome do animal:",
+							value: castramovel?.animal?.characteristics || "---",
+						},
+						{
+							label: "Pelo:",
+							value: castramovel?.animal?.coat?.label || "---",
+						},
 						{
 							label: "Peso:",
-							value: castramovel.animal?.weight
-								? `${castramovel.animal?.weight} Kg`
-								: "N/A",
+							value: `${castramovel?.animal?.weight}Kg` || "---",
 						},
 						{
-							label: "Data de nascimento:",
-							value:
-								proxy?.$formatDateTime(castramovel.animal?.birth_date) || "N/A",
+							label: "Gênero:",
+							value: castramovel?.animal?.gender?.label || " --- ",
 						},
-						{ label: "Cor:", value: castramovel.animal?.color },
-						{ label: "Pelagem:", value: castramovel.animal?.coat?.label },
+						{
+							label: "Tamanho:",
+							value: castramovel?.animal?.size?.label || " --- ",
+						},
+						{
+							label: "Espécie:",
+							value: castramovel?.animal?.species?.label || " --- ",
+						},
+						{
+							label: "Característica:",
+							value: castramovel?.animal?.species?.label || " --- ",
+						},
 					],
 				},
 				{
-					title: "Sobre a perca",
+					title: "Informações da solicitação",
 					content: [
 						{
-							label: "Data da perca:",
-							value: useDayjs(castramovel.lost_at).format("DD/MM/YYYY"),
-						},
-						{
-							label: "Hora da perca:",
-							value: castramovel.lost_time ?? "---",
-						},
-						{
 							label: "Status:",
-							value: optionsStatus[castramovel?.status.status] ?? "---",
+							value: castramovel?.status?.label || "---",
+						},
+						{
+							label: "Local da unidade:",
+							value:
+								castramovel?.mobile_clinic_event?.location?.location_name ||
+								"---",
+						},
+						{
+							label: "Data da solicitação:",
+							value: castramovel?.mobile_clinic_event?.start_date || "---",
+						},
+						{
+							label: "Gênero:",
+							value: castramovel?.animal?.gender?.label || " --- ",
+						},
+						{
+							label: "Tamanho:",
+							value: castramovel?.animal?.size?.label || " --- ",
+						},
+						{
+							label: "Espécie:",
+							value: castramovel?.animal?.species?.label || " --- ",
 						},
 					],
 				},
 			] as AboutType[];
 		});
 
-		const mapUrl = computed(() => {
-			if (!castramovel.address) return "";
-			return `https://www.google.com/maps?q=${encodeURIComponent(address)}&hl=pt&z=15&output=embed`;
-		});
-
 		onMounted(async () => {
-			const id = useRoute().params.id as string;
-			await detailsStore.fetchCastramovelById(id, {
-				"with[]": ["user", "address", "animal", "status"],
+			const id = route.params.id as string;
+			await detailStore.fetchCastramovelById(id, {
+				"with[]": ["user", "animal", "mobileClinicEvent"],
 			});
 		});
 
 		return {
 			abouts,
-			mapUrl,
 		};
 	},
 });
@@ -152,35 +164,24 @@ export default defineComponent({
 						:text="(item.value as IEnum)?.label || 'N/A'"
 						:color="(item.value as IEnum)?.color || 'gray'"
 					/>
-					<AtomsImageCustom
-						v-else-if="item.isImage"
-						:src="item.value"
-						alt="imagem usuário"
-						width="fit-content"
-						height="150px"
-						object-fit="contain"
-					/>
+					<div v-else-if="item.isImage" class="media-wrapper">
+						<AtomsImageCustom
+							:src="item.value"
+							alt="Mídia capturada"
+							width="fit-content"
+							height="150px"
+							object-fit="contain"
+						/>
+						<AtomsTypography
+							type="text-p5"
+							:text="'As mídias foram capturadas no momento do registro e são exibidas apenas para fins de análise interna.'"
+							weight="regular"
+							color="var(--brand-color-dark-blue-500)"
+						/>
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-	<div class="wrapper-details__about" style="margin-top: 24px">
-		<AtomsTypography
-			type="text-p2"
-			text="Última localização"
-			weight="medium"
-			color="var(--brand-color-dark-blue-700)"
-		/>
-		<iframe
-			:src="mapUrl"
-			width="100%"
-			height="400"
-			style="border: 0"
-			allowfullscreen=""
-			loading="lazy"
-			referrerpolicy="no-referrer-when-downgrade"
-		>
-		</iframe>
 	</div>
 </template>
 

@@ -55,8 +55,8 @@ export default defineComponent({
 				color: "success",
 			},
 			{
-				value: "refused",
-				name: "REFUSED",
+				value: "rejected",
+				name: "REJECTED",
 				label: "Reprovado",
 				color: "danger",
 			},
@@ -68,10 +68,10 @@ export default defineComponent({
 			},
 		];
 
-		const speciesType =  {
+		const speciesType = {
 			dog: "Cão",
-			cat: "Gato"
-		}
+			cat: "Gato",
+		};
 
 		const getStatus = (status: string | number) => {
 			return optionsStatus.find((s) => s.value === status);
@@ -180,17 +180,18 @@ export default defineComponent({
 			},
 		]);
 
-		const onSelectOptionAction = (event: string, item: IEvalu) => {
+		const onSelectOptionAction = (event: string, item: ICastraMovel) => {
 			const router = useRouter();
 			id.value = item.id;
-			typeAction.value = event;
 
 			if (event === "confirm") {
 				openConfirm();
+				typeAction.value = "pending";
 				feedbackModal.value = {
 					confirm: {
 						title: "Deseja confirmar o agendamento?",
-						description: "Após confirmação, você irá visualizá-lo agenda do dia",
+						description:
+							"Após confirmação, você irá visualizá-lo agenda do dia",
 					},
 					success: {
 						title: "Aprovado com sucesso",
@@ -201,6 +202,7 @@ export default defineComponent({
 			}
 
 			if (event === "cancel") {
+				typeAction.value = "rejected";
 				openConfirm();
 				feedbackModal.value = {
 					confirm: {
@@ -227,7 +229,7 @@ export default defineComponent({
 		const optionsActions = [
 			{ value: "confirm", label: "Confirmar agendamento", icon: "check" },
 			{ value: "cancel", label: "Cancelar agendamento", icon: "calendar" },
-			{ value: "details", label: "Visualizar detalhes", icon: "flag" }
+			{ value: "details", label: "Visualizar detalhes", icon: "flag" },
 		];
 
 		const toggleDropdown = () => {
@@ -369,7 +371,9 @@ export default defineComponent({
 				<template #date>
 					<AtomsTypography
 						type="text-p5"
-						:text="useDayjs(item.mobile_clinic_event.start_date).format('DD/MM/YYYY')"
+						:text="
+							useDayjs(item.mobile_clinic_event.start_date).format('DD/MM/YYYY')
+						"
 						weight="regular"
 						color="var(--brand-color-dark-blue-300)"
 					/>
@@ -377,7 +381,7 @@ export default defineComponent({
 				<template #localUnit>
 					<AtomsTypography
 						type="text-p5"
-						:text="item.mobile_clinic_event.location_id ?? '---'"
+						:text="item.mobile_clinic_event.location.location_name ?? '---'"
 						weight="regular"
 						color="var(--brand-color-dark-blue-300)"
 					/>
@@ -412,7 +416,7 @@ export default defineComponent({
 				@pageChange="paginationChange($event)"
 			/>
 		</div>
-		<OrganismsOccurrencesEvaluationPetFilter
+		<OrganismsOccurrencesCastramovelFilter
 			:is-visible="isVisible"
 			@clear-all="clearSearch"
 			@close="isVisible = false"

@@ -218,7 +218,11 @@ export default defineComponent({
 
 		const optionsActions = [
 			{ value: "receive", label: "Marcar como recebido", icon: "check" },
-			{ value: "forward", label: "Marcar como encaminhada", icon: "arrow-right"},
+			{
+				value: "forward",
+				label: "Marcar como encaminhada",
+				icon: "arrow-right",
+			},
 			{ value: "details", label: "Visualizar detalhes", icon: "paw" },
 		];
 

@@ -21,7 +21,7 @@ export default defineComponent({
 
 		const abouts = computed<AboutType[]>(() => {
 			const report = detailStore.report;
-			console.log(report);
+
 			const optionsStatus = {
 				pending: "Pendente",
 				approved: "Aprovado",

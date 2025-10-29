@@ -114,8 +114,6 @@ export default defineComponent({
 		]);
 
 		const onSelectOptionAction = (event: string, item: IRegistration) => {
-		
-			
 			if (event === "details") {
 				router.push({
 					name: "castra-mobile.registrations.details",

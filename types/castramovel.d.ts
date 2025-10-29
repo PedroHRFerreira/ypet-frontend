@@ -1,5 +1,4 @@
 declare global {
-
 	interface ICastraMovel {
 		id?: number | string;
 		scheduler_at?: string;

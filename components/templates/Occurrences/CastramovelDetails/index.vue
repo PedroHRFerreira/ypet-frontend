@@ -2,12 +2,12 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
-	name: "TemplatesCastramovelDetails",
+	name: "TemplatesOccurrencesCastramovelDetails",
 	setup() {
 		const header = computed(() => {
 			return {
-				title: "Detalhes",
-				subtitle: "Visualize os detalhes do adoção",
+				title: "Detalhes da solicitação",
+				subtitle: "Visualize as solicitações",
 				buttons: [
 					{
 						text: "Voltar",
@@ -82,7 +82,7 @@ export default defineComponent({
 			</header>
 			<main class="main">
 				<div class="main-content">
-					<OrganismsOccurrencesAdoptionVisitsDetails />
+					<OrganismsOccurrencesCastramovelDetails />
 				</div>
 			</main>
 		</div>

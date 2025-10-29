@@ -1,11 +1,11 @@
 export const useDetailStore = defineStore("castramovel-detail", {
 	state: () => {
-		const report = ref({} as ICastraMovel);
+		const castramovel = ref({} as ICastraMovel);
 		const isLoading = ref(false);
 		const errorMessage = ref("");
 
 		return {
-			report,
+			castramovel,
 			isLoading,
 			errorMessage,
 		};
@@ -21,7 +21,7 @@ export const useDetailStore = defineStore("castramovel-detail", {
 				params,
 				onResponse: ({ response }) => {
 					const result = response._data as IResponse;
-					this.report = result.data || ({} as ICastraMovel);
+					this.castramovel = result.data || ({} as ICastraMovel);
 					this.errorMessage = "";
 					this.isLoading = false;
 				},

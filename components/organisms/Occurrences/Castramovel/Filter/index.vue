@@ -16,9 +16,10 @@ export default defineComponent({
 		const castramovelList = useListStore();
 
 		const optionsStatus = computed<IOption[]>(() => [
-			{ id: "found", text: "Encontrado" },
-			{ id: "lost", text: "Perdido" },
-			{ id: "deceased", text: "Fallecido" },
+			{ id: "pending", text: "Pendente" },
+			{ id: "approved", text: "Aprovado" },
+			{ id: "rejected", text: "Reprovado" },
+			{ id: "in_analysis", text: "Para analise" },
 		]);
 
 		const selectedStatus = ref<number | null>(
@@ -30,7 +31,8 @@ export default defineComponent({
 		};
 
 		const hasChanges = computed(() => {
-			const statusChanged = castramovelList.filters.status !== selectedStatus.value;
+			const statusChanged =
+				castramovelList.filters.status !== selectedStatus.value;
 			return statusChanged;
 		});
 
@@ -45,7 +47,8 @@ export default defineComponent({
 
 		const clearFilters = () => {
 			const hasAnyFilter =
-				selectedStatus.value !== null || castramovelList.filters.status !== null;
+				selectedStatus.value !== null ||
+				castramovelList.filters.status !== null;
 			if (!hasAnyFilter) return;
 
 			selectedStatus.value = null;
