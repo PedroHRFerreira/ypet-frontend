@@ -46,11 +46,6 @@ export const useListStore = defineStore("list-registrations", {
 				),
 			);
 
-			if (activeFilters.date) {
-				activeFilters.start_date = activeFilters.date;
-				delete activeFilters.date;
-			}
-
 			await useFetch(this.pathUrl, {
 				method: "GET",
 				params: { page, ...activeFilters, "with[]": ["user", "animal"] },
@@ -64,12 +59,12 @@ export const useListStore = defineStore("list-registrations", {
 				onResponseError: ({ response }) => {
 					this.isLoading = false;
 					this.errorMessage =
-						response._data?.message || "Erro ao buscar os registros.";
+						((response._data as any)?.message as string) ||
+						"Erro ao buscar os registros.";
 				},
 			});
 		},
 
-		// 🔹 Nova função para buscar tutores
 		async fetchTutors(): Promise<void> {
 			if (this.isLoading) return;
 
@@ -80,7 +75,7 @@ export const useListStore = defineStore("list-registrations", {
 				method: "GET",
 				params: {
 					page: 1,
-					"with[]": ["user"], // só precisamos do user
+					"with[]": ["user"],
 				},
 				onResponse: ({ response }) => {
 					const result: IResponse = response._data as IResponse;
@@ -104,7 +99,8 @@ export const useListStore = defineStore("list-registrations", {
 				onResponseError: ({ response }) => {
 					this.isLoading = false;
 					this.errorMessage =
-						response._data?.message || "Erro ao buscar tutores.";
+						((response._data as any)?.message as string) ||
+						"Erro ao buscar tutores.";
 				},
 			});
 		},

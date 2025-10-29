@@ -27,7 +27,7 @@ export default defineComponent({
 		]);
 
 		const selectedDate = ref<string | null>(
-			registrationsStore.filters.date ?? null,
+			registrationsStore.filters.start_date ?? null,
 		);
 		const selectedSpecies = ref<string>(
 			registrationsStore.filters.species ?? "",
@@ -51,7 +51,7 @@ export default defineComponent({
 
 		const hasChanges = computed(() => {
 			return (
-				selectedDate.value !== registrationsStore.filters.date ||
+				selectedDate.value !== registrationsStore.filters.start_date ||
 				selectedSpecies.value !== registrationsStore.filters.species ||
 				selectedStatus.value !== registrationsStore.filters.status ||
 				selectedTutor.value !== registrationsStore.filters.tutor
@@ -61,7 +61,7 @@ export default defineComponent({
 		const applyFilters = () => {
 			if (!hasChanges.value) return;
 
-			registrationsStore.filters.date = selectedDate.value;
+			registrationsStore.filters.start_date = selectedDate.value;
 			registrationsStore.filters.species = selectedSpecies.value;
 			registrationsStore.filters.status = selectedStatus.value;
 			registrationsStore.filters.tutor = selectedTutor.value;
@@ -84,7 +84,7 @@ export default defineComponent({
 			selectedStatus.value = "";
 			selectedTutor.value = "";
 
-			registrationsStore.filters.date = null;
+			registrationsStore.filters.start_date = null;
 			registrationsStore.filters.species = "";
 			registrationsStore.filters.status = "";
 			registrationsStore.filters.tutor = "";
@@ -125,6 +125,7 @@ export default defineComponent({
 	<MoleculesModal
 		title="Filtros"
 		:show-modal="isVisible"
+		icon-right
 		is-filter
 		@close="$emit('close')"
 	>

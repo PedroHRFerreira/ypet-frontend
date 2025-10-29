@@ -11,7 +11,7 @@ export const useListStore = defineStore("abuse-report-list", {
 
 		const filters = reactive({
 			name: null as string | null,
-			status: null as number | null,
+			status: null as string | null,
 			date: null as string | null,
 		});
 
