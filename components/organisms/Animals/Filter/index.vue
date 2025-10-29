@@ -21,10 +21,10 @@ export default defineComponent({
 		]);
 
 		const selectedType = ref<string | null>(
-			locationsStore.filters.type ?? null,
+			locationsStore.filters.species ?? null,
 		);
 		const registrationInput = ref<string>(
-			locationsStore.filters.registration ?? "",
+			locationsStore.filters.registration_number ?? "",
 		);
 
 		const onTypeSelected = (option: IOption) => {
@@ -33,8 +33,8 @@ export default defineComponent({
 
 		const hasChanges = computed(() => {
 			return (
-				locationsStore.filters.type !== selectedType.value ||
-				locationsStore.filters.registration !== registrationInput.value ||
+				locationsStore.filters.species !== selectedType.value ||
+				locationsStore.filters.registration_number !== registrationInput.value ||
 				locationsStore.filters.name !== null
 			);
 		});
@@ -42,8 +42,8 @@ export default defineComponent({
 		const applyFilters = () => {
 			if (!hasChanges.value) return;
 
-			locationsStore.filters.type = selectedType.value;
-			locationsStore.filters.registration = registrationInput.value || null;
+			locationsStore.filters.species = selectedType.value;
+			locationsStore.filters.registration_number = registrationInput.value || null;
 
 			locationsStore.fetchAnimals();
 			emit("close");
@@ -57,8 +57,8 @@ export default defineComponent({
 
 			selectedType.value = null;
 			registrationInput.value = "";
-			locationsStore.filters.type = null;
-			locationsStore.filters.registration = null;
+			locationsStore.filters.species = null;
+			locationsStore.filters.registration_number = null;
 			locationsStore.filters.name = null;
 
 			locationsStore.fetchAnimals();
