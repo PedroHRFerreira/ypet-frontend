@@ -313,8 +313,8 @@ export default defineComponent({
 					label="Procurar"
 					:value="searchValue"
 					:close="!!searchValue.trim().length"
-					@onInput="onSearchInput"
-					@clearInput="clearSearch"
+					@on-input="onSearchInput"
+					@clear-input="clearSearch"
 					@keydown.enter.native="onSearchEnter"
 				/>
 			</div>
