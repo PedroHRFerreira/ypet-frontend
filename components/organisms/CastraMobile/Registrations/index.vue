@@ -113,7 +113,7 @@ export default defineComponent({
 			},
 		]);
 
-		const onSelectOptionAction = (event: string, item: IRegistration) => {
+		const onSelectOptionAction = async (event: string, item: IRegistration) => {
 			if (event === "details") {
 				router.push({
 					name: "castra-mobile.registrations.details",
@@ -129,6 +129,10 @@ export default defineComponent({
 
 			if (event === "download_term") {
 				listStore.downloadTerm(item.id);
+			}
+
+			if (event === "mark_unpresent") {
+				await listStore.markUnpresent(item.id);
 			}
 		};
 
@@ -165,6 +169,12 @@ export default defineComponent({
 				name: "REJECTED",
 				label: "Rejeitado",
 				color: "danger",
+			},
+			{
+				value: "unpresent",
+				name: "UNPRESENT",
+				label: "Ausente",
+				color: "secondary",
 			},
 		];
 		const toggleDropdown = () => {
@@ -311,6 +321,7 @@ export default defineComponent({
 							{ value: 'details', label: 'Detalhes' },
 							{ value: 'pre_surgery_assessment', label: 'Triagem' },
 							{ value: 'download_term', label: 'Baixar termo' },
+							{ value: 'mark_unpresent', label: 'Marcar ausente' },
 						]"
 						@change-action="onSelectOptionAction($event, item)"
 					/>
