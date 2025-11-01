@@ -62,9 +62,9 @@ export default defineComponent({
 		const filterDate = computed(() => {
 			const date = listStore.filters.start_date;
 
-			if(date) return useDayjs(date).format('DD-MM-YYYY')
-			
-			return 'Todas as datas'
+			if (date) return useDayjs(date).format("DD-MM-YYYY");
+
+			return "Todas as datas";
 		});
 
 		const columnsHeader = ref([
@@ -125,7 +125,7 @@ export default defineComponent({
 				style: { width: "10%", justifyContent: "flex-end" },
 			},
 		]);
-		
+
 		async function confirmDelete() {
 			await listStore.delete(idItemDelete.value);
 		}
@@ -153,21 +153,18 @@ export default defineComponent({
 			}
 
 			if (event === "delete") {
-				
 				showConfirm.value = true;
-				idItemDelete.value = item.id,
-				
-				feedbackModal.value = {
-					confirm: {
-						title: "Deseja deletar realmente o agendamento?",
-						description: "Após confirmação, o agendamento será deletado",
-					},
-					success: {
-						title: "Deletado com sucesso",
-						description: "",
-					},
-				};
-
+				((idItemDelete.value = item.id),
+					(feedbackModal.value = {
+						confirm: {
+							title: "Deseja deletar realmente o agendamento?",
+							description: "Após confirmação, o agendamento será deletado",
+						},
+						success: {
+							title: "Deletado com sucesso",
+							description: "",
+						},
+					}));
 			}
 		};
 

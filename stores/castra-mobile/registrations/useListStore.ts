@@ -181,7 +181,6 @@ export const useListStore = defineStore("list-registrations", {
 			});
 		},
 		async delete(id: string | number | undefined): Promise<void> {
-
 			if (this.isLoading || !id) return;
 
 			this.isLoading = true;
@@ -198,7 +197,6 @@ export const useListStore = defineStore("list-registrations", {
 						}
 					}
 					this.isLoading = false;
-				
 				},
 				onResponseError: ({ response }) => {
 					this.isLoading = false;
