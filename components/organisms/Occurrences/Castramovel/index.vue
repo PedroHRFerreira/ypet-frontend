@@ -46,7 +46,7 @@ export default defineComponent({
 				value: "pending",
 				name: "PENDING",
 				label: "Pendente",
-				color: "information",
+				color: "warning",
 			},
 			{
 				value: "approved",

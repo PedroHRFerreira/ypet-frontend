@@ -14,7 +14,7 @@ export const useListStore = defineStore("list-registrations", {
 		const pathUrl = "/api/registrations";
 
 		const filters = ref({
-			start_date: null as string | null,
+			start_date: useDayjs().format('YYYY-MM-DD')  as string | null,
 			species: "" as string,
 			status: "pending" as string,
 			tutor: "" as string,

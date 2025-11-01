@@ -85,4 +85,10 @@
 	&__footer {
 		padding: 0 32px 0 32px;
 	}
+
+	&__header-title {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+	}
 }

@@ -11,9 +11,6 @@ export default defineComponent({
 		const abuseReportsComponent = resolveComponent(
 			"OrganismsOccurrencesAbuseReports",
 		);
-		const castramovelRequestsComponent = resolveComponent(
-			"OrganismsOccurrencesCastramovel",
-		);
 		const samupetComponent = resolveComponent("OrganismsOccurrencesSamupet");
 		const evaluationPetComponent = resolveComponent(
 			"OrganismsOccurrencesEvaluationPet",
@@ -23,7 +20,6 @@ export default defineComponent({
 			adoptionVisits: adoptionVisitsComponent,
 			lostPet: lostPetComponent,
 			abuseReports: abuseReportsComponent,
-			castramovelRequests: castramovelRequestsComponent,
 			samupet: samupetComponent,
 			evaluationPet: evaluationPetComponent,
 		};
@@ -44,18 +40,13 @@ export default defineComponent({
 				active: false,
 			},
 			{
-				id: "castramovelRequests",
-				name: "Solicitações do castramóvel",
-				active: false,
-			},
-			{
 				id: "samupet",
 				name: "Samupet",
 				active: false,
 			},
 			{
 				id: "evaluationPet",
-				name: "Avaliação de pet",
+				name: "Avaliação de adoção",
 				active: false,
 			},
 		] as ITab[]);
@@ -94,9 +85,26 @@ export default defineComponent({
 			activeComponent,
 		};
 	},
+	mounted(){
+		const tabParam = useRoute().query.tab
+
+		if (tabParam) {
+			this.tabs.forEach(tab => {
+				tab.active = tab.id === tabParam
+			})
+		}
+	},
 	methods: {
+		setRouteDefault(tabId: string): void {
+			const router = useRouter();
+			router.replace({ name: "occurrences", query: { tab: tabId } });
+		},
 		setActiveTab(tab: ITab): void {
 			this.tabs = this.tabs.map((t) => {
+				if (t.id === tab.id) {
+					this.setRouteDefault(t.id);
+				}
+
 				return {
 					...t,
 					active: t.id === tab.id,

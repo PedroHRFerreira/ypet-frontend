@@ -16,6 +16,7 @@ export default defineComponent({
 		const listStore = useListStore();
 		const isVisible = ref(false);
 		const router = useRouter();
+		
 
 		const navigateToCreate = () => {
 			router.push({ name: "castra-mobile.registrations.create" });
@@ -46,23 +47,11 @@ export default defineComponent({
 			return listStore.list;
 		});
 
+		const filterDate = computed(()=> {
+			return listStore.filters.start_date
+		})
+
 		const columnsHeader = ref([
-			{
-				value: "id",
-				text: "ID",
-				typeTypography: "text-p5",
-				weightTypography: "bold",
-				colorTypography: "var(--brand-color-dark-blue-300)",
-				style: { width: "5%", wordBreak: "break-all" },
-			},
-			{
-				value: "hour",
-				text: "DATA E HORA",
-				typeTypography: "text-p5",
-				weightTypography: "bold",
-				colorTypography: "var(--brand-color-dark-blue-300)",
-				style: { width: "15%", wordBreak: "break-all" },
-			},
 			{
 				value: "tutor",
 				text: "TUTOR",
@@ -82,6 +71,14 @@ export default defineComponent({
 			{
 				value: "species",
 				text: "ESPÉCIES",
+				typeTypography: "text-p5",
+				weightTypography: "bold",
+				colorTypography: "var(--brand-color-dark-blue-300)",
+				style: { width: "10%", justifyContent: "flex-end" },
+			},
+			{
+				value: "sex",
+				text: "SEXO",
 				typeTypography: "text-p5",
 				weightTypography: "bold",
 				colorTypography: "var(--brand-color-dark-blue-300)",
@@ -180,6 +177,7 @@ export default defineComponent({
 			getStatus,
 			toggleDropdown,
 			isVisible,
+			filterDate
 		};
 	},
 	methods: {
@@ -197,6 +195,14 @@ export default defineComponent({
 					:text="header.title"
 					weight="medium"
 					color="var(--brand-color-dark-blue-300)"
+				/>
+
+				<AtomsBadges
+					color="custom"
+					size="medium"
+					style="zoom:1.5"
+					custom-color="var(--brand-color-blue-400)"
+					:text="useDayjs(filterDate).format('DD-MM-YYYY')"
 				/>
 			</div>
 			<div class="wrapper-list-card__header-actions">
@@ -243,24 +249,6 @@ export default defineComponent({
 				:data="columnsHeader"
 				padding="0"
 			>
-				<template #id>
-					<AtomsTypography
-						type="text-p5"
-						:text="`#${item.id}`"
-						weight="regular"
-						color="var(--brand-color-dark-blue-300)"
-					/>
-				</template>
-
-				<template #hour>
-					<AtomsTypography
-						type="text-p5"
-						:text="useDayjs(item.created_at).format('DD/MM/YYYY - HH:mm')"
-						weight="regular"
-						color="var(--brand-color-dark-blue-300)"
-					/>
-				</template>
-
 				<template #tutor>
 					<AtomsTypography
 						type="text-p5"
@@ -288,6 +276,15 @@ export default defineComponent({
 					/>
 				</template>
 
+				<template #sex>
+					<AtomsTypography
+						type="text-p5"
+						:text="item.animal?.gender.label || '---'"
+						weight="regular"
+						color="var(--brand-color-dark-blue-300)"
+					/>
+				</template>
+
 				<template #weight>
 					<AtomsTypography
 						type="text-p5"
@@ -308,9 +305,11 @@ export default defineComponent({
 					<MoleculesActionDropdown
 						:key="item.id"
 						:actions="[
+							{ value: 'finished', label: 'Finalizar' },
 							{ value: 'details', label: 'Detalhes' },
 							{ value: 'pre_surgery_assessment', label: 'Triagem' },
 							{ value: 'download_term', label: 'Baixar termo' },
+							{ value: 'delete', label: 'Deletar' },
 						]"
 						@change-action="onSelectOptionAction($event, item)"
 					/>
