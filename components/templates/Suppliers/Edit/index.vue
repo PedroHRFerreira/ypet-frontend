@@ -8,7 +8,7 @@ export default defineComponent({
 		const router = useRouter();
 		const header = computed(() => {
 			return {
-				title: "# Editar fornecedor",
+				title: "Editar fornecedor",
 				subtitle: "Atualize as informações do fornecedor",
 				buttons: [
 					{
