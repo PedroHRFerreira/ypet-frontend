@@ -1,35 +1,15 @@
 <script lang="ts">
-import { defineComponent } from "vue";
-import { useDetailStore } from "~/stores/suppliers/useDetailStore";
-import { useEditStore } from "~/stores/suppliers/useEditStore";
+import { defineComponent, computed } from "vue";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
 	name: "TemplatesSuppliersEdit",
 	setup() {
-		const supplierDetailsStore = useDetailStore();
-		const supplierEditStore = useEditStore();
-		const title = computed(() => {
-			if (supplierDetailsStore.isLoading) {
-				return "Carregando...";
-			}
-
-			return supplierDetailsStore.supplier
-				? "# " + supplierDetailsStore.supplier.legal_name + " "
-				: "";
-		});
-		const subtitle = computed(() => {
-			if (supplierDetailsStore.isLoading) {
-				return "Carregando...";
-			}
-
-			const textStart = "Editar informações do fornecedor: ";
-
-			return textStart + (supplierDetailsStore.supplier?.legal_name || "");
-		});
+		const router = useRouter();
 		const header = computed(() => {
 			return {
-				title: title.value,
-				subtitle: subtitle.value,
+				title: "# Editar fornecedor",
+				subtitle: "Atualize as informações do fornecedor",
 				buttons: [
 					{
 						text: "Voltar",
@@ -42,7 +22,6 @@ export default defineComponent({
 						size: "small",
 						width: "auto",
 						action: () => {
-							const router = useRouter();
 							router.back();
 						},
 					},
@@ -50,17 +29,8 @@ export default defineComponent({
 			};
 		});
 
-		onMounted(async () => {
-			const id = useRoute().params.id as string;
-			await supplierDetailsStore.fetchSupplierById(id, {
-				"with[]": ["user"],
-			});
-		});
-
 		return {
 			header,
-			supplierDetailsStore,
-			supplierEditStore,
 		};
 	},
 });

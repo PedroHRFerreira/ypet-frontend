@@ -1,6 +1,7 @@
 <script lang="ts">
 import { defineComponent, onUnmounted } from "vue";
 import { useCreateStore } from "~/stores/suppliers/useCreateStore";
+import { useZipcodeLookup } from "~/composables/useZipcodeLookup";
 
 import { useUserStatusEnumStore } from "~/stores/Enums/useUserStatusEnumStore";
 import { useUFEnumStore } from "~/stores/Enums/useUFEnumStore";
@@ -14,6 +15,7 @@ export default defineComponent({
 		const useUFEnum = useUFEnumStore();
 		const useBooleanEnum = useBooleanEnumStore();
 		const useUserStatusEnum = useUserStatusEnumStore();
+		const { fetchAddress } = useZipcodeLookup();
 
 		onUnmounted(() => {
 			useSuppliersCreate.resetForm();
@@ -83,9 +85,26 @@ export default defineComponent({
 			useSuppliersCreate.setFormField("cellphone", digits);
 		}
 
-		function onInputZipCode(value: string) {
+		async function onInputZipCode(value: string) {
 			zipCode.value = useMaskZipCode(value);
-			useSuppliersCreate.setFormField("zip_code", value.replace(/\D/g, ""));
+			const digits = value.replace(/\D/g, "");
+			useSuppliersCreate.setFormField("zip_code", digits);
+
+			if (digits.length === 8) {
+				const data = await fetchAddress(digits);
+				if (data) {
+					useSuppliersCreate.setFormField("street", data.street);
+					useSuppliersCreate.setFormField("district", data.district);
+					useSuppliersCreate.setFormField("city", data.city);
+					// map UF to enum option id
+					const ufOpt = optionsUFEnum.find(
+						(o) => (o as any).id === data.state || (o as any).text === data.state,
+					);
+					if (ufOpt) {
+						useSuppliersCreate.setFormField("state", (ufOpt as any).id);
+					}
+				}
+			}
 		}
 
 		function handleError(message: string) {

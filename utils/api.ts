@@ -59,3 +59,23 @@ export async function apiPut<T>(
 	});
 	return response as T;
 }
+
+export async function apiPostForm<T>(
+	url: string,
+	event: any,
+	params: URLSearchParams,
+): Promise<T> {
+	const apiBaseUrl = useRuntimeConfig().public.apiBaseUrl;
+	const fullUrl = `${apiBaseUrl}${url}`;
+	const response = await $fetch(fullUrl, {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/x-www-form-urlencoded",
+			Accept: "application/json",
+			Authorization: `${getCookie(event, "auth._token.laravelSanctum")}`,
+			"X-Client-Type": "web",
+		},
+		body: params.toString(),
+	});
+	return response as T;
+}

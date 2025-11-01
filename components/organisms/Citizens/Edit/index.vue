@@ -28,7 +28,7 @@ export default defineComponent({
 		const optionsUFEnum = computed(() => {
 			const citizen = useCitizenDetailsStore.citizens;
 			return UFEnum.value.map((item) => {
-				if (item.value === citizen?.state) {
+				if (item.value === citizen?.addresses?.[0]?.state) {
 					item.state = "activated";
 					useCitizenEdit.setFormField("state", item.id);
 				}
