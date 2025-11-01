@@ -1,5 +1,6 @@
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref } from "vue";
+import { useZipcodeLookup } from "~/composables/useZipcodeLookup";
 
 import { useUserStatusEnumStore } from "~/stores/Enums/useUserStatusEnumStore";
 import { useUFEnumStore } from "~/stores/Enums/useUFEnumStore";
@@ -22,6 +23,7 @@ export default defineComponent({
 		const document = ref("");
 		const telephone = ref("");
 		const zipCode = ref("");
+		const { fetchAddress } = useZipcodeLookup();
 		const showConfirm = ref(false);
 		const showSuccess = ref(false);
 
@@ -119,9 +121,25 @@ export default defineComponent({
 			useCitizenEdit.setFormField("telephone", value.replace(/\D/g, ""));
 		}
 
-		function onInputZipCode(value: string) {
+		async function onInputZipCode(value: string) {
 			zipCode.value = useMaskZipCode(value);
-			useCitizenEdit.setFormField("zip_code", value.replace(/\D/g, ""));
+			const digits = value.replace(/\D/g, "");
+			useCitizenEdit.setFormField("zip_code", digits);
+
+			if (digits.length === 8) {
+				const data = await fetchAddress(digits);
+				if (data) {
+					useCitizenEdit.setFormField("street", data.street);
+					useCitizenEdit.setFormField("district", data.district);
+					useCitizenEdit.setFormField("city", data.city);
+					const ufOpt = UFEnum.value.find(
+						(o) => (o as any).id === data.state || (o as any).text === data.state,
+					);
+					if (ufOpt) {
+						useCitizenEdit.setFormField("state", (ufOpt as any).id);
+					}
+				}
+			}
 		}
 
 		function openConfirm() {
