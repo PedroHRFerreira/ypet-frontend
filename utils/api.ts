@@ -79,3 +79,33 @@ export async function apiPostForm<T>(
 	});
 	return response as T;
 }
+
+export async function apiDelete<T>(
+	url: string,
+
+	event: any,
+
+	payload: Record<string, any>,
+): Promise<T> {
+	const apiBaseUrl = useRuntimeConfig().public.apiBaseUrl;
+
+	const fullUrl = `${apiBaseUrl}${url}`;
+
+	const response = await $fetch(fullUrl, {
+		method: "DELETE",
+
+		headers: {
+			"Content-Type": "application/json",
+
+			Accept: "application/json",
+
+			Authorization: `${getCookie(event, "auth._token.laravelSanctum")}`,
+
+			"X-Client-Type": "web",
+		},
+
+		body: JSON.stringify(payload),
+	});
+
+	return response as T;
+}
