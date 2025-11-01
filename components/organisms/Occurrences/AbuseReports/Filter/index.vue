@@ -18,7 +18,7 @@ export default defineComponent({
 		const selectedDate = ref<string | null>(
 			abuseReportList.filters.date ?? null,
 		);
-		const selectedStatus = ref<number | null>(
+		const selectedStatus = ref<string | null>(
 			abuseReportList.filters.status ?? null,
 		);
 
@@ -30,7 +30,7 @@ export default defineComponent({
 		]);
 
 		const onStatusSelected = (option: IOption) => {
-			selectedStatus.value = option.id as number;
+			selectedStatus.value = option.id as string;
 		};
 
 		const hasChanges = computed(() => {
@@ -82,6 +82,7 @@ export default defineComponent({
 	<MoleculesModal
 		title="Filtros"
 		:show-modal="isVisible"
+		icon-right
 		is-filter
 		@close="$emit('close')"
 	>

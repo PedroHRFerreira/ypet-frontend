@@ -27,6 +27,15 @@ export const useCreateStore = defineStore("supplier-create", {
 			"city",
 			"state",
 			"country",
+			// Dados Bancários
+			"cpf_cnpj",
+			"account_type",
+			"pix_key",
+			"bank_account_type",
+			"bank",
+			"agency",
+			"account_number",
+			"account_holder",
 		]);
 
 		return { supplier, isLoading, errorMessage, successMessage, form };

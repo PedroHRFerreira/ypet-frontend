@@ -12,8 +12,8 @@ export const useListStore = defineStore("animals-list", {
 
 		const filters = ref({
 			name: null as string | null,
-			type: null as string | null,
-			registration: null as string | null,
+			species: null as string | null,
+			registration_number: null as string | null,
 		});
 
 		return {
@@ -36,17 +36,17 @@ export const useListStore = defineStore("animals-list", {
 
 			const queryParams: Record<string, any> = {
 				...params,
-				"with[]": ["status", "entryData"],
+				"with[]": ["status", "entryData", "tutor"],
 			};
 
 			if (this.filters.name !== null) {
 				queryParams.name = this.filters.name;
 			}
-			if (this.filters.type !== null) {
-				queryParams.type = this.filters.type;
+			if (this.filters.species !== null) {
+				queryParams.species = this.filters.species;
 			}
-			if (this.filters.registration !== null) {
-				queryParams.registration = this.filters.registration;
+			if (this.filters.registration_number !== null) {
+				queryParams.registration_number = this.filters.registration_number;
 			}
 
 			await useFetch(this.pathUrl, {

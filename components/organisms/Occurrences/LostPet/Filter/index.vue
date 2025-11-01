@@ -18,15 +18,15 @@ export default defineComponent({
 		const optionsStatus = computed<IOption[]>(() => [
 			{ id: "found", text: "Encontrado" },
 			{ id: "lost", text: "Perdido" },
-			{ id: "deceased", text: "Fallecido" },
+			{ id: "deceased", text: "Falecido" },
 		]);
 
-		const selectedStatus = ref<number | null>(
+		const selectedStatus = ref<string | null>(
 			lostPetList.filters.status ?? null,
 		);
 
 		const onStatusSelected = (option: IOption) => {
-			selectedStatus.value = option.id as number | null;
+			selectedStatus.value = option.id as string | null;
 		};
 
 		const hasChanges = computed(() => {
@@ -72,6 +72,7 @@ export default defineComponent({
 	<MoleculesModal
 		title="Filtros"
 		:showModal="isVisible"
+		icon-right
 		is-filter
 		@close="$emit('close')"
 	>

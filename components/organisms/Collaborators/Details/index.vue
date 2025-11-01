@@ -25,7 +25,7 @@ export default defineComponent({
 					content: [
 						{ label: "Nome: ", value: detail?.user.name || "N/A" },
 						{ label: "Email:", value: detail?.user.email },
-						{ label: "CNPJ:", value: detail?.cnpj },
+						{ label: "CPF/CNPJ:", value: detail?.cnpj },
 						{
 							label: "Data de inicio do trabalho:",
 							value: proxy?.$formatDateTime(detail?.work_started_at) || "N/A",
@@ -46,7 +46,7 @@ export default defineComponent({
 					],
 				},
 				{
-					title: "Dados de bancários",
+					title: "Dados bancários",
 					content: [
 						{
 							label: "Tipo de conta:",

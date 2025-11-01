@@ -46,23 +46,11 @@ export default defineComponent({
 			return listStore.list;
 		});
 
+		const filterDate = computed(() => {
+			return listStore.filters.start_date;
+		});
+
 		const columnsHeader = ref([
-			{
-				value: "id",
-				text: "ID",
-				typeTypography: "text-p5",
-				weightTypography: "bold",
-				colorTypography: "var(--brand-color-dark-blue-300)",
-				style: { width: "5%", wordBreak: "break-all" },
-			},
-			{
-				value: "hour",
-				text: "DATA E HORA",
-				typeTypography: "text-p5",
-				weightTypography: "bold",
-				colorTypography: "var(--brand-color-dark-blue-300)",
-				style: { width: "15%", wordBreak: "break-all" },
-			},
 			{
 				value: "tutor",
 				text: "TUTOR",
@@ -77,7 +65,7 @@ export default defineComponent({
 				typeTypography: "text-p5",
 				weightTypography: "bold",
 				colorTypography: "var(--brand-color-dark-blue-300)",
-				style: { width: "15%" },
+				style: { width: "5%" },
 			},
 			{
 				value: "species",
@@ -85,7 +73,15 @@ export default defineComponent({
 				typeTypography: "text-p5",
 				weightTypography: "bold",
 				colorTypography: "var(--brand-color-dark-blue-300)",
-				style: { width: "20%", justifyContent: "flex-end" },
+				style: { width: "10%", justifyContent: "flex-end" },
+			},
+			{
+				value: "sex",
+				text: "SEXO",
+				typeTypography: "text-p5",
+				weightTypography: "bold",
+				colorTypography: "var(--brand-color-dark-blue-300)",
+				style: { width: "10%", justifyContent: "flex-end" },
 			},
 			{
 				value: "weight",
@@ -113,9 +109,7 @@ export default defineComponent({
 			},
 		]);
 
-		const onSelectOptionAction = (event: string, item: IRegistration) => {
-			const router = useRouter();
-
+		const onSelectOptionAction = async (event: string, item: IRegistration) => {
 			if (event === "details") {
 				router.push({
 					name: "castra-mobile.registrations.details",
@@ -131,6 +125,13 @@ export default defineComponent({
 
 			if (event === "download_term") {
 				listStore.downloadTerm(item.id);
+			}
+
+			if (event === "finished") {
+				await listStore.markFinished(item.id);
+			}
+
+			if (event === "delete") {
 			}
 		};
 
@@ -168,6 +169,12 @@ export default defineComponent({
 				label: "Rejeitado",
 				color: "danger",
 			},
+			{
+				value: "finished",
+				name: "FINISHED",
+				label: "Finalizado",
+				color: "success",
+			},
 		];
 		const toggleDropdown = () => {
 			isVisible.value = true;
@@ -182,6 +189,7 @@ export default defineComponent({
 			getStatus,
 			toggleDropdown,
 			isVisible,
+			filterDate,
 		};
 	},
 	methods: {
@@ -199,6 +207,14 @@ export default defineComponent({
 					:text="header.title"
 					weight="medium"
 					color="var(--brand-color-dark-blue-300)"
+				/>
+
+				<AtomsBadges
+					color="custom"
+					size="medium"
+					style="zoom: 1.5"
+					custom-color="var(--brand-color-blue-400)"
+					:text="useDayjs(filterDate).format('DD-MM-YYYY')"
 				/>
 			</div>
 			<div class="wrapper-list-card__header-actions">
@@ -245,24 +261,6 @@ export default defineComponent({
 				:data="columnsHeader"
 				padding="0"
 			>
-				<template #id>
-					<AtomsTypography
-						type="text-p5"
-						:text="`#${item.id}`"
-						weight="regular"
-						color="var(--brand-color-dark-blue-300)"
-					/>
-				</template>
-
-				<template #hour>
-					<AtomsTypography
-						type="text-p5"
-						:text="useDayjs(item.created_at).format('DD/MM/YYYY - HH:mm')"
-						weight="regular"
-						color="var(--brand-color-dark-blue-300)"
-					/>
-				</template>
-
 				<template #tutor>
 					<AtomsTypography
 						type="text-p5"
@@ -290,6 +288,15 @@ export default defineComponent({
 					/>
 				</template>
 
+				<template #sex>
+					<AtomsTypography
+						type="text-p5"
+						:text="item.animal?.gender.label || '---'"
+						weight="regular"
+						color="var(--brand-color-dark-blue-300)"
+					/>
+				</template>
+
 				<template #weight>
 					<AtomsTypography
 						type="text-p5"
@@ -310,9 +317,11 @@ export default defineComponent({
 					<MoleculesActionDropdown
 						:key="item.id"
 						:actions="[
+							{ value: 'finished', label: 'Finalizar' },
 							{ value: 'details', label: 'Detalhes' },
 							{ value: 'pre_surgery_assessment', label: 'Triagem' },
 							{ value: 'download_term', label: 'Baixar termo' },
+							{ value: 'delete', label: 'Deletar' },
 						]"
 						@change-action="onSelectOptionAction($event, item)"
 					/>

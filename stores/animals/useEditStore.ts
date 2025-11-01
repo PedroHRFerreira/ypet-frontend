@@ -17,6 +17,7 @@ export const useEditStore = defineStore("animals-edit", {
 			"birth_date",
 			"entry_date",
 			"status",
+			"tutor_id",
 			"location_id",
 			"characteristics",
 			"picture",
@@ -69,9 +70,14 @@ export const useEditStore = defineStore("animals-edit", {
 			});
 		},
 		setFormField(field: string, value: any): void {
-			this.form[field].value = value;
+			if (typeof value === "object" && value !== null && "value" in value) {
+				this.form[field].value = value.value;
+			} else {
+				this.form[field].value = value;
+			}
 			this.setFormError(field, []);
 		},
+
 		setFormError(field: string, errorMessages: string[]): void {
 			this.form[field].errorMessages = errorMessages;
 		},
