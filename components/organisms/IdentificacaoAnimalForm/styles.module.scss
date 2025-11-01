@@ -1,0 +1,7 @@
+@use "@/assets/scss/_mixins.scss" as mixins;
+
+.organisms-identificacao-animal-form {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}

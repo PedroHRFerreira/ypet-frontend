@@ -1,0 +1,31 @@
+@use "assets/scss/_colors.scss";
+
+.molecules-card-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  &__header {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  &__title {
+    color: var(--brand-color-dark-blue-900);
+  }
+
+  &__subtitle {
+    color: var(--brand-color-dark-blue-300);
+  }
+
+  &__actions {
+    margin-top: 8px;
+    display: flex;
+    gap: 8px;
+  }
+
+  &__content {
+    display: block;
+  }
+}
