@@ -1,6 +1,7 @@
 <script lang="ts">
 import { computed, defineComponent, ref } from "vue";
 import { useListStore } from "~/stores/suppliers/useListStore";
+import { useDeleteStore as useSuppliersDeleteStore } from "~/stores/suppliers/useDeleteStore";
 import MoleculesListCardItem from "~/components/molecules/ListCardItem/index.vue";
 import AtomsTypography from "~/components/atoms/Typography/index.vue";
 import AtomsBadges from "~/components/atoms/Badges/Index.vue";
@@ -14,6 +15,10 @@ export default defineComponent({
 	},
 	setup() {
 		const suppliersList = useListStore();
+		const deleteStore = useSuppliersDeleteStore();
+		const showConfirm = ref(false);
+		const showSuccess = ref(false);
+		const selectedId = ref<string | number | null>(null);
 
 		const header = computed(() => {
 			return {
@@ -116,6 +121,11 @@ export default defineComponent({
 			if (event === "edit") {
 				router.push({ name: "suppliers-edit", params: { id: item.uuid } });
 			}
+
+			if (event === "delete") {
+				selectedId.value = item.id ?? item.uuid;
+				showConfirm.value = true;
+			}
 		};
 
 		const optionsStatus: IEnum[] = [
@@ -146,6 +156,24 @@ export default defineComponent({
 			getStatus,
 			onSelectOptionAction,
 			paginationChange,
+			deleteStore,
+			showConfirm,
+			showSuccess,
+			selectedId,
+			async confirmDelete() {
+				if (!selectedId.value) return;
+				await deleteStore.destroy(selectedId.value);
+				if (!deleteStore.errorMessage) {
+					showSuccess.value = true;
+					await suppliersList.fetchList({ page: suppliersList.pagination?.current_page || 1 });
+				}
+			},
+			onCloseConfirm() {
+				showConfirm.value = false;
+			},
+			onCloseSuccess() {
+				showSuccess.value = false;
+			},
 		};
 	},
 	methods: {
@@ -235,6 +263,7 @@ export default defineComponent({
 						:actions="[
 							{ value: 'details', label: 'Detalhes', icon: 'info' },
 							{ value: 'edit', label: 'Editar', icon: 'edit' },
+							{ value: 'delete', label: 'Excluir', icon: 'trash' },
 						]"
 						@change-action="onSelectOptionAction($event, item)"
 					/>
@@ -251,6 +280,23 @@ export default defineComponent({
 			/>
 		</div>
 	</section>
+	<MoleculesConfirmFeedbackModal
+		v-model:open="showConfirm"
+		variant="confirm"
+		title="Excluir fornecedor"
+		description="Tem certeza que deseja excluir este fornecedor?"
+		confirm-text="Excluir"
+		cancel-text="Cancelar"
+		@confirm="confirmDelete"
+		@close="onCloseConfirm"
+	/>
+	<MoleculesConfirmFeedbackModal
+		v-model:open="showSuccess"
+		variant="success"
+		title="Fornecedor excluído com sucesso"
+		continue-text="Fechar"
+		@close="onCloseSuccess"
+	/>
 </template>
 
 <style scoped lang="scss">

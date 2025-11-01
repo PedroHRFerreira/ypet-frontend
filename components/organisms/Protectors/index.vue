@@ -1,6 +1,7 @@
 <script lang="ts">
 import { computed, defineComponent, ref } from "vue";
 import { useListStore } from "~/stores/protectors/useListStore";
+import { useDeleteStore as useProtectorsDeleteStore } from "~/stores/protectors/useDeleteStore";
 import MoleculesListCardItem from "~/components/molecules/ListCardItem/index.vue";
 import AtomsTypography from "~/components/atoms/Typography/index.vue";
 import AtomsBadges from "~/components/atoms/Badges/Index.vue";
@@ -14,6 +15,10 @@ export default defineComponent({
 	},
 	setup() {
 		const protectorsList = useListStore();
+		const deleteStore = useProtectorsDeleteStore();
+		const showConfirm = ref(false);
+		const showSuccess = ref(false);
+		const selectedId = ref<number | null>(null);
 
 		const header = computed(() => {
 			return {
@@ -115,6 +120,11 @@ export default defineComponent({
 			if (event === "edit") {
 				router.push({ name: "protectors-edit", params: { id: item.id } });
 			}
+
+			if (event === "delete") {
+				selectedId.value = Number(item.id);
+				showConfirm.value = true;
+			}
 		};
 
 		const optionsStatus: IEnum[] = [
@@ -146,6 +156,24 @@ export default defineComponent({
 			getStatus,
 			onSelectOptionAction,
 			paginationChange,
+			deleteStore,
+			showConfirm,
+			showSuccess,
+			selectedId,
+			async confirmDelete() {
+				if (!selectedId.value) return;
+				await deleteStore.destroy(selectedId.value);
+				if (!deleteStore.errorMessage) {
+					showSuccess.value = true;
+					await protectorsList.fetchList({ page: protectorsList.pagination?.current_page || 1 });
+				}
+			},
+			onCloseConfirm() {
+				showConfirm.value = false;
+			},
+			onCloseSuccess() {
+				showSuccess.value = false;
+			},
 		};
 	},
 	methods: {
