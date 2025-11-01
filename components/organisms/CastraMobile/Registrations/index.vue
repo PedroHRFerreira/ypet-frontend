@@ -16,7 +16,6 @@ export default defineComponent({
 		const listStore = useListStore();
 		const isVisible = ref(false);
 		const router = useRouter();
-		
 
 		const navigateToCreate = () => {
 			router.push({ name: "castra-mobile.registrations.create" });
@@ -47,9 +46,9 @@ export default defineComponent({
 			return listStore.list;
 		});
 
-		const filterDate = computed(()=> {
-			return listStore.filters.start_date
-		})
+		const filterDate = computed(() => {
+			return listStore.filters.start_date;
+		});
 
 		const columnsHeader = ref([
 			{
@@ -110,7 +109,7 @@ export default defineComponent({
 			},
 		]);
 
-		const onSelectOptionAction = (event: string, item: IRegistration) => {
+		const onSelectOptionAction = async (event: string, item: IRegistration) => {
 			if (event === "details") {
 				router.push({
 					name: "castra-mobile.registrations.details",
@@ -126,6 +125,13 @@ export default defineComponent({
 
 			if (event === "download_term") {
 				listStore.downloadTerm(item.id);
+			}
+
+			if (event === "finished") {
+				await listStore.markFinished(item.id);
+			}
+
+			if (event === "delete") {
 			}
 		};
 
@@ -163,6 +169,12 @@ export default defineComponent({
 				label: "Rejeitado",
 				color: "danger",
 			},
+			{
+				value: "finished",
+				name: "FINISHED",
+				label: "Finalizado",
+				color: "success",
+			},
 		];
 		const toggleDropdown = () => {
 			isVisible.value = true;
@@ -177,7 +189,7 @@ export default defineComponent({
 			getStatus,
 			toggleDropdown,
 			isVisible,
-			filterDate
+			filterDate,
 		};
 	},
 	methods: {
@@ -200,7 +212,7 @@ export default defineComponent({
 				<AtomsBadges
 					color="custom"
 					size="medium"
-					style="zoom:1.5"
+					style="zoom: 1.5"
 					custom-color="var(--brand-color-blue-400)"
 					:text="useDayjs(filterDate).format('DD-MM-YYYY')"
 				/>

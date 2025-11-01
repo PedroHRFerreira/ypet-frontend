@@ -25,14 +25,9 @@ export default defineComponent({
 		};
 		const tabs = ref([
 			{
-				id: "adoptionVisits",
-				name: "Visitas de adoção",
-				active: true,
-			},
-			{
 				id: "lostPet",
 				name: "Perdi meu pet",
-				active: false,
+				active: true,
 			},
 			{
 				id: "abuseReports",
@@ -47,6 +42,11 @@ export default defineComponent({
 			{
 				id: "evaluationPet",
 				name: "Avaliação de adoção",
+				active: false,
+			},
+			{
+				id: "adoptionVisits",
+				name: "Visitas de adoção",
 				active: false,
 			},
 		] as ITab[]);
@@ -85,13 +85,13 @@ export default defineComponent({
 			activeComponent,
 		};
 	},
-	mounted(){
-		const tabParam = useRoute().query.tab
+	mounted() {
+		const tabParam = useRoute().query.tab;
 
 		if (tabParam) {
-			this.tabs.forEach(tab => {
-				tab.active = tab.id === tabParam
-			})
+			this.tabs.forEach((tab) => {
+				tab.active = tab.id === tabParam;
+			});
 		}
 	},
 	methods: {

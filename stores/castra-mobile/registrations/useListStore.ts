@@ -14,7 +14,7 @@ export const useListStore = defineStore("list-registrations", {
 		const pathUrl = "/api/registrations";
 
 		const filters = ref({
-			start_date: useDayjs().format('YYYY-MM-DD')  as string | null,
+			start_date: useDayjs().format("YYYY-MM-DD") as string | null,
 			species: "" as string,
 			status: "pending" as string,
 			tutor: "" as string,
@@ -145,6 +145,41 @@ export const useListStore = defineStore("list-registrations", {
 			});
 		},
 
+		async markFinished(id: string | number | undefined): Promise<void> {
+			if (this.isLoading || !id) return;
+
+			this.isLoading = true;
+			this.errorMessage = "";
+
+			await useFetch(`${this.pathUrl}/${id}`, {
+				method: "PUT",
+				body: {
+					status: "finished",
+				},
+				onResponse: ({ response }) => {
+					const result: IResponse = response._data as IResponse;
+
+					if (result.type === "success") {
+						const index = this.list.findIndex((item) => item.id === id);
+						if (index !== -1) {
+							this.list[index].status = {
+								value: "finished",
+								name: "FINISHED",
+								label: "Finalizado",
+							};
+						}
+					}
+
+					this.isLoading = false;
+				},
+				onResponseError: ({ response }) => {
+					this.isLoading = false;
+					this.errorMessage =
+						((response._data as any)?.message as string) ||
+						"Erro ao marcar como finalizado.";
+				},
+			});
+		},
 		changePage(page: number) {
 			this.pagination.current_page = page;
 			this.fetchList(page);

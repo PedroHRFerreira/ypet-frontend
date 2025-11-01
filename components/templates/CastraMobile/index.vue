@@ -71,13 +71,13 @@ export default defineComponent({
 			activeComponent,
 		};
 	},
-	mounted(){
-		const tabParam = useRoute().query.tab
+	mounted() {
+		const tabParam = useRoute().query.tab;
 
 		if (tabParam) {
-			this.tabs.forEach(tab => {
-				tab.active = tab.id === tabParam
-			})
+			this.tabs.forEach((tab) => {
+				tab.active = tab.id === tabParam;
+			});
 		}
 	},
 	methods: {
