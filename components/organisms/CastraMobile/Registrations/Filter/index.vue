@@ -22,8 +22,6 @@ export default defineComponent({
 
 		const optionsStatus = computed<IOption[]>(() => [
 			{ id: "pending", text: "Pendente" },
-			{ id: "approved", text: "Aprovado" },
-			{ id: "rejected", text: "Reprovado" },
 			{ id: "finished", text: "Finalizado" },
 		]);
 
