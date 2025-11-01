@@ -374,7 +374,7 @@ export default defineComponent({
 							{ value: 'details', label: 'Detalhes' },
 							{ value: 'pre_surgery_assessment', label: 'Triagem' },
 							{ value: 'download_term', label: 'Baixar termo' },
-							{ value: 'delete', label: 'Deletar' },
+							{ value: 'delete', label: 'Excluir' },
 						]"
 						@change-action="onSelectOptionAction($event, item)"
 					/>
