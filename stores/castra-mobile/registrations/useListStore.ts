@@ -180,6 +180,34 @@ export const useListStore = defineStore("list-registrations", {
 				},
 			});
 		},
+		async delete(id: string | number | undefined): Promise<void> {
+
+			if (this.isLoading || !id) return;
+
+			this.isLoading = true;
+			this.errorMessage = "";
+
+			await useFetch(`${this.pathUrl}/${id}`, {
+				method: "DELETE",
+				onResponse: ({ response }) => {
+					const result: IResponse = response._data as IResponse;
+					if (result.type === "success") {
+						const index = this.list.findIndex((item) => item.id === id);
+						if (index !== -1) {
+							this.list.splice(index, 1);
+						}
+					}
+					this.isLoading = false;
+				
+				},
+				onResponseError: ({ response }) => {
+					this.isLoading = false;
+					this.errorMessage =
+						((response._data as any)?.message as string) ||
+						"Erro ao marcar como finalizado.";
+				},
+			});
+		},
 		changePage(page: number) {
 			this.pagination.current_page = page;
 			this.fetchList(page);
