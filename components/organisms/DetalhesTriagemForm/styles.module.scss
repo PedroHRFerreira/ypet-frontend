@@ -1,0 +1,41 @@
+@use "@/assets/scss/_mixins.scss" as mixins;
+
+.organisms-detalhes-triagem-form {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+.section-card {
+	background-color: var(--white);
+	border-radius: 12px;
+	padding: 24px;
+	margin-bottom: 16px;
+}
+
+.procedures-form__group {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	padding: 16px 0;
+}
+
+.procedures-form__row {
+	display: flex;
+	gap: 16px;
+	align-items: flex-start;
+
+	& > * {
+		flex: 1;
+	}
+}
+
+.procedures-form__actions {
+	display: flex;
+	justify-content: flex-end;
+}
+
+.field-sm {
+	flex: 0 0 25%;
+	max-width: 25%;
+}
