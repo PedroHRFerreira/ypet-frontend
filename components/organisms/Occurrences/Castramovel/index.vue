@@ -147,16 +147,6 @@ export default defineComponent({
 				},
 			},
 			{
-				value: "localUnit",
-				text: "LOCAL DA UNIDADE",
-				typeTypography: "text-p5",
-				weightTypography: "bold",
-				colorTypography: "var(--brand-color-dark-blue-300)",
-				style: {
-					width: "20%",
-				},
-			},
-			{
 				value: "status",
 				text: "STATUS",
 				typeTypography: "text-p5",
@@ -376,14 +366,6 @@ export default defineComponent({
 								'DD/MM/YYYY',
 							) || '---'
 						"
-						weight="regular"
-						color="var(--brand-color-dark-blue-300)"
-					/>
-				</template>
-				<template #localUnit>
-					<AtomsTypography
-						type="text-p5"
-						:text="item?.mobile_clinic_event?.location?.location_name ?? '---'"
 						weight="regular"
 						color="var(--brand-color-dark-blue-300)"
 					/>

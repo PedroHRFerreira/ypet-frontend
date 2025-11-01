@@ -15,6 +15,19 @@ export default defineComponent({
 	setup() {
 		const listStore = useListStore();
 		const isVisible = ref(false);
+		const showConfirm = ref(false);
+		const showSuccess = ref(false);
+		const idItemDelete = ref(0);
+		const feedbackModal = ref({
+			confirm: {
+				title: "",
+				description: "",
+			},
+			success: {
+				title: "",
+				description: "",
+			},
+		});
 		const router = useRouter();
 
 		const navigateToCreate = () => {
@@ -47,7 +60,11 @@ export default defineComponent({
 		});
 
 		const filterDate = computed(() => {
-			return listStore.filters.start_date;
+			const date = listStore.filters.start_date;
+
+			if (date) return useDayjs(date).format("DD-MM-YYYY");
+
+			return "Todas as datas";
 		});
 
 		const columnsHeader = ref([
@@ -109,6 +126,10 @@ export default defineComponent({
 			},
 		]);
 
+		async function confirmDelete() {
+			await listStore.delete(idItemDelete.value);
+		}
+
 		const onSelectOptionAction = async (event: string, item: IRegistration) => {
 			if (event === "details") {
 				router.push({
@@ -132,6 +153,18 @@ export default defineComponent({
 			}
 
 			if (event === "delete") {
+				showConfirm.value = true;
+				((idItemDelete.value = item.id),
+					(feedbackModal.value = {
+						confirm: {
+							title: "Deseja deletar realmente o agendamento?",
+							description: "Após confirmação, o agendamento será deletado",
+						},
+						success: {
+							title: "Deletado com sucesso",
+							description: "",
+						},
+					}));
 			}
 		};
 
@@ -190,6 +223,10 @@ export default defineComponent({
 			toggleDropdown,
 			isVisible,
 			filterDate,
+			showConfirm,
+			showSuccess,
+			feedbackModal,
+			confirmDelete,
 		};
 	},
 	methods: {
@@ -199,6 +236,22 @@ export default defineComponent({
 </script>
 
 <template>
+	<MoleculesConfirmFeedbackModal
+		v-model:open="showConfirm"
+		variant="confirm"
+		:title="feedbackModal.confirm.title"
+		:description="feedbackModal.confirm.description"
+		confirm-text="Confirmar"
+		cancel-text="Cancelar"
+		@confirm="confirmDelete"
+	/>
+	<MoleculesConfirmFeedbackModal
+		v-model:open="showSuccess"
+		variant="success"
+		:title="feedbackModal.success.title"
+		:description="feedbackModal.success.description"
+		continue-text="Continuar"
+	/>
 	<section class="wrapper-list-card">
 		<div class="wrapper-list-card__header">
 			<div class="wrapper-list-card__header-title">
@@ -214,7 +267,7 @@ export default defineComponent({
 					size="medium"
 					style="zoom: 1.5"
 					custom-color="var(--brand-color-blue-400)"
-					:text="useDayjs(filterDate).format('DD-MM-YYYY')"
+					:text="filterDate"
 				/>
 			</div>
 			<div class="wrapper-list-card__header-actions">
