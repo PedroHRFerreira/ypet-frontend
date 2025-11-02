@@ -15,6 +15,7 @@ export const useEditStore = defineStore("clinic-event-edit", {
 			"species",
 			"gender",
 			"max_registrations",
+			"rules",
 		]);
 
 		return {

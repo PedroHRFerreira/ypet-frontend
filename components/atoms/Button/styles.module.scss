@@ -1,0 +1,41 @@
+@use "assets/scss/_colors.scss";
+@use "assets/scss/_elevation.scss";
+
+.atoms-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  transition: all 0.2s ease-in-out;
+
+  &--primary {
+    color: var(--white);
+    background-color: var(--brand-color-blue-600);
+    border-color: var(--brand-color-blue-600);
+  }
+
+  &--outline {
+    color: var(--brand-color-blue-600);
+    background-color: transparent;
+    border-color: var(--brand-color-blue-600);
+  }
+
+  &:hover:not(.is-disabled) {
+    filter: brightness(0.98);
+  }
+
+  &:active:not(.is-disabled) {
+    transform: translateY(1px);
+  }
+
+  &.is-disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+}

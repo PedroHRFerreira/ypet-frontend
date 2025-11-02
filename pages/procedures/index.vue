@@ -18,5 +18,5 @@ defineComponent({
 });
 </script>
 <template>
-	<TemplatesSamuPet />
+	<TemplatesProcedures />
 </template>

@@ -1,6 +1,7 @@
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref } from "vue";
 import { useListStore } from "~/stores/collaborators/useListStore";
+import { useDeleteStore as useCollaboratorsDeleteStore } from "~/stores/collaborators/useDeleteStore";
 import MoleculesListCardItem from "~/components/molecules/ListCardItem/index.vue";
 import { useDayjs } from "~/composables/useDayjs";
 import AtomsTypography from "~/components/atoms/Typography/index.vue";
@@ -15,6 +16,10 @@ export default defineComponent({
 	},
 	setup() {
 		const listStore = useListStore();
+		const deleteStore = useCollaboratorsDeleteStore();
+		const showConfirm = ref(false);
+		const showSuccess = ref(false);
+		const selectedId = ref<number | null>(null);
 
 		const header = computed(() => {
 			return {
@@ -124,6 +129,11 @@ export default defineComponent({
 			if (event === "edit") {
 				router.push({ name: "collaborators-edit", params: { id: item.id } });
 			}
+
+			if (event === "delete") {
+				selectedId.value = Number(item.id);
+				showConfirm.value = true;
+			}
 		};
 
 		onMounted(async () => {
@@ -191,6 +201,24 @@ export default defineComponent({
 			onSelectOptionAction,
 			getStatus,
 			getRole,
+			deleteStore,
+			showConfirm,
+			showSuccess,
+			selectedId,
+			async confirmDelete() {
+				if (!selectedId.value) return;
+				await deleteStore.destroy(selectedId.value);
+				if (!deleteStore.errorMessage) {
+					showSuccess.value = true;
+					await listStore.fetchList({ page: listStore.pagination?.current_page || 1 });
+				}
+			},
+			onCloseConfirm() {
+				showConfirm.value = false;
+			},
+			onCloseSuccess() {
+				showSuccess.value = false;
+			},
 		};
 	},
 	methods: {
@@ -303,6 +331,7 @@ export default defineComponent({
 						:actions="[
 							{ label: 'Ver detalhes', value: 'details' },
 							{ label: 'Editar', value: 'edit' },
+							{ label: 'Excluir', value: 'delete' },
 						]"
 						@change-action="onSelectOptionAction($event, item)"
 					/>
@@ -318,6 +347,23 @@ export default defineComponent({
 			/>
 		</div>
 	</section>
+	<MoleculesConfirmFeedbackModal
+		v-model:open="showConfirm"
+		variant="confirm"
+		title="Excluir colaborador"
+		description="Tem certeza que deseja excluir este colaborador?"
+		confirm-text="Excluir"
+		cancel-text="Cancelar"
+		@confirm="confirmDelete"
+		@close="onCloseConfirm"
+	/>
+	<MoleculesConfirmFeedbackModal
+		v-model:open="showSuccess"
+		variant="success"
+		title="Colaborador excluído com sucesso"
+		continue-text="Fechar"
+		@close="onCloseSuccess"
+	/>
 </template>
 
 <style scoped lang="scss">

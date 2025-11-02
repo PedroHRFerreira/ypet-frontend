@@ -7,7 +7,7 @@ export default defineComponent({
 		const dashboards: DashboardType[] = [
 			{
 				id: 1,
-				title: "Cadastros de animais",
+				title: "Pets",
 				value: 3,
 				difference: "+0",
 				subtitle: "Desde o mês passado",
@@ -22,13 +22,6 @@ export default defineComponent({
 			{
 				id: 3,
 				title: "Adoções",
-				value: 0,
-				difference: "+0",
-				subtitle: "Desde o mês passado",
-			},
-			{
-				id: 4,
-				title: "Tarefas pendentes",
 				value: 0,
 				difference: "+0",
 				subtitle: "Desde o mês passado",

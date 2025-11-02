@@ -1,47 +1,28 @@
 <script setup lang="ts">
-import { reactive } from "vue";
-import AtomsTypography from "~/components/atoms/Typography/index.vue";
-import MoleculesInputCommon from "~/components/molecules/Input/Common/index.vue";
-import MoleculesButtonsCommon from "~/components/molecules/Buttons/Common/Index.vue";
+import { onMounted } from "vue";
 import $style from "./styles.module.scss";
+import { useSettingsStore } from "~/stores/settings/useSettingsStore";
 
-const user = reactive({
-	name: "",
-	email: "",
-	currentPassword: "",
-	newPassword: "",
-	phone: "",
-	whatsapp: "",
-	contactEmail: "",
+defineOptions({
+	name: "SettingsPanel",
 });
 
-const errors = reactive({
-	name: "",
-	email: "",
-	currentPassword: "",
-	newPassword: "",
-	phone: "",
-	whatsapp: "",
-	contactEmail: "",
+const settingsStore = useSettingsStore();
+
+onMounted(() => {
+	settingsStore.fetchUserData();
 });
 
-const months = [
-	{ name: "Janeiro", available: true, fileUrl: "#" },
-	{ name: "Fevereiro", available: false },
-	{ name: "Março", available: false },
-	{ name: "Abril", available: true, fileUrl: "#" },
-	{ name: "Maio", available: false },
-	{ name: "Junho", available: false },
-	{ name: "Julho", available: false },
-	{ name: "Agosto", available: false },
-	{ name: "Setembro", available: false },
-	{ name: "Outubro", available: false },
-	{ name: "Novembro", available: false },
-	{ name: "Dezembro", available: false },
-];
+async function handlePasswordChange() {
+	if (settingsStore.isLoadingPassword) {
+		return;
+	}
 
-function openExtract(url: string) {
-	window.open(url, "_blank");
+	const success = await settingsStore.updatePassword();
+
+	if (success) {
+		alert("✅ Senha alterada com sucesso!");
+	}
 }
 </script>
 
@@ -59,17 +40,15 @@ function openExtract(url: string) {
 			<div :class="$style.formGroup">
 				<MoleculesInputCommon
 					label="Nome completo"
-					:value="user.name"
-					:message-error="errors.name"
-					@on-input="user.name = $event"
+					:value="settingsStore.userName"
+					:disabled="true"
 				/>
 
 				<MoleculesInputCommon
 					label="E-mail"
 					type-input="email"
-					:value="user.email"
-					:message-error="errors.email"
-					@on-input="user.email = $event"
+					:value="settingsStore.userEmail"
+					:disabled="true"
 				/>
 			</div>
 		</section>
@@ -87,63 +66,39 @@ function openExtract(url: string) {
 				<MoleculesInputCommon
 					label="Senha atual"
 					type-input="password"
-					:value="user.currentPassword"
-					:message-error="errors.currentPassword"
-					@on-input="user.currentPassword = $event"
+					:value="settingsStore.passwordForm.current_password"
+					:message-error="
+						settingsStore.passwordErrors.current_password.join(', ')
+					"
+					@on-input="settingsStore.setPasswordField('current_password', $event)"
 				/>
 				<MoleculesInputCommon
 					label="Nova senha"
 					type-input="password"
-					:value="user.newPassword"
-					:message-error="errors.newPassword"
-					@on-input="user.newPassword = $event"
+					:value="settingsStore.passwordForm.new_password"
+					:message-error="settingsStore.passwordErrors.new_password.join(', ')"
+					@on-input="settingsStore.setPasswordField('new_password', $event)"
 				/>
+
 				<MoleculesInputCommon
 					label="Confirmar nova senha"
 					type-input="password"
+					:value="settingsStore.passwordForm.confirm_password"
+					:message-error="
+						settingsStore.passwordErrors.confirm_password.join(', ')
+					"
+					@on-input="settingsStore.setPasswordField('confirm_password', $event)"
 				/>
 			</div>
-		</section>
 
-		<!-- Extratos Mensais -->
-		<section :class="$style.section">
-			<AtomsTypography
-				type="text-p2"
-				text="Extratos Mensais"
-				weight="medium"
-				color="var(--brand-color-dark-blue-900)"
+			<MoleculesButtonsCommon
+				text="Salvar nova senha"
+				type="primary"
+				width="200px"
+				:state="settingsStore.isLoadingPassword ? 'loading' : 'default'"
+				:disabled="settingsStore.isLoadingPassword"
+				@onclick="handlePasswordChange"
 			/>
-
-			<div :class="$style.extractGrid">
-				<div
-					v-for="month in months"
-					:key="month.name"
-					:class="$style.extractItem"
-				>
-					<AtomsTypography
-						type="text-p4"
-						:text="month.name"
-						color="var(--brand-color-dark-blue-900)"
-					/>
-
-					<AtomsTypography
-						v-if="month.available"
-						type="text-p5"
-						text="Disponível"
-						color="var(--brand-color-success-700)"
-					/>
-
-					<MoleculesButtonsCommon
-						v-if="month.available"
-						text="Visualizar PDF"
-						type="secondary"
-						width="100%"
-						name-icon-right="download"
-						:icon-right="true"
-						@onclick="openExtract(month.fileUrl)"
-					/>
-				</div>
-			</div>
 		</section>
 	</div>
 </template>

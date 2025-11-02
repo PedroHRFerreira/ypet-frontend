@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent } from "vue";
+import { useZipcodeLookup } from "~/composables/useZipcodeLookup";
 
 import { useUserStatusEnumStore } from "~/stores/Enums/useUserStatusEnumStore";
 import { useUFEnumStore } from "~/stores/Enums/useUFEnumStore";
@@ -94,6 +95,7 @@ export default defineComponent({
 			usePhoneFormatter11BR(protector?.user?.telephone || ""),
 		);
 		const zipCode = ref(useMaskZipCode(mainAddress?.zip_code || ""));
+		const { fetchAddress } = useZipcodeLookup();
 
 		const showConfirm = ref(false);
 		const showSuccess = ref(false);

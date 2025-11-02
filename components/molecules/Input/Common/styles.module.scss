@@ -9,6 +9,17 @@
 	gap: $gap;
 }
 
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Remove setas no Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
 .input-common {
 	width: 100%;
 	@include flex(column, flex-start, unset, 8px);

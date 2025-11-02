@@ -1,0 +1,18 @@
+@use "assets/scss/main.scss";
+
+.procedures__tabs {
+    margin-bottom: 16px;
+}
+
+.section-card {
+  background-color: var(--white);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 16px;
+}
+
+.procedures-form__group {
+  display: flex;
+  gap: 16px;
+  padding: 16px 0;
+}

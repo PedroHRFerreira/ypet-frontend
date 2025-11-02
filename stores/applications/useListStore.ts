@@ -39,10 +39,10 @@ export const useListStore = defineStore("applications-list", {
 				},
 				onResponseError: ({ response }) => {
 					this.isLoading = false;
-					this.errorMessage = (response as any)?._data?.message || "Erro ao buscar.";
+					this.errorMessage =
+						(response as any)?._data?.message || "Erro ao buscar.";
 				},
 			});
-
 		},
 	},
 });

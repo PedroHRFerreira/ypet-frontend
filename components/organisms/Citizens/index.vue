@@ -1,6 +1,7 @@
 <script lang="ts">
 import { computed, defineComponent, ref } from "vue";
 import { useListStore } from "~/stores/citizens/useListStore";
+import { useDeleteStore as useCitizensDeleteStore } from "~/stores/citizens/useDeleteStore";
 import MoleculesListCardItem from "~/components/molecules/ListCardItem/index.vue";
 import AtomsTypography from "~/components/atoms/Typography/index.vue";
 import AtomsBadges from "~/components/atoms/Badges/Index.vue";
@@ -14,6 +15,10 @@ export default defineComponent({
 	},
 	setup() {
 		const citizensList = useListStore();
+		const deleteStore = useCitizensDeleteStore();
+		const showConfirm = ref(false);
+		const showSuccess = ref(false);
+		const selectedId = ref<number | null>(null);
 
 		const header = computed(() => {
 			return {
@@ -116,6 +121,11 @@ export default defineComponent({
 			if (event === "edit") {
 				router.push({ name: "citizens-edit", params: { id: item.id } });
 			}
+
+			if (event === "delete") {
+				selectedId.value = Number(item.id);
+				showConfirm.value = true;
+			}
 		};
 
 		const optionsStatus: IEnum[] = [
@@ -147,6 +157,24 @@ export default defineComponent({
 			getStatus,
 			onSelectOptionAction,
 			paginationChange,
+			deleteStore,
+			showConfirm,
+			showSuccess,
+			selectedId,
+			async confirmDelete() {
+				if (!selectedId.value) return;
+				await deleteStore.destroy(selectedId.value);
+				if (!deleteStore.errorMessage) {
+					showSuccess.value = true;
+					await citizensList.fetchList({ page: citizensList.pagination?.current_page || 1 });
+				}
+			},
+			onCloseConfirm() {
+				showConfirm.value = false;
+			},
+			onCloseSuccess() {
+				showSuccess.value = false;
+			},
 		};
 	},
 	methods: {
@@ -248,6 +276,23 @@ export default defineComponent({
 			/>
 		</div>
 	</section>
+	<MoleculesConfirmFeedbackModal
+		v-model:open="showConfirm"
+		variant="confirm"
+		title="Excluir cidadão"
+		description="Tem certeza que deseja excluir este cidadão?"
+		confirm-text="Excluir"
+		cancel-text="Cancelar"
+		@confirm="confirmDelete"
+		@close="onCloseConfirm"
+	/>
+	<MoleculesConfirmFeedbackModal
+		v-model:open="showSuccess"
+		variant="success"
+		title="Cidadão excluído com sucesso"
+		continue-text="Fechar"
+		@close="onCloseSuccess"
+	/>
 </template>
 
 <style scoped lang="scss">

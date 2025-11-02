@@ -28,8 +28,8 @@ export default defineComponent({
 				{
 					title: "Sobre o cidadão",
 					content: [
-						{ label: "", value: citizen.image, isImage: true },
-						{ label: "Nome completo: ", value: citizen.user?.name || "---" },
+						{ label: "", value: citizen.picture, isImage: true },
+						{ label: "Nome completo: ", value: citizen.user?.name || "N/A" },
 						{ label: "CPF:", value: citizen?.document },
 						{ label: "Gênero:", value: gender[citizen?.gender] || "---" },
 						{
@@ -38,7 +38,10 @@ export default defineComponent({
 						},
 						{ label: "Email:", value: citizen.user?.email },
 						{ label: "Telefone:", value: citizen.user?.telephone },
-						{ label: "Endereço:", value: citizen.addresses[0]?.street || "---" },
+						{
+							label: "Endereço:",
+							value: citizen.addresses[0]?.street || "---",
+						},
 						{
 							label: "Número:",
 							value: citizen.addresses[0]?.number || "---",
@@ -47,8 +50,11 @@ export default defineComponent({
 							label: "Complemento:",
 							value: citizen.addresses[0]?.complement || "---",
 						},
-						{ label: "Bairro:", value: citizen.addresses[0]?.district || "---" },
-						{ label: "Cidade:", value: citizen.addresses[0]?.city || "---"},
+						{
+							label: "Bairro:",
+							value: citizen.addresses[0]?.district || "---",
+						},
+						{ label: "Cidade:", value: citizen.addresses[0]?.city || "---" },
 						{ label: "Estado:", value: citizen.addresses[0]?.state || "---" },
 					],
 				},

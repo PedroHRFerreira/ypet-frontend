@@ -17,6 +17,41 @@ export default defineComponent({
 		]);
 
 		const startDate = ref("");
+		const cpfCnpj = ref("");
+		const selectedAccountType = ref<string | null>(null);
+
+		const accountTypeOptions = [
+			{ id: "pix", text: "PIX", state: "default" as const },
+			{ id: "bank_account", text: "Conta Bancária", state: "default" as const },
+		];
+
+		const bankAccountTypeOptions = [
+			{ id: "checking", text: "Conta Corrente", state: "default" as const },
+			{ id: "savings", text: "Conta Poupança", state: "default" as const },
+		];
+
+		const maskedCpfCnpj = computed(() => {
+			return cpfCnpj.value ? useMaskDocument(cpfCnpj.value) : "";
+		});
+
+		const handleCpfCnpjInput = (value: string) => {
+			cpfCnpj.value = value;
+			createStore.setFormField("cpf_cnpj", value);
+
+			// Valida CPF/CNPJ quando o campo está completo
+			if (value.length === 11 || value.length === 14) {
+				const isValid = useValidateCpfCnpj(value);
+				if (!isValid) {
+					const docType = value.length === 11 ? "CPF" : "CNPJ";
+					createStore.setFormError("cpf_cnpj", [`${docType} inválido`]);
+				}
+			}
+		};
+
+		const handleAccountTypeSelect = (value: string) => {
+			selectedAccountType.value = value;
+			createStore.setFormField("account_type", value);
+		};
 
 		const showConfirm = ref(false);
 		const showSuccess = ref(false);
@@ -114,6 +149,13 @@ export default defineComponent({
 			modalFeedback,
 			showConfirm,
 			showSuccess,
+			cpfCnpj,
+			maskedCpfCnpj,
+			handleCpfCnpjInput,
+			accountTypeOptions,
+			bankAccountTypeOptions,
+			selectedAccountType,
+			handleAccountTypeSelect,
 		};
 	},
 	watch: {
@@ -222,6 +264,41 @@ export default defineComponent({
 				</div>
 			</div>
 		</section>
+
+		<!-- Dados bancários -->
+		<MoleculesFormsBankingData
+			:cpf-cnpj-value="cpfCnpj"
+			:account-type-value="selectedAccountType"
+			:pix-key-value="form.pix_key.value"
+			:bank-account-type-value="form.bank_account_type.value"
+			:bank-value="form.bank.value"
+			:agency-value="form.agency.value"
+			:account-number-value="form.account_number.value"
+			:account-holder-value="form.account_holder.value"
+			:cpf-cnpj-error="form.cpf_cnpj.errorMessages.join(', ')"
+			:account-type-error="form.account_type.errorMessages.join(', ')"
+			:pix-key-error="form.pix_key.errorMessages.join(', ')"
+			:bank-account-type-error="form.bank_account_type.errorMessages.join(', ')"
+			:bank-error="form.bank.errorMessages.join(', ')"
+			:agency-error="form.agency.errorMessages.join(', ')"
+			:account-number-error="form.account_number.errorMessages.join(', ')"
+			:account-holder-error="form.account_holder.errorMessages.join(', ')"
+			@update:cpf-cnpj="handleCpfCnpjInput"
+			@update:account-type="handleAccountTypeSelect"
+			@update:pix-key="createStore.setFormField('pix_key', $event)"
+			@update:bank-account-type="
+				createStore.setFormField('bank_account_type', $event)
+			"
+			@update:bank="createStore.setFormField('bank', $event)"
+			@update:agency="createStore.setFormField('agency', $event)"
+			@update:account-number="
+				createStore.setFormField('account_number', $event)
+			"
+			@update:account-holder="
+				createStore.setFormField('account_holder', $event)
+			"
+		/>
+
 		<div class="settings-create__about-pet__content--footer">
 			<MoleculesButtonsCommon
 				v-for="button in footer.buttons"

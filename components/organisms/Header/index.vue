@@ -1,13 +1,20 @@
 <script lang="ts">
 import { useAuthLoginStore } from "~/stores/auth/useAuthLoginStore";
+import { useUserProfile } from "~/composables/useUserProfile";
 
 export default defineComponent({
 	name: "OrganismsHeader",
-	emits: ["notifications", "profile", "menu"],
-	setup(_, { emit }) {
+	emits: ["notifications", "menu"],
+	setup() {
 		const useAuthLogin = useAuthLoginStore();
+		const userProfile = useUserProfile();
 		const dropdownRef = ref<HTMLElement | null>(null);
 		const isOpenDropdown = ref(false);
+
+		const userName = computed(() => {
+			const user = userProfile.getUser();
+			return user?.name || "Usuário";
+		});
 
 		const optionsData = ref([
 			{ id: "profile", text: "Perfil", state: "default" },
@@ -18,8 +25,13 @@ export default defineComponent({
 			isOpenDropdown.value = !isOpenDropdown.value;
 		};
 
+		const router = useRouter();
+
 		const actions: Record<string, () => Promise<void> | void> = {
-			profile: () => emit("profile"),
+			profile: () => {
+				router.push({ path: "/settings" });
+				isOpenDropdown.value = false;
+			},
 			logout: async () => {
 				await useAuthLogin.logout();
 			},
@@ -60,6 +72,7 @@ export default defineComponent({
 			dropdownRef,
 			openDropdown,
 			handleOptionSelected,
+			userName,
 		};
 	},
 });
@@ -92,11 +105,10 @@ export default defineComponent({
 						<AtomsTypography
 							class="text"
 							type="text-p5"
-							text="Thiago Barbosa"
+							:text="userName"
 							color="var(--brand-color-blue-900)"
-							@click="$emit('profile')"
 						/>
-						<MoleculesAvatarIcon name-user="Thiago Barbosa" />
+						<MoleculesAvatarIcon :name-user="userName" />
 					</div>
 					<div v-if="isOpenDropdown" class="header__container--item__dropdown">
 						<AtomsDropdownItem

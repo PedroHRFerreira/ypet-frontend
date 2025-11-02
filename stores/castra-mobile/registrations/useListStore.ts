@@ -14,9 +14,9 @@ export const useListStore = defineStore("list-registrations", {
 		const pathUrl = "/api/registrations";
 
 		const filters = ref({
-			start_date: null as string | null,
+			start_date: useDayjs().format("YYYY-MM-DD") as string | null,
 			species: "" as string,
-			status: "" as string,
+			status: "pending" as string,
 			tutor: "" as string,
 		});
 
@@ -40,20 +40,26 @@ export const useListStore = defineStore("list-registrations", {
 			this.isLoading = true;
 			this.errorMessage = "";
 
+			const { tutor, ...otherFilters } = this.filters;
 			const activeFilters = Object.fromEntries(
-				Object.entries(this.filters).filter(
+				Object.entries(otherFilters).filter(
 					([, value]) => value !== null && value !== "",
 				),
 			);
+			const tutorName = tutor
+				? this.tutors.find((t) => t.id === String(tutor))?.text || String(tutor)
+				: undefined;
 
-			if (activeFilters.date) {
-				activeFilters.start_date = activeFilters.date;
-				delete activeFilters.date;
-			}
+			const params = {
+				page,
+				...activeFilters,
+				...(tutorName ? { tutor_name: tutorName } : {}),
+				"with[]": ["user", "animal"],
+			};
 
 			await useFetch(this.pathUrl, {
 				method: "GET",
-				params: { page, ...activeFilters, "with[]": ["user", "animal"] },
+				params,
 				onResponse: ({ response }) => {
 					const result: IResponse = response._data as IResponse;
 
@@ -64,12 +70,12 @@ export const useListStore = defineStore("list-registrations", {
 				onResponseError: ({ response }) => {
 					this.isLoading = false;
 					this.errorMessage =
-						response._data?.message || "Erro ao buscar os registros.";
+						((response._data as any)?.message as string) ||
+						"Erro ao buscar os registros.";
 				},
 			});
 		},
 
-		// 🔹 Nova função para buscar tutores
 		async fetchTutors(): Promise<void> {
 			if (this.isLoading) return;
 
@@ -80,7 +86,7 @@ export const useListStore = defineStore("list-registrations", {
 				method: "GET",
 				params: {
 					page: 1,
-					"with[]": ["user"], // só precisamos do user
+					"with[]": ["user"],
 				},
 				onResponse: ({ response }) => {
 					const result: IResponse = response._data as IResponse;
@@ -104,7 +110,8 @@ export const useListStore = defineStore("list-registrations", {
 				onResponseError: ({ response }) => {
 					this.isLoading = false;
 					this.errorMessage =
-						response._data?.message || "Erro ao buscar tutores.";
+						((response._data as any)?.message as string) ||
+						"Erro ao buscar tutores.";
 				},
 			});
 		},
@@ -138,6 +145,67 @@ export const useListStore = defineStore("list-registrations", {
 			});
 		},
 
+		async markFinished(id: string | number | undefined): Promise<void> {
+			if (this.isLoading || !id) return;
+
+			this.isLoading = true;
+			this.errorMessage = "";
+
+			await useFetch(`${this.pathUrl}/${id}`, {
+				method: "PUT",
+				body: {
+					status: "finished",
+				},
+				onResponse: ({ response }) => {
+					const result: IResponse = response._data as IResponse;
+
+					if (result.type === "success") {
+						const index = this.list.findIndex((item) => item.id === id);
+						if (index !== -1) {
+							this.list[index].status = {
+								value: "finished",
+								name: "FINISHED",
+								label: "Finalizado",
+							};
+						}
+					}
+
+					this.isLoading = false;
+				},
+				onResponseError: ({ response }) => {
+					this.isLoading = false;
+					this.errorMessage =
+						((response._data as any)?.message as string) ||
+						"Erro ao marcar como finalizado.";
+				},
+			});
+		},
+		async delete(id: string | number | undefined): Promise<void> {
+			if (this.isLoading || !id) return;
+
+			this.isLoading = true;
+			this.errorMessage = "";
+
+			await useFetch(`${this.pathUrl}/${id}`, {
+				method: "DELETE",
+				onResponse: ({ response }) => {
+					const result: IResponse = response._data as IResponse;
+					if (result.type === "success") {
+						const index = this.list.findIndex((item) => item.id === id);
+						if (index !== -1) {
+							this.list.splice(index, 1);
+						}
+					}
+					this.isLoading = false;
+				},
+				onResponseError: ({ response }) => {
+					this.isLoading = false;
+					this.errorMessage =
+						((response._data as any)?.message as string) ||
+						"Erro ao marcar como finalizado.";
+				},
+			});
+		},
 		changePage(page: number) {
 			this.pagination.current_page = page;
 			this.fetchList(page);

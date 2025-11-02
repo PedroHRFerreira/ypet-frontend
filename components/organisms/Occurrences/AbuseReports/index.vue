@@ -25,8 +25,8 @@ export default defineComponent({
 		});
 		await abuseReportList.fetchList();
 
-		const list = computed((): ILostPet[] => {
-			return abuseReportList.lostPet;
+		const list = computed((): IReport[] => {
+			return abuseReportList.report;
 		});
 
 		async function paginationChange(value: number) {
@@ -35,28 +35,34 @@ export default defineComponent({
 
 		const optionsStatus: IEnum[] = [
 			{
-				value: "in_review",
-				name: "in_review",
-				label: "Em revisão",
-				color: "success",
-			},
-			{
-				value: "forward",
-				name: "forward",
-				label: "Encaminhados",
-				color: "secondary",
-			},
-			{
-				value: "complete",
-				name: "complete",
-				label: "Concluídos",
+				value: "pending",
+				name: "PENDING",
+				label: "Pendente",
 				color: "warning",
 			},
 			{
-				value: "archive",
-				name: "archive",
-				label: "Arquivados",
+				value: "approved",
+				name: "APPROVED",
+				label: "Aprovado",
+				color: "success",
+			},
+			{
+				value: "refused",
+				name: "REFUSED",
+				label: "Reprovado",
 				color: "danger",
+			},
+			{
+				value: "in_review",
+				name: "IN_REVIEW",
+				label: "Em análise",
+				color: "warning",
+			},
+			{
+				value: "forward",
+				name: "IN_REVIEW",
+				label: "Encaminhada",
+				color: "information",
 			},
 		];
 
@@ -102,34 +108,44 @@ export default defineComponent({
 		const columnsHeader = ref([
 			{
 				value: "code",
-				text: "Código",
+				text: "CÓDIGO",
 				typeTypography: "text-p5",
 				weightTypography: "bold",
 				colorTypography: "var(--brand-color-dark-blue-300)",
 				style: {
-					width: "20%",
+					width: "10%",
 					gap: "16px",
 					wordBreak: "break-all",
 				},
 			},
 			{
-				value: "whistleblower",
-				text: "Denunciante",
-				typeTypography: "text-p5",
-				weightTypography: "bold",
-				colorTypography: "var(--brand-color-dark-blue-300)",
-				style: {
-					width: "15%",
-				},
-			},
-			{
-				value: "date",
-				text: "Data e hora do envio",
+				value: "report",
+				text: "DENUNCIANTE",
 				typeTypography: "text-p5",
 				weightTypography: "bold",
 				colorTypography: "var(--brand-color-dark-blue-300)",
 				style: {
 					width: "20%",
+				},
+			},
+			{
+				value: "date",
+				text: "DATA",
+				typeTypography: "text-p5",
+				weightTypography: "bold",
+				colorTypography: "var(--brand-color-dark-blue-300)",
+				style: {
+					width: "20%",
+				},
+			},
+			{
+				value: "time",
+				text: "HORÁRIO",
+				typeTypography: "text-p5",
+				weightTypography: "bold",
+				colorTypography: "var(--brand-color-dark-blue-300)",
+				style: {
+					width: "15%",
 				},
 			},
 			{
@@ -157,10 +173,10 @@ export default defineComponent({
 
 		const onSelectOptionAction = (event: string, item: any) => {
 			const router = useRouter();
-			id.value = item.uuid;
+			id.value = item.id;
 			typeAction.value = event;
 
-			if (["receive", "forward", "complete"].includes(event)) {
+			if (["receive", "forward"].includes(event)) {
 				openConfirm();
 
 				const actionMap = {
@@ -195,7 +211,7 @@ export default defineComponent({
 			if (event === "details") {
 				router.push({
 					name: "occurrences-id-report-details",
-					params: { id: item.uuid },
+					params: { id: item.id },
 				});
 			}
 		};
@@ -207,7 +223,6 @@ export default defineComponent({
 				label: "Marcar como encaminhada",
 				icon: "arrow-right",
 			},
-			{ value: "complete", label: "Marcar como concluída", icon: "flag" },
 			{ value: "details", label: "Visualizar detalhes", icon: "paw" },
 		];
 
@@ -334,15 +349,15 @@ export default defineComponent({
 				<template #code>
 					<AtomsTypography
 						type="text-p5"
-						:text="item.user.code"
+						:text="item.id"
 						weight="regular"
 						color="var(--brand-color-dark-blue-300)"
 					/>
 				</template>
-				<template #whistleblower>
+				<template #report>
 					<AtomsTypography
 						type="text-p5"
-						:text="item.animal.whistleblower"
+						:text="item.reporter.name"
 						weight="regular"
 						color="var(--brand-color-dark-blue-300)"
 					/>
@@ -350,16 +365,22 @@ export default defineComponent({
 				<template #date>
 					<AtomsTypography
 						type="text-p5"
-						:text="item.date"
+						:text="useDayjs(item?.created_at).format('DD/MM/YYYY')"
+						weight="regular"
+						color="var(--brand-color-dark-blue-300)"
+					/>
+				</template>
+				<template #time>
+					<AtomsTypography
+						type="text-p5"
+						:text="useDayjs(item.created_at).format('HH:mm')"
 						weight="regular"
 						color="var(--brand-color-dark-blue-300)"
 					/>
 				</template>
 				<template #status>
 					<AtomsBadges
-						type="text"
 						:color="getStatus(item.status)?.color"
-						:size="'small'"
 						:text="getStatus(item.status)?.label || '---'"
 					/>
 				</template>

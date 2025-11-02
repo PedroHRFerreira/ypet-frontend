@@ -27,7 +27,7 @@ export default defineComponent({
 				useMobileEventStatusEnumStore().getOptions(),
 			]);
 
-			await detailsStore.fetchById(id, { "with[]": [] });
+			await detailsStore.fetchById(id, { "with[]": ["rules"] });
 			await locationsStore.fetchLocations();
 
 			editStore.setFormField("name", detailsStore.data.name);
@@ -39,6 +39,15 @@ export default defineComponent({
 				"max_registrations",
 				detailsStore.data.max_registrations,
 			);
+			if (!editStore.rules?.value || editStore.rules.value.length === 0) {
+				editStore.setFormField(
+					"rules",
+					detailsStore.data.rules.map((rule) => ({
+						id: rule.id,
+						max_registrations: rule.max_registrations,
+					})),
+				);
+			}
 		});
 
 		const optionsSpecies = computed(() => {
@@ -142,6 +151,12 @@ export default defineComponent({
 				weight: "medium",
 				color: "var(--brand-color-dark-blue-900)",
 			},
+			titleSecond: {
+				label: "Regras do evento",
+				type: "text-p2",
+				weight: "medium",
+				color: "var(--brand-color-dark-blue-900)",
+			},
 		};
 
 		const footer = {
@@ -178,6 +193,19 @@ export default defineComponent({
 			],
 		};
 
+		const changeMaxRegistrations = (ruleId: number, newValue: number) => {
+			const currentRules = form.rules.value;
+
+			const updatedRules = currentRules.map((rule) =>
+				rule.id === ruleId
+					? { ...rule, max_registrations: Number(newValue) }
+					: rule,
+			);
+
+			editStore.setFormField("rules", updatedRules);
+			console.log(updatedRules);
+		};
+
 		return {
 			useDayjs,
 			optionsGender,
@@ -193,6 +221,7 @@ export default defineComponent({
 			header,
 			showSuccess,
 			showConfirm,
+			changeMaxRegistrations,
 		};
 	},
 	watch: {
@@ -298,22 +327,71 @@ export default defineComponent({
 						@item-selected="editStore.setFormField('location_id', $event)"
 					/>
 				</div>
+			</div>
+		</section>
 
-				<div class="settings-create__about-pet__content--footer">
-					<MoleculesButtonsCommon
-						v-for="button in footer.buttons"
-						:key="button.text"
-						:type="button.type"
-						:text="button.text"
-						:icon-left="button.iconLeft"
-						:icon-right="button.iconRight"
-						:name-icon-left="button.nameIconLeft"
-						:name-icon-right="button.nameIconRight"
-						:size="button.size"
-						:width="button.width"
-						@onclick="button.action"
+		<section class="settings-create__about-pet">
+			<div class="settings-create__about-pet__header">
+				<AtomsTypography
+					:type="header.titleSecond.type"
+					:text="header.titleSecond.label"
+					:weight="header.titleSecond.weight"
+					:color="header.titleSecond.color"
+				/>
+			</div>
+			<div class="settings-create__about-pet__content">
+				<div class="settings-create__about-pet__content--group">
+					<MoleculesInputCommon
+						label="Cão Macho"
+						type-input="number"
+						max-width="50%"
+						placeholder="Número máximo de vagas"
+						:value="form.rules.value[0].max_registrations as string"
+						@on-input="changeMaxRegistrations(form.rules.value[0].id, $event)"
+					/>
+					<MoleculesInputCommon
+						label="Cão Fêmea"
+						type-input="number"
+						max-width="50%"
+						placeholder="Número máximo de vagas"
+						:value="form.rules.value[1].max_registrations as string"
+						@on-input="changeMaxRegistrations(form.rules.value[1].id, $event)"
 					/>
 				</div>
+
+				<div class="settings-create__about-pet__content--group">
+					<MoleculesInputCommon
+						label="Gato Macho"
+						type-input="number"
+						max-width="50%"
+						placeholder="Número máximo de vagas"
+						:value="form.rules.value[2].max_registrations as string"
+						@on-input="changeMaxRegistrations(form.rules.value[2].id, $event)"
+					/>
+					<MoleculesInputCommon
+						label="Gato Fêmea"
+						type-input="number"
+						max-width="50%"
+						placeholder="Número máximo de vagas"
+						:value="form.rules.value[3].max_registrations as string"
+						@on-input="changeMaxRegistrations(form.rules.value[3].id, $event)"
+					/>
+				</div>
+			</div>
+			<div class="settings-create__about-pet__content--footer">
+				<MoleculesButtonsCommon
+					v-for="button in footer.buttons"
+					:key="button.text"
+					:type="button.type"
+					:text="button.text"
+					:icon-left="button.iconLeft"
+					:icon-right="button.iconRight"
+					:name-icon-left="button.nameIconLeft"
+					:name-icon-right="button.nameIconRight"
+					:size="button.size"
+					:width="button.width"
+					@onclick="button.action"
+				/>
 			</div>
 		</section>
 	</div>

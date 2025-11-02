@@ -30,15 +30,21 @@ export default defineComponent({
 					content: [
 						{ label: "", value: protector.image, isImage: true },
 						{ label: "Nome completo: ", value: protector.user?.name || "---" },
-						{ label: "CPF:", value: protector?.document || "---"},
-						{ label: "Gênero:", value: gender[String(protector?.gender)] || "---" },
+						{ label: "CPF:", value: protector?.document || "---" },
+						{
+							label: "Gênero:",
+							value: gender[String(protector?.gender)] || "---",
+						},
 						{
 							label: "Data de nascimento:",
 							value: proxy?.$formatDateTime(protector?.birth_date) || "---",
 						},
-						{ label: "Email:", value: protector.user?.email || "---"},
-						{ label: "Telefone:", value: protector.user?.telephone || "---"},
-						{ label: "Endereço:", value: protector.addresses[0]?.street || "---"},
+						{ label: "Email:", value: protector.user?.email || "---" },
+						{ label: "Telefone:", value: protector.user?.telephone || "---" },
+						{
+							label: "Endereço:",
+							value: protector.addresses[0]?.street || "---",
+						},
 						{
 							label: "Número:",
 							value: protector.addresses[0]?.number || "---",
@@ -47,9 +53,12 @@ export default defineComponent({
 							label: "Complemento:",
 							value: protector.addresses[0]?.complement || "---",
 						},
-						{ label: "Bairro:", value: protector.addresses[0]?.district || "---"},
-						{ label: "Cidade:", value: protector.addresses[0]?.city || "---"},
-						{ label: "Estado:", value: protector.addresses[0]?.state || "---"},
+						{
+							label: "Bairro:",
+							value: protector.addresses[0]?.district || "---",
+						},
+						{ label: "Cidade:", value: protector.addresses[0]?.city || "---" },
+						{ label: "Estado:", value: protector.addresses[0]?.state || "---" },
 					],
 				},
 				{

@@ -10,9 +10,14 @@ export default defineComponent({
 		const dailyScheduleComponent = resolveComponent(
 			"OrganismsCastraMobileRegistrations",
 		);
+		const castramovelRequestsComponent = resolveComponent(
+			"OrganismsOccurrencesCastramovel",
+		);
+
 		const componentsMap: Record<string, ConcreteComponent> = {
 			events: clinicEventComponent,
 			schedule: dailyScheduleComponent,
+			castrammobile: castramovelRequestsComponent,
 		};
 
 		const tabs = ref([
@@ -24,6 +29,11 @@ export default defineComponent({
 			{
 				id: "schedule",
 				name: "Agenda do dia",
+				active: false,
+			},
+			{
+				id: "castrammobile",
+				name: "Castramóvel App",
 				active: false,
 			},
 		] as ITab[]);
@@ -60,6 +70,15 @@ export default defineComponent({
 			activeTab,
 			activeComponent,
 		};
+	},
+	mounted() {
+		const tabParam = useRoute().query.tab;
+
+		if (tabParam) {
+			this.tabs.forEach((tab) => {
+				tab.active = tab.id === tabParam;
+			});
+		}
 	},
 	methods: {
 		setRouteDefault(tabId: string): void {

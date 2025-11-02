@@ -15,6 +15,19 @@ export default defineComponent({
 	setup() {
 		const listStore = useListStore();
 		const isVisible = ref(false);
+		const showConfirm = ref(false);
+		const showSuccess = ref(false);
+		const idItemDelete = ref(0);
+		const feedbackModal = ref({
+			confirm: {
+				title: "",
+				description: "",
+			},
+			success: {
+				title: "",
+				description: "",
+			},
+		});
 		const router = useRouter();
 
 		const navigateToCreate = () => {
@@ -46,23 +59,15 @@ export default defineComponent({
 			return listStore.list;
 		});
 
+		const filterDate = computed(() => {
+			const date = listStore.filters.start_date;
+
+			if (date) return useDayjs(date).format("DD-MM-YYYY");
+
+			return "Todas as datas";
+		});
+
 		const columnsHeader = ref([
-			{
-				value: "id",
-				text: "ID",
-				typeTypography: "text-p5",
-				weightTypography: "bold",
-				colorTypography: "var(--brand-color-dark-blue-300)",
-				style: { width: "5%", wordBreak: "break-all" },
-			},
-			{
-				value: "hour",
-				text: "DATA E HORA",
-				typeTypography: "text-p5",
-				weightTypography: "bold",
-				colorTypography: "var(--brand-color-dark-blue-300)",
-				style: { width: "15%", wordBreak: "break-all" },
-			},
 			{
 				value: "tutor",
 				text: "TUTOR",
@@ -77,7 +82,7 @@ export default defineComponent({
 				typeTypography: "text-p5",
 				weightTypography: "bold",
 				colorTypography: "var(--brand-color-dark-blue-300)",
-				style: { width: "15%" },
+				style: { width: "5%" },
 			},
 			{
 				value: "species",
@@ -85,7 +90,15 @@ export default defineComponent({
 				typeTypography: "text-p5",
 				weightTypography: "bold",
 				colorTypography: "var(--brand-color-dark-blue-300)",
-				style: { width: "20%", justifyContent: "flex-end" },
+				style: { width: "10%", justifyContent: "flex-end" },
+			},
+			{
+				value: "sex",
+				text: "SEXO",
+				typeTypography: "text-p5",
+				weightTypography: "bold",
+				colorTypography: "var(--brand-color-dark-blue-300)",
+				style: { width: "10%", justifyContent: "flex-end" },
 			},
 			{
 				value: "weight",
@@ -113,9 +126,11 @@ export default defineComponent({
 			},
 		]);
 
-		const onSelectOptionAction = (event: string, item: IRegistration) => {
-			const router = useRouter();
+		async function confirmDelete() {
+			await listStore.delete(idItemDelete.value);
+		}
 
+		const onSelectOptionAction = async (event: string, item: IRegistration) => {
 			if (event === "details") {
 				router.push({
 					name: "castra-mobile.registrations.details",
@@ -131,6 +146,25 @@ export default defineComponent({
 
 			if (event === "download_term") {
 				listStore.downloadTerm(item.id);
+			}
+
+			if (event === "finished") {
+				await listStore.markFinished(item.id);
+			}
+
+			if (event === "delete") {
+				showConfirm.value = true;
+				((idItemDelete.value = item.id),
+					(feedbackModal.value = {
+						confirm: {
+							title: "Deseja deletar realmente o agendamento?",
+							description: "Após confirmação, o agendamento será deletado",
+						},
+						success: {
+							title: "Deletado com sucesso",
+							description: "",
+						},
+					}));
 			}
 		};
 
@@ -168,6 +202,12 @@ export default defineComponent({
 				label: "Rejeitado",
 				color: "danger",
 			},
+			{
+				value: "finished",
+				name: "FINISHED",
+				label: "Finalizado",
+				color: "success",
+			},
 		];
 		const toggleDropdown = () => {
 			isVisible.value = true;
@@ -182,6 +222,11 @@ export default defineComponent({
 			getStatus,
 			toggleDropdown,
 			isVisible,
+			filterDate,
+			showConfirm,
+			showSuccess,
+			feedbackModal,
+			confirmDelete,
 		};
 	},
 	methods: {
@@ -191,6 +236,22 @@ export default defineComponent({
 </script>
 
 <template>
+	<MoleculesConfirmFeedbackModal
+		v-model:open="showConfirm"
+		variant="confirm"
+		:title="feedbackModal.confirm.title"
+		:description="feedbackModal.confirm.description"
+		confirm-text="Confirmar"
+		cancel-text="Cancelar"
+		@confirm="confirmDelete"
+	/>
+	<MoleculesConfirmFeedbackModal
+		v-model:open="showSuccess"
+		variant="success"
+		:title="feedbackModal.success.title"
+		:description="feedbackModal.success.description"
+		continue-text="Continuar"
+	/>
 	<section class="wrapper-list-card">
 		<div class="wrapper-list-card__header">
 			<div class="wrapper-list-card__header-title">
@@ -199,6 +260,14 @@ export default defineComponent({
 					:text="header.title"
 					weight="medium"
 					color="var(--brand-color-dark-blue-300)"
+				/>
+
+				<AtomsBadges
+					color="custom"
+					size="medium"
+					style="zoom: 1.5"
+					custom-color="var(--brand-color-blue-400)"
+					:text="filterDate"
 				/>
 			</div>
 			<div class="wrapper-list-card__header-actions">
@@ -245,24 +314,6 @@ export default defineComponent({
 				:data="columnsHeader"
 				padding="0"
 			>
-				<template #id>
-					<AtomsTypography
-						type="text-p5"
-						:text="`#${item.id}`"
-						weight="regular"
-						color="var(--brand-color-dark-blue-300)"
-					/>
-				</template>
-
-				<template #hour>
-					<AtomsTypography
-						type="text-p5"
-						:text="useDayjs(item.created_at).format('DD/MM/YYYY - HH:mm')"
-						weight="regular"
-						color="var(--brand-color-dark-blue-300)"
-					/>
-				</template>
-
 				<template #tutor>
 					<AtomsTypography
 						type="text-p5"
@@ -290,6 +341,15 @@ export default defineComponent({
 					/>
 				</template>
 
+				<template #sex>
+					<AtomsTypography
+						type="text-p5"
+						:text="item.animal?.gender.label || '---'"
+						weight="regular"
+						color="var(--brand-color-dark-blue-300)"
+					/>
+				</template>
+
 				<template #weight>
 					<AtomsTypography
 						type="text-p5"
@@ -310,9 +370,11 @@ export default defineComponent({
 					<MoleculesActionDropdown
 						:key="item.id"
 						:actions="[
+							{ value: 'finished', label: 'Finalizar' },
 							{ value: 'details', label: 'Detalhes' },
 							{ value: 'pre_surgery_assessment', label: 'Triagem' },
 							{ value: 'download_term', label: 'Baixar termo' },
+							{ value: 'delete', label: 'Excluir' },
 						]"
 						@change-action="onSelectOptionAction($event, item)"
 					/>

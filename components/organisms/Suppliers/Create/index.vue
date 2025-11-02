@@ -1,6 +1,7 @@
 <script lang="ts">
 import { defineComponent, onUnmounted } from "vue";
 import { useCreateStore } from "~/stores/suppliers/useCreateStore";
+import { useZipcodeLookup } from "~/composables/useZipcodeLookup";
 
 import { useUserStatusEnumStore } from "~/stores/Enums/useUserStatusEnumStore";
 import { useUFEnumStore } from "~/stores/Enums/useUFEnumStore";
@@ -14,6 +15,7 @@ export default defineComponent({
 		const useUFEnum = useUFEnumStore();
 		const useBooleanEnum = useBooleanEnumStore();
 		const useUserStatusEnum = useUserStatusEnumStore();
+		const { fetchAddress } = useZipcodeLookup();
 
 		onUnmounted(() => {
 			useSuppliersCreate.resetForm();
@@ -30,6 +32,8 @@ export default defineComponent({
 		const telephone = ref("");
 		const cellphone = ref("");
 		const zipCode = ref("");
+		const cpfCnpj = ref("");
+		const selectedAccountType = ref<string | null>(null);
 		const errorMessage = ref("");
 		const showConfirm = ref(false);
 		const showSuccess = ref(false);
@@ -83,13 +87,49 @@ export default defineComponent({
 			useSuppliersCreate.setFormField("cellphone", digits);
 		}
 
-		function onInputZipCode(value: string) {
+		async function onInputZipCode(value: string) {
 			zipCode.value = useMaskZipCode(value);
-			useSuppliersCreate.setFormField("zip_code", value.replace(/\D/g, ""));
+			const digits = value.replace(/\D/g, "");
+			useSuppliersCreate.setFormField("zip_code", digits);
+
+			if (digits.length === 8) {
+				const data = await fetchAddress(digits);
+				if (data) {
+					useSuppliersCreate.setFormField("street", data.street);
+					useSuppliersCreate.setFormField("district", data.district);
+					useSuppliersCreate.setFormField("city", data.city);
+					// map UF to enum option id
+					const ufOpt = optionsUFEnum.find(
+						(o) => (o as any).id === data.state || (o as any).text === data.state,
+					);
+					if (ufOpt) {
+						useSuppliersCreate.setFormField("state", (ufOpt as any).id);
+					}
+				}
+			}
 		}
 
 		function handleError(message: string) {
 			errorMessage.value = message;
+		}
+
+		function handleCpfCnpjInput(value: string) {
+			cpfCnpj.value = value;
+			useSuppliersCreate.setFormField("cpf_cnpj", value);
+
+			// Valida CPF/CNPJ quando o campo está completo
+			if (value.length === 11 || value.length === 14) {
+				const isValid = useValidateCpfCnpj(value);
+				if (!isValid) {
+					const docType = value.length === 11 ? "CPF" : "CNPJ";
+					useSuppliersCreate.setFormError("cpf_cnpj", [`${docType} inválido`]);
+				}
+			}
+		}
+
+		function handleAccountTypeSelect(value: string) {
+			selectedAccountType.value = value;
+			useSuppliersCreate.setFormField("account_type", value);
 		}
 
 		return {
@@ -104,10 +144,14 @@ export default defineComponent({
 			telephone,
 			cellphone,
 			zipCode,
+			cpfCnpj,
+			selectedAccountType,
 			onInputDocument,
 			onInputTelephone,
 			onInputCellphone,
 			onInputZipCode,
+			handleCpfCnpjInput,
+			handleAccountTypeSelect,
 			openConfirm,
 			onSuccess,
 			confirmCreate,
@@ -333,6 +377,44 @@ export default defineComponent({
 					/>
 				</div>
 			</div>
+		</section>
+
+		<!-- Dados bancários -->
+		<MoleculesFormsBankingData
+			:show-cpf-cnpj="false"
+			:cpf-cnpj-value="cpfCnpj"
+			:account-type-value="selectedAccountType"
+			:pix-key-value="form.pix_key.value"
+			:bank-account-type-value="form.bank_account_type.value"
+			:bank-value="form.bank.value"
+			:agency-value="form.agency.value"
+			:account-number-value="form.account_number.value"
+			:account-holder-value="form.account_holder.value"
+			:cpf-cnpj-error="form.cpf_cnpj.errorMessages.join(', ')"
+			:account-type-error="form.account_type.errorMessages.join(', ')"
+			:pix-key-error="form.pix_key.errorMessages.join(', ')"
+			:bank-account-type-error="form.bank_account_type.errorMessages.join(', ')"
+			:bank-error="form.bank.errorMessages.join(', ')"
+			:agency-error="form.agency.errorMessages.join(', ')"
+			:account-number-error="form.account_number.errorMessages.join(', ')"
+			:account-holder-error="form.account_holder.errorMessages.join(', ')"
+			@update:cpf-cnpj="handleCpfCnpjInput"
+			@update:account-type="handleAccountTypeSelect"
+			@update:pix-key="useSuppliersCreate.setFormField('pix_key', $event)"
+			@update:bank-account-type="
+				useSuppliersCreate.setFormField('bank_account_type', $event)
+			"
+			@update:bank="useSuppliersCreate.setFormField('bank', $event)"
+			@update:agency="useSuppliersCreate.setFormField('agency', $event)"
+			@update:account-number="
+				useSuppliersCreate.setFormField('account_number', $event)
+			"
+			@update:account-holder="
+				useSuppliersCreate.setFormField('account_holder', $event)
+			"
+		/>
+
+		<section class="citizens__input-data">
 			<div class="citizens__input-data__footer">
 				<MoleculesButtonsCommon
 					type="primary"
