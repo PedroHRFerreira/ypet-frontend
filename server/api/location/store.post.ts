@@ -1,20 +1,60 @@
-import { apiPost } from "~/utils/api";
-
 export default defineEventHandler(async (event): Promise<IResponse> => {
 	try {
-		const path = "/location";
+		const apiBaseUrl = useRuntimeConfig().public.apiBaseUrl;
+		const url = `${apiBaseUrl}/location`;
 
-		const formData = await readFormData(event);
-		const payload: Record<string, any> = {};
-		for (const [key, value] of formData.entries()) {
-			if (key === "address" && typeof value === "string") {
-				payload[key] = JSON.parse(value);
-			} else {
-				payload[key] = value;
+		const incoming = await readFormData(event);
+
+		const outgoing = new FormData();
+
+		const appendIfExists = (k: string) => {
+			const v = incoming.get(k);
+			if (v !== null && v !== undefined && v !== "") {
+				outgoing.append(k, v as any);
 			}
+		};
+
+		const picture = incoming.get("picture");
+		if (picture) outgoing.append("picture", picture as any);
+
+		appendIfExists("location_name");
+		appendIfExists("location_type");
+		appendIfExists("responsible_name");
+		appendIfExists("phone");
+		appendIfExists("email");
+		appendIfExists("cnpj");
+		appendIfExists("bank_account_or_pix");
+		appendIfExists("status");
+		appendIfExists("notes");
+
+		// Processar campos de endereço com prefixo address_
+		const addressJson = incoming.get("address");
+		if (addressJson) {
+			const addressArray = JSON.parse(addressJson as string);
+			addressArray.forEach((addr, index) => {
+				for (const [key, value] of Object.entries(addr)) {
+					if (value) outgoing.append(`address[${index}][${key}]`, value);
+				}
+			});
 		}
 
-		return await apiPost<IResponse>(path, event, payload);
+		const response = await $fetch(url, {
+			method: "POST",
+			headers: {
+				Accept: "application/json",
+				"X-Client-Type": "web",
+				Authorization: `${getCookie(event, "auth._token.laravelSanctum")}`,
+			},
+			body: outgoing,
+		});
+
+		return {
+			type: "success",
+			status: 200,
+			message: "Cadastro realizado com sucesso",
+			show: false,
+			data: response,
+		} as IResponse;
 	} catch (err) {
 		const error = err as IError;
 

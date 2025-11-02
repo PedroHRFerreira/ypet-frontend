@@ -134,7 +134,7 @@ export default defineComponent({
 				const data = await fetchAddress(digits);
 				if (data) {
 					store.setFormField("address_street", data.street);
-					store.setFormField("address_neighborhood", data.district);
+					store.setFormField("address_district", data.district);
 					store.setFormField("address_city", data.city);
 					const ufOpt = optionsState.value.find(
 						(o) =>
@@ -152,6 +152,33 @@ export default defineComponent({
 			if (!/[0-9]/.test(char)) event.preventDefault();
 		};
 
+		const file = ref<File | null>(null);
+		const errorMessage = ref("");
+
+		function handleInputFile(payload: string | File) {
+			if (payload instanceof File) {
+				file.value = payload;
+				store.setFormField("picture", payload);
+			} else {
+				// Para criar, sempre enviamos File; ignorar strings/base64
+				console.log("Upload retornou string/base64, ignorado no create.");
+			}
+		}
+
+		function handleChange(selectedFile: File) {
+			// Alinhar ao comportamento da edição: sempre atualizar o campo 'picture'
+			file.value = selectedFile;
+			store.setFormField("picture", selectedFile);
+		}
+
+		function handleError(message: string) {
+			errorMessage.value = message;
+			// Limpa arquivo e registra erro no campo 'picture' (igual edição)
+			file.value = null;
+			store.setFormField("picture", null);
+			store.setFormError("picture", [message]);
+		}
+
 		return {
 			store,
 			optionsTypeLocation,
@@ -167,6 +194,9 @@ export default defineComponent({
 			continueFeedback,
 			optionsState,
 			useMaskZipCode,
+			handleInputFile,
+			handleChange,
+			handleError,
 		};
 	},
 });
@@ -193,55 +223,78 @@ export default defineComponent({
 
 	<article class="wrapper">
 		<section class="wrapper__about-location">
-			<div class="wrapper__about-location--group">
-				<MoleculesInputCommon
-					label="Nome"
-					:value="store.form.location_name.value"
-					:message-error="store.form.location_name.errorMessages[0]"
-					@on-input="(value) => handleInput('location_name', value)"
-				/>
-				<MoleculesSelectsSimple
-					label="Tipo de local"
-					:options="optionsTypeLocation"
-					:value="store.form.location_type.value"
-					:message-error="store.form.location_type.errorMessages[0]"
-					@item-selected="(opt) => handleInput('location_type', opt.id)"
-				/>
-			</div>
+			<div class="wrapper__input-data__content">
+				<div class="wrapper__input-data__content--group">
+					<MoleculesUploadField
+						label="Selecione um arquivo para enviar"
+						description="Arquivo até 2mb"
+						maxWidth="30%"
+						:accept="'image/*'"
+						:maxSize="2 * 1024 * 1024"
+						:maxHeight="180"
+						:value="store.form.picture.value as any"
+						@input="handleInputFile"
+						@change="handleChange"
+						@error="handleError"
+					/>
+					<div class="wrapper__input-data__content">
+						<div class="wrapper__about-location--group">
+							<MoleculesInputCommon
+								label="Nome"
+								:value="store.form.location_name.value"
+								:message-error="store.form.location_name.errorMessages[0]"
+								@on-input="(value) => handleInput('location_name', value)"
+							/>
+							<MoleculesSelectsSimple
+								label="Tipo de local"
+								:options="optionsTypeLocation"
+								:value="store.form.location_type.value"
+								:message-error="store.form.location_type.errorMessages[0]"
+								@item-selected="(opt) => handleInput('location_type', opt.id)"
+							/>
+						</div>
 
-			<div class="wrapper__about-location--group">
-				<MoleculesInputCommon
-					label="Responsável"
-					:value="store.form.responsible_name.value"
-					:message-error="store.form.responsible_name.errorMessages[0]"
-					@on-input="(value) => handleInput('responsible_name', value)"
-				/>
-				<MoleculesInputCommon
-					label="Telefone"
-					typeInput="text"
-					:value="usePhoneFormatter11BR(store.form.phone.value)"
-					:message-error="store.form.phone.errorMessages[0]"
-					@on-input="
-						(formattedValue) => {
-							const onlyNumbers = formattedValue.replace(/\D/g, '');
-							handleInput('phone', onlyNumbers);
-						}
-					"
-					@keypress="onlyNumbers"
-				/>
-				<MoleculesInputCommon
-					label="E-mail"
-					:value="store.form.email.value"
-					:message-error="store.form.email.errorMessages[0]"
-					@on-input="(value) => handleInput('email', value)"
-				/>
-				<MoleculesSelectsSimple
-					label="Status"
-					:options="optionsStatus"
-					:value="store.form.status.value"
-					:message-error="store.form.status.errorMessages[0]"
-					@item-selected="(opt) => handleInput('status', opt.id)"
-				/>
+						<div class="wrapper__about-location--group">
+							<MoleculesInputCommon
+								label="Responsável"
+								:value="store.form.responsible_name.value"
+								:message-error="store.form.responsible_name.errorMessages[0]"
+								@on-input="(value) => handleInput('responsible_name', value)"
+							/>
+							<MoleculesInputCommon
+								label="Telefone"
+								typeInput="text"
+								:value="usePhoneFormatter11BR(store.form.phone.value)"
+								:message-error="store.form.phone.errorMessages[0]"
+								@on-input="
+									(formattedValue) => {
+										const onlyNumbers = formattedValue.replace(/\D/g, '');
+										handleInput('phone', onlyNumbers);
+									}
+								"
+								@keypress="onlyNumbers"
+							/>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="wrapper__input-data__content">
+				<div class="wrapper__about-location--group">
+					<MoleculesInputCommon
+						label="E-mail"
+						max-width="50%"
+						:value="store.form.email.value"
+						:message-error="store.form.email.errorMessages[0]"
+						@on-input="(value) => handleInput('email', value)"
+					/>
+					<MoleculesSelectsSimple
+						label="Status"
+						:options="optionsStatus"
+						:value="store.form.status.value"
+						:message-error="store.form.status.errorMessages[0]"
+						@item-selected="(opt) => handleInput('status', opt.id)"
+					/>
+				</div>
 			</div>
 		</section>
 
@@ -277,9 +330,9 @@ export default defineComponent({
 			<div class="wrapper__address--row">
 				<MoleculesInputCommon
 					label="Bairro"
-					:value="store.form.address_neighborhood.value"
-					:message-error="store.form.address_neighborhood.errorMessages[0]"
-					@on-input="(value) => handleAddressInput('neighborhood', value)"
+					:value="store.form.address_district.value"
+					:message-error="store.form.address_district.errorMessages[0]"
+					@on-input="(value) => handleAddressInput('district', value)"
 				/>
 				<MoleculesInputCommon
 					label="Cidade"
@@ -309,16 +362,10 @@ export default defineComponent({
 				<MoleculesInputCommon
 					label="CNPJ"
 					typeInput="text"
-					:value="store.form.cnpj.value"
+					:value="useMaskDocument(store.form.cnpj.value)"
 					:message-error="store.form.cnpj.errorMessages[0]"
 					@on-input="(value) => handleInput('cnpj', value)"
 					@keypress="onlyNumbers"
-				/>
-				<MoleculesInputCommon
-					label="Conta bancária ou PIX"
-					:value="store.form.bank_account_or_pix.value"
-					:message-error="store.form.bank_account_or_pix.errorMessages[0]"
-					@on-input="(value) => handleInput('bank_account_or_pix', value)"
 				/>
 				<MoleculesInputCommon
 					label="Observações"

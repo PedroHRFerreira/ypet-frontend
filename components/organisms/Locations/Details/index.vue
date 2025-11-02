@@ -81,6 +81,7 @@ export default defineComponent({
 				{
 					title: "Informações do Local",
 					content: [
+						{ label: "", value: loc.picture, isImage: true },
 						{ label: "Nome:", value: loc.location_name },
 						{
 							label: "Tipo de Local:",
@@ -95,10 +96,6 @@ export default defineComponent({
 						{ label: "E-mail:", value: loc.email || "---" },
 						{ label: "Status:", value: enumStatus[loc.status], isEnum: true },
 						{ label: "CNPJ:", value: loc.cnpj || "---" },
-						{
-							label: "Conta bancária ou PIX:",
-							value: loc.bank_account_or_pix || "---",
-						},
 						{ label: "Observações:", value: loc.notes || "---" },
 					],
 				},
@@ -107,8 +104,8 @@ export default defineComponent({
 					content: [
 						{ label: "Rua:", value: addr?.street || "---" },
 						{ label: "Número:", value: addr?.number || "---" },
-						{ label: "CEP:", value: addr?.zipcode || "---" },
-						{ label: "Bairro:", value: addr?.neighborhood || "---" },
+						{ label: "CEP:", value: addr?.zip_code || "---" },
+						{ label: "Bairro:", value: addr?.district || "---" },
 						{ label: "Cidade:", value: addr?.city || "---" },
 						{ label: "Estado:", value: addr?.state || "---" },
 						{ label: "Complemento:", value: addr?.complement || "---" },
@@ -156,17 +153,25 @@ export default defineComponent({
 						color="var(--brand-color-dark-blue-300)"
 					/>
 					<AtomsTypography
-						v-if="!item.isEnum"
+						v-if="!item.isEnum && !item.isImage"
 						type="text-p5"
 						:text="item.value as string"
 						weight="regular"
 						color="var(--brand-color-dark-blue-900)"
 					/>
 					<AtomsBadges
-						v-else
-						type="text"
+						v-else-if="item.isEnum"
+						type="only"
 						:text="(item.value as IEnum)?.label || '---'"
 						:color="(item.value as IEnum)?.color || 'gray'"
+					/>
+					<AtomsImageCustom
+						v-else-if="item.isImage"
+						:src="item.value"
+						alt="imagem usuário"
+						width="fit-content"
+						height="150px"
+						object-fit="contain"
 					/>
 				</div>
 			</div>

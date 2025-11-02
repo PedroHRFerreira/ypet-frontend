@@ -159,6 +159,24 @@ export default defineComponent({
 			await store.fetchLocation(id);
 		});
 
+		function handleImageUpload(file: File | null) {
+			store.setFormField("picture", file);
+		}
+
+		function handleChange(file: File) {
+			store.setFormField("picture", file);
+		}
+
+		function handleError(error: string) {
+			store.setFormField("picture", null);
+			store.setFormError("picture", [error]);
+		}
+
+		const initialPicture = computed(() => {
+			const current = store.form.picture.value as any;
+			if (current) return current;
+		});
+
 		return {
 			optionsState,
 			store,
@@ -174,6 +192,10 @@ export default defineComponent({
 			continueFeedback,
 			useMaskZipCode,
 			onInputZipcode,
+			handleImageUpload,
+			handleChange,
+			handleError,
+			initialPicture,
 		};
 	},
 });
@@ -201,42 +223,62 @@ export default defineComponent({
 
 	<article class="wrapper">
 		<section class="wrapper__about-location">
-			<div class="wrapper__about-location--group">
-				<MoleculesInputCommon
-					label="Nome"
-					:value="store.form.location_name.value"
-					:message-error="store.form.location_name.errorMessages[0]"
-					@on-input="(value) => handleInput('location_name', value)"
-				/>
-				<MoleculesSelectsSimple
-					label="Tipo de local"
-					:options="optionsTypeLocation"
-					:value="store.form.location_type.value"
-					:message-error="store.form.location_type.errorMessages[0]"
-					@item-selected="(opt) => handleInput('location_type', opt.id)"
-				/>
+			<div class="wrapper__input-data__content">
+				<div class="wrapper__about-location--group">
+					<MoleculesUploadField
+						label="Selecione um arquivo para enviar"
+						description="Arquivo até 2mb"
+						maxWidth="40%"
+						:value="initialPicture"
+						:accept="'image/*'"
+						:maxSize="2 * 1024 * 1024"
+						:maxHeight="180"
+						@input="handleImageUpload($event)"
+						@change="handleChange"
+						@error="handleError"
+					/>
+					<div class="wrapper__input-data__content">
+						<div class="wrapper__about-location--group">
+							<MoleculesInputCommon
+								label="Nome"
+								:value="store.form.location_name.value"
+								:message-error="store.form.location_name.errorMessages[0]"
+								@on-input="(value) => handleInput('location_name', value)"
+							/>
+							<MoleculesSelectsSimple
+								label="Tipo de local"
+								:options="optionsTypeLocation"
+								:value="store.form.location_type.value"
+								:message-error="store.form.location_type.errorMessages[0]"
+								@item-selected="(opt) => handleInput('location_type', opt.id)"
+							/>
+						</div>
+						<div class="wrapper__about-location--group">
+							<MoleculesInputCommon
+								label="Responsável"
+								:value="store.form.responsible_name.value"
+								:message-error="store.form.responsible_name.errorMessages[0]"
+								@on-input="(value) => handleInput('responsible_name', value)"
+							/>
+							<MoleculesInputCommon
+								label="Telefone"
+								typeInput="text"
+								:value="usePhoneFormatter11BR(String(store.form.phone.value))"
+								:message-error="store.form.phone.errorMessages[0]"
+								@on-input="
+									(formattedValue) => {
+										const onlyNumbers = formattedValue.replace(/\D/g, '');
+										handleInput('phone', onlyNumbers);
+									}
+								"
+								@keypress="onlyNumbers"
+							/>
+						</div>
+					</div>
+				</div>
 			</div>
 
 			<div class="wrapper__about-location--group">
-				<MoleculesInputCommon
-					label="Responsável"
-					:value="store.form.responsible_name.value"
-					:message-error="store.form.responsible_name.errorMessages[0]"
-					@on-input="(value) => handleInput('responsible_name', value)"
-				/>
-				<MoleculesInputCommon
-					label="Telefone"
-					typeInput="text"
-					:value="usePhoneFormatter11BR(String(store.form.phone.value))"
-					:message-error="store.form.phone.errorMessages[0]"
-					@on-input="
-						(formattedValue) => {
-							const onlyNumbers = formattedValue.replace(/\D/g, '');
-							handleInput('phone', onlyNumbers);
-						}
-					"
-					@keypress="onlyNumbers"
-				/>
 				<MoleculesInputCommon
 					label="E-mail"
 					:value="store.form.email.value"
@@ -316,16 +358,10 @@ export default defineComponent({
 				<MoleculesInputCommon
 					label="CNPJ"
 					typeInput="text"
-					:value="store.form.cnpj.value"
+					:value="useMaskDocument(store.form.cnpj.value)"
 					:message-error="store.form.cnpj.errorMessages[0]"
 					@on-input="(value) => handleInput('cnpj', value)"
 					@keypress="onlyNumbers"
-				/>
-				<MoleculesInputCommon
-					label="Conta bancária ou PIX"
-					:value="store.form.bank_account_or_pix.value"
-					:message-error="store.form.bank_account_or_pix.errorMessages[0]"
-					@on-input="(value) => handleInput('bank_account_or_pix', value)"
 				/>
 				<MoleculesInputCommon
 					label="Observações"
