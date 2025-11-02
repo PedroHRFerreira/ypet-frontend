@@ -13,8 +13,6 @@ export const useCreateStore = defineStore("veterinarians-create", {
 			"crmv",
 			"uf",
 			"email",
-			"password",
-			"password_confirmation",
 			"phone",
 			"linked_institution",
 			"linked_type",
