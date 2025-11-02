@@ -1,5 +1,7 @@
 <script lang="ts">
 import { defineComponent, computed, ref } from "vue";
+import { useZipcodeLookup } from "~/composables/useZipcodeLookup";
+import { useMaskZipCode } from "~/composables/useMaskZipCode";
 import { useRouter } from "vue-router";
 import { useCreateStore } from "~/stores/locations/useCreateStore";
 import type { IOption } from "~/types/global";
@@ -9,6 +11,7 @@ export default defineComponent({
 	setup() {
 		const store = useCreateStore();
 		const router = useRouter();
+		const { fetchAddress } = useZipcodeLookup();
 
 		const showConfirm = ref(false);
 		const showSuccess = ref(false);
@@ -124,6 +127,25 @@ export default defineComponent({
 			store.setFormField(`address_${field}`, value);
 		};
 
+		const onInputZipcode = async (value: string) => {
+			const digits = value.replace(/\D/g, "");
+			store.setFormField("address_zipcode", digits);
+			if (digits.length === 8) {
+				const data = await fetchAddress(digits);
+				if (data) {
+					store.setFormField("address_street", data.street);
+					store.setFormField("address_neighborhood", data.district);
+					store.setFormField("address_city", data.city);
+					const ufOpt = optionsState.value.find(
+						(o) => (o as any).id === data.state || (o as any).text === data.state,
+					);
+					if (ufOpt) {
+						store.setFormField("address_state", (ufOpt as any).id);
+					}
+				}
+			}
+		};
+
 		const onlyNumbers = (event: KeyboardEvent) => {
 			const char = String.fromCharCode(event.which);
 			if (!/[0-9]/.test(char)) event.preventDefault();
@@ -135,6 +157,7 @@ export default defineComponent({
 			optionsStatus,
 			handleInput,
 			handleAddressInput,
+			onInputZipcode,
 			onlyNumbers,
 			showConfirm,
 			showSuccess,
@@ -142,6 +165,7 @@ export default defineComponent({
 			confirmCreate,
 			continueFeedback,
 			optionsState,
+			useMaskZipCode,
 		};
 	},
 });
@@ -225,9 +249,10 @@ export default defineComponent({
 				<MoleculesInputCommon
 					label="CEP"
 					typeInput="text"
-					:value="store.form.address_zipcode.value"
+					:max-length="9"
+					:value="useMaskZipCode(String(store.form.address_zipcode.value || ''))"
 					:message-error="store.form.address_zipcode.errorMessages[0]"
-					@on-input="(value) => handleAddressInput('zipcode', value)"
+					@on-input="onInputZipcode"
 					@keypress="onlyNumbers"
 				/>
 				<MoleculesInputCommon

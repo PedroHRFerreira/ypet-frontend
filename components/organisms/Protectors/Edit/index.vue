@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent } from "vue";
+import { useZipcodeLookup } from "~/composables/useZipcodeLookup";
 
 import { useUserStatusEnumStore } from "~/stores/Enums/useUserStatusEnumStore";
 import { useUFEnumStore } from "~/stores/Enums/useUFEnumStore";
@@ -87,6 +88,7 @@ export default defineComponent({
 			usePhoneFormatter11BR(protector?.user?.telephone || ""),
 		);
 		const zipCode = ref(useMaskZipCode(mainAddress?.zip_code || ""));
+		const { fetchAddress } = useZipcodeLookup();
 
 		const showConfirm = ref(false);
 		const showSuccess = ref(false);
@@ -101,9 +103,25 @@ export default defineComponent({
 			useProtectorEdit.setFormField("telephone", value.replace(/\D/g, ""));
 		}
 
-		function onInputZipCode(value: string) {
+		async function onInputZipCode(value: string) {
 			zipCode.value = useMaskZipCode(value);
-			useProtectorEdit.setFormField("zip_code", value.replace(/\D/g, ""));
+			const digits = value.replace(/\D/g, "");
+			useProtectorEdit.setFormField("zip_code", digits);
+
+			if (digits.length === 8) {
+				const data = await fetchAddress(digits);
+				if (data) {
+					useProtectorEdit.setFormField("street", data.street);
+					useProtectorEdit.setFormField("district", data.district);
+					useProtectorEdit.setFormField("city", data.city);
+					const ufOpt = optionsUFEnum.value.find(
+						(o) => (o as any).id === data.state || (o as any).text === data.state,
+					);
+					if (ufOpt) {
+						useProtectorEdit.setFormField("state", (ufOpt as any).id);
+					}
+				}
+			}
 		}
 
 		function openConfirm() {

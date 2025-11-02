@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent, onUnmounted } from "vue";
+import { useZipcodeLookup } from "~/composables/useZipcodeLookup";
 import { useCreateStore } from "~/stores/protectors/useCreateStore";
 import MoleculesUploadField from "~/components/molecules/ListCardItem/index.vue";
 
@@ -48,6 +49,7 @@ export default defineComponent({
 		const errorMessage = ref("");
 		const showConfirm = ref(false);
 		const showSuccess = ref(false);
+		const { fetchAddress } = useZipcodeLookup();
 
 		function openConfirm() {
 			showConfirm.value = true;
@@ -89,9 +91,25 @@ export default defineComponent({
 			useProtectorsCreate.setFormField("telephone", value.replace(/\D/g, ""));
 		}
 
-		function onInputZipCode(value: string) {
+		async function onInputZipCode(value: string) {
 			zipCode.value = useMaskZipCode(value);
-			useProtectorsCreate.setFormField("zip_code", value.replace(/\D/g, ""));
+			const digits = value.replace(/\D/g, "");
+			useProtectorsCreate.setFormField("zip_code", digits);
+
+			if (digits.length === 8) {
+				const data = await fetchAddress(digits);
+				if (data) {
+					useProtectorsCreate.setFormField("street", data.street);
+					useProtectorsCreate.setFormField("district", data.district);
+					useProtectorsCreate.setFormField("city", data.city);
+					const ufOpt = optionsUFEnum.find(
+						(o) => (o as any).id === data.state || (o as any).text === data.state,
+					);
+					if (ufOpt) {
+						useProtectorsCreate.setFormField("state", (ufOpt as any).id);
+					}
+				}
+			}
 		}
 
 		function handleInput(payload: string | File) {

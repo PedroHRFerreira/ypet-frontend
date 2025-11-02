@@ -1,5 +1,7 @@
 <script lang="ts">
 import { defineComponent, computed, ref, onMounted } from "vue";
+import { useZipcodeLookup } from "~/composables/useZipcodeLookup";
+import { useMaskZipCode } from "~/composables/useMaskZipCode";
 import { useRoute, useRouter } from "vue-router";
 import { useEditStore } from "~/stores/locations/useEditStore";
 import type { IOption } from "~/types/global";
@@ -126,6 +128,26 @@ export default defineComponent({
 			store.setFormField(`address_${field}`, value);
 		};
 
+		const { fetchAddress } = useZipcodeLookup();
+		async function onInputZipcode(value: string) {
+			const digits = value.replace(/\D/g, "");
+			store.setFormField("address_zipcode", digits);
+			if (digits.length === 8) {
+				const data = await fetchAddress(digits);
+				if (data) {
+					store.setFormField("address_street", data.street);
+					store.setFormField("address_neighborhood", data.district);
+					store.setFormField("address_city", data.city);
+					const ufOpt = optionsState.value.find(
+						(o) => (o as any).id === data.state || (o as any).text === data.state,
+					);
+					if (ufOpt) {
+						store.setFormField("address_state", (ufOpt as any).id);
+					}
+				}
+			}
+		}
+
 		const onlyNumbers = (event: KeyboardEvent) => {
 			const char = String.fromCharCode(event.which);
 			if (!/[0-9]/.test(char)) event.preventDefault();
@@ -149,6 +171,8 @@ export default defineComponent({
 			openConfirm,
 			confirmUpdate,
 			continueFeedback,
+			useMaskZipCode,
+			onInputZipcode,
 		};
 	},
 });
@@ -233,9 +257,9 @@ export default defineComponent({
 				<MoleculesInputCommon
 					label="CEP"
 					typeInput="text"
-					:value="store.form.address_zipcode.value"
+					:value="useMaskZipCode(String(store.form.address_zipcode.value || ''))"
 					:message-error="store.form.address_zipcode.errorMessages[0]"
-					@on-input="(value) => handleAddressInput('zipcode', value)"
+					@on-input="onInputZipcode"
 					@keypress="onlyNumbers"
 				/>
 				<MoleculesInputCommon

@@ -1,5 +1,7 @@
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref } from "vue";
+import { useZipcodeLookup } from "~/composables/useZipcodeLookup";
+import { useMaskZipCode } from "~/composables/useMaskZipCode";
 import { useAnimalSpeciesEnumStore } from "~/stores/Enums/useAnimalSpeciesEnumStore";
 import { useGenderEnumStore } from "~/stores/Enums/useGenderEnumStore";
 import { useCreateStore } from "~/stores/castra-mobile/registrations/useCreateStore";
@@ -18,6 +20,7 @@ export default defineComponent({
 		const optionsGender = ref<IOption[]>([]);
 		const optionsSize = ref<IOption[]>([]);
 		const optionsUF = ref<IOption[]>([]);
+		const { fetchAddress } = useZipcodeLookup();
 
 		onMounted(async () => {
 			[
@@ -166,6 +169,27 @@ export default defineComponent({
 
 		const birthDate = ref("");
 
+		async function onInputTutorZipCode(value: string) {
+			const masked = useMaskZipCode(value);
+			// show masked in UI by setting the masked into component binding via computed value; store only digits
+			const digits = value.replace(/\D/g, "");
+			createStore.setFormField("tutor_address_zip_code", digits);
+			if (digits.length === 8) {
+				const data = await fetchAddress(digits);
+				if (data) {
+					createStore.setFormField("tutor_address_street", data.street);
+					createStore.setFormField("tutor_address_district", data.district);
+					createStore.setFormField("tutor_address_city", data.city);
+					const ufOpt = optionsUF.value.find(
+						(o) => (o as any).id === data.state || (o as any).text === data.state,
+					);
+					if (ufOpt) {
+						createStore.setFormField("tutor_address_state", (ufOpt as any).id);
+					}
+				}
+			}
+		}
+
 		return {
 			useDayjs,
 			optionsGender,
@@ -186,6 +210,7 @@ export default defineComponent({
 			errorMessage,
 			birthDate,
 			tutorEmail,
+			onInputTutorZipCode,
 		};
 	},
 	watch: {
@@ -352,13 +377,11 @@ export default defineComponent({
 					<MoleculesInputCommon
 						label="CEP"
 						max-width="25%"
-						:value="form.tutor_address_zip_code.value as string"
+						:value="useMaskZipCode(String(form.tutor_address_zip_code.value || ''))"
 						:message-error="
 							form.tutor_address_zip_code.errorMessages.join(', ')
 						"
-						@on-input="
-							createStore.setFormField('tutor_address_zip_code', $event)
-						"
+						@on-input="onInputTutorZipCode"
 					/>
 					<MoleculesInputCommon
 						label="Endereço"

@@ -6,6 +6,7 @@ import MoleculesUploadField from "~/components/molecules/UploadField/index.vue";
 import { useUserStatusEnumStore } from "~/stores/Enums/useUserStatusEnumStore";
 import { useUFEnumStore } from "~/stores/Enums/useUFEnumStore";
 import { useBooleanEnumStore } from "~/stores/Enums/useBooleanEnumStore";
+import { useZipcodeLookup } from "~/composables/useZipcodeLookup";
 
 export default defineComponent({
 	name: "OrganismsCitizensCreate",
@@ -24,6 +25,7 @@ export default defineComponent({
 		const optionsUserStatus = ref<IOption[]>([]);
 		const optionsUFEnum = ref<IOption[]>([]);
 		const optionsBoolean = ref<IOption[]>([]);
+		const { fetchAddress } = useZipcodeLookup();
 
 		onUnmounted(() => {
 			useCitizensCreate.resetForm();
@@ -95,9 +97,25 @@ export default defineComponent({
 			useCitizensCreate.setFormField("telephone", value.replace(/\D/g, ""));
 		}
 
-		function onInputZipCode(value: string) {
+		async function onInputZipCode(value: string) {
 			zipCode.value = useMaskZipCode(value);
-			useCitizensCreate.setFormField("zip_code", value.replace(/\D/g, ""));
+			const digits = value.replace(/\D/g, "");
+			useCitizensCreate.setFormField("zip_code", digits);
+
+			if (digits.length === 8) {
+				const data = await fetchAddress(digits);
+				if (data) {
+					useCitizensCreate.setFormField("street", data.street);
+					useCitizensCreate.setFormField("district", data.district);
+					useCitizensCreate.setFormField("city", data.city);
+					const ufOpt = optionsUFEnum.value.find(
+						(o) => (o as any).id === data.state || (o as any).text === data.state,
+					);
+					if (ufOpt) {
+						useCitizensCreate.setFormField("state", (ufOpt as any).id);
+					}
+				}
+			}
 		}
 
 		function handleInput(payload: string | File) {
