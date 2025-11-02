@@ -1,18 +1,18 @@
 @use "assets/scss/_colors.scss";
 
 .atoms-tabs {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
 
-  &__header {
-    display: flex;
-    gap: 8px;
-    border-bottom: 1px solid var(--greys-colors-200);
-    padding-bottom: 8px;
-  }
+	&__header {
+		display: flex;
+		gap: 8px;
+		border-bottom: 1px solid var(--greys-colors-200);
+		padding-bottom: 8px;
+	}
 
-  &__content {
-    display: block;
-  }
+	&__content {
+		display: block;
+	}
 }

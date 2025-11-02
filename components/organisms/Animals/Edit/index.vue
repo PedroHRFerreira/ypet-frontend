@@ -38,11 +38,11 @@ export default defineComponent({
 
 		const showLocationField = computed(() => {
 			if (form.status.value && !form.status.value?.id) {
-				return form.status.value == "sheltered"
+				return form.status.value == "sheltered";
 			}
-			
-			return form.status.value?.id == "sheltered"
-		})
+
+			return form.status.value?.id == "sheltered";
+		});
 
 		const optionsAnimalCoat = computed(() => {
 			const animal = animalDetailsStore.animal;
@@ -125,8 +125,8 @@ export default defineComponent({
 					text: location.location_name,
 					state: "default" as "default" | "activated" | "disabled",
 				};
-				
-				console.log(location.id, animal.location_id)
+
+				console.log(location.id, animal.location_id);
 				if (location.id === animal.location_id) {
 					option.state = "activated";
 				}
@@ -506,7 +506,7 @@ export default defineComponent({
 				/>
 			</div>
 			<div class="animal__input-data__content">
-				<div class="animal__input-data__content--group" style="flex-wrap:wrap">
+				<div class="animal__input-data__content--group" style="flex-wrap: wrap">
 					<MoleculesInputDate
 						v-model="entryDate"
 						label="Data de entrada"
