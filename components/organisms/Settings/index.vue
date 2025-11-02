@@ -100,5 +100,10 @@ async function handlePasswordChange() {
 				@onclick="handlePasswordChange"
 			/>
 		</section>
+
+		<!-- Meus Extratos Financeiros -->
+		<section :class="$style.section">
+			<OrganismsFinancialStatementsUser />
+		</section>
 	</div>
 </template>
