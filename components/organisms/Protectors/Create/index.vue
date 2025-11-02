@@ -247,22 +247,6 @@ export default defineComponent({
 					</div>
 				</div>
 				<div class="protectors__input-data__content--group">
-					<MoleculesInputCommon
-						label="Senha"
-						max-width="50%"
-						:value="form.password.value as string"
-						:message-error="form.password.errorMessages.join(', ')"
-						@on-input="useProtectorsCreate.setFormField('password', $event)"
-					/>
-					<MoleculesInputCommon
-						label="Confirme Senha"
-						max-width="50%"
-						:value="form.password_confirmation.value as string"
-						:message-error="form.password_confirmation.errorMessages.join(', ')"
-						@on-input="
-							useProtectorsCreate.setFormField('password_confirmation', $event)
-						"
-					/>
 				</div>
 			</div>
 		</section>

@@ -26,14 +26,8 @@ export default defineComponent({
 		const showSuccess = ref(false);
 
 		const optionsUFEnum = computed(() => {
-			const citizen = useCitizenDetailsStore.citizens;
 			return UFEnum.value.map((item) => {
-				if (item.value === citizen?.state) {
-					item.state = "activated";
-					useCitizenEdit.setFormField("state", item.id);
-				}
-
-				return item;
+				return { ...(item as any), state: (item as any).state ?? "default" };
 			});
 		});
 
@@ -64,7 +58,7 @@ export default defineComponent({
 		const optionsUserStatus = computed(() => {
 			const citizen = useCitizenDetailsStore.citizens;
 			return userStatus.value.map((item) => {
-				if (item.id === citizen?.status) {
+				if (item.id === citizen?.status?.value) {
 					item.state = "activated";
 					useCitizenEdit.setFormField("status", item.id);
 				}
@@ -93,7 +87,6 @@ export default defineComponent({
 			useCitizenEdit.setFormField("number", mainAddress?.number || "");
 			useCitizenEdit.setFormField("district", mainAddress?.district || "");
 			useCitizenEdit.setFormField("complement", mainAddress?.complement || "");
-			useCitizenEdit.setFormField("state", mainAddress?.state || "");
 			useCitizenEdit.setFormField("city", mainAddress?.city || "");
 			useCitizenEdit.setFormField("status", citizen?.status || "");
 
@@ -101,6 +94,29 @@ export default defineComponent({
 			document.value = useMaskDocument(citizen?.document || "");
 			telephone.value = usePhoneFormatter11BR(citizen?.user?.telephone || "");
 			zipCode.value = useMaskZipCode(mainAddress?.zip_code || "");
+			const targetState = (mainAddress?.state ?? citizen?.state) as any;
+
+			if (targetState) {
+			const ufOpt = UFEnum.value.find((o: any) =>
+				String(o.id) === String(targetState) ||
+				String(o.value) === String(targetState) ||
+				String(o.text) === String(targetState)
+			);
+
+			if (ufOpt) {
+				const selected = (ufOpt as any).id ?? (ufOpt as any).value;
+				useCitizenEdit.setFormField("state", selected);
+
+				UFEnum.value = UFEnum.value.map((item: any) => ({
+				...(item as any),
+				state: String((item as any).id ?? (item as any).value) === String(selected)
+					? "activated"
+					: "default",
+				}));
+			} else {
+				useCitizenEdit.setFormField("state", targetState);
+			}
+			}
 		});
 
 		function onInputDocument(value: string) {
@@ -113,9 +129,31 @@ export default defineComponent({
 			useCitizenEdit.setFormField("telephone", value.replace(/\D/g, ""));
 		}
 
-		function onInputZipCode(value: string) {
+		async function onInputZipCode(value: string) {
 			zipCode.value = useMaskZipCode(value);
-			useCitizenEdit.setFormField("zip_code", value.replace(/\D/g, ""));
+			const digits = value.replace(/\D/g, "");
+			useCitizenEdit.setFormField("zip_code", digits);
+
+			if (digits.length === 8) {
+				const data = await fetchAddress(digits);
+				if (data) {
+					useCitizenEdit.setFormField("street", data.street);
+					useCitizenEdit.setFormField("district", data.district);
+					useCitizenEdit.setFormField("city", data.city);
+					const ufOpt = UFEnum.value.find((o: any) =>
+						String(o.id) === String(data.state) ||
+						String(o.value) === String(data.state) ||
+						String(o.text) === String(data.state)
+					);
+
+					if (ufOpt) {
+						const selected = (ufOpt as any).id ?? (ufOpt as any).value;
+						useCitizenEdit.setFormField("state", selected);
+					} else {
+						useCitizenEdit.setFormField("state", data.state);
+					}
+				}
+			}
 		}
 
 		function openConfirm() {
