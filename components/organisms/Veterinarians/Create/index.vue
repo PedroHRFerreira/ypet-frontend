@@ -211,25 +211,6 @@ export default defineComponent({
 						:message-error="form.email.errorMessages.join(', ')"
 						@on-input="useVeterinariansCreate.setFormField('email', $event)"
 					/>
-					<MoleculesInputCommon
-						label="Senha"
-						max-width="30%"
-						:value="form.password.value as string"
-						:message-error="form.password.errorMessages.join(', ')"
-						@on-input="useVeterinariansCreate.setFormField('password', $event)"
-					/>
-					<MoleculesInputCommon
-						label="Confirmar Senha"
-						max-width="30%"
-						:value="form.password_confirmation.value as string"
-						:message-error="form.password_confirmation.errorMessages.join(', ')"
-						@on-input="
-							useVeterinariansCreate.setFormField(
-								'password_confirmation',
-								$event,
-							)
-						"
-					/>
 				</div>
 				<div class="animal__about-pet__content--group">
 					<MoleculesInputCommon
