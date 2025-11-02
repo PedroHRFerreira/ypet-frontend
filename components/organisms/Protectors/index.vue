@@ -275,6 +275,23 @@ export default defineComponent({
 			/>
 		</div>
 	</section>
+  <MoleculesConfirmFeedbackModal
+    v-model:open="showConfirm"
+    variant="confirm"
+    title="Excluir protetor"
+    description="Tem certeza que deseja excluir este protetor?"
+    confirm-text="Excluir"
+    cancel-text="Cancelar"
+    @confirm="confirmDelete"
+    @close="onCloseConfirm"
+  />
+  <MoleculesConfirmFeedbackModal
+    v-model:open="showSuccess"
+    variant="success"
+    title="Protetor excluído com sucesso"
+    continue-text="Fechar"
+    @close="onCloseSuccess"
+  />
 </template>
 
 <style scoped lang="scss">
