@@ -330,7 +330,7 @@ export default defineComponent({
 				/>
 			</div>
 			<div class="animal__input-data__content">
-				<div class="animal__input-data__content--group" style="flex-wrap:wrap">
+				<div class="animal__input-data__content--group" style="flex-wrap: wrap">
 					<MoleculesInputDate
 						v-model="entryDate"
 						label="Data de entrada"
@@ -384,7 +384,7 @@ export default defineComponent({
 						"
 					/>
 				</div>
-				<div  v-if="showLocationField" class="animal__about-pet__content--group">
+				<div v-if="showLocationField" class="animal__about-pet__content--group">
 					<MoleculesSelectsSimple
 						max-width="100%"
 						label="Local"

@@ -2,9 +2,9 @@
 @use "assets/scss/_elevation.scss";
 
 .atoms-card {
-  background-color: var(--white);
-  border: 1px solid var(--greys-colors-200);
-  border-radius: 12px;
-  padding: 16px;
-  @extend .elevation-center--level-1;
+	background-color: var(--white);
+	border: 1px solid var(--greys-colors-200);
+	border-radius: 12px;
+	padding: 16px;
+	@extend .elevation-center--level-1;
 }

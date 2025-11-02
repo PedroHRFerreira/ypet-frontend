@@ -1,11 +1,11 @@
 @use "assets/scss/_colors.scss";
 
 .molecules-form-field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
 
-  &__messages {
-    margin-top: 4px;
-  }
+	&__messages {
+		margin-top: 4px;
+	}
 }

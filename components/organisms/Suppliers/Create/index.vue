@@ -100,7 +100,8 @@ export default defineComponent({
 					useSuppliersCreate.setFormField("city", data.city);
 					// map UF to enum option id
 					const ufOpt = optionsUFEnum.find(
-						(o) => (o as any).id === data.state || (o as any).text === data.state,
+						(o) =>
+							(o as any).id === data.state || (o as any).text === data.state,
 					);
 					if (ufOpt) {
 						useSuppliersCreate.setFormField("state", (ufOpt as any).id);

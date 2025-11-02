@@ -245,8 +245,10 @@ export default defineComponent({
 				await deleteStore.destroy(selectedId.value);
 				if (!deleteStore.errorMessage) {
 					showSuccess.value = true;
-// ... (rest of the code remains the same)
-					await animalsList.fetchAnimals({ page: animalsList.pagination?.current_page || 1 });
+					// ... (rest of the code remains the same)
+					await animalsList.fetchAnimals({
+						page: animalsList.pagination?.current_page || 1,
+					});
 				}
 			},
 			onCloseConfirm() {

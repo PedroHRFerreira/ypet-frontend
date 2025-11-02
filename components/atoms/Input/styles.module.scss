@@ -2,23 +2,25 @@
 @use "assets/scss/_colors.scss";
 
 .atoms-input {
-  @extend %form-reset-input;
-  width: 100%;
-  padding: 10px 12px;
-  border-radius: 8px;
-  border: 1px solid var(--greys-colors-200);
-  background-color: var(--white);
-  color: var(--brand-color-dark-blue-900);
-  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+	@extend %form-reset-input;
+	width: 100%;
+	padding: 10px 12px;
+	border-radius: 8px;
+	border: 1px solid var(--greys-colors-200);
+	background-color: var(--white);
+	color: var(--brand-color-dark-blue-900);
+	transition:
+		border-color 0.2s ease-in-out,
+		box-shadow 0.2s ease-in-out;
 
-  &:focus {
-    border-color: var(--brand-color-blue-600);
-    box-shadow: 0 0 0 3px rgba(60, 118, 241, 0.15);
-  }
+	&:focus {
+		border-color: var(--brand-color-blue-600);
+		box-shadow: 0 0 0 3px rgba(60, 118, 241, 0.15);
+	}
 
-  &:disabled {
-    background-color: var(--greys-colors-100);
-    color: var(--greys-colors-500);
-    cursor: not-allowed;
-  }
+	&:disabled {
+		background-color: var(--greys-colors-100);
+		color: var(--greys-colors-500);
+		cursor: not-allowed;
+	}
 }
