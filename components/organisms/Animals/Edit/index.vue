@@ -34,6 +34,15 @@ export default defineComponent({
 
 		const birthDate = ref("");
 		const entryDate = ref("");
+		const status = ref("");
+
+		const showLocationField = computed(() => {
+			if (form.status.value && !form.status.value?.id) {
+				return form.status.value == "sheltered"
+			}
+			
+			return form.status.value?.id == "sheltered"
+		})
 
 		const optionsAnimalCoat = computed(() => {
 			const animal = animalDetailsStore.animal;
@@ -116,7 +125,8 @@ export default defineComponent({
 					text: location.location_name,
 					state: "default" as "default" | "activated" | "disabled",
 				};
-
+				
+				console.log(location.id, animal.location_id)
 				if (location.id === animal.location_id) {
 					option.state = "activated";
 				}
@@ -316,6 +326,7 @@ export default defineComponent({
 			optionsGender,
 			optionsSpecies,
 			optionsAnimalStatus,
+			showLocationField,
 			optionsAnimalSize,
 			optionsAnimalCoat,
 			optionsLocations,
@@ -483,17 +494,6 @@ export default defineComponent({
 						@on-input="useAnimalsEdit.setFormField('surname', $event)"
 					/>
 				</div>
-				<div class="animal__about-pet__content--group">
-					<MoleculesSelectsSimple
-						max-width="100%"
-						label="Local"
-						:options="optionsLocations"
-						:value="form.location_id.value"
-						:message-error="form.location_id.errorMessages.join(', ')"
-						placeholder-text="Selecione um local (opcional)"
-						@item-selected="useAnimalsEdit.setFormField('location_id', $event)"
-					/>
-				</div>
 			</div>
 		</section>
 		<section class="animal__input-data">
@@ -506,7 +506,7 @@ export default defineComponent({
 				/>
 			</div>
 			<div class="animal__input-data__content">
-				<div class="animal__input-data__content--group">
+				<div class="animal__input-data__content--group" style="flex-wrap:wrap">
 					<MoleculesInputDate
 						v-model="entryDate"
 						label="Data de entrada"
@@ -514,20 +514,20 @@ export default defineComponent({
 						placeholder="YYYY-MM-DD"
 						min="1900-01-01"
 						max="2025-12-31"
-						width="30%"
+						width="28%"
 						:required="true"
 						:error-messages="form.entry_date.errorMessages"
 					/>
 					<MoleculesSelectsSimple
-						max-width="30%"
+						max-width="25%"
 						label="Status"
 						:options="optionsAnimalStatus"
 						:message-error="form.status.errorMessages.join(', ')"
 						@item-selected="useAnimalsEdit.setFormField('status', $event)"
 					/>
-					<MoleculesSelectsSearchable
+					<MoleculesSelectsSimple
 						v-if="showCitizenField"
-						max-width="30%"
+						max-width="42%"
 						label="Tutor"
 						:options="optionsCitizens"
 						:is-loading="useCitizensList.isLoading"
@@ -540,7 +540,7 @@ export default defineComponent({
 					<MoleculesInputOptionGroup
 						name="Castrado"
 						label="Castrado"
-						max-width="20%"
+						:max-width="showCitizenField ? '50%' : '20%'"
 						:options="optionsBoolean"
 						:value="form.castrated.value ? form.castrated.value : 0"
 						:message-error="form.castrated.errorMessages.join(', ')"
@@ -549,11 +549,21 @@ export default defineComponent({
 					<MoleculesInputOptionGroup
 						name="Vermifugado"
 						label="Vermifugado"
-						max-width="20%"
+						:max-width="showCitizenField ? '47%' : '20%'"
 						:options="optionsBoolean"
 						:value="form.dewormed.value ? form.dewormed.value : 0"
 						:message-error="form.dewormed.errorMessages.join(', ')"
 						@change-option="useAnimalsEdit.setFormField('dewormed', $event.id)"
+					/>
+				</div>
+				<div v-if="showLocationField" class="animal__about-pet__content--group">
+					<MoleculesSelectsSimple
+						max-width="100%"
+						label="Local"
+						:options="optionsLocations"
+						:message-error="form.location_id.errorMessages.join(', ')"
+						placeholder-text="Selecione um local (opcional)"
+						@item-selected="useAnimalsEdit.setFormField('location_id', $event)"
 					/>
 				</div>
 				<div class="animal__input-data__content--group">
