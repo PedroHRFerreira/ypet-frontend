@@ -1,12 +1,17 @@
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref } from "vue";
 import { useListStore } from "~/stores/castra-mobile/clinic-events/useListStore";
+import { useDeleteStore as useClinicEventsDeleteStore } from "~/stores/castra-mobile/clinic-events/useDeleteStore";
 
 export default defineComponent({
 	name: "OrganismsCastraMobileClinicEvent",
 	setup() {
 		const listStore = useListStore();
 		const isVisible = ref(false);
+		const deleteStore = useClinicEventsDeleteStore();
+		const showConfirm = ref(false);
+		const showSuccess = ref(false);
+		const selectedId = ref<number | null>(null);
 
 		const header = computed(() => {
 			return {
@@ -131,6 +136,11 @@ export default defineComponent({
 					params: { id: item.id },
 				});
 			}
+
+			if (event === "delete") {
+				selectedId.value = Number(item.id);
+				showConfirm.value = true;
+			}
 		};
 
 		onMounted(async () => {
@@ -149,6 +159,24 @@ export default defineComponent({
 			onSelectOptionAction,
 			isVisible,
 			toggleDropdown,
+			deleteStore,
+			showConfirm,
+			showSuccess,
+			selectedId,
+			async confirmDelete() {
+				if (!selectedId.value) return;
+				await deleteStore.destroy(selectedId.value);
+				if (!deleteStore.errorMessage) {
+					showSuccess.value = true;
+					await listStore.fetchList({ page: listStore.pagination?.current_page || 1 });
+				}
+			},
+			onCloseConfirm() {
+				showConfirm.value = false;
+			},
+			onCloseSuccess() {
+				showSuccess.value = false;
+			},
 		};
 	},
 });
@@ -282,6 +310,7 @@ export default defineComponent({
 						:actions="[
 							{ value: 'details', label: 'Detalhes' },
 							{ value: 'edit', label: 'Editar' },
+							{ value: 'delete', label: 'Excluir' },
 						]"
 						@change-action="onSelectOptionAction($event, item)"
 					/>
@@ -309,6 +338,23 @@ export default defineComponent({
 			@close="isVisible = false"
 		/>
 	</section>
+	<MoleculesConfirmFeedbackModal
+		v-model:open="showConfirm"
+		variant="confirm"
+		title="Excluir evento"
+		description="Tem certeza que deseja excluir este evento?"
+		confirm-text="Excluir"
+		cancel-text="Cancelar"
+		@confirm="confirmDelete"
+		@close="onCloseConfirm"
+	/>
+	<MoleculesConfirmFeedbackModal
+		v-model:open="showSuccess"
+		variant="success"
+		title="Evento excluído com sucesso"
+		continue-text="Fechar"
+		@close="onCloseSuccess"
+	/>
 </template>
 
 <style scoped lang="scss">
