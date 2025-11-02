@@ -81,7 +81,7 @@ const header = computed(() => ({
 	subtitle: "Preencha os dados para realizar a triagem pré-cirúrgica",
 }));
 const handleBack = () => {
-	router.push("/castra-mobile/registrations");
+	router.push("/castra-mobile?tab=schedule");
 };
 
 const handleSave = async () => {
