@@ -38,8 +38,16 @@ export default defineComponent({
 			] as AboutType[];
 		});
 
+		const route = useRoute();
+		const supplierId = computed(() => {
+			const id = route.params.id;
+			if (!id) return null;
+			// Se for UUID, retorna como string, senão converte para número
+			return typeof id === "string" && id.includes("-") ? id : Number(id);
+		});
+
 		onMounted(async () => {
-			const id = useRoute().params.id as string;
+			const id = route.params.id as string;
 			await suppliersDetailsStore.fetchSupplierById(id, {
 				"with[]": ["contacts", "addresses"],
 			});
@@ -47,47 +55,59 @@ export default defineComponent({
 
 		return {
 			abouts,
+			supplierId,
 		};
 	},
 });
 </script>
 
 <template>
-	<div class="wrapper-details">
-		<div
-			v-for="(about, key) in abouts"
-			:key="key"
-			class="wrapper-details__about"
-		>
-			<div class="wrapper-details__about-title">
-				<AtomsTypography
-					type="text-p2"
-					:text="about.title"
-					weight="medium"
-					color="var(--brand-color-dark-blue-700)"
-				/>
-			</div>
-
-			<div class="wrapper-details__about-content">
-				<div
-					v-for="(item, index) in about.content"
-					:key="index"
-					class="wrapper-details__about-content__item"
-				>
+	<div>
+		<div class="wrapper-details">
+			<div
+				v-for="(about, key) in abouts"
+				:key="key"
+				class="wrapper-details__about"
+			>
+				<div class="wrapper-details__about-title">
 					<AtomsTypography
-						type="text-p4"
-						:text="item.label"
+						type="text-p2"
+						:text="about.title"
 						weight="medium"
-						color="var(--brand-color-dark-blue-300)"
-					/>
-					<AtomsTypography
-						type="text-p5"
-						:text="(item.value as string) || 'N/A'"
-						weight="regular"
-						color="var(--brand-color-dark-blue-900)"
+						color="var(--brand-color-dark-blue-700)"
 					/>
 				</div>
+
+				<div class="wrapper-details__about-content">
+					<div
+						v-for="(item, index) in about.content"
+						:key="index"
+						class="wrapper-details__about-content__item"
+					>
+						<AtomsTypography
+							type="text-p4"
+							:text="item.label"
+							weight="medium"
+							color="var(--brand-color-dark-blue-300)"
+						/>
+						<AtomsTypography
+							type="text-p5"
+							:text="(item.value as string) || 'N/A'"
+							weight="regular"
+							color="var(--brand-color-dark-blue-900)"
+						/>
+					</div>
+				</div>
 			</div>
+		</div>
+
+		<!-- Extratos Financeiros -->
+		<div style="margin-top: 20px">
+			<OrganismsFinancialStatementsAdmin
+				v-if="supplierId"
+				entity-type="Supplier"
+				:entity-id="supplierId"
+			/>
 		</div>
 	</div>
 </template>

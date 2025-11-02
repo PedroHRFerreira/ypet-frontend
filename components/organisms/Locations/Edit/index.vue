@@ -139,7 +139,8 @@ export default defineComponent({
 					store.setFormField("address_neighborhood", data.district);
 					store.setFormField("address_city", data.city);
 					const ufOpt = optionsState.value.find(
-						(o) => (o as any).id === data.state || (o as any).text === data.state,
+						(o) =>
+							(o as any).id === data.state || (o as any).text === data.state,
 					);
 					if (ufOpt) {
 						store.setFormField("address_state", (ufOpt as any).id);
@@ -257,7 +258,9 @@ export default defineComponent({
 				<MoleculesInputCommon
 					label="CEP"
 					typeInput="text"
-					:value="useMaskZipCode(String(store.form.address_zipcode.value || ''))"
+					:value="
+						useMaskZipCode(String(store.form.address_zipcode.value || ''))
+					"
 					:message-error="store.form.address_zipcode.errorMessages[0]"
 					@on-input="onInputZipcode"
 					@keypress="onlyNumbers"
