@@ -133,7 +133,8 @@ export default defineComponent({
 					useCitizenEdit.setFormField("district", data.district);
 					useCitizenEdit.setFormField("city", data.city);
 					const ufOpt = UFEnum.value.find(
-						(o) => (o as any).id === data.state || (o as any).text === data.state,
+						(o) =>
+							(o as any).id === data.state || (o as any).text === data.state,
 					);
 					if (ufOpt) {
 						useCitizenEdit.setFormField("state", (ufOpt as any).id);

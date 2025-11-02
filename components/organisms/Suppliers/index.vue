@@ -165,7 +165,9 @@ export default defineComponent({
 				await deleteStore.destroy(selectedId.value);
 				if (!deleteStore.errorMessage) {
 					showSuccess.value = true;
-					await suppliersList.fetchList({ page: suppliersList.pagination?.current_page || 1 });
+					await suppliersList.fetchList({
+						page: suppliersList.pagination?.current_page || 1,
+					});
 				}
 			},
 			onCloseConfirm() {

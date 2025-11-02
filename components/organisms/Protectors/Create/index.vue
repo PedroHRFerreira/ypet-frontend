@@ -103,7 +103,8 @@ export default defineComponent({
 					useProtectorsCreate.setFormField("district", data.district);
 					useProtectorsCreate.setFormField("city", data.city);
 					const ufOpt = optionsUFEnum.find(
-						(o) => (o as any).id === data.state || (o as any).text === data.state,
+						(o) =>
+							(o as any).id === data.state || (o as any).text === data.state,
 					);
 					if (ufOpt) {
 						useProtectorsCreate.setFormField("state", (ufOpt as any).id);

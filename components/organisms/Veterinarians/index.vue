@@ -183,7 +183,9 @@ export default defineComponent({
 				await deleteStore.destroy(selectedId.value);
 				if (!deleteStore.errorMessage) {
 					showSuccess.value = true;
-					await veterinariansList.fetchList({ page: veterinariansList.pagination?.current_page || 1 });
+					await veterinariansList.fetchList({
+						page: veterinariansList.pagination?.current_page || 1,
+					});
 				}
 			},
 			onCloseConfirm() {

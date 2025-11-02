@@ -7,6 +7,23 @@ export default defineComponent({
 		const header = computed(() => ({
 			title: "Cadastro de locais",
 			subtitle: "Visualize e gerencie os cadastros de locais",
+			buttons: [
+				{
+					text: "Voltar",
+					type: "outline",
+					icon: "arrow-left",
+					iconLeft: true,
+					nameIconLeft: "arrow-left",
+					iconRight: false,
+					nameIconRight: "",
+					size: "small",
+					width: "auto",
+					action: () => {
+						const router = useRouter();
+						router.back();
+					},
+				},
+			],
 		}));
 
 		return { header };
@@ -30,6 +47,21 @@ export default defineComponent({
 						:text="header.subtitle"
 						weight="medium"
 						color="var(--brand-color-dark-blue-300)"
+					/>
+				</div>
+				<div class="header-actions">
+					<MoleculesButtonsCommon
+						v-for="button in header.buttons"
+						:key="button.text"
+						:type="button.type"
+						:text="button.text"
+						:icon-left="button.iconLeft"
+						:icon-right="button.iconRight"
+						:name-icon-left="button.nameIconLeft"
+						:name-icon-right="button.nameIconRight"
+						:size="button.size"
+						:width="button.width"
+						@onclick="button.action"
 					/>
 				</div>
 			</header>
