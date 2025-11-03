@@ -34,6 +34,7 @@ export default defineEventHandler(async (event): Promise<IResponse> => {
 			type: "error",
 			status: error?.statusCode || 500,
 			message: error.message || "Erro ao armazenar aplicação",
+			show: true,
 			data: error,
 		} as IResponse;
 	}
