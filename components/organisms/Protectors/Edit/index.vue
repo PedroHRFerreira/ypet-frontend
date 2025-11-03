@@ -92,6 +92,11 @@ export default defineComponent({
 		useProtectorEdit.setFormField("complement", mainAddress?.complement || "");
 		useProtectorEdit.setFormField("state", mainAddress?.state || "");
 		useProtectorEdit.setFormField("status", protector?.status || "");
+		useProtectorEdit.setFormField(
+			"observations",
+			protector?.observations || "",
+		);
+		useProtectorEdit.setFormField("picture", protector?.picture);
 
 		const birthDate = ref(protector.birth_date || "");
 		const document = ref(useMaskDocument(protector?.document || ""));
@@ -173,6 +178,24 @@ export default defineComponent({
 			router.push({ name: "protectors-list" });
 		}
 
+		function handleImageUpload(file: File | null) {
+			useProtectorEdit.setFormField("picture", file);
+		}
+
+		function handleChange(file: File) {
+			useProtectorEdit.setFormField("picture", file);
+		}
+
+		function handleError(error: string) {
+			useProtectorEdit.setFormField("picture", null);
+			useProtectorEdit.setFormError("picture", [error]);
+		}
+
+		const initialPicture = computed(() => {
+			const current = useProtectorEdit.form as any;
+			if (current) return current;
+		});
+
 		const footer = {
 			buttons: [
 				{
@@ -228,6 +251,10 @@ export default defineComponent({
 			onInputDocument,
 			onInputTelephone,
 			onInputZipCode,
+			handleImageUpload,
+			handleChange,
+			handleError,
+			initialPicture,
 		};
 	},
 	watch: {
@@ -273,12 +300,13 @@ export default defineComponent({
 					<MoleculesUploadField
 						label="Selecione um arquivo para enviar"
 						description="Arquivo até 2mb"
+						:value="initialPicture"
 						:accept="'image/*'"
 						:maxSize="2 * 1024 * 1024"
-						maxWidth="40%"
+						maxWidth="30%"
 						:maxHeight="180"
 						:preview="true"
-						@input="handleInput"
+						@input="handleImageUpload($event)"
 						@change="handleChange"
 						@error="handleError"
 					/>
@@ -451,6 +479,9 @@ export default defineComponent({
 						label="Observações"
 						message="Descreva com detalhes suas observações finais"
 						max-width="100%"
+						:value="form.observations.value as string"
+						:message-error="form.observations.errorMessages.join(', ')"
+						@on-input="useProtectorEdit.setFormField('observations', $event)"
 					/>
 				</div>
 			</div>

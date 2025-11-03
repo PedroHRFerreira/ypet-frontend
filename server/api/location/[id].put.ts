@@ -29,7 +29,6 @@ export default defineEventHandler(async (event): Promise<IResponse> => {
 		appendIfExists("status");
 		appendIfExists("notes");
 
-		// Processar campos de endereço com prefixo address_
 		const addressJson = incoming.get("address");
 		if (addressJson) {
 			const addressArray = JSON.parse(addressJson as string);

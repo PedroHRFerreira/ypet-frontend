@@ -8,7 +8,6 @@ export const useCreateStore = defineStore("protectors-create", {
 		const successMessage = ref("");
 
 		const form = useForm([
-			"image",
 			"name",
 			"document",
 			"password",
@@ -25,8 +24,10 @@ export const useCreateStore = defineStore("protectors-create", {
 			"city",
 			"state",
 			"status",
+			"picture",
 			"can_report_abuse",
 			"can_mobile_castration",
+			"observations",
 		]);
 
 		return { protectors, isLoading, errorMessage, successMessage, form };
@@ -69,6 +70,11 @@ export const useCreateStore = defineStore("protectors-create", {
 
 				const value = this.form[key]?.value;
 				if (value === null || value === undefined || value === "") continue;
+
+				if (value instanceof File) {
+					formData.append(key, value);
+					continue;
+				}
 
 				formData.append(
 					key,

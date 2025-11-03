@@ -126,7 +126,6 @@ export default defineComponent({
 					state: "default" as "default" | "activated" | "disabled",
 				};
 
-				console.log(location.id, animal.location_id);
 				if (location.id === animal.location_id) {
 					option.state = "activated";
 				}

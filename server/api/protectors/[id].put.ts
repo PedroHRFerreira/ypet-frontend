@@ -3,19 +3,67 @@ import { apiPut } from "~/utils/api";
 export default defineEventHandler(async (event): Promise<IResponse> => {
 	try {
 		const id = event.context.params?.id;
-		const path = `/protector/${id}`;
+		const apiBaseUrl = useRuntimeConfig().public.apiBaseUrl;
+		const url = `${apiBaseUrl}/protector/${id}`;
 
-		const formData = await readFormData(event);
-		const payload: Record<string, any> = {};
-		for (const [key, value] of formData.entries()) {
-			if (key === "address" && typeof value === "string") {
-				payload[key] = JSON.parse(value);
-			} else {
-				payload[key] = value;
+		const incoming = await readFormData(event);
+
+		const outgoing = new FormData();
+
+		const appendIfExists = (k: string) => {
+			const v = incoming.get(k);
+			if (v !== null && v !== undefined && v !== "") {
+				outgoing.append(k, v as any);
 			}
+		};
+
+		const picture = incoming.get("picture");
+		if (picture && picture instanceof File)
+			outgoing.append("picture", picture as any);
+
+		appendIfExists("name");
+		appendIfExists("document");
+		appendIfExists("password");
+		appendIfExists("password_confirmation");
+		appendIfExists("email");
+		appendIfExists("gender");
+		appendIfExists("birth_date");
+		appendIfExists("telephone");
+		appendIfExists("status");
+		appendIfExists("can_report_abuse");
+		appendIfExists("can_mobile_castration");
+		appendIfExists("observations");
+		appendIfExists("special_permissions");
+
+		const addressJson = incoming.get("address");
+		if (addressJson) {
+			const addressArray = JSON.parse(addressJson as string);
+			addressArray.forEach((addr, index) => {
+				for (const [key, value] of Object.entries(addr)) {
+					if (value) outgoing.append(`address[${index}][${key}]`, value);
+				}
+			});
 		}
 
-		return await apiPut<IResponse>(path, event, payload);
+		outgoing.append("_method", "PUT");
+
+		const response = await $fetch(url, {
+			method: "POST",
+			headers: {
+				Accept: "application/json",
+				"X-Client-Type": "web",
+				Authorization: `${getCookie(event, "auth._token.laravelSanctum")}`,
+			},
+			body: outgoing,
+		});
+
+		return {
+			type: "success",
+			status: 200,
+			message: "Cadastro realizado com sucesso",
+			show: false,
+			data: response,
+		} as IResponse;
 	} catch (err) {
 		const error = err as IError;
 

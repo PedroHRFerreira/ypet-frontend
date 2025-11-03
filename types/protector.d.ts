@@ -3,7 +3,7 @@ import { IUser } from "~/types/user";
 import { IAddresses } from "~/types/addresses";
 declare global {
 	interface IProtectors {
-		image?: [File, string];
+		picture?: [File, string];
 		id?: number;
 		uuid?: string;
 		name: string;
@@ -18,6 +18,7 @@ declare global {
 		district: string;
 		city: string;
 		complement?: string;
+		observations: string;
 		state: string;
 		country?: string;
 		special_permissions: boolean;
