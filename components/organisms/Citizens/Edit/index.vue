@@ -28,17 +28,8 @@ export default defineComponent({
 		const showSuccess = ref(false);
 
 		const optionsUFEnum = computed(() => {
-			const citizen = useCitizenDetailsStore.citizens;
-			const targetState = (citizen?.addresses?.[0]?.state ??
-				citizen?.state) as any;
 			return UFEnum.value.map((item) => {
-				const isMatch = String(item.value) === String(targetState ?? "");
-				if (isMatch) {
-					item.state = "activated";
-					useCitizenEdit.setFormField("state", item.id);
-				}
-
-				return item;
+				return { ...(item as any), state: (item as any).state ?? "default" };
 			});
 		});
 
@@ -71,8 +62,7 @@ export default defineComponent({
 			const targetStatus =
 				(citizen?.status as any)?.value ?? (citizen?.status as any);
 			return userStatus.value.map((item) => {
-				const isMatch = String(item.id) === String(targetStatus ?? "");
-				if (isMatch) {
+				if (item.id === citizen?.status?.value) {
 					item.state = "activated";
 					useCitizenEdit.setFormField("status", item.id);
 				}
@@ -101,7 +91,6 @@ export default defineComponent({
 			useCitizenEdit.setFormField("number", mainAddress?.number || "");
 			useCitizenEdit.setFormField("district", mainAddress?.district || "");
 			useCitizenEdit.setFormField("complement", mainAddress?.complement || "");
-			useCitizenEdit.setFormField("state", mainAddress?.state || "");
 			useCitizenEdit.setFormField("city", mainAddress?.city || "");
 			useCitizenEdit.setFormField("status", citizen?.status || "");
 
@@ -109,6 +98,29 @@ export default defineComponent({
 			document.value = useMaskDocument(citizen?.document || "");
 			telephone.value = usePhoneFormatter11BR(citizen?.user?.telephone || "");
 			zipCode.value = useMaskZipCode(mainAddress?.zip_code || "");
+			const targetState = (mainAddress?.state ?? citizen?.state) as any;
+
+			if (targetState) {
+			const ufOpt = UFEnum.value.find((o: any) =>
+				String(o.id) === String(targetState) ||
+				String(o.value) === String(targetState) ||
+				String(o.text) === String(targetState)
+			);
+
+			if (ufOpt) {
+				const selected = (ufOpt as any).id ?? (ufOpt as any).value;
+				useCitizenEdit.setFormField("state", selected);
+
+				UFEnum.value = UFEnum.value.map((item: any) => ({
+				...(item as any),
+				state: String((item as any).id ?? (item as any).value) === String(selected)
+					? "activated"
+					: "default",
+				}));
+			} else {
+				useCitizenEdit.setFormField("state", targetState);
+			}
+			}
 		});
 
 		function onInputDocument(value: string) {
@@ -136,8 +148,12 @@ export default defineComponent({
 						(o) =>
 							(o as any).id === data.state || (o as any).text === data.state,
 					);
+
 					if (ufOpt) {
-						useCitizenEdit.setFormField("state", (ufOpt as any).id);
+						const selected = (ufOpt as any).id ?? (ufOpt as any).value;
+						useCitizenEdit.setFormField("state", selected);
+					} else {
+						useCitizenEdit.setFormField("state", data.state);
 					}
 				}
 			}

@@ -28,14 +28,21 @@ export default defineComponent({
 		const protector = useProtectorDetailsStore.protectors;
 
 		const optionsUFEnum = computed(() =>
-			UFEnum.map((item) => {
-				if (item.value == protector?.state) {
-					item.state = "activated";
-					useProtectorEdit.setFormField("state", item.id);
-				}
+		UFEnum.map((item) => {
+			const targetState = (protector?.addresses?.[0]?.state ?? protector?.state) as any;
+			const matches =
+			targetState &&
+			(String((item as any).id) === String(targetState) ||
+			String((item as any).value) === String(targetState) ||
+			String((item as any).text) === String(targetState));
 
-				return item;
-			}),
+			if (matches) {
+			(item as any).state = "activated";
+			useProtectorEdit.setFormField("state", (item as any).id ?? (item as any).value);
+			}
+
+			return item;
+		}),
 		);
 
 		const gender: IOption[] = [
@@ -104,26 +111,33 @@ export default defineComponent({
 		}
 
 		async function onInputZipCode(value: string) {
-			zipCode.value = useMaskZipCode(value);
-			const digits = value.replace(/\D/g, "");
-			useProtectorEdit.setFormField("zip_code", digits);
+		zipCode.value = useMaskZipCode(value);
+		const digits = value.replace(/\D/g, "");
+		useProtectorEdit.setFormField("zip_code", digits);
 
-			if (digits.length === 8) {
-				const data = await fetchAddress(digits);
-				if (data) {
-					useProtectorEdit.setFormField("street", data.street);
-					useProtectorEdit.setFormField("district", data.district);
-					useProtectorEdit.setFormField("city", data.city);
-					const ufOpt = optionsUFEnum.value.find(
-						(o) =>
-							(o as any).id === data.state || (o as any).text === data.state,
-					);
-					if (ufOpt) {
-						useProtectorEdit.setFormField("state", (ufOpt as any).id);
-					}
+		if (digits.length === 8) {
+			const data = await fetchAddress(digits);
+			if (data) {
+				useProtectorEdit.setFormField("street", data.street);
+				useProtectorEdit.setFormField("district", data.district);
+				useProtectorEdit.setFormField("city", data.city);
+
+				const ufOpt = optionsUFEnum.value.find((o: any) =>
+					String(o.id) === String(data.state) ||
+					String(o.value) === String(data.state) ||
+					String(o.text) === String(data.state)
+				);
+
+				if (ufOpt) {
+					const selected = (ufOpt as any).id ?? (ufOpt as any).value;
+					useProtectorEdit.setFormField("state", selected);
+				} else {
+					useProtectorEdit.setFormField("state", data.state);
 				}
 			}
 		}
+	}
+
 
 		function openConfirm() {
 			showConfirm.value = true;

@@ -279,7 +279,8 @@ export default defineComponent({
 						</div>
 					</div>
 				</div>
-				<div class="citizens__input-data__content--group"></div>
+				<div class="citizens__input-data__content--group">
+				</div>
 			</div>
 		</section>
 		<section class="citizens__input-data">
