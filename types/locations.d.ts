@@ -5,7 +5,8 @@ export interface IAddress {
 	complement?: string;
 	city?: string;
 	state?: string;
-	zipcode?: string;
+	zip_code?: string;
+	district?: string;
 }
 
 export interface ILocation {

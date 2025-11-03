@@ -15,6 +15,7 @@ export const useEditStore = defineStore("locations-edit", {
 			"location_type",
 			"responsible_name",
 			"phone",
+			"picture",
 			"email",
 			"cnpj",
 			"bank_account_or_pix",
@@ -52,14 +53,14 @@ export const useEditStore = defineStore("locations-edit", {
 			const address: IAddress = {
 				street: String(this.form.address_street?.value || ""),
 				number: String(this.form.address_number?.value || ""),
-				zipcode: String(this.form.address_zipcode?.value || ""),
-				neighborhood: String(this.form.address_neighborhood?.value || ""),
+				zip_code: String(this.form.address_zipcode?.value || ""),
+				district: String(this.form.address_neighborhood?.value || ""),
 				city: String(this.form.address_city?.value || ""),
 				state: String(this.form.address_state?.value || ""),
 				complement: String(this.form.address_complement?.value || ""),
 			};
 
-			formData.append("address", JSON.stringify(address));
+			formData.append("address", JSON.stringify([address]));
 
 			const mainFields = [
 				"location_name",
@@ -68,6 +69,7 @@ export const useEditStore = defineStore("locations-edit", {
 				"phone",
 				"email",
 				"cnpj",
+				"picture",
 				"bank_account_or_pix",
 				"status",
 				"notes",
@@ -75,6 +77,12 @@ export const useEditStore = defineStore("locations-edit", {
 
 			for (const key of mainFields) {
 				const value = this.form[key]?.value;
+
+				if (value instanceof File) {
+					formData.append(key, value);
+					continue;
+				}
+
 				if (value !== null && value !== undefined && value !== "") {
 					formData.append(
 						key,
@@ -118,6 +126,9 @@ export const useEditStore = defineStore("locations-edit", {
 
 			await useFetch(`/api/location/${id}`, {
 				method: "GET",
+				params: {
+					"with[]": "addresses",
+				},
 				onResponse: ({ response }) => {
 					const responseData = response._data as Partial<IResponse>;
 
@@ -139,12 +150,13 @@ export const useEditStore = defineStore("locations-edit", {
 						this.location.bank_account_or_pix || "";
 					this.form.status.value = this.location.status || "";
 					this.form.notes.value = this.location.notes || "";
+					this.form.picture.value = this.location.picture || "";
 
-					const address = this.location.address || {};
+					const address = this.location.addresses[0] || {};
 					this.form.address_street.value = address.street || "";
 					this.form.address_number.value = address.number || "";
-					this.form.address_zipcode.value = address.zipcode || "";
-					this.form.address_neighborhood.value = address.neighborhood || "";
+					this.form.address_zipcode.value = address.zip_code || "";
+					this.form.address_neighborhood.value = address.district || "";
 					this.form.address_city.value = address.city || "";
 					this.form.address_state.value = address.state || "";
 					this.form.address_complement.value = address.complement || "";

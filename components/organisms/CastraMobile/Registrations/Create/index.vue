@@ -181,7 +181,8 @@ export default defineComponent({
 					createStore.setFormField("tutor_address_district", data.district);
 					createStore.setFormField("tutor_address_city", data.city);
 					const ufOpt = optionsUF.value.find(
-						(o) => (o as any).id === data.state || (o as any).text === data.state,
+						(o) =>
+							(o as any).id === data.state || (o as any).text === data.state,
 					);
 					if (ufOpt) {
 						createStore.setFormField("tutor_address_state", (ufOpt as any).id);
@@ -377,7 +378,9 @@ export default defineComponent({
 					<MoleculesInputCommon
 						label="CEP"
 						max-width="25%"
-						:value="useMaskZipCode(String(form.tutor_address_zip_code.value || ''))"
+						:value="
+							useMaskZipCode(String(form.tutor_address_zip_code.value || ''))
+						"
 						:message-error="
 							form.tutor_address_zip_code.errorMessages.join(', ')
 						"

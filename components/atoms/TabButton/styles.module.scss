@@ -1,25 +1,25 @@
 @use "assets/scss/_colors.scss";
 
 .atoms-tab-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 8px 12px;
-  border-radius: 8px;
-  border: 1px solid transparent;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--brand-color-dark-blue-900);
-  background-color: transparent;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 8px 12px;
+	border-radius: 8px;
+	border: 1px solid transparent;
+	font-size: 14px;
+	font-weight: 600;
+	color: var(--brand-color-dark-blue-900);
+	background-color: transparent;
 
-  &.is-active {
-    color: var(--brand-color-blue-600);
-    background-color: var(--brand-color-blue-100);
-    border-color: var(--brand-color-blue-300);
-  }
+	&.is-active {
+		color: var(--brand-color-blue-600);
+		background-color: var(--brand-color-blue-100);
+		border-color: var(--brand-color-blue-300);
+	}
 
-  &.is-disabled {
-    color: var(--greys-colors-500);
-    cursor: not-allowed;
-  }
+	&.is-disabled {
+		color: var(--greys-colors-500);
+		cursor: not-allowed;
+	}
 }

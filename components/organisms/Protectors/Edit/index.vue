@@ -132,7 +132,6 @@ export default defineComponent({
 					const selected = (ufOpt as any).id ?? (ufOpt as any).value;
 					useProtectorEdit.setFormField("state", selected);
 				} else {
-					// fallback: seta a sigla crua caso não encontre correspondência
 					useProtectorEdit.setFormField("state", data.state);
 				}
 			}

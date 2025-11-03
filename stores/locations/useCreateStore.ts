@@ -19,11 +19,13 @@ export const useCreateStore = defineStore("locations-create", {
 			"cnpj",
 			"bank_account_or_pix",
 			"status",
+			"picture",
 			"notes",
 			"address_street",
+			"address_district",
 			"address_number",
 			"address_zipcode",
-			"address_neighborhood",
+			"address_",
 			"address_city",
 			"address_state",
 			"address_complement",
@@ -52,14 +54,15 @@ export const useCreateStore = defineStore("locations-create", {
 			const address: IAddress = {
 				street: String(this.form.address_street?.value || ""),
 				number: String(this.form.address_number?.value || ""),
-				zipcode: String(this.form.address_zipcode?.value || ""),
+				zip_code: String(this.form.address_zipcode?.value || ""),
 				neighborhood: String(this.form.address_neighborhood?.value || ""),
 				city: String(this.form.address_city?.value || ""),
 				state: String(this.form.address_state?.value || ""),
+				district: String(this.form.address_district?.value || ""),
 				complement: String(this.form.address_complement?.value || ""),
 			};
 
-			formData.append("address", JSON.stringify(address));
+			formData.append("address", JSON.stringify([address]));
 
 			const mainFields = [
 				"location_name",
@@ -70,11 +73,19 @@ export const useCreateStore = defineStore("locations-create", {
 				"cnpj",
 				"bank_account_or_pix",
 				"status",
+				"picture",
 				"notes",
 			];
 
 			for (const key of mainFields) {
 				const value = this.form[key]?.value;
+
+				// Anexar arquivos corretamente sem converter para string
+				if (value instanceof File) {
+					formData.append(key, value);
+					continue;
+				}
+
 				if (value !== null && value !== undefined && value !== "") {
 					formData.append(
 						key,

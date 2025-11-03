@@ -109,7 +109,8 @@ export default defineComponent({
 					useCitizensCreate.setFormField("district", data.district);
 					useCitizensCreate.setFormField("city", data.city);
 					const ufOpt = optionsUFEnum.value.find(
-						(o) => (o as any).id === data.state || (o as any).text === data.state,
+						(o) =>
+							(o as any).id === data.state || (o as any).text === data.state,
 					);
 					if (ufOpt) {
 						useCitizensCreate.setFormField("state", (ufOpt as any).id);

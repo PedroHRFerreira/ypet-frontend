@@ -43,7 +43,8 @@ export const useEditStore = defineStore("suppliers-edit", {
 			this.successMessage = "";
 
 			// Build x-www-form-urlencoded payload (with method spoofing) and send via POST
-			const onlyDigits = (v: any) => (typeof v === "string" ? v.replace(/\D/g, "") : v);
+			const onlyDigits = (v: any) =>
+				typeof v === "string" ? v.replace(/\D/g, "") : v;
 			const val = (k: string) => this.form[k]?.value ?? "";
 			const params = new URLSearchParams();
 			params.append("_method", "PUT");
@@ -75,7 +76,9 @@ export const useEditStore = defineStore("suppliers-edit", {
 			params.append(
 				"address[state]",
 				String(
-					typeof stateVal === "object" && stateVal !== null ? (stateVal as any).id : stateVal ?? "",
+					typeof stateVal === "object" && stateVal !== null
+						? (stateVal as any).id
+						: (stateVal ?? ""),
 				),
 			);
 			params.append("address[country]", String(val("country")));
@@ -98,7 +101,8 @@ export const useEditStore = defineStore("suppliers-edit", {
 						// Mapear errors para campos do form, se disponível
 						if (result.errors) {
 							for (const field in result.errors) {
-								if (!Object.prototype.hasOwnProperty.call(result.errors, field)) continue;
+								if (!Object.prototype.hasOwnProperty.call(result.errors, field))
+									continue;
 								// Campos vêm como 'supplier.legal_name', 'address.zip_code', etc.
 								const key = field.split(".").pop() as string;
 								if (this.form[key]) {

@@ -210,7 +210,9 @@ export default defineComponent({
 				await deleteStore.destroy(selectedId.value);
 				if (!deleteStore.errorMessage) {
 					showSuccess.value = true;
-					await listStore.fetchList({ page: listStore.pagination?.current_page || 1 });
+					await listStore.fetchList({
+						page: listStore.pagination?.current_page || 1,
+					});
 				}
 			},
 			onCloseConfirm() {

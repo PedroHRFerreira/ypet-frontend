@@ -78,8 +78,13 @@ export default defineComponent({
 			] as AboutType[];
 		});
 
+		const route = useRoute();
+		const collaboratorId = computed(() => {
+			return route.params.id ? Number(route.params.id) : null;
+		});
+
 		onMounted(async () => {
-			const id = useRoute().params.id as string;
+			const id = route.params.id as string;
 			await detailsStore.fetchById(id, {
 				"with[]": ["user.status", "bankAccount", "user.roles"],
 			});
@@ -87,54 +92,66 @@ export default defineComponent({
 
 		return {
 			abouts,
+			collaboratorId,
 		};
 	},
 });
 </script>
 
 <template>
-	<div class="wrapper-details">
-		<div
-			v-for="(about, key) in abouts"
-			:key="key"
-			class="wrapper-details__about"
-		>
-			<div class="wrapper-details__about-title">
-				<AtomsTypography
-					type="text-p2"
-					:text="about.title"
-					weight="medium"
-					color="var(--brand-color-dark-blue-700)"
-				/>
-			</div>
-
-			<div class="wrapper-details__about-content">
-				<div
-					v-for="(item, index) in about.content"
-					:key="index"
-					class="wrapper-details__about-content__item"
-				>
+	<div>
+		<div class="wrapper-details">
+			<div
+				v-for="(about, key) in abouts"
+				:key="key"
+				class="wrapper-details__about"
+			>
+				<div class="wrapper-details__about-title">
 					<AtomsTypography
-						type="text-p4"
-						:text="item.label"
+						type="text-p2"
+						:text="about.title"
 						weight="medium"
-						color="var(--brand-color-dark-blue-300)"
-					/>
-					<AtomsTypography
-						v-if="!item.isEnum"
-						type="text-p5"
-						:text="(item.value as string) || 'N/A'"
-						weight="regular"
-						color="var(--brand-color-dark-blue-900)"
-					/>
-					<AtomsBadges
-						v-else
-						type="text"
-						:text="(item.value as IEnum)?.label || 'N/A'"
-						:color="(item.value as IEnum)?.color || 'gray'"
+						color="var(--brand-color-dark-blue-700)"
 					/>
 				</div>
+
+				<div class="wrapper-details__about-content">
+					<div
+						v-for="(item, index) in about.content"
+						:key="index"
+						class="wrapper-details__about-content__item"
+					>
+						<AtomsTypography
+							type="text-p4"
+							:text="item.label"
+							weight="medium"
+							color="var(--brand-color-dark-blue-300)"
+						/>
+						<AtomsTypography
+							v-if="!item.isEnum"
+							type="text-p5"
+							:text="(item.value as string) || 'N/A'"
+							weight="regular"
+							color="var(--brand-color-dark-blue-900)"
+						/>
+						<AtomsBadges
+							v-else
+							type="text"
+							:text="(item.value as IEnum)?.label || 'N/A'"
+							:color="(item.value as IEnum)?.color || 'gray'"
+						/>
+					</div>
+				</div>
 			</div>
+		</div>
+
+		<!-- Extratos Financeiros -->
+		<div style="margin-top: 20px">
+			<OrganismsFinancialStatementsAdmin
+				v-if="collaboratorId"
+				entity-type="Collaborator"
+				:entity-id="collaboratorId"
+			/>
 		</div>
 	</div>
 </template>
