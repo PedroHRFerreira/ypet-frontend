@@ -83,22 +83,20 @@ export const useCreateStore = defineStore("registrations-create", {
 					"Não autorizado. Por favor, faça login novamente.";
 			}
 
-			if (response.status === 422) {
-				if (!response.errors) {
-					this.errorMessage =
-						response.message || "Erro ao processar a solicitação.";
+			const hasFieldErrors = Boolean(
+				response.errors && Object.keys(response.errors).length > 0,
+			);
 
-					return;
-				}
-
-				for (const field in response.errors) {
-					if (Object.prototype.hasOwnProperty.call(response.errors, field)) {
-						this.setFormError(field, response.errors[field]);
+			if (response.status === 422 && hasFieldErrors) {
+				for (const field in response.errors!) {
+					if (Object.prototype.hasOwnProperty.call(response.errors!, field)) {
+						this.setFormError(field, response.errors![field]);
 					}
 				}
+				this.showErrorModal = false;
+			} else {
+				this.showErrorModal = response.show ?? true;
 			}
-
-			this.showErrorModal = true;
 			this.isLoading = false;
 		},
 		async store(): Promise<void> {
@@ -116,13 +114,21 @@ export const useCreateStore = defineStore("registrations-create", {
 				method: "POST",
 				body: formData,
 				onResponse: ({ response }) => {
-					const responseData = response._data || ({} as IResponse);
+					const raw = response._data as any;
+					const responseData: IResponse = {
+						type: raw?.type ?? "success",
+						status: (response as any)?.status ?? 200,
+						data: raw?.data ?? null,
+						message: raw?.message,
+						show: raw?.show ?? true,
+						errors: raw?.errors,
+					};
 
 					if (responseData.type === "error") {
 						return this.handleResponseError(responseData);
 					}
 
-					this.successMessage = responseData.message;
+					this.successMessage = responseData.message ?? "";
 					this.isLoading = false;
 
 					const router = useRouter();
@@ -132,7 +138,15 @@ export const useCreateStore = defineStore("registrations-create", {
 					});
 				},
 				onResponseError: ({ response }) => {
-					const responseData = response._data || ({} as IResponse);
+					const raw = response._data as any;
+					const responseData: IResponse = {
+						type: raw?.type ?? "error",
+						status: (response as any)?.status ?? 500,
+						data: raw?.data ?? null,
+						message: raw?.message,
+						show: raw?.show ?? true,
+						errors: raw?.errors,
+					};
 					this.handleResponseError(responseData);
 				},
 			});
