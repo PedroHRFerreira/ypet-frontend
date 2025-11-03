@@ -11,8 +11,6 @@ export const useEditStore = defineStore("edit", {
 			"user_role",
 			"user_email",
 			"user_name",
-			"user_password",
-			"user_password_confirmation",
 			"user_status",
 			"cpf_cnpj",
 			"account_type",
