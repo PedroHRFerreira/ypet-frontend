@@ -252,26 +252,6 @@ export default defineComponent({
 					/>
 				</div>
 				<div class="settings-create__about-pet__content--group">
-					<MoleculesInputPassword
-						label="Senha"
-						max-width="50%"
-						:value="form.user_password.value"
-						:message-error="form.user_password.errorMessages.join(', ')"
-						@oninput="editStore.setFormField('user_password', $event)"
-					/>
-					<MoleculesInputPassword
-						max-width="50%"
-						label="Confirmar Senha"
-						:value="form.user_password_confirmation.value"
-						:message-error="
-							form.user_password_confirmation.errorMessages.join(', ')
-						"
-						@oninput="
-							editStore.setFormField('user_password_confirmation', $event)
-						"
-					/>
-				</div>
-				<div class="settings-create__about-pet__content--group">
 					<MoleculesSelectsSimple
 						max-width="35%"
 						label="Status"

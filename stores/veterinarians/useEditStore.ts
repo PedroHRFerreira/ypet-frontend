@@ -14,8 +14,6 @@ export const useEditStore = defineStore("veterinarians-edit", {
 			"crmv",
 			"uf",
 			"email",
-			"password",
-			"password_confirmation",
 			"phone",
 			"linked_institution",
 			"linked_type",
