@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent, computed } from "vue";
+import AtomsDatePicker from "~/components/atoms/DatePicker/Index.vue";
 
 type Model = string | Date | null;
 
@@ -28,6 +29,7 @@ function parseToDate(value: string | Date): Date | null {
 
 export default defineComponent({
 	name: "MoleculesInputDate",
+	components: { AtomsDatePicker },
 	props: {
 		modelValue: {
 			type: [String, Date, null] as unknown as () => Model,
@@ -82,19 +84,19 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const uid = computed(() => props.id || `date-input-${props.name}`);
 
-		const inputValue = computed<string>({
+		const dateValue = computed<Date | null>({
 			get() {
-				const dt = parseToDate(props.modelValue as string | Date);
-				return dt ? toYMD(dt) : "";
+				return parseToDate(props.modelValue as string | Date);
 			},
-			set(v: string) {
-				const dt = parseToDate(v);
+			set(v: Date | null) {
 				if (props.outputAsDate) {
-					emit("update:modelValue", dt ?? null);
+					emit("update:modelValue", v ?? null);
+					emit("change", v);
 				} else {
-					emit("update:modelValue", dt ? toYMD(dt) : "");
+					const out = v ? toYMD(v) : "";
+					emit("update:modelValue", out);
+					emit("change", out);
 				}
-				emit("change", v);
 			},
 		});
 
@@ -112,7 +114,7 @@ export default defineComponent({
 
 		return {
 			uid,
-			inputValue,
+			dateValue,
 			hasError,
 			describedBy,
 			onBlur,
@@ -134,21 +136,9 @@ export default defineComponent({
 			>
 		</label>
 
-		<input
-			:id="uid"
-			v-model="inputValue"
-			class="date-input__control"
-			type="date"
-			:name="name"
-			:placeholder="placeholder"
-			:min="min || undefined"
-			:max="max || undefined"
-			:disabled="disabled"
-			:required="required"
-			:aria-invalid="hasError ? 'true' : 'false'"
-			:aria-describedby="describedBy"
-			@blur="onBlur"
-			@focus="onFocus"
+		<AtomsDatePicker
+			v-model="dateValue"
+			:placeholder="placeholder || 'Selecione a data'"
 		/>
 
 		<ul v-if="hasError" :id="`${uid}-errors`" class="date-input__errors">
