@@ -234,7 +234,7 @@ export default defineComponent({
 		const onSearchInput = (value: string) => {
 			searchValue.value = value;
 			if (searchValue.value.trim().length === 0) {
-				evaluationPetList.filters.status = null;
+				evaluationPetList.filters.animal_name = null;
 				evaluationPetList.fetchList(1);
 			}
 		};
@@ -242,14 +242,14 @@ export default defineComponent({
 		const onSearchEnter = () => {
 			const trimmed = searchValue.value.trim();
 			if (trimmed.length > 0) {
-				evaluationPetList.filters.status = trimmed;
+				evaluationPetList.filters.animal_name = trimmed;
 				evaluationPetList.fetchList(1);
 			}
 		};
 
 		const clearSearch = () => {
 			searchValue.value = "";
-			evaluationPetList.filters.status = null;
+			evaluationPetList.filters.animal_name = null;
 			evaluationPetList.fetchList(1);
 		};
 
@@ -349,7 +349,7 @@ export default defineComponent({
 				<template #nameUser>
 					<AtomsTypography
 						type="text-p5"
-						:text="item.tutor.name"
+						:text="item?.tutor?.name"
 						weight="regular"
 						color="var(--brand-color-dark-blue-300)"
 					/>

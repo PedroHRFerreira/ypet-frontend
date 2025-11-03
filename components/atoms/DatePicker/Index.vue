@@ -7,8 +7,8 @@ export default defineComponent({
 	components: { VueDatePicker },
 	props: {
 		modelValue: {
-			type: Array as () => Date[],
-			default: () => [],
+			type: [Date, null] as unknown as () => Date | null,
+			default: null,
 		},
 		placeholder: {
 			type: String,
@@ -25,9 +25,9 @@ export default defineComponent({
 	},
 	emits: ["update:modelValue"],
 	setup(props, { emit }) {
-		const dateRange = computed({
-			get: () => props.modelValue,
-			set: (newDate) => emit("update:modelValue", newDate),
+		const dateValue = computed<Date | null>({
+			get: () => props.modelValue ?? null,
+			set: (newDate) => emit("update:modelValue", newDate ?? null),
 		});
 
 		const options = {
@@ -44,7 +44,7 @@ export default defineComponent({
 
 		return {
 			textInputOptions,
-			dateRange,
+			dateValue,
 			options,
 			cssVars,
 		};
@@ -55,7 +55,7 @@ export default defineComponent({
 <template>
 	<div class="datepicker-wrapper">
 		<VueDatePicker
-			v-model="date"
+			v-model="dateValue"
 			locale="pt"
 			format="dd/MM/yyyy"
 			dark
