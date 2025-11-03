@@ -186,6 +186,12 @@ export default defineComponent({
 				label: "Abrigado",
 				color: "success",
 			},
+			{
+				value: "adopted",
+				name: "ADOPTED",
+				label: "Adotado",
+				color: "success",
+			},
 		];
 
 		const getStatus = (status: string | number) => {
