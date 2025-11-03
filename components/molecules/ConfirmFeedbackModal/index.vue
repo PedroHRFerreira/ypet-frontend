@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, onBeforeUnmount, ref, watch } from "vue";
+import { defineComponent, onBeforeUnmount, ref, watch, computed } from "vue";
 
 export default defineComponent({
 	name: "MoleculesConfirmFeedbackModal",
@@ -11,6 +11,7 @@ export default defineComponent({
 		},
 		title: { type: String, required: true },
 		description: { type: String, default: "" },
+		descriptionMaxLength: { type: Number, default: 200 },
 		confirmText: { type: String, default: "Confirmar" },
 		cancelText: { type: String, default: "Cancelar" },
 		continueText: { type: String, default: "Continuar" },
@@ -24,7 +25,13 @@ export default defineComponent({
 		const wasOpen = ref(false);
 		const lastActiveEl = ref<HTMLElement | null>(null);
 		const modalRef = ref<HTMLElement | null>(null);
-		const primaryBtnRef = ref<HTMLButtonElement | null>(null);
+
+		const truncatedDescription = computed(() => {
+			const desc = props.description || "";
+			const max = props.descriptionMaxLength || 0;
+			if (!max || desc.length <= max) return desc;
+			return desc.slice(0, max);
+		});
 
 		function lockScroll(lock: boolean) {
 			const body = document.body;
@@ -36,10 +43,10 @@ export default defineComponent({
 		function doOpenSideEffects() {
 			lastActiveEl.value = (document.activeElement as HTMLElement) || null;
 			lockScroll(true);
-			if (primaryBtnRef.value) {
-				requestAnimationFrame(() => primaryBtnRef.value?.focus());
+			requestAnimationFrame(() => {
+				modalRef.value?.focus?.();
 				emit("open");
-			}
+			});
 		}
 
 		function doCloseSideEffects() {
@@ -98,20 +105,17 @@ export default defineComponent({
 
 		return {
 			modalRef,
-			primaryBtnRef,
 			onBackdropClick,
 			onConfirm,
 			onCancel,
 			onContinue,
 			close,
 			onEsc,
+			truncatedDescription,
 		};
 	},
 	mounted(): any {
 		document.addEventListener("keydown", this.onEsc);
-
-		this.primaryBtnRef = useTemplateRef("primaryBtnRef").value
-			?.$el as HTMLButtonElement;
 	},
 });
 </script>
@@ -134,6 +138,7 @@ export default defineComponent({
 						:aria-modal="true"
 						:aria-labelledby="`${id}-title`"
 						:aria-describedby="`${id}-desc`"
+						tabindex="-1"
 					>
 						<header class="cfm-modal__icon">
 							<slot name="icon">
@@ -199,7 +204,7 @@ export default defineComponent({
 								<AtomsTypography
 									type="text-p5"
 									weight="regular"
-									:text="description"
+									:text="truncatedDescription"
 									color="var(--brand-color-dark-blue-300)"
 								/>
 							</div>
@@ -208,7 +213,6 @@ export default defineComponent({
 								<slot name="footer">
 									<template v-if="variant === 'confirm'">
 										<MoleculesButtonsCommon
-											ref="primaryBtnRef"
 											:text="confirmText"
 											size="small"
 											@onclick="onConfirm"
@@ -223,7 +227,6 @@ export default defineComponent({
 									</template>
 									<template v-else>
 										<MoleculesButtonsCommon
-											ref="primaryBtnRef"
 											size="small"
 											:text="continueText"
 											@onclick="onContinue"

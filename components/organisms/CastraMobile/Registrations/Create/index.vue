@@ -6,7 +6,6 @@ import { useAnimalSpeciesEnumStore } from "~/stores/Enums/useAnimalSpeciesEnumSt
 import { useGenderEnumStore } from "~/stores/Enums/useGenderEnumStore";
 import { useCreateStore } from "~/stores/castra-mobile/registrations/useCreateStore";
 import { useAnimalSizeEnumStore } from "~/stores/Enums/useAnimalSizeEnumStore";
-import { useAnimalStatusEnumStore } from "~/stores/Enums/useAnimalStatusEnumStore";
 import { useUFEnumStore } from "~/stores/Enums/useUFEnumStore";
 import { useListStore } from "~/stores/castra-mobile/clinic-events/useListStore";
 
@@ -38,21 +37,20 @@ export default defineComponent({
 		});
 
 		const optionsClinicEvents = computed(() => {
-			return useListStore().list.map((event) => {
-				const startDate = useDayjs(event.start_date).format("DD/MM/YYYY");
-				const endDate = useDayjs(event.end_date).format("DD/MM/YYYY");
+			return useListStore()
+				.list.filter((event) => event.id !== undefined && event.id !== null)
+				.map((event) => {
+					const startDate = useDayjs(event.start_date).format("DD/MM/YYYY");
+					const endDate = useDayjs(event.end_date).format("DD/MM/YYYY");
 
-				return {
-					text: `${event.name} - ${startDate} às ${endDate}`,
-					id: event.id,
-					data: event,
-				};
-			});
+					return {
+						text: `${event.name} - ${startDate} às ${endDate}`,
+						id: String(event.id),
+						data: event,
+					} as IOption;
+				});
 		});
-
-		const optionsSchedulerAt = ref([] as Array<IOption>);
-
-		const schedulerAt = ref("");
+		const optionsSchedulerAt = ref<IOption[]>([]);
 		const tutorEmail = ref("");
 
 		const showConfirm = ref(false);
@@ -170,8 +168,7 @@ export default defineComponent({
 		const birthDate = ref("");
 
 		async function onInputTutorZipCode(value: string) {
-			const masked = useMaskZipCode(value);
-			// show masked in UI by setting the masked into component binding via computed value; store only digits
+			// máscara aplicada diretamente no template; armazenar apenas dígitos
 			const digits = value.replace(/\D/g, "");
 			createStore.setFormField("tutor_address_zip_code", digits);
 			if (digits.length === 8) {
@@ -193,13 +190,13 @@ export default defineComponent({
 
 		return {
 			useDayjs,
+			useMaskZipCode,
 			optionsGender,
 			optionsSpecies,
 			optionsSize,
 			optionsUF,
 			optionsClinicEvents,
 			optionsSchedulerAt,
-			schedulerAt,
 			form,
 			createStore,
 			header,
@@ -221,14 +218,7 @@ export default defineComponent({
 			},
 			deep: true,
 		},
-		schedulerAt: {
-			handler(newValue) {
-				if (newValue && typeof newValue === "object" && newValue.id) {
-					this.createStore.setFormField("scheduler_at", newValue.id);
-				}
-			},
-			deep: true,
-		},
+		// manter scheduler_at consistente quando opções mudam ou são limpas
 		tutorEmail: {
 			handler(newValue) {
 				this.createStore.setFormField("tutor_email", newValue);
@@ -294,7 +284,7 @@ export default defineComponent({
 		@update:open="(value) => (createStore.showErrorModal = value)"
 		variant="confirm"
 		:title="modalFeedback.error.title"
-		:description="modalFeedback.error.description"
+		:description="errorMessage"
 		:confirm-text="modalFeedback.error.continueText"
 		@confirm="modalFeedback.error.action()"
 	/>
@@ -325,9 +315,9 @@ export default defineComponent({
 						max-width="30%"
 						label="Data de agendamento"
 						:options="optionsSchedulerAt"
-						:value="schedulerAt"
+						:value="form.scheduler_at.value as string"
 						:message-error="form.scheduler_at.errorMessages.join(', ')"
-						@item-selected="schedulerAt = $event"
+						@item-selected="createStore.setFormField('scheduler_at', $event.id)"
 					/>
 				</div>
 			</div>
