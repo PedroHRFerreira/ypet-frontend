@@ -265,8 +265,7 @@ export default defineComponent({
 						</div>
 					</div>
 				</div>
-				<div class="protectors__input-data__content--group">
-				</div>
+				<div class="protectors__input-data__content--group"></div>
 			</div>
 		</section>
 		<section class="protectors__input-data">
