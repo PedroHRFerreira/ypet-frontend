@@ -20,6 +20,7 @@ export default defineComponent({
 		const adoptionList = useListStore();
 		const adoptionEditType = useEditTypeStore();
 		const id = ref(0);
+		const idAnimal = ref(0);
 		const showConfirm = ref(false);
 		const showSuccess = ref(false);
 		const typeAction = ref("");
@@ -98,7 +99,14 @@ export default defineComponent({
 				return;
 			}
 
-			await adoptionEditType.update(id.value, typeAction.value);
+			if (typeAction.value === "adopted") {
+				await adoptionEditType.update(id.value, "complete");
+				await adoptionEditType.updateAnimal(idAnimal.value);
+			}
+
+			if (typeAction.value !== "adopted") {
+				await adoptionEditType.update(id.value, typeAction.value);
+			}
 
 			if (adoptionEditType.successMessage) {
 				onSuccess();
@@ -202,6 +210,8 @@ export default defineComponent({
 		const onSelectOptionAction = (event: string, item: IAdoption) => {
 			const router = useRouter();
 			id.value = item.id;
+			idAnimal.value = item.animal.id;
+
 			typeAction.value = event;
 
 			if (event === "confirm") {
@@ -221,6 +231,22 @@ export default defineComponent({
 
 			if (event === "reschedule") {
 				showModalReschedule.value = true;
+				return;
+			}
+
+			if (event === "adopted") {
+				openConfirm();
+				feedbackModal.value = {
+					confirm: {
+						title: "Confirmar adoção do animal?",
+						description:
+							"Ao confirmar, a visita será encerrada e o status do animal será atualizado para 'Adotado'.",
+					},
+					success: {
+						title: "Visita concluída com sucesso!",
+						description: "O animal foi marcado como adotado.",
+					},
+				};
 				return;
 			}
 
@@ -281,6 +307,7 @@ export default defineComponent({
 			{ value: "complete", label: "Concluir", icon: "flag" },
 			{ value: "cancel", label: "Cancelar", icon: "x" },
 			{ value: "animal", label: "Ver animal", icon: "paw" },
+			{ value: "adopted", label: "Adoção realizada", icon: "paw" },
 			{ value: "citizen", label: "Ver cidadão", icon: "user" },
 			{ value: "details", label: "Ver detalhes", icon: "paw" },
 		];
