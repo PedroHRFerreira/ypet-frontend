@@ -260,6 +260,7 @@ export default defineComponent({
 					max-width="33%"
 					:options="animalOptions"
 					:value="store.form.animal_id.value as number"
+					:message-error="store.form.animal_id.errorMessages[0]"
 					@item-selected="
 						(opt) => {
 							store.setFormField('animal_id', opt.id);
@@ -275,6 +276,7 @@ export default defineComponent({
 					max-width="33%"
 					:maxlength="10"
 					:value="store.form.application_date.value as string"
+					:message-error="store.form.application_date.errorMessages[0]"
 					@on-input="onDateInput('application_date', $event)"
 				/>
 			</div>
@@ -294,6 +296,7 @@ export default defineComponent({
 					max-width="50%"
 					:options="productOptions"
 					:value="store.form.product_id.value as number"
+					:message-error="store.form.product_id.errorMessages[0]"
 					@item-selected="
 						(opt) => {
 							store.setFormField('product_id', opt.id);
@@ -305,6 +308,7 @@ export default defineComponent({
 					label="Peso do animal"
 					max-width="25%"
 					:value="store.form.animal_weight.value as number"
+					:message-error="store.form.animal_weight.errorMessages[0]"
 					@on-input="store.setFormField('animal_weight', $event)"
 				/>
 				<MoleculesInputCommon
@@ -314,6 +318,7 @@ export default defineComponent({
 					label="Suprimento estimado (dias)"
 					max-width="25%"
 					:value="store.form.estimated_supply.value as string"
+					:message-error="store.form.estimated_supply.errorMessages[0]"
 					:readonly="calculatedEstimatedSupply !== ''"
 					@on-input="store.setFormField('estimated_supply', $event)"
 				/>
@@ -347,6 +352,7 @@ export default defineComponent({
 					label="Lote"
 					max-width="25%"
 					:value="store.form.lot_number.value as string"
+					:message-error="store.form.lot_number.errorMessages[0]"
 					@on-input="store.setFormField('lot_number', $event)"
 				/>
 				<MoleculesInputCommon
@@ -355,6 +361,7 @@ export default defineComponent({
 					max-width="25%"
 					:maxlength="10"
 					:value="store.form.expiration_date.value as string"
+					:message-error="store.form.expiration_date.errorMessages[0]"
 					@on-input="onDateInput('expiration_date', $event)"
 				/>
 				<!-- Suplementação: Tipo de suplemento e Quantidade diária -->
@@ -364,6 +371,7 @@ export default defineComponent({
 					max-width="25%"
 					:options="supplementTypeOptions"
 					:value="store.form.supplement_type.value as string"
+					:message-error="store.form.supplement_type.errorMessages[0]"
 					@item-selected="store.setFormField('supplement_type', $event.id)"
 				/>
 				<MoleculesInputCommon
@@ -371,6 +379,7 @@ export default defineComponent({
 					label="Quantidade diária (g/kg)"
 					max-width="25%"
 					:value="String(store.form.daily_quantity_g_per_kg.value || '')"
+					:message-error="store.form.daily_quantity_g_per_kg.errorMessages[0]"
 					@on-input="store.setFormField('daily_quantity_g_per_kg', $event)"
 				/>
 				<MoleculesInputCommon
@@ -378,6 +387,7 @@ export default defineComponent({
 					label="Refeições por dia"
 					max-width="25%"
 					:value="String(store.form.meals_per_day.value || '')"
+					:message-error="store.form.meals_per_day.errorMessages[0]"
 					@on-input="store.setFormField('meals_per_day', $event)"
 				/>
 				<MoleculesSelectsSimple
@@ -392,6 +402,7 @@ export default defineComponent({
 					max-width="25%"
 					:options="routeOptions"
 					:value="store.form.via_administration.value as string"
+					:message-error="store.form.via_administration.errorMessages[0]"
 					@item-selected="store.setFormField('via_administration', $event.id)"
 				/>
 				<MoleculesSelectsSimple
@@ -400,6 +411,7 @@ export default defineComponent({
 					max-width="25%"
 					:options="frequencyOptions"
 					:value="String(store.form.frequency.value || '')"
+					:message-error="store.form.frequency.errorMessages[0]"
 					@item-selected="store.setFormField('frequency', $event.id)"
 				/>
 				<MoleculesSelectsSimple
@@ -408,6 +420,7 @@ export default defineComponent({
 					max-width="25%"
 					:options="periodDaysOptions"
 					:value="String(store.form.period_days.value || '')"
+					:message-error="store.form.period_days.errorMessages[0]"
 					@item-selected="store.setFormField('period_days', Number($event.id))"
 				/>
 				<MoleculesInputCommon
@@ -416,6 +429,7 @@ export default defineComponent({
 					max-width="25%"
 					:maxlength="10"
 					:value="store.form.next_dose_date.value as string"
+					:message-error="store.form.next_dose_date.errorMessages[0]"
 					@on-input="onDateInput('next_dose_date', $event)"
 				/>
 			</div>
@@ -423,6 +437,7 @@ export default defineComponent({
 				label="Observações"
 				max-width="100%"
 				:value="store.form.observations.value as string"
+				:message-error="store.form.observations.errorMessages[0]"
 				@on-input="store.setFormField('observations', $event)"
 			/>
 			<div class="applications-form__actions">
