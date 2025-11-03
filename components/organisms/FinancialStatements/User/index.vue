@@ -37,6 +37,9 @@ export default defineComponent({
 		});
 
 		const getStatementForMonth = (monthNumber: number) => {
+			if (!store.statements || !Array.isArray(store.statements)) {
+				return null;
+			}
 			return store.statements.find(
 				(s) => s.month === monthNumber && s.year === currentYear.value,
 			);
@@ -115,45 +118,30 @@ export default defineComponent({
 				<div class="month-action">
 					<template v-if="getStatementForMonth(month.number)">
 						<button
-							class="btn-download"
+							class="btn-link"
 							@click="
 								handleDownload(getStatementForMonth(month.number)?.uuid || '')
 							"
 						>
 							<AtomsTypography
 								type="text-p5"
-								text="Baixar extrato"
+								text="Abrir extrato"
 								weight="medium"
-								color="var(--brand-color-green-500)"
+								color="var(--brand-color-blue-500)"
 							/>
-							<span class="icon-download">↓</span>
 						</button>
 					</template>
 
 					<template v-else>
-						<div class="no-statement">
-							<AtomsTypography
-								type="text-p5"
-								text="Sem extrato"
-								weight="medium"
-								color="var(--brand-color-gray-400)"
-							/>
-						</div>
+						<AtomsTypography
+							type="text-p5"
+							text="Sem extrato"
+							weight="regular"
+							color="var(--brand-color-gray-400)"
+						/>
 					</template>
 				</div>
 			</div>
-		</div>
-
-		<div
-			v-if="!store.isLoading && store.statements.length === 0"
-			class="empty-state"
-		>
-			<AtomsTypography
-				type="text-p3"
-				text="Nenhum extrato disponível"
-				weight="medium"
-				color="var(--brand-color-gray-400)"
-			/>
 		</div>
 	</div>
 </template>
@@ -229,32 +217,16 @@ export default defineComponent({
 				display: flex;
 				justify-content: flex-end;
 
-				.btn-download {
-					display: flex;
-					align-items: center;
-					gap: 8px;
-					padding: 6px 12px;
-					background: var(--brand-color-green-50);
-					border: 1px solid var(--brand-color-green-200);
-					border-radius: 4px;
+				.btn-link {
+					background: none;
+					border: none;
+					padding: 0;
 					cursor: pointer;
-					transition: all 0.2s;
+					transition: opacity 0.2s;
 
 					&:hover {
-						background: var(--brand-color-green-100);
+						opacity: 0.7;
 					}
-
-					.icon-download {
-						font-size: 16px;
-						color: var(--brand-color-green-500);
-					}
-				}
-
-				.no-statement {
-					padding: 6px 12px;
-					background: var(--brand-color-gray-100);
-					border: 1px solid var(--brand-color-gray-200);
-					border-radius: 4px;
 				}
 			}
 		}

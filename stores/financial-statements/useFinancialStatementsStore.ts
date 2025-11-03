@@ -90,14 +90,27 @@ export const useFinancialStatementsStore = defineStore("financial-statements", {
 				);
 
 				if (response.status === 200 && response.data) {
-					if (response.data.data) {
+					// Backend retorna estrutura aninhada: response.data.data.data.data
+					const paginatedData = response.data.data?.data?.data;
+					if (paginatedData && Array.isArray(paginatedData)) {
+						this.statements = paginatedData;
+					} else if (
+						response.data.data?.data &&
+						Array.isArray(response.data.data.data)
+					) {
+						this.statements = response.data.data.data;
+					} else if (response.data.data && Array.isArray(response.data.data)) {
 						this.statements = response.data.data;
-						return response.data;
+					} else {
+						this.statements = [];
 					}
+					return response.data;
 				}
 
+				this.statements = [];
 				return null;
 			} catch {
+				this.statements = [];
 				return null;
 			} finally {
 				this.isLoading = false;
