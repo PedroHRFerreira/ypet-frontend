@@ -67,7 +67,7 @@ export const useEditStore = defineStore("edit", {
 						continue;
 					}
 				}
-				console.log("key", key, "value", value);
+
 				formData.set(key, String(value));
 			}
 
@@ -104,8 +104,6 @@ export const useEditStore = defineStore("edit", {
 			this.successMessage = "";
 
 			const formData = this.getFormData();
-
-			console.log("formDataEdit", formData, this.form);
 
 			await useFetch(`${this.pathUrl}/${id}`, {
 				method: "PUT",

@@ -7,7 +7,7 @@ export const useEditStore = defineStore("protectors-edit", {
 		const successMessage = ref("");
 		const form = useForm([
 			"name",
-			"image",
+			"picture",
 			"document",
 			"email",
 			"gender",
@@ -23,6 +23,7 @@ export const useEditStore = defineStore("protectors-edit", {
 			"status",
 			"can_report_abuse",
 			"can_mobile_castration",
+			"observations",
 		]);
 
 		return {
@@ -102,6 +103,11 @@ export const useEditStore = defineStore("protectors-edit", {
 
 				const value = this.form[key]?.value;
 				if (value === null || value === undefined || value === "") continue;
+
+				if (value instanceof File) {
+					formData.append(key, value);
+					continue;
+				}
 
 				formData.append(
 					key,

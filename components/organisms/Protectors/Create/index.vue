@@ -113,20 +113,28 @@ export default defineComponent({
 			}
 		}
 
-		function handleInput(payload: string | File) {
+		function handleInputFile(payload: string | File) {
 			if (payload instanceof File) {
 				file.value = payload;
+				useProtectorsCreate.setFormField("picture", payload);
 			} else {
-				console.log("Base64 recebido:", payload.slice(0, 30) + "...");
+				// Para criar, sempre enviamos File; ignorar strings/base64
+				console.log("Upload retornou string/base64, ignorado no create.");
 			}
 		}
 
 		function handleChange(selectedFile: File) {
-			console.log("Arquivo trocado:", selectedFile);
+			// Alinhar ao comportamento da edição: sempre atualizar o campo 'picture'
+			file.value = selectedFile;
+			useProtectorsCreate.setFormField("picture", selectedFile);
 		}
 
 		function handleError(message: string) {
 			errorMessage.value = message;
+			// Limpa arquivo e registra erro no campo 'picture' (igual edição)
+			file.value = null;
+			useProtectorsCreate.setFormField("picture", null);
+			useProtectorsCreate.setFormError("picture", [message]);
 		}
 
 		return {
@@ -151,7 +159,7 @@ export default defineComponent({
 			continueFeedback,
 			file,
 			errorMessage,
-			handleInput,
+			handleInputFile,
 			handleChange,
 			handleError,
 		};
@@ -199,12 +207,12 @@ export default defineComponent({
 					<MoleculesUploadField
 						label="Selecione um arquivo para enviar"
 						description="Arquivo até 2mb"
+						maxWidth="30%"
 						:accept="'image/*'"
 						:maxSize="2 * 1024 * 1024"
-						maxWidth="40%"
 						:maxHeight="188"
-						:preview="true"
-						@input="handleInput"
+						:value="form.picture.value as any"
+						@input="handleInputFile"
 						@change="handleChange"
 						@error="handleError"
 					/>
@@ -280,6 +288,14 @@ export default defineComponent({
 			<div class="protectors__input-data__content">
 				<div class="protectors__input-data__content--group">
 					<MoleculesInputCommon
+						label="CEP"
+						:maxlength="9"
+						max-width="25%"
+						:value="zipCode as string"
+						:message-error="form.zip_code.errorMessages.join(', ')"
+						@on-input="onInputZipCode($event)"
+					/>
+					<MoleculesInputCommon
 						label="Rua"
 						max-width="50%"
 						:value="form.street.value as string"
@@ -293,14 +309,6 @@ export default defineComponent({
 						:value="form.number.value as string"
 						:message-error="form.number.errorMessages.join(', ')"
 						@on-input="useProtectorsCreate.setFormField('number', $event)"
-					/>
-					<MoleculesInputCommon
-						label="CEP"
-						:maxlength="9"
-						max-width="25%"
-						:value="zipCode as string"
-						:message-error="form.zip_code.errorMessages.join(', ')"
-						@on-input="onInputZipCode($event)"
 					/>
 				</div>
 				<div class="protectors__input-data__content--group">
@@ -384,6 +392,9 @@ export default defineComponent({
 						label="Observações"
 						message="Descreva com detalhes suas observações finais"
 						max-width="100%"
+						:value="form.observations.value as string"
+						:message-error="form.observations.errorMessages.join(', ')"
+						@on-input="useProtectorsCreate.setFormField('observations', $event)"
 					/>
 				</div>
 			</div>
