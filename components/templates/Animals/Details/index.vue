@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
 
 export default defineComponent({
 	name: "TemplatesAnimalsDetails",
@@ -53,9 +53,17 @@ export default defineComponent({
 				description: "",
 			};
 		});
+
+		const currentTab = ref<"details" | "history">("details");
+
+		function setTab(tab: "details" | "history") {
+			currentTab.value = tab;
+		}
 		return {
 			header,
 			emptyState,
+			currentTab,
+			setTab,
 		};
 	},
 });
@@ -99,7 +107,29 @@ export default defineComponent({
 			</header>
 			<main class="main">
 				<div class="main-content">
-					<OrganismsAnimalsDetails />
+					<AtomsTabs>
+						<template #header>
+							<AtomsTabButton
+								:active="currentTab === 'details'"
+								@click="setTab('details')"
+							>
+								Dados
+							</AtomsTabButton>
+							<AtomsTabButton
+								:active="currentTab === 'history'"
+								@click="setTab('history')"
+							>
+								Histórico
+							</AtomsTabButton>
+						</template>
+
+						<div v-if="currentTab === 'details'">
+							<OrganismsAnimalsDetails />
+						</div>
+						<div v-else>
+							<OrganismsAnimalsHistory />
+						</div>
+					</AtomsTabs>
 				</div>
 			</main>
 		</div>

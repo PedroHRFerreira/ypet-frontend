@@ -1,0 +1,50 @@
+@use "@/assets/scss/_mixins.scss" as mixins;
+
+.organisms-animals-history {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  &__item {
+    display: grid;
+    grid-template-columns: 1fr auto auto auto;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    padding: 20px;
+  }
+
+  &__item-left,
+  &__item-middle,
+  &__item-user {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__item-actions {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  &__empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    border-radius: 8px;
+    background: #f7f9fc;
+  }
+}
