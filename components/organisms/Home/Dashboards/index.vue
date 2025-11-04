@@ -1,32 +1,63 @@
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, computed, ref, onMounted } from "vue";
+import { useListStore } from "~/stores/animals/useListStore";
+import { useListStore as useClinicEventsListStore } from "~/stores/castra-mobile/clinic-events/useListStore";
 
 export default defineComponent({
 	name: "OrganismsHomeDashboards",
 	setup() {
-		const dashboards: DashboardType[] = [
+		const animalsStore = useListStore();
+
+		const petsCount = computed(() => {
+			const total = (animalsStore.pagination as any)?.total as
+				| number
+				| undefined;
+			return typeof total === "number" ? total : animalsStore.animals.length;
+		});
+
+		const adoptionsCount = ref(0);
+		onMounted(async () => {
+			adoptionsCount.value = await animalsStore.fetchAnimalsWithOwnerCount();
+		});
+
+		// Expected castrations for next month: sum of max_registrations across clinic events within next month
+		const expectedCastrations = ref(0);
+		const clinicEventsStore = useClinicEventsListStore();
+		const fmt = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+		onMounted(async () => {
+			const start = new Date();
+			const end = new Date(start.getFullYear(), start.getMonth() + 1, start.getDate());
+			await clinicEventsStore.fetchListWithoutPagination({ start_date: fmt(start), end_date: fmt(end) });
+			const list = (clinicEventsStore.list as any[]) || [];
+			expectedCastrations.value = list.reduce((sum, ev) => sum + (Number(ev?.max_registrations) || 0), 0);
+		});
+
+		const dashboards = computed<DashboardType[]>(() => [
 			{
 				id: 1,
 				title: "Pets",
-				value: 3,
-				difference: "+0",
-				subtitle: "Desde o mês passado",
+				value: petsCount.value,
+				difference: "",
+				subtitle: "Comparado ao mês anterior",
+				icon: "paw",
 			},
 			{
 				id: 2,
 				title: "Castrações",
-				value: 0,
-				difference: "+0",
-				subtitle: "Desde o mês passado",
+				value: expectedCastrations.value,
+				difference: "",
+				subtitle: "Castrações previstas até o final do mês",
+				icon: "ambulance",
 			},
 			{
 				id: 3,
 				title: "Adoções",
-				value: 0,
-				difference: "+0",
-				subtitle: "Desde o mês passado",
+				value: adoptionsCount.value,
+				difference: "",
+				subtitle: "em relação ao mês passado",
+				icon: "cat",
 			},
-		];
+		]);
 
 		return {
 			dashboards,
@@ -44,6 +75,7 @@ export default defineComponent({
 			:value="dashboard.value"
 			:difference="dashboard.difference"
 			:subtitle="dashboard.subtitle"
+			:icon="dashboard.icon"
 		/>
 	</div>
 </template>
