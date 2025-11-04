@@ -19,8 +19,8 @@ export default defineComponent({
 		const useUFEnum = useUFEnumStore();
 		const useBooleanEnum = useBooleanEnumStore();
 		const useUserStatusEnum = useUserStatusEnumStore();
-		useCitizensCreate.setFormField("can_mobile_castration", 0);
-		useCitizensCreate.setFormField("can_report_abuse", 0);
+		useCitizensCreate.setFormField("can_mobile_castration", 1);
+		useCitizensCreate.setFormField("can_report_abuse", 1);
 
 		const optionsUserStatus = ref<IOption[]>([]);
 		const optionsUFEnum = ref<IOption[]>([]);
