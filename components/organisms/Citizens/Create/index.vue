@@ -104,16 +104,21 @@ export default defineComponent({
 
 			if (digits.length === 8) {
 				const data = await fetchAddress(digits);
+				// ignore stale responses if user changed the CEP meanwhile
+				if (useCitizensCreate.form.zip_code.value !== digits) return;
 				if (data) {
 					useCitizensCreate.setFormField("street", data.street);
 					useCitizensCreate.setFormField("district", data.district);
 					useCitizensCreate.setFormField("city", data.city);
+					useCitizensCreate.setFormField("complement", data.complement || "");
 					const ufOpt = optionsUFEnum.value.find(
 						(o) =>
 							(o as any).id === data.state || (o as any).text === data.state,
 					);
 					if (ufOpt) {
 						useCitizensCreate.setFormField("state", (ufOpt as any).id);
+					} else {
+						useCitizensCreate.setFormField("state", data.state);
 					}
 				}
 			}
@@ -254,7 +259,6 @@ export default defineComponent({
 								v-model="birthDate"
 								label="Data de nascimento"
 								name="birth_date"
-								placeholder="YYYY-MM-DD"
 								min="1900-01-01"
 								max="2025-12-31"
 								width="25%"
@@ -335,6 +339,7 @@ export default defineComponent({
 					<MoleculesSelectsSimple
 						label="Estado"
 						max-width="25%"
+						:value="form.state.value as string"
 						:options="optionsUFEnum"
 						:message-error="form.state.errorMessages.join(', ')"
 						@item-selected="useCitizensCreate.setFormField('state', $event)"

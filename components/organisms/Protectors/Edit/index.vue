@@ -126,10 +126,13 @@ export default defineComponent({
 
 			if (digits.length === 8) {
 				const data = await fetchAddress(digits);
+				// ignore stale responses if user changed the CEP meanwhile
+				if (useProtectorEdit.form.zip_code.value !== digits) return;
 				if (data) {
 					useProtectorEdit.setFormField("street", data.street);
 					useProtectorEdit.setFormField("district", data.district);
 					useProtectorEdit.setFormField("city", data.city);
+					useProtectorEdit.setFormField("complement", data.complement || "");
 
 					const ufOpt = optionsUFEnum.value.find(
 						(o: any) =>
@@ -340,7 +343,6 @@ export default defineComponent({
 								v-model="birthDate"
 								label="Data de nascimento"
 								name="birth_date"
-								placeholder="YYYY-MM-DD"
 								min="1900-01-01"
 								max="2025-12-31"
 								width="25%"
@@ -413,6 +415,7 @@ export default defineComponent({
 					<MoleculesSelectsSimple
 						label="Estado"
 						max-width="25%"
+						:value="form.state.value as string"
 						:options="optionsUFEnum"
 						:message-error="form.state.errorMessages.join(', ')"
 						@item-selected="useProtectorEdit.setFormField('state', $event)"

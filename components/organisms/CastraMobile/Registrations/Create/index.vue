@@ -177,12 +177,18 @@ export default defineComponent({
 					createStore.setFormField("tutor_address_street", data.street);
 					createStore.setFormField("tutor_address_district", data.district);
 					createStore.setFormField("tutor_address_city", data.city);
+					createStore.setFormField(
+						"tutor_address_complement",
+						data.complement || "",
+					);
 					const ufOpt = optionsUF.value.find(
 						(o) =>
 							(o as any).id === data.state || (o as any).text === data.state,
 					);
 					if (ufOpt) {
 						createStore.setFormField("tutor_address_state", (ufOpt as any).id);
+					} else {
+						createStore.setFormField("tutor_address_state", data.state);
 					}
 				}
 			}
@@ -415,9 +421,10 @@ export default defineComponent({
 						max-width="25%"
 						label="Estado"
 						:options="optionsUF"
+						:value="form.tutor_address_state.value as string"
 						:message-error="form.tutor_address_state.errorMessages.join(', ')"
 						@item-selected="
-							createStore.setFormField('tutor_address_state', $event)
+							createStore.setFormField('tutor_address_state', $event.id)
 						"
 					/>
 					<MoleculesInputCommon
@@ -457,7 +464,6 @@ export default defineComponent({
 						v-model="birthDate"
 						label="Data de nascimento"
 						name="birth_date"
-						placeholder="YYYY-MM-DD"
 						min="1900-01-01"
 						max="2025-12-31"
 						width="30%"

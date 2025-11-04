@@ -138,7 +138,7 @@ export default defineComponent({
 
 		<AtomsDatePicker
 			v-model="dateValue"
-			:placeholder="placeholder || 'Selecione a data'"
+			:placeholder="placeholder || 'XX/XX/XXXX'"
 		/>
 
 		<ul v-if="hasError" :id="`${uid}-errors`" class="date-input__errors">

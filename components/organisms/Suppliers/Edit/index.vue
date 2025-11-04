@@ -107,6 +107,8 @@ export default defineComponent({
 
 			if (digits.length === 8) {
 				const data = await fetchAddress(digits);
+				// ignore stale responses if user changed the CEP meanwhile
+				if (useSuppliersEdit.form.zip_code.value !== digits) return;
 				if (data) {
 					useSuppliersEdit.setFormField("street", data.street);
 					useSuppliersEdit.setFormField("district", data.district);
@@ -118,6 +120,8 @@ export default defineComponent({
 					);
 					if (ufOpt) {
 						useSuppliersEdit.setFormField("state", (ufOpt as any).id);
+					} else {
+						useSuppliersEdit.setFormField("state", data.state);
 					}
 				}
 			}
@@ -399,6 +403,7 @@ export default defineComponent({
 					<MoleculesSelectsSimple
 						label="Estado"
 						max-width="25%"
+						:value="form.state.value as string"
 						:options="optionsUFEnum"
 						:message-error="form.state.errorMessages.join(', ')"
 						@item-selected="useSuppliersEdit.setFormField('state', $event.id)"
