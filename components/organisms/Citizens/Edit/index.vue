@@ -93,6 +93,9 @@ export default defineComponent({
 			useCitizenEdit.setFormField("complement", mainAddress?.complement || "");
 			useCitizenEdit.setFormField("city", mainAddress?.city || "");
 			useCitizenEdit.setFormField("status", citizen?.status || "");
+			useCitizenEdit.setFormField("can_report_abuse", citizen?.can_report_abuse || "");
+			useCitizenEdit.setFormField("can_mobile_castration", citizen?.can_mobile_castration || "");
+
 
 			birthDate.value = citizen.birth_date || "";
 			document.value = useMaskDocument(citizen?.document || "");
