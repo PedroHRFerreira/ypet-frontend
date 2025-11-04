@@ -1,11 +1,15 @@
 <script lang="ts">
 import { defineComponent, ref } from "vue";
+import { useListStore as useCastramovelListStore } from "~/stores/castramovel/useListStore";
+import { useListStore as useAnimalsListStore } from "~/stores/animals/useListStore";
 
 export default defineComponent({
 	name: "OrganismsHomeGraphic",
 	setup() {
+		const castraStore = useCastramovelListStore();
+		const animalsStore = useAnimalsListStore();
 		const header = {
-			title: "Cadastros",
+			title: "Atividades mensais",
 			options: [
 				{
 					id: "today",
@@ -22,44 +26,69 @@ export default defineComponent({
 					text: "Último mês",
 					state: "default",
 				},
-				{
-					id: "year",
-					text: "Último ano",
-					state: "default",
-				},
 			] as IOption[],
 		};
 
-		const changePeriod = (selected: IOption) => {
-			// eslint-disable-next-line no-console
-			console.log("Período selecionado:", selected);
-			// TODO: Lógica para atualizar o gráfico com base no período selecionado
+		const formatDate = (d: Date) => {
+			const y = d.getFullYear();
+			const m = String(d.getMonth() + 1).padStart(2, "0");
+			const day = String(d.getDate()).padStart(2, "0");
+			return `${y}-${m}-${day}`;
 		};
 
-		const labels = ref([
-			"Janeiro",
-			"Fevereiro",
-			"Março",
-			"Abril",
-			"Maio",
-			"Junho",
-			"Julho",
-		]);
+		const getRange = (id: string) => {
+			const end = new Date();
+			const start = new Date();
+			if (id === "today") {
+				// keep same day
+			} else if (id === "week") {
+				start.setDate(end.getDate() - 6);
+			} else if (id === "month") {
+				start.setMonth(end.getMonth() - 1);
+			}
+			return { start: formatDate(start), end: formatDate(end) };
+		};
+
+		const monthLabels = () => {
+			const names = [
+				"Janeiro",
+				"Fevereiro",
+				"Março",
+				"Abril",
+				"Maio",
+				"Junho",
+				"Julho",
+				"Agosto",
+				"Setembro",
+				"Outubro",
+				"Novembro",
+				"Dezembro",
+			];
+			const arr: string[] = [];
+			const now = new Date();
+			for (let i = 5; i >= 0; i--) {
+				const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+				arr.push(names[d.getMonth()]);
+			}
+			return arr;
+		};
+
+		const labels = ref(monthLabels());
 
 		const chartData = ref({
 			labels,
 			datasets: [
 				{
-					label: "Novos",
-					data: [5000, 15000, 25000, 20000, 30000, 18000],
+					label: "Castramóvel realizados",
+					data: [0, 0, 0, 0, 0, 0],
 					borderColor: "#3b82f6",
 					backgroundColor: "rgba(59, 130, 246, 0.1)",
 					tension: 0.4,
 					fill: true,
 				},
 				{
-					label: "Overdue",
-					data: [0, 10000, 20000, 40000, 60000, 35000],
+					label: "Adoções concluídas",
+					data: [0, 0, 0, 0, 0, 0],
 					borderColor: "#1e293b",
 					backgroundColor: "rgba(30, 41, 59, 0.1)",
 					tension: 0.4,
@@ -67,6 +96,102 @@ export default defineComponent({
 				},
 			],
 		});
+
+		const aggregateToMonths = () => {
+			const now = new Date();
+			const buckets: Record<string, number> = {};
+			for (let i = 5; i >= 0; i--) {
+				const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+				const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(
+					2,
+					"0",
+				)}`;
+				buckets[key] = 0;
+			}
+			(castraStore.report || []).forEach((item: ICastraMovel) => {
+				const raw = item.created_at || item.scheduler_at;
+				if (!raw) return;
+				const d = new Date(raw as any);
+				const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(
+					2,
+					"0",
+				)}`;
+				if (key in buckets) buckets[key] += 1;
+			});
+			const now2 = new Date();
+			const data: number[] = [];
+			for (let i = 5; i >= 0; i--) {
+				const d = new Date(now2.getFullYear(), now2.getMonth() - i, 1);
+				const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(
+					2,
+					"0",
+				)}`;
+				data.push(buckets[key] || 0);
+			}
+			chartData.value.datasets[0].data = data;
+			labels.value = monthLabels();
+		};
+
+		const loadByPeriod = async (id: string) => {
+			const { start, end } = getRange(id);
+			await castraStore.fetchList({ start_date: start, end_date: end });
+			aggregateToMonths();
+			// Update adoptions (animals with owner) for the selected period
+			const adoptionCount = await animalsStore.fetchAnimalsWithOwnerCount({
+				start_date: start,
+				end_date: end,
+			});
+			// Place the count in the latest bucket; others as zero
+			const arr = [0, 0, 0, 0, 0, 0];
+			arr[arr.length - 1] = adoptionCount;
+			chartData.value.datasets[1].data = arr;
+		};
+
+		const changePeriod = (selected: IOption) => {
+			loadByPeriod(selected.id as string);
+		};
+
+		const loadLastSixMonths = async () => {
+			const end = new Date();
+			const start = new Date(end.getFullYear(), end.getMonth() - 5, 1);
+			await castraStore.fetchList({
+				start_date: `${start.getFullYear()}-${String(
+					start.getMonth() + 1,
+				).padStart(2, "0")}-01`,
+				end_date: `${end.getFullYear()}-${String(end.getMonth() + 1).padStart(
+					2,
+					"0",
+				)}-${String(end.getDate()).padStart(2, "0")}`,
+			});
+			aggregateToMonths();
+
+			// Load adoptions counts for each of the last 6 months in parallel
+			const monthRanges = [] as { start: string; end: string }[];
+			for (let i = 5; i >= 0; i--) {
+				const mStart = new Date(end.getFullYear(), end.getMonth() - i, 1);
+				const mEnd = new Date(end.getFullYear(), end.getMonth() - i + 1, 0);
+				monthRanges.push({
+					start: `${mStart.getFullYear()}-${String(
+						mStart.getMonth() + 1,
+					).padStart(2, "0")}-01`,
+					end: `${mEnd.getFullYear()}-${String(mEnd.getMonth() + 1).padStart(
+						2,
+						"0",
+					)}-${String(mEnd.getDate()).padStart(2, "0")}`,
+				});
+			}
+			const adoptionCounts = await Promise.all(
+				monthRanges.map((r) =>
+					animalsStore.fetchAnimalsWithOwnerCount({
+						start_date: r.start,
+						end_date: r.end,
+					}),
+				),
+			);
+			chartData.value.datasets[1].data = adoptionCounts;
+		};
+
+		loadLastSixMonths();
 
 		const chartOptions = ref({
 			responsive: true,
@@ -90,10 +215,15 @@ export default defineComponent({
 			},
 			scales: {
 				y: {
+					beginAtZero: true,
+					min: 0,
+					grace: "5%",
 					ticks: {
-						callback: (value: number) => `${value / 1000}K`,
+						precision: 0,
+						stepSize: 1000,
 						color: "#94a3b8",
 					},
+					suggestedMax: 4000,
 				},
 				x: {
 					ticks: {
@@ -102,6 +232,22 @@ export default defineComponent({
 				},
 			},
 		});
+
+		function updateYAxisScale() {
+			const allSeries = chartData.value.datasets.map((d) => d.data as number[]);
+			const maxVal = Math.max(0, ...allSeries.flat());
+			if (!Number.isFinite(maxVal)) return;
+			const desiredSteps = 4;
+			const rawStep = Math.ceil(maxVal / desiredSteps) || 1;
+			let step = Math.max(1000, Math.ceil(rawStep / 1000) * 1000);
+			const suggestedMax = Math.max(
+				step * desiredSteps,
+				Math.ceil(maxVal / step) * step,
+			);
+			chartOptions.value.scales.y.ticks.stepSize = step as unknown as number;
+			(chartOptions.value.scales.y as any).suggestedMax =
+				suggestedMax as unknown as number;
+		}
 
 		return {
 			header,
