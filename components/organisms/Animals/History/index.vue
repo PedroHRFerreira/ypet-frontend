@@ -43,7 +43,7 @@ export default defineComponent({
 		});
 
 		function shouldShowDetailsButton(_item: any): boolean {
-			return true;
+			return false;
 		}
 
 		function getEventIcon(item: any): string {
