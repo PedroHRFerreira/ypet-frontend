@@ -20,8 +20,7 @@ onMounted(async () => {
 
 // Actions
 const openCreateForm = () => {
-	// resetar store de criação antes de navegar
-	createStore.setCategory("medication");
+	createStore.setCategory("vaccine");
 	createStore.resetForm();
 	const router = useRouter();
 	router.push({ name: "products-create" });
