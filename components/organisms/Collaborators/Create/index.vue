@@ -236,7 +236,6 @@ export default defineComponent({
 						v-model="startDate"
 						label="Data de início do trabalho"
 						name="work_started_at"
-						placeholder="YYYY-MM-DD"
 						width="30%"
 						:required="true"
 						:error-messages="form.work_started_at.errorMessages"

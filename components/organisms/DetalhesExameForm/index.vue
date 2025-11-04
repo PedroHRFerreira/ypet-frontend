@@ -77,7 +77,6 @@ function onRegistrarExame() {
 						v-model="dataResultado as any"
 						label="Data do resultado"
 						name="data_resultado"
-						placeholder="YYYY-MM-DD"
 						width="25%"
 					/>
 				</div>

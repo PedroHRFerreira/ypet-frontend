@@ -113,7 +113,6 @@ function onRegistrarCirurgia() {
 						v-model="dataAlta as any"
 						label="Data de alta"
 						name="data_alta"
-						placeholder="YYYY-MM-DD"
 						width="25%"
 					/>
 					<MoleculesSelectsSimple

@@ -94,17 +94,23 @@ export default defineComponent({
 
 			if (digits.length === 8) {
 				const data = await fetchAddress(digits);
+				// ignore stale responses if user changed the CEP meanwhile
+				if (useSuppliersCreate.form.zip_code.value !== digits) return;
 				if (data) {
 					useSuppliersCreate.setFormField("street", data.street);
 					useSuppliersCreate.setFormField("district", data.district);
 					useSuppliersCreate.setFormField("city", data.city);
-					// map UF to enum option id
-					const ufOpt = optionsUFEnum.find(
-						(o) =>
-							(o as any).id === data.state || (o as any).text === data.state,
+					useSuppliersCreate.setFormField("complement", data.complement || "");
+					// map UF to enum option id/value (robust matching)
+					const targetUF = String(data.state);
+					const ufOpt = optionsUFEnum.find((o: any) =>
+						[String(o.id), String(o.value), String(o.text)].includes(targetUF),
 					);
 					if (ufOpt) {
-						useSuppliersCreate.setFormField("state", (ufOpt as any).id);
+						const selected = (ufOpt as any).id ?? (ufOpt as any).value;
+						useSuppliersCreate.setFormField("state", selected);
+					} else {
+						useSuppliersCreate.setFormField("state", targetUF);
 					}
 				}
 			}
@@ -358,6 +364,7 @@ export default defineComponent({
 					<MoleculesSelectsSimple
 						label="Estado"
 						max-width="25%"
+						:value="form.state.value as string"
 						:options="optionsUFEnum"
 						:message-error="form.state.errorMessages.join(', ')"
 						@item-selected="useSuppliersCreate.setFormField('state', $event.id)"

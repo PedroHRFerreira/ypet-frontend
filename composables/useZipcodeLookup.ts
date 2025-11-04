@@ -6,6 +6,14 @@ export type ZipcodeAddress = {
 	district: string;
 	city: string;
 	state: string; // UF, e.g., 'SP'
+	complement?: string;
+	unidade?: string;
+	estado?: string; // full state name if available
+	regiao?: string;
+	ibge?: string;
+	gia?: string;
+	ddd?: string;
+	siafi?: string;
 };
 
 export function useZipcodeLookup() {
@@ -34,8 +42,16 @@ export function useZipcodeLookup() {
 				district: data?.bairro || "",
 				city: data?.localidade || "",
 				state: data?.uf || "",
-			};
-		} catch (e) {
+				complement: data?.complemento || "",
+				unidade: data?.unidade || "",
+				estado: data?.estado || "",
+				regiao: data?.regiao || "",
+				ibge: data?.ibge || "",
+				gia: data?.gia || "",
+				ddd: data?.ddd || "",
+				siafi: data?.siafi || "",
+			} as ZipcodeAddress;
+		} catch {
 			error.value = "Erro ao buscar CEP.";
 			return null;
 		} finally {

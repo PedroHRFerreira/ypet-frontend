@@ -177,7 +177,6 @@ const onSelectLymphNodes = (option: IOption) => {
 							v-model="animalDetailStore.animal.birth_date"
 							label="Data de nascimento"
 							name="birth_date"
-							placeholder="YYYY-MM-DD"
 							min="1900-01-01"
 							max="2025-12-31"
 						/>

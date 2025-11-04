@@ -136,12 +136,15 @@ export default defineComponent({
 					store.setFormField("address_street", data.street);
 					store.setFormField("address_district", data.district);
 					store.setFormField("address_city", data.city);
+					store.setFormField("address_complement", data.complement || "");
 					const ufOpt = optionsState.value.find(
 						(o) =>
 							(o as any).id === data.state || (o as any).text === data.state,
 					);
 					if (ufOpt) {
 						store.setFormField("address_state", (ufOpt as any).id);
+					} else {
+						store.setFormField("address_state", data.state);
 					}
 				}
 			}
