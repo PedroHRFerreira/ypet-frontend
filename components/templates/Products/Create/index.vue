@@ -4,6 +4,7 @@ import { defineComponent, computed } from "vue";
 export default defineComponent({
 	name: "TemplatesProductsCreate",
 	setup() {
+		const router = useRouter();
 		const headerSubtitle =
 			"Registre vacinas, vermífugos, medicamentos, suplementos ou rações especiais administrados a um animal.";
 
@@ -22,10 +23,7 @@ export default defineComponent({
 						nameIconRight: "",
 						size: "small",
 						width: "auto",
-						action: () => {
-							const router = useRouter();
-							router.back();
-						},
+						action: () => router.back(),
 					},
 				],
 			};

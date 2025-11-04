@@ -305,14 +305,6 @@ export default defineComponent({
 					@on-input="handleValidityInput"
 				/>
 			</div>
-			<div class="product-form__group">
-				<MoleculesInputCommon
-					label="Observações"
-					max-width="100%"
-					:value="store.form.description.value as string"
-					@on-input="store.setFormField('description', $event)"
-				/>
-			</div>
 		</div>
 
 		<!-- Medicações/Rações/Suplementos -->
@@ -364,28 +356,6 @@ export default defineComponent({
 					@item-selected="store.setFormField('base_unit', $event.id)"
 				/>
 			</div>
-			<MoleculesInputCommon
-				class="area"
-				label="Observações"
-				max-width="100%"
-				typeInput="textarea"
-				:value="store.form.description.value as string"
-				@on-input="store.setFormField('description', $event)"
-			/>
-			<div
-				v-if="store.category !== 'other'"
-				class="product-form__group actions"
-			>
-				<MoleculesButtonsCommon
-					type="primary"
-					text="Cadastrar"
-					icon-right
-					nameIconRight="plus"
-					size="medium"
-					width="auto"
-					@onclick="handleCreate"
-				/>
-			</div>
 		</div>
 
 		<div v-if="store.category === 'other'" class="section-card">
@@ -404,25 +374,26 @@ export default defineComponent({
 				/>
 			</div>
 		</div>
-
-		<div class="product-form__group">
-			<AtomsTypography
-				type="text-p5"
-				:text="store.supplyMessage"
-				weight="regular"
-				color="var(--brand-color-dark-blue-300)"
-			/>
-		</div>
-		<div v-if="store.category === 'other'" class="product-form__group actions">
-			<MoleculesButtonsCommon
-				type="primary"
-				text="Cadastrar"
-				icon-right
-				nameIconRight="plus"
-				size="medium"
-				width="auto"
-				@onclick="handleCreate"
-			/>
+		<div class="section-card">
+			<div class="product-form__group">
+				<MoleculesInputCommon
+					label="Observações"
+					max-width="100%"
+					:value="store.form.description.value as string"
+					@on-input="store.setFormField('description', $event)"
+				/>
+			</div>
+			<div class="product-form__group actions">
+				<MoleculesButtonsCommon
+					type="primary"
+					text="Cadastrar"
+					icon-right
+					nameIconRight="plus"
+					size="medium"
+					width="auto"
+					@onclick="handleCreate"
+				/>
+			</div>
 		</div>
 	</div>
 </template>
