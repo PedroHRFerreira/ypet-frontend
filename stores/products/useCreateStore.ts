@@ -15,7 +15,7 @@ export const useProductsCreateStore = defineStore("products-create", {
 		const isLoading = ref(false);
 		const errorMessage = ref("");
 		const successMessage = ref("");
-		const category = ref<ProductCategory>("medication");
+		const category = ref<ProductCategory>("vaccine");
 		const supplyMessage = ref("");
 
 		const form = useForm([
@@ -58,6 +58,9 @@ export const useProductsCreateStore = defineStore("products-create", {
 		};
 	},
 	actions: {
+		setFormError(field: string, errorMessages: string[]): void {
+			if (this.form[field]) this.form[field].errorMessages = errorMessages;
+		},
 		setCategory(cat: ProductCategory): void {
 			this.category = cat;
 			this.form.category.value = cat;
@@ -65,6 +68,7 @@ export const useProductsCreateStore = defineStore("products-create", {
 		},
 		setFormField(key: string, value: any): void {
 			if (this.form[key]) this.form[key].value = value;
+			if (this.form[key]) this.form[key].errorMessages = [];
 			this.updateSupplyMessage();
 		},
 		updateSupplyMessage(): void {
@@ -90,15 +94,21 @@ export const useProductsCreateStore = defineStore("products-create", {
 		},
 		validate(): boolean {
 			this.errorMessage = "";
+			// limpar erros anteriores
+			Object.keys(this.form).forEach((key) => {
+				this.form[key].errorMessages = [];
+			});
 			// nome obrigatório
 			if (!this.form.name.value) {
 				this.errorMessage = "Informe o nome do produto.";
+				this.setFormError("name", [this.errorMessage]);
 				return false;
 			}
 
 			// unidade obrigatória
 			if (!this.form.unit.value) {
 				this.errorMessage = "Informe a unidade de medida.";
+				this.setFormError("unit", [this.errorMessage]);
 				return false;
 			}
 
@@ -106,6 +116,7 @@ export const useProductsCreateStore = defineStore("products-create", {
 			if (this.form.has_stock_control.value === true) {
 				if (this.form.stock.value === null || this.form.stock.value === "") {
 					this.errorMessage = "Informe a quantidade atual de estoque.";
+					this.setFormError("stock", [this.errorMessage]);
 					return false;
 				}
 				if (
@@ -113,6 +124,7 @@ export const useProductsCreateStore = defineStore("products-create", {
 					this.form.min_stock.value === ""
 				) {
 					this.errorMessage = "Informe a quantidade mínima de estoque.";
+					this.setFormError("min_stock", [this.errorMessage]);
 					return false;
 				}
 			}
@@ -121,6 +133,10 @@ export const useProductsCreateStore = defineStore("products-create", {
 			if (this.category === "vaccine" || this.category === "vermifuge") {
 				if (!this.form.lot.value || !this.form.validity.value) {
 					this.errorMessage = "Informe lote e validade.";
+					if (!this.form.lot.value)
+						this.setFormError("lot", ["Informe o lote."]);
+					if (!this.form.validity.value)
+						this.setFormError("validity", ["Informe a validade."]);
 					return false;
 				}
 			}
@@ -137,6 +153,20 @@ export const useProductsCreateStore = defineStore("products-create", {
 				) {
 					this.errorMessage =
 						"Informe quantidade padrão, peso de referência, dias de suprimento e unidade base.";
+					if (!this.form.standard_quantity.value)
+						this.setFormError("standard_quantity", [
+							"Informe a quantidade padrão.",
+						]);
+					if (!this.form.reference_weight.value)
+						this.setFormError("reference_weight", [
+							"Informe o peso de referência.",
+						]);
+					if (!this.form.standard_days.value)
+						this.setFormError("standard_days", [
+							"Informe os dias de suprimento.",
+						]);
+					if (!this.form.base_unit.value)
+						this.setFormError("base_unit", ["Informe a unidade base."]);
 					return false;
 				}
 			}
@@ -144,6 +174,7 @@ export const useProductsCreateStore = defineStore("products-create", {
 			if (this.category === "supplement" || this.category === "other") {
 				if (!this.form.supplement_type.value) {
 					this.errorMessage = "Informe o tipo de suplemento.";
+					this.setFormError("supplement_type", [this.errorMessage]);
 					return false;
 				}
 			}
@@ -190,9 +221,11 @@ export const useProductsCreateStore = defineStore("products-create", {
 			return payload;
 		},
 		async create(): Promise<boolean> {
+			console.log("create", this.isLoading, this.validate());
 			if (this.isLoading) return false;
 			if (!this.validate()) return false;
 
+			console.log("passou");
 			this.isLoading = true;
 			this.errorMessage = "";
 			this.successMessage = "";
@@ -206,7 +239,8 @@ export const useProductsCreateStore = defineStore("products-create", {
 			const response: IResponse = data.value as IResponse;
 
 			this.isLoading = false;
-			if (response?.type === "success") {
+			console.log("response", response);
+			if (response?.status === 200) {
 				this.successMessage =
 					response?.message || "Produto cadastrado com sucesso.";
 				return true;

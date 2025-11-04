@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent, ref, onMounted, computed } from "vue";
+import { useRouter } from "vue-router";
 import { useProductsCreateStore } from "~/stores/products/useCreateStore";
 import { useAnimalSpeciesEnumStore } from "~/stores/Enums/useAnimalSpeciesEnumStore";
 
@@ -7,8 +8,11 @@ export default defineComponent({
 	name: "OrganismsProductsCreate",
 	setup() {
 		const store = useProductsCreateStore();
+		const router = useRouter();
 		const speciesStore = useAnimalSpeciesEnumStore();
 		const speciesOptions = ref<IOption[]>([]);
+		const showConfirm = ref(false);
+		const showSuccess = ref(false);
 
 		// Mapeamento de textos da categoria
 		const categoryTextMap: Record<string, string> = {
@@ -145,12 +149,16 @@ export default defineComponent({
 			}
 		};
 
-		const router = useRouter();
-		const handleCreate = async () => {
-			const ok = await store.create();
-			if (ok) {
-				store.resetForm();
-				router.push({ name: "products" });
+		const openConfirm = () => {
+			showConfirm.value = true;
+		};
+
+		const confirmCreate = async () => {
+			showConfirm.value = false;
+			const resStore = await store.create();
+			console.log(resStore);
+			if (resStore) {
+				router.push("/products");
 			}
 		};
 
@@ -165,17 +173,30 @@ export default defineComponent({
 			categorySelectState,
 			validityRawValue,
 			handleValidityInput,
-			handleCreate,
+			openConfirm,
+			confirmCreate,
+			showConfirm,
+			showSuccess,
 		};
 	},
 });
 </script>
 
 <template>
+	<MoleculesConfirmFeedbackModal
+		v-model:open="showConfirm"
+		variant="confirm"
+		title="Confirmar cadastro de produto?"
+		description="Após confirmar, o registro será salvo."
+		confirm-text="Confirmar"
+		cancel-text="Cancelar"
+		@confirm="confirmCreate"
+	/>
+
 	<div class="product-form">
 		<!-- Abas principais -->
 		<div class="product-form__tabs">
-			<MoleculesTabs :tabs="tabs" @changeTab="handleTabChange" />
+			<MoleculesTabs :tabs="tabs" @change-tab="handleTabChange" />
 		</div>
 
 		<!-- Identificação -->
@@ -191,6 +212,7 @@ export default defineComponent({
 					label="Nome do produto"
 					max-width="50%"
 					:value="store.form.name.value as string"
+					:message-error="store.form.name.errorMessages[0]"
 					@on-input="store.setFormField('name', $event)"
 				/>
 				<MoleculesSelectsSimple
@@ -199,6 +221,7 @@ export default defineComponent({
 					max-width="50%"
 					:options="categorySelectOptions"
 					:value="store.form.category.value as string"
+					:message-error="store.form.category.errorMessages[0]"
 					@item-selected="store.setCategory($event.id)"
 				/>
 
@@ -212,6 +235,7 @@ export default defineComponent({
 					label="Espécie alvo"
 					max-width="50%"
 					:options="speciesOptions"
+					:message-error="store.form.target_species.errorMessages[0]"
 					@item-selected="store.setFormField('target_species', $event.id)"
 				/>
 			</div>
@@ -230,6 +254,7 @@ export default defineComponent({
 					label="Unidade de medida"
 					max-width="25%"
 					:options="unitOptions"
+					:message-error="store.form.unit.errorMessages[0]"
 					@item-selected="store.setFormField('unit', $event.id)"
 				/>
 				<MoleculesSelectsSimple
@@ -249,6 +274,7 @@ export default defineComponent({
 					label="Quantidade atual"
 					max-width="25%"
 					:value="String(store.form.stock.value || '')"
+					:message-error="store.form.stock.errorMessages[0]"
 					@on-input="store.setFormField('stock', $event)"
 				/>
 				<MoleculesSelectsSimple
@@ -270,6 +296,7 @@ export default defineComponent({
 					label="Quantidade mínima"
 					max-width="25%"
 					:value="String(store.form.min_stock.value || '')"
+					:message-error="store.form.min_stock.errorMessages[0]"
 					@on-input="store.setFormField('min_stock', $event)"
 				/>
 			</div>
@@ -294,6 +321,7 @@ export default defineComponent({
 					label="Lote"
 					max-width="50%"
 					:value="store.form.lot.value as string"
+					:message-error="store.form.lot.errorMessages[0]"
 					@on-input="store.setFormField('lot', $event)"
 				/>
 				<MoleculesInputCommon
@@ -302,15 +330,8 @@ export default defineComponent({
 					max-width="50%"
 					:maxlength="10"
 					:value="validityRawValue"
+					:message-error="store.form.validity.errorMessages[0]"
 					@on-input="handleValidityInput"
-				/>
-			</div>
-			<div class="product-form__group">
-				<MoleculesInputCommon
-					label="Observações"
-					max-width="100%"
-					:value="store.form.description.value as string"
-					@on-input="store.setFormField('description', $event)"
 				/>
 			</div>
 		</div>
@@ -337,53 +358,36 @@ export default defineComponent({
 					max-width="25%"
 					:options="supplementTypeOptions"
 					:value="store.form.supplement_type.value as string"
+					:message-error="store.form.supplement_type.errorMessages[0]"
 					@item-selected="store.setFormField('supplement_type', $event.id)"
 				/>
 				<MoleculesInputCommon
 					label="Quantidade padrão"
 					max-width="25%"
 					:value="String(store.form.standard_quantity.value || '')"
+					:message-error="store.form.standard_quantity.errorMessages[0]"
 					@on-input="store.setFormField('standard_quantity', $event)"
 				/>
 				<MoleculesInputCommon
 					label="Peso de referência (kg)"
 					max-width="25%"
 					:value="String(store.form.reference_weight.value || '')"
+					:message-error="store.form.reference_weight.errorMessages[0]"
 					@on-input="store.setFormField('reference_weight', $event)"
 				/>
 				<MoleculesInputCommon
 					label="Dias de suprimento"
 					max-width="25%"
 					:value="String(store.form.standard_days.value || '')"
+					:message-error="store.form.standard_days.errorMessages[0]"
 					@on-input="store.setFormField('standard_days', $event)"
 				/>
 				<MoleculesSelectsSimple
 					label="Unidade base"
 					max-width="25%"
 					:options="unitOptions"
+					:message-error="store.form.base_unit.errorMessages[0]"
 					@item-selected="store.setFormField('base_unit', $event.id)"
-				/>
-			</div>
-			<MoleculesInputCommon
-				class="area"
-				label="Observações"
-				max-width="100%"
-				typeInput="textarea"
-				:value="store.form.description.value as string"
-				@on-input="store.setFormField('description', $event)"
-			/>
-			<div
-				v-if="store.category !== 'other'"
-				class="product-form__group actions"
-			>
-				<MoleculesButtonsCommon
-					type="primary"
-					text="Cadastrar"
-					icon-right
-					nameIconRight="plus"
-					size="medium"
-					width="auto"
-					@onclick="handleCreate"
 				/>
 			</div>
 		</div>
@@ -400,29 +404,31 @@ export default defineComponent({
 					label="Tipo de suplemento"
 					max-width="50%"
 					:value="store.form.supplement_type.value as string"
+					:message-error="store.form.supplement_type.errorMessages[0]"
 					@on-input="store.setFormField('supplement_type', $event)"
 				/>
 			</div>
 		</div>
-
-		<div class="product-form__group">
-			<AtomsTypography
-				type="text-p5"
-				:text="store.supplyMessage"
-				weight="regular"
-				color="var(--brand-color-dark-blue-300)"
-			/>
-		</div>
-		<div v-if="store.category === 'other'" class="product-form__group actions">
-			<MoleculesButtonsCommon
-				type="primary"
-				text="Cadastrar"
-				icon-right
-				nameIconRight="plus"
-				size="medium"
-				width="auto"
-				@onclick="handleCreate"
-			/>
+		<div class="section-card">
+			<div class="product-form__group">
+				<MoleculesInputCommon
+					label="Observações"
+					max-width="100%"
+					:value="store.form.description.value as string"
+					@on-input="store.setFormField('description', $event)"
+				/>
+			</div>
+			<div class="product-form__group actions">
+				<MoleculesButtonsCommon
+					type="primary"
+					text="Cadastrar"
+					icon-right
+					name-icon-right="plus"
+					size="medium"
+					width="auto"
+					@onclick="openConfirm"
+				/>
+			</div>
 		</div>
 	</div>
 </template>
