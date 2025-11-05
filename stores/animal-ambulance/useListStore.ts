@@ -37,7 +37,7 @@ export const useListStore = defineStore("samupet-list", {
 					name: this.filters.name || undefined,
 					status: this.filters.status || undefined,
 					date: this.filters.date || undefined,
-					"with[]": ["user", "citizen", "animal"],
+					"with[]": ["user"],
 				},
 				onResponse: ({ response }) => {
 					const result = response._data as IResponse;
