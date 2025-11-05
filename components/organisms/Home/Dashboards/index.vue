@@ -23,13 +23,24 @@ export default defineComponent({
 		// Expected castrations for next month: sum of max_registrations across clinic events within next month
 		const expectedCastrations = ref(0);
 		const clinicEventsStore = useClinicEventsListStore();
-		const fmt = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+		const fmt = (d: Date) =>
+			`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 		onMounted(async () => {
 			const start = new Date();
-			const end = new Date(start.getFullYear(), start.getMonth() + 1, start.getDate());
-			await clinicEventsStore.fetchListWithoutPagination({ start_date: fmt(start), end_date: fmt(end) });
+			const end = new Date(
+				start.getFullYear(),
+				start.getMonth() + 1,
+				start.getDate(),
+			);
+			await clinicEventsStore.fetchListWithoutPagination({
+				start_date: fmt(start),
+				end_date: fmt(end),
+			});
 			const list = (clinicEventsStore.list as any[]) || [];
-			expectedCastrations.value = list.reduce((sum, ev) => sum + (Number(ev?.max_registrations) || 0), 0);
+			expectedCastrations.value = list.reduce(
+				(sum, ev) => sum + (Number(ev?.max_registrations) || 0),
+				0,
+			);
 		});
 
 		const dashboards = computed<DashboardType[]>(() => [

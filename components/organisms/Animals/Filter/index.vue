@@ -20,8 +20,20 @@ export default defineComponent({
 			{ id: "cat", text: "Gatos" },
 		]);
 
+		const optionsStatus = computed<IOption[]>(() => [
+			{ id: "for_adoption", text: "Para adoção" },
+			{ id: "with_owner", text: "Animal com tutor" },
+			{ id: "lost", text: "Perdido" },
+			{ id: "deceased", text: "Óbito" },
+			{ id: "sheltered", text: "Abrigado" },
+			{ id: "adopted", text: "Adotado" },
+		]);
+
 		const selectedType = ref<string | null>(
 			locationsStore.filters.species ?? null,
+		);
+		const selectedStatus = ref<number | null>(
+			locationsStore.filters.status ?? null,
 		);
 		const registrationInput = ref<string>(
 			locationsStore.filters.registration_number ?? "",
@@ -31,9 +43,14 @@ export default defineComponent({
 			selectedType.value = option.id as string | null;
 		};
 
+		const onStatusSelected = (option: IOption) => {
+			selectedStatus.value = option.id as number | null;
+		};
+
 		const hasChanges = computed(() => {
 			return (
 				locationsStore.filters.species !== selectedType.value ||
+				locationsStore.filters.status !== selectedStatus.value ||
 				locationsStore.filters.registration_number !==
 					registrationInput.value ||
 				locationsStore.filters.name !== null
@@ -46,6 +63,7 @@ export default defineComponent({
 			locationsStore.filters.species = selectedType.value;
 			locationsStore.filters.registration_number =
 				registrationInput.value || null;
+			locationsStore.filters.status = selectedStatus.value || null;
 
 			locationsStore.fetchAnimals();
 			emit("close");
@@ -53,7 +71,9 @@ export default defineComponent({
 
 		const clearFilters = () => {
 			const hasAnyFilter =
-				selectedType.value !== null || registrationInput.value.trim() !== "";
+				selectedType.value !== null ||
+				registrationInput.value.trim() !== "" ||
+				selectedStatus.value !== null;
 
 			if (!hasAnyFilter) return;
 
@@ -62,6 +82,7 @@ export default defineComponent({
 			locationsStore.filters.species = null;
 			locationsStore.filters.registration_number = null;
 			locationsStore.filters.name = null;
+			locationsStore.filters.status = null;
 
 			locationsStore.fetchAnimals();
 			emit("clear-all");
@@ -71,10 +92,13 @@ export default defineComponent({
 		return {
 			optionsType,
 			selectedType,
+			selectedStatus,
 			registrationInput,
 			onTypeSelected,
+			onStatusSelected,
 			applyFilters,
 			clearFilters,
+			optionsStatus,
 			hasChanges,
 		};
 	},
@@ -96,6 +120,12 @@ export default defineComponent({
 					:options="optionsType"
 					:value="selectedType"
 					@item-selected="onTypeSelected"
+				/>
+				<MoleculesSelectsSimple
+					label="Status"
+					:options="optionsStatus"
+					:value="selectedStatus"
+					@item-selected="onStatusSelected"
 				/>
 
 				<MoleculesInputCommon
