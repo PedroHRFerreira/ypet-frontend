@@ -137,30 +137,45 @@ export default defineComponent({
 			id.value = item.id;
 			typeAction.value = event;
 
-			if (event === "received") {
+			if (event === "designated") {
 				openConfirm();
 				feedbackModal.value = {
 					confirm: {
-						title: "Marcar ocorrência como recebida?",
+						title: "Designar ajuda?",
 						description: "",
 					},
 					success: {
-						title: "Ocorrência marcada como recebida",
+						title: "Ocorrência designada com sucesso",
 						description: "",
 					},
 				};
 				return;
 			}
 
-			if (event === "forwarded") {
+			if (event === "in_attendance") {
 				openConfirm();
 				feedbackModal.value = {
 					confirm: {
-						title: "Marcar ocorrência como encaminhada?",
+						title: "Marcar ocorrência como em atendimento?",
 						description: "",
 					},
 					success: {
-						title: "Ocorrência marcada como encaminhada",
+						title: "Ocorrência marcada como em atendimento",
+						description: "",
+					},
+				};
+				return;
+			}
+
+			if (event === "completed") {
+				openConfirm();
+				feedbackModal.value = {
+					confirm: {
+						title: "Marcar ocorrência como concluída?",
+						description: "",
+					},
+					success: {
+						title: "Ocorrência marcada como concluída",
 						description: "",
 					},
 				};
@@ -176,12 +191,13 @@ export default defineComponent({
 		};
 
 		const optionsActions = [
-			{ value: "received", label: "Marcar como recebido", icon: "check" },
+			{ value: "designated", label: "Designar ajuda", icon: "check" },
 			{
-				value: "forwarded",
-				label: "Marcar como encaminhado",
+				value: "in_attendance",
+				label: "Marcar como em atendimento",
 				icon: "arrow-right",
 			},
+			{ value: "completed", label: "Marcar como concluído", icon: "check" },
 			{ value: "details", label: "Visualizar detalhes", icon: "eye" },
 		];
 
@@ -307,7 +323,7 @@ export default defineComponent({
 				<template #requester>
 					<AtomsTypography
 						type="text-p5"
-						:text="item.requester.name"
+						:text="item.user.name"
 						weight="regular"
 						color="var(--brand-color-dark-blue-300)"
 					/>
