@@ -12,6 +12,7 @@ export const useListStore = defineStore("animals-list", {
 
 		const filters = ref({
 			name: null as string | null,
+			status: null as string | null,
 			species: null as string | null,
 			registration_number: null as string | null,
 		});
@@ -48,6 +49,9 @@ export const useListStore = defineStore("animals-list", {
 			if (this.filters.registration_number !== null) {
 				queryParams.registration_number = this.filters.registration_number;
 			}
+			if (this.filters.status !== null) {
+				queryParams.status = this.filters.status;
+			}
 
 			await useFetch(this.pathUrl, {
 				method: "GET",
@@ -70,7 +74,9 @@ export const useListStore = defineStore("animals-list", {
 				},
 			});
 		},
-		async fetchAnimalsTotalCount(params: Record<string, any> = {}): Promise<number> {
+		async fetchAnimalsTotalCount(
+			params: Record<string, any> = {},
+		): Promise<number> {
 			let count = 0;
 			await useFetch(this.pathUrl, {
 				method: "GET",
@@ -95,7 +101,9 @@ export const useListStore = defineStore("animals-list", {
 			});
 			return count;
 		},
-		async fetchAnimalsWithOwnerCount(params: Record<string, any> = {}): Promise<number> {
+		async fetchAnimalsWithOwnerCount(
+			params: Record<string, any> = {},
+		): Promise<number> {
 			let count = 0;
 			await useFetch(this.pathUrl, {
 				method: "GET",
@@ -121,7 +129,9 @@ export const useListStore = defineStore("animals-list", {
 			});
 			return count;
 		},
-		async fetchAnimalsForAdoptionCount(params: Record<string, any> = {}): Promise<number> {
+		async fetchAnimalsForAdoptionCount(
+			params: Record<string, any> = {},
+		): Promise<number> {
 			let count = 0;
 			await useFetch(this.pathUrl, {
 				method: "GET",
