@@ -35,7 +35,7 @@ export default defineComponent({
 					title,
 					type: h?.reference_type || "history",
 					date: proxy?.$formatDateOnly(h?.created_at) || "N/A",
-					user: h?.user?.name || "N/A",
+					user: h?.user?.name || null,
 					category,
 					raw: h,
 				};
@@ -115,7 +115,7 @@ export default defineComponent({
 						color="var(--brand-color-dark-blue-900)"
 					/>
 				</div>
-				<div class="organisms-animals-history__item-user">
+				<div v-if="item.user" class="organisms-animals-history__item-user">
 					<AtomsIcon name="userCheck" width="18" height="18" />
 					<AtomsTypography
 						type="text-p5"
