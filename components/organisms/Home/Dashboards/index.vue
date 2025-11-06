@@ -1,61 +1,47 @@
 <script lang="ts">
 import { defineComponent, computed, ref, onMounted } from "vue";
-import { useListStore } from "~/stores/animals/useListStore";
-import { useListStore as useClinicEventsListStore } from "~/stores/castra-mobile/clinic-events/useListStore";
 
 export default defineComponent({
 	name: "OrganismsHomeDashboards",
 	setup() {
-		const animalsStore = useListStore();
-
-		const petsCount = computed(() => {
-			const total = (animalsStore.pagination as any)?.total as
-				| number
-				| undefined;
-			return typeof total === "number" ? total : animalsStore.animals.length;
+		const metrics = ref({
+			animals_current_month: 0,
+			registrations_current_month: 0,
+			adoptions_current_month: 0,
 		});
 
-		const adoptionsCount = ref(0);
 		onMounted(async () => {
-			adoptionsCount.value = await animalsStore.fetchAnimalsWithOwnerCount();
-		});
-
-		// Expected castrations for next month: sum of max_registrations across clinic events within next month
-		const expectedCastrations = ref(0);
-		const clinicEventsStore = useClinicEventsListStore();
-		const fmt = (d: Date) =>
-			`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-		onMounted(async () => {
-			const start = new Date();
-			const end = new Date(
-				start.getFullYear(),
-				start.getMonth() + 1,
-				start.getDate(),
-			);
-			await clinicEventsStore.fetchListWithoutPagination({
-				start_date: fmt(start),
-				end_date: fmt(end),
+			await useFetch("/api/metrics", {
+				method: "GET",
+				onResponse: ({ response }) => {
+					const result = response._data as IResponse;
+					const data = (result?.data || {}) as Record<string, any>;
+					metrics.value.animals_current_month =
+						Number(data?.animals_current_month) || 0;
+					metrics.value.registrations_current_month =
+						Number(data?.registrations_current_month) || 0;
+					metrics.value.adoptions_current_month =
+						Number(data?.adoptions_current_month) || 0;
+				},
+				onResponseError: () => {
+					// Mantém valores em 0 caso ocorra erro
+				},
 			});
-			const list = (clinicEventsStore.list as any[]) || [];
-			expectedCastrations.value = list.reduce(
-				(sum, ev) => sum + (Number(ev?.max_registrations) || 0),
-				0,
-			);
 		});
 
 		const dashboards = computed<DashboardType[]>(() => [
 			{
 				id: 1,
 				title: "Pets",
-				value: petsCount.value,
+				value: metrics.value.animals_current_month,
 				difference: "",
-				subtitle: "Comparado ao mês anterior",
+				subtitle: "Cadastrados esse mês",
 				icon: "paw",
 			},
 			{
 				id: 2,
 				title: "Castrações",
-				value: expectedCastrations.value,
+				value: metrics.value.registrations_current_month,
 				difference: "",
 				subtitle: "Castrações previstas até o final do mês",
 				icon: "ambulance",
@@ -63,9 +49,9 @@ export default defineComponent({
 			{
 				id: 3,
 				title: "Adoções",
-				value: adoptionsCount.value,
+				value: metrics.value.adoptions_current_month,
 				difference: "",
-				subtitle: "em relação ao mês passado",
+				subtitle: "Realizadas esse mês",
 				icon: "cat",
 			},
 		]);
