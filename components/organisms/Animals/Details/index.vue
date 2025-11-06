@@ -76,11 +76,11 @@ export default defineComponent({
 							value: proxy?.$booleanToSimNao(animal?.entry_data?.dewormed),
 						},
 						{
-							label: "Númerio de inscrição:",
+							label: "Número de inscrição:",
 							value: animal?.entry_data?.registration_number || "N/A",
 						},
 						{
-							label: "Númerio do microchip:",
+							label: "Número do microchip:",
 							value: animal?.entry_data?.microchip_number || "N/A",
 						},
 					],
