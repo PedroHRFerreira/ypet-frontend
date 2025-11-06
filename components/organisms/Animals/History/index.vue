@@ -57,6 +57,7 @@ export default defineComponent({
 				for_adoption: "heart",
 				lost: "urgent",
 				with_owner: "userCheck",
+				castration: "truck",
 			};
 
 			return map[type] || "procedures";
