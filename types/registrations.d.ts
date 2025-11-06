@@ -11,6 +11,7 @@ declare global {
 		user?: IUser;
 		animal?: IAnimal;
 		mobile_clinic_event?: IMobileClinicEvent;
+		pre_surgery_assessment?: any;
 	}
 }
 
