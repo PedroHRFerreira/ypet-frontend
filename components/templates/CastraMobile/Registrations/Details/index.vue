@@ -24,23 +24,6 @@ export default defineComponent({
 							router.back();
 						},
 					},
-					{
-						text: "Editar",
-						type: "primary",
-						icon: "edit",
-						iconLeft: true,
-						nameIconLeft: "edit",
-						iconRight: false,
-						nameIconRight: "",
-						size: "small",
-						width: "auto",
-						action: () => {
-							const router = useRouter();
-							const id = useRoute().params.id;
-
-							router.push({ name: "registration-edit", params: { id } });
-						},
-					},
 				],
 			};
 		});

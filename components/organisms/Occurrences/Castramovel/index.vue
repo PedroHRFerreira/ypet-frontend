@@ -45,19 +45,25 @@ export default defineComponent({
 			{
 				value: "pending",
 				name: "PENDING",
-				label: "Pendente",
-				color: "warning",
+				label: "Confirmado",
+				color: "success",
 			},
 			{
 				value: "approved",
 				name: "APPROVED",
-				label: "Aprovado",
+				label: "Confirmado",
+				color: "success",
+			},
+			{
+				value: "finished",
+				name: "APPROVED",
+				label: "Confirmado",
 				color: "success",
 			},
 			{
 				value: "rejected",
 				name: "REJECTED",
-				label: "Reprovado",
+				label: "Rejeitado",
 				color: "danger",
 			},
 			{

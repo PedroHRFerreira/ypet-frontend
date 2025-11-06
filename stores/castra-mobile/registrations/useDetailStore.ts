@@ -1,11 +1,13 @@
 export const useDetailStore = defineStore("registration-detail", {
 	state: () => {
 		const data = ref({} as IRegistration);
+		const dataSurgery = ref({} as any);
 		const isLoading = ref(false);
 		const errorMessage = ref("");
 
 		return {
 			data,
+			dataSurgery,
 			isLoading,
 			errorMessage,
 		};

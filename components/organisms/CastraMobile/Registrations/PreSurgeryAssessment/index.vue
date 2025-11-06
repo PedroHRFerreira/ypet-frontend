@@ -45,7 +45,7 @@ const modalFeedback = ref({
 		action: () => {
 			showSuccess.value = false;
 			assessmentStore.resetForm();
-			router.push("/castra-mobile/registrations");
+			router.push("/castra-mobile?tab=schedule");
 		},
 	},
 });
@@ -89,6 +89,10 @@ const handleSave = async () => {
 	// Se a operação foi bem-sucedida, mostrar modal de sucesso
 	if (assessmentStore.successMessage) {
 		showSuccess.value = true;
+
+		setTimeout(() => {
+			router.push("/castra-mobile?tab=schedule");
+		}, 300);
 	}
 };
 
